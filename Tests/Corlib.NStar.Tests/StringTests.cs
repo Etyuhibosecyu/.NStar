@@ -72,7 +72,7 @@ public class StringTests
 		b.AddRange(E.Repeat('X', 101));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries('X', -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries('X', -1));
 		a.Replace(nString);
 		a.AddSeries(index => (char)(index ^ index >> 1), 0);
 		b.Clear();
@@ -87,7 +87,7 @@ public class StringTests
 		b.AddRange(E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1)));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (char)(index ^ index >> 1), -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(index => (char)(index ^ index >> 1), -1));
 		a.Replace(nString);
 		a.AddSeries(0, index => (char)(index ^ index >> 1));
 		b.Clear();
@@ -102,7 +102,7 @@ public class StringTests
 		b.AddRange(E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1)));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (char)(index ^ index >> 1)));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (char)(index ^ index >> 1)));
 	}
 
 	[TestMethod]
@@ -735,7 +735,7 @@ public class StringTests
 		b = [.. E.Repeat('X', 101)];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace('X', -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace('X', -1));
 		a.FillInPlace(index => (char)(index ^ index >> 1), 0);
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -748,7 +748,7 @@ public class StringTests
 		b = [.. E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1))];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (char)(index ^ index >> 1), -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (char)(index ^ index >> 1), -1));
 		a.FillInPlace(0, index => (char)(index ^ index >> 1));
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -761,7 +761,7 @@ public class StringTests
 		b = [.. E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1))];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (char)(index ^ index >> 1)));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (char)(index ^ index >> 1)));
 	}
 
 	[TestMethod]
@@ -1126,7 +1126,7 @@ public class StringTests
 		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new String('X', 'Y', 'Z'));
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<char>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<char>)null!));
 	}
 
 	[TestMethod]
@@ -1139,7 +1139,7 @@ public class StringTests
 		Assert.AreEqual(0, b);
 		b = a.IndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<char>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<char>)null!));
 	}
 
 	[TestMethod]
@@ -1208,7 +1208,7 @@ public class StringTests
 		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf("ME", 5, 4);
 		Assert.AreEqual(4, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<char>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<char>)null!));
 	}
 
 	[TestMethod]
@@ -1223,7 +1223,7 @@ public class StringTests
 		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new String('X', 'Y', 'Z'));
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<char>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<char>)null!));
 	}
 
 	[TestMethod]
@@ -1236,7 +1236,7 @@ public class StringTests
 		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<char>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<char>)null!));
 	}
 
 	[TestMethod]
@@ -1263,8 +1263,8 @@ public class StringTests
 		c = new string(E.ToArray(nString));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Pad(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Pad(-1, 'X'));
 	}
 
 	[TestMethod]
@@ -1300,8 +1300,8 @@ public class StringTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, 'X'));
 	}
 
 	[TestMethod]
@@ -1328,8 +1328,8 @@ public class StringTests
 		c = new string(E.ToArray(nString));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeft(-1, 'X'));
 	}
 
 	[TestMethod]
@@ -1365,8 +1365,8 @@ public class StringTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, 'X'));
 	}
 
 	[TestMethod]
@@ -1391,8 +1391,8 @@ public class StringTests
 		c = new string(E.ToArray(nString));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRight(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRight(-1, 'X'));
 	}
 
 	[TestMethod]
@@ -1426,8 +1426,8 @@ public class StringTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, 'X'));
 	}
 
 	[TestMethod]
@@ -1470,9 +1470,9 @@ public class StringTests
 		Assert.IsTrue(E.SequenceEqual(nString, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new String(a).Remove(-1, 6));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new String(a).Remove(nString.Length - 1, 2 - nString.Length));
-		Assert.ThrowsException<ArgumentException>(() => b = new String(a).Remove(1, 1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new String(a).Remove(-1, 6));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new String(a).Remove(nString.Length - 1, 2 - nString.Length));
+		Assert.ThrowsExactly<ArgumentException>(() => b = new String(a).Remove(1, 1000));
 		b = new String(a).Remove(..);
 		c = "";
 		Assert.IsTrue(a.Equals(nString));
@@ -1511,9 +1511,9 @@ public class StringTests
 		Assert.IsTrue(E.SequenceEqual(nString, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new String(a).Remove(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new String(a).Remove(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = new String(a).Remove(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new String(a).Remove(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new String(a).Remove(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = new String(a).Remove(1..1000));
 	}
 
 	[TestMethod]
@@ -1606,10 +1606,10 @@ public class StringTests
 		b = b.Insert(2, RedStarLinq.ToString(E.Take(E.Skip(defaultNSCollection, 2), 3)));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = nString.ToNString().ReplaceRange(1, 1000, defaultNChar));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nString.ToNString().ReplaceRange(-1, 3, defaultNSCollection));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nString.ToNString().ReplaceRange(4, -2, defaultNSCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => nString.ToNString().ReplaceRange(4, 1, null!));
+		Assert.ThrowsExactly<ArgumentException>(() => a = nString.ToNString().ReplaceRange(1, 1000, defaultNChar));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().ReplaceRange(-1, 3, defaultNSCollection));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().ReplaceRange(4, -2, defaultNSCollection));
+		Assert.ThrowsExactly<ArgumentNullException>(() => nString.ToNString().ReplaceRange(4, 1, null!));
 	}
 
 	[TestMethod]
@@ -1699,10 +1699,10 @@ public class StringTests
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = nString.ToNString().SetRange(5, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nString.ToNString().SetRange(-1, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nString.ToNString().SetRange(1000, hs));
-		Assert.ThrowsException<ArgumentNullException>(() => nString.ToNString().SetRange(4, null!));
+		Assert.ThrowsExactly<ArgumentException>(() => a = nString.ToNString().SetRange(5, hs));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().SetRange(-1, hs));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().SetRange(1000, hs));
+		Assert.ThrowsExactly<ArgumentNullException>(() => nString.ToNString().SetRange(4, null!));
 	}
 
 	[TestMethod]
@@ -2323,50 +2323,50 @@ public class StringTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		var fullNList = b.Copy();
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char))fullNList[..1]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char))fullNList[..1]);
 		Assert.AreEqual(((char, char))fullNList[..2], ('A', 'B'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char))fullNList[..3]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char))fullNList[..2]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char))fullNList[..3]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char))fullNList[..2]);
 		Assert.AreEqual(((char, char, char))fullNList[..3], ('A', 'B', 'C'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char))fullNList[..4]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char))fullNList[..3]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char))fullNList[..4]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char))fullNList[..3]);
 		Assert.AreEqual(((char, char, char, char))fullNList[..4], ('A', 'B', 'C', 'D'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char))fullNList[..5]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char))fullNList[..4]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char))fullNList[..5]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char))fullNList[..4]);
 		Assert.AreEqual(((char, char, char, char, char))fullNList[..5], ('A', 'B', 'C', 'D', 'E'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char))fullNList[..6]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char))fullNList[..5]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char))fullNList[..6]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char))fullNList[..5]);
 		Assert.AreEqual(((char, char, char, char, char, char))fullNList[..6], ('A', 'B', 'C', 'D', 'E', 'F'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char))fullNList[..7]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char))fullNList[..6]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char))fullNList[..7]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char))fullNList[..6]);
 		Assert.AreEqual(((char, char, char, char, char, char, char))fullNList[..7], ('A', 'B', 'C', 'D', 'E', 'F', 'G'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char))fullNList[..8]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char))fullNList[..7]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char))fullNList[..8]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char))fullNList[..7]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char))fullNList[..8], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char))fullNList[..9]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char))fullNList[..8]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char))fullNList[..9]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char))fullNList[..8]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char))fullNList[..9], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char))fullNList[..10]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char))fullNList[..9]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char))fullNList[..10]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char))fullNList[..9]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char))fullNList[..10], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char))fullNList[..11]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char))fullNList[..10]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char))fullNList[..11]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char))fullNList[..10]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char))fullNList[..11], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char))fullNList[..12]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..11]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char))fullNList[..12]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..11]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..12], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..13]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..12]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..13]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..12]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..13], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..14]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..13]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..14]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..13]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..14], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..15]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..14]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..15]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..14]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..15], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'));
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..16]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..15]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..16]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..15]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..16], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'));
-		Assert.ThrowsException<ArgumentException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..17]);
+		Assert.ThrowsExactly<ArgumentException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..17]);
 	}
 }

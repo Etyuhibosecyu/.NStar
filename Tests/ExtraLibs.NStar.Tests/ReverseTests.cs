@@ -246,7 +246,7 @@ public class ReverseTests
 			Assert.AreEqual(0, b);
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
 
@@ -294,7 +294,7 @@ public class ReverseTests
 			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAnyExcluding(a);
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
 

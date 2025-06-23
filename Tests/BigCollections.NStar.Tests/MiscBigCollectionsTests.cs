@@ -24,7 +24,7 @@ public class BigQueueTests
 			if (random.Next(2) == 0)
 			{
 				if (bq.Length == 0)
-					Assert.ThrowsException<InvalidOperationException>(() => bq.Dequeue());
+					Assert.ThrowsExactly<InvalidOperationException>(() => bq.Dequeue());
 				else
 					Assert.AreEqual(bq.Dequeue(), gq.Dequeue());
 				Assert.IsTrue(RedStarLinq.Equals(bq, gq));
@@ -47,7 +47,7 @@ public class BigQueueTests
 			if (random.Next(2) == 0)
 			{
 				if (bq.Length == 0)
-					Assert.ThrowsException<InvalidOperationException>(() => bq.Peek());
+					Assert.ThrowsExactly<InvalidOperationException>(() => bq.Peek());
 				else
 					Assert.AreEqual(bq.Peek(), gq.Peek());
 				Assert.IsTrue(RedStarLinq.Equals(bq, gq));

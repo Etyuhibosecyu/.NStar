@@ -148,7 +148,7 @@ public class BitListTests
 		b.AddRange(E.Repeat(true, 101));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(true, -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(true, -1));
 		a.Replace(bitList);
 		a.AddSeries(index => (index ^ index >> 1) % 2 == 1, 0);
 		b.Clear();
@@ -163,7 +163,7 @@ public class BitListTests
 		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1) % 2 == 1, -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1) % 2 == 1, -1));
 		a.Replace(bitList);
 		a.AddSeries(0, index => (index ^ index >> 1) % 2 == 1);
 		b.Clear();
@@ -178,7 +178,7 @@ public class BitListTests
 		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1) % 2 == 1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1) % 2 == 1));
 	}
 
 	[TestMethod]
@@ -309,7 +309,7 @@ public class BitListTests
 		Assert.IsTrue(b);
 		b = a.Contains(new G.List<bool>() { false, true, false }, 3, 3);
 		Assert.IsFalse(b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.Contains((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]
@@ -417,7 +417,7 @@ public class BitListTests
 		b = [.. E.Repeat(true, 101)];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(true, -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(true, -1));
 		a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, 0);
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -430,7 +430,7 @@ public class BitListTests
 		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1)];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, -1));
 		a.FillInPlace(0, index => (index ^ index >> 1) % 2 == 1);
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -443,7 +443,7 @@ public class BitListTests
 		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1)];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1) % 2 == 1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1) % 2 == 1));
 	}
 
 	[TestMethod]
@@ -754,9 +754,9 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = a.GetRange(1..1000));
 	}
 
 	[TestMethod]
@@ -811,9 +811,9 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = a.GetSlice(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = a.GetSlice(1..1000));
 	}
 
 	[TestMethod]
@@ -872,7 +872,7 @@ public class BitListTests
 		Assert.AreEqual(4, b);
 		b = a.IndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 0, 4);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]
@@ -887,7 +887,7 @@ public class BitListTests
 		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new G.List<bool>() { false, false, false }, 65);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]
@@ -900,7 +900,7 @@ public class BitListTests
 		Assert.AreEqual(65, b);
 		b = a.IndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]
@@ -933,7 +933,7 @@ public class BitListTests
 			Assert.AreEqual(-1, b);
 			b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] });
 			Assert.AreEqual(56, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<bool>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<bool>)null!));
 		}
 	}
 
@@ -949,7 +949,7 @@ public class BitListTests
 		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new G.List<bool>() { true, true, true }, 3);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]
@@ -962,7 +962,7 @@ public class BitListTests
 		Assert.AreEqual(3, b);
 		b = a.LastIndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]
@@ -991,8 +991,8 @@ public class BitListTests
 		c = new G.List<bool>(bitList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1, true));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Pad(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Pad(-1, true));
 	}
 
 	[TestMethod]
@@ -1030,8 +1030,8 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, true));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, true));
 	}
 
 	[TestMethod]
@@ -1058,8 +1058,8 @@ public class BitListTests
 		c = new G.List<bool>(bitList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1, true));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeft(-1, true));
 	}
 
 	[TestMethod]
@@ -1095,8 +1095,8 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, true));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, true));
 	}
 
 	[TestMethod]
@@ -1123,8 +1123,8 @@ public class BitListTests
 		c = new G.List<bool>(bitList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1, true));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRight(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRight(-1, true));
 	}
 
 	[TestMethod]
@@ -1160,8 +1160,8 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, true));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, true));
 	}
 
 	[TestMethod]
@@ -1204,9 +1204,9 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1, 6));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(bitList.Length - 1, 2 - bitList.Length));
-		Assert.ThrowsException<ArgumentException>(() => b = new BitList(a).Remove(1, 1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1, 6));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(bitList.Length - 1, 2 - bitList.Length));
+		Assert.ThrowsExactly<ArgumentException>(() => b = new BitList(a).Remove(1, 1000));
 		b = new BitList(a).Remove(..);
 		c = [];
 		Assert.IsTrue(a.Equals(bitList));
@@ -1245,9 +1245,9 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = new BitList(a).Remove(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = new BitList(a).Remove(1..1000));
 	}
 
 	[TestMethod]
@@ -1359,10 +1359,10 @@ public class BitListTests
 		b.InsertRange(2, E.Take(E.Skip(defaultBitCollection, 2), 3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new BitList(bitList).ReplaceRange(1, 1000, new[] { defaultBit }));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).ReplaceRange(-1, 3, defaultBitCollection));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).ReplaceRange(4, -2, defaultBitCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).ReplaceRange(4, 1, null!));
+		Assert.ThrowsExactly<ArgumentException>(() => a = new BitList(bitList).ReplaceRange(1, 1000, new[] { defaultBit }));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).ReplaceRange(-1, 3, defaultBitCollection));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).ReplaceRange(4, -2, defaultBitCollection));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).ReplaceRange(4, 1, null!));
 	}
 
 	[TestMethod]
@@ -1464,14 +1464,14 @@ public class BitListTests
 			b[i + 4] = newList4[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new BitList(bitList).SetRange(60, newList));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(-1, newList));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(1000, newList));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (BitArray)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<byte>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<bool>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<int>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<uint>)null!));
+		Assert.ThrowsExactly<ArgumentException>(() => a = new BitList(bitList).SetRange(60, newList));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(-1, newList));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(1000, newList));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (BitArray)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<byte>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<int>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (G.IEnumerable<uint>)null!));
 	}
 
 	[TestMethod]
@@ -1573,7 +1573,7 @@ public class BitListTests
 		Assert.IsTrue(b);
 		b = a.StartsWith(new G.List<bool>() { false, false, false, false, true });
 		Assert.IsFalse(b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<bool>)null!));
 	}
 
 	[TestMethod]

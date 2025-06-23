@@ -287,13 +287,13 @@ public class BitListTests
 		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new BitList(bitList).Insert(1000, defaultBit));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).Insert(-1, defaultBitCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, (BitArray)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<byte>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<bool>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<int>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<uint>)null!));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a = new BitList(bitList).Insert(1000, defaultBit));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).Insert(-1, defaultBitCollection));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).Insert(1, (BitArray)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<byte>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<bool>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<int>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).Insert(1, (G.IEnumerable<uint>)null!));
 	}
 }
 
@@ -383,7 +383,7 @@ public class NListTests
 				break;
 			}
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().AddRange((G.IEnumerable<(char, char, char)>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => nList.ToNList().AddRange((G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
@@ -469,9 +469,9 @@ public class NListTests
 				break;
 			}
 		}
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = nList.ToNList().Insert(1000, ('X', 'X', 'X')));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a = nList.ToNList().Insert(1000, ('X', 'X', 'X')));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
+		Assert.ThrowsExactly<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
@@ -594,7 +594,7 @@ public class StringTests
 				break;
 			}
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().AddRange((G.IEnumerable<(char, char, char)>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => nList.ToNList().AddRange((G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
@@ -680,9 +680,9 @@ public class StringTests
 				break;
 			}
 		}
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = nString.ToNString().Insert(1000, 'X'));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a = nString.ToNString().Insert(1000, 'X'));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
+		Assert.ThrowsExactly<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]

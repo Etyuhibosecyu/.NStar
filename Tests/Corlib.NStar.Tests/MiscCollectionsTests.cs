@@ -442,7 +442,7 @@ public class SliceTests
 			Assert.AreEqual(-1, b);
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 		}
 	}
 
@@ -463,7 +463,7 @@ public class SliceTests
 			Assert.AreEqual(0, b);
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
 
@@ -507,7 +507,7 @@ public class SliceTests
 			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAnyExcluding(a);
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
 
@@ -794,7 +794,7 @@ public class QueueTests
 			if (random.Next(2) == 0)
 			{
 				if (q.Length == 0)
-					Assert.ThrowsException<InvalidOperationException>(() => q.Dequeue());
+					Assert.ThrowsExactly<InvalidOperationException>(() => q.Dequeue());
 				else
 					Assert.AreEqual(q.Dequeue(), gq.Dequeue());
 				Assert.IsTrue(RedStarLinq.Equals(q, gq));
@@ -817,7 +817,7 @@ public class QueueTests
 			if (random.Next(2) == 0)
 			{
 				if (q.Length == 0)
-					Assert.ThrowsException<InvalidOperationException>(() => q.Peek());
+					Assert.ThrowsExactly<InvalidOperationException>(() => q.Peek());
 				else
 					Assert.AreEqual(q.Peek(), gq.Peek());
 				Assert.IsTrue(RedStarLinq.Equals(q, gq));
@@ -867,7 +867,7 @@ public class StackTests
 			if (random.Next(2) == 0)
 			{
 				if (st.Length == 0)
-					Assert.ThrowsException<InvalidOperationException>(() => st.Pop());
+					Assert.ThrowsExactly<InvalidOperationException>(() => st.Pop());
 				else
 					Assert.AreEqual(st.Pop(), gst.Pop());
 				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
@@ -890,7 +890,7 @@ public class StackTests
 			if (random.Next(2) == 0)
 			{
 				if (st.Length == 0)
-					Assert.ThrowsException<InvalidOperationException>(() => st.Peek());
+					Assert.ThrowsExactly<InvalidOperationException>(() => st.Peek());
 				else
 					Assert.AreEqual(st.Peek(), gst.Peek());
 				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));

@@ -40,9 +40,9 @@ public record class BaseIndexableTests<T, TCertain>(TCertain TestCollection, Imm
 		Assert.IsTrue(E.SequenceEqual(OriginalCollection, TestCollection));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.GetRange(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.GetRange(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.GetRange(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = TestCollection.GetRange(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = TestCollection.GetRange(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = TestCollection.GetRange(1..1000));
 	}
 
 	public void TestGetSlice()
@@ -95,9 +95,9 @@ public record class BaseIndexableTests<T, TCertain>(TCertain TestCollection, Imm
 		Assert.IsTrue(E.SequenceEqual(OriginalCollection, TestCollection));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.GetSlice(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.GetSlice(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.GetSlice(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = TestCollection.GetSlice(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = TestCollection.GetSlice(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = TestCollection.GetSlice(1..1000));
 	}
 }
 
@@ -191,7 +191,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(E.Contains(E.Zip(b, E.Skip(b, 1)), (elem, elem2)), a.Contains([elem, elem2]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Contains((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Contains((G.IEnumerable<string>)null!));
 	}
 
 	public void TestContainsAny()
@@ -218,7 +218,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(b.Contains(elem) || b.Contains(elem2) || b.Contains(elem3), a.ContainsAny([elem, elem2, elem3]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.ContainsAny((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.ContainsAny((G.IEnumerable<string>)null!));
 	}
 
 	public void TestContainsAnyExcluding()
@@ -244,7 +244,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(E.Except(b, [elem, elem2, elem3]).Any(), a.ContainsAnyExcluding([elem, elem2, elem3]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.ContainsAnyExcluding((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.ContainsAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
 	public void TestEndsWith()
@@ -267,7 +267,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(b.Count >= 2 && E.Last(E.Zip(b, E.Skip(b, 1))) == (elem, elem2), a.EndsWith([elem, elem2]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.EndsWith((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.EndsWith((G.IEnumerable<string>)null!));
 	}
 
 	public void TestEquals()
@@ -302,14 +302,14 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
 #pragma warning restore IDE0028 // Упростите инициализацию коллекции
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 3));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!, 3));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => TestCollection.Equals(null!, -1));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 1000));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!, 1000));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals(null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 3));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals(null!, 3));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => TestCollection.Equals(null!, -1));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 1000));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals(null!, 1000));
 	}
 
 	public void TestFind()
@@ -477,15 +477,15 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1))).IndexOf((elem, elem2)), a.IndexOf([elem, elem2]));
 		}
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.IndexOf("BBB", 1, 1000));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.IndexOf((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], 1, 1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1, 5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", 3, -5));
+		Assert.ThrowsExactly<ArgumentException>(() => index = TestCollection.IndexOf("BBB", 1, 1000));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.IndexOf((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], -1, 5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], 3, -5));
+		Assert.ThrowsExactly<ArgumentException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], 1, 1000));
 	}
 
 	public void TestIndexOfAny()
@@ -526,7 +526,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 				index = index2;
 			Assert.AreEqual(index, a.IndexOfAny([elem, elem2, elem3]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.IndexOfAny((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.IndexOfAny((G.IEnumerable<string>)null!));
 	}
 
 	public void TestLastIndexOf()
@@ -552,15 +552,15 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1))).LastIndexOf((elem, elem2)), a.LastIndexOf([elem, elem2]));
 		}
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.LastIndexOf("BBB", 1, 1000));
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.LastIndexOf((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], 1, 1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", -1, 5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", 3, -5));
+		Assert.ThrowsExactly<ArgumentException>(() => index = TestCollection.LastIndexOf("BBB", 1, 1000));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.LastIndexOf((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], -1, 5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], 3, -5));
+		Assert.ThrowsExactly<ArgumentException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], 1, 1000));
 	}
 
 	public void TestLastIndexOfAny()
@@ -601,7 +601,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 				index = index2;
 			Assert.AreEqual(index, a.LastIndexOfAny([elem, elem2, elem3]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.LastIndexOfAny((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.LastIndexOfAny((G.IEnumerable<string>)null!));
 	}
 
 	public void TestStartsWith()
@@ -624,6 +624,6 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(b.Count >= 2 && E.First(E.Zip(b, E.Skip(b, 1))) == (elem, elem2), a.StartsWith([elem, elem2]));
 		}
-		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.StartsWith((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.StartsWith((G.IEnumerable<string>)null!));
 	}
 }

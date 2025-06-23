@@ -378,7 +378,7 @@ public class PrependTests
 			Assert.AreEqual(-1, b);
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 		}
 	}
 
@@ -401,7 +401,7 @@ public class PrependTests
 			Assert.AreEqual(0, b);
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
 
@@ -449,7 +449,7 @@ public class PrependTests
 			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAnyExcluding(a);
 			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
 

@@ -34,7 +34,7 @@ public class ListTests
 		b.AddRange(E.Repeat("XXX", 101));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries("XXX", -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries("XXX", -1));
 		a.Replace(list);
 		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 0);
 		b.Clear();
@@ -49,7 +49,7 @@ public class ListTests
 		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1).ToString("D3"), -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1).ToString("D3"), -1));
 		a.Replace(list);
 		a.AddSeries(0, index => (index ^ index >> 1).ToString("D3"));
 		b.Clear();
@@ -64,7 +64,7 @@ public class ListTests
 		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1).ToString("D3")));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1).ToString("D3")));
 	}
 
 	[TestMethod]
@@ -293,7 +293,7 @@ public class ListTests
 		b = [.. E.Repeat("XXX", 101)];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace("XXX", -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace("XXX", -1));
 		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 0);
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -306,7 +306,7 @@ public class ListTests
 		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3"))];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), -1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), -1));
 		a.FillInPlace(0, index => (index ^ index >> 1).ToString("D3"));
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -319,7 +319,7 @@ public class ListTests
 		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3"))];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1).ToString("D3")));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1).ToString("D3")));
 	}
 
 	[TestMethod]
@@ -607,7 +607,7 @@ public class ListTests
 		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -620,7 +620,7 @@ public class ListTests
 		Assert.AreEqual(0, b);
 		b = a.IndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -642,7 +642,7 @@ public class ListTests
 		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -655,7 +655,7 @@ public class ListTests
 		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -698,8 +698,8 @@ public class ListTests
 		c = [.. list];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1, "XXX"));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Pad(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Pad(-1, "XXX"));
 	}
 
 	[TestMethod]
@@ -739,8 +739,8 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, "XXX"));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, "XXX"));
 	}
 
 	[TestMethod]
@@ -771,8 +771,8 @@ public class ListTests
 		c = [.. list];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1, "XXX"));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeft(-1, "XXX"));
 	}
 
 	[TestMethod]
@@ -812,8 +812,8 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, "XXX"));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, "XXX"));
 	}
 
 	[TestMethod]
@@ -838,8 +838,8 @@ public class ListTests
 		c = [.. list];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1, "XXX"));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRight(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRight(-1, "XXX"));
 	}
 
 	[TestMethod]
@@ -873,8 +873,8 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, "XXX"));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, "XXX"));
 	}
 
 	[TestMethod]
@@ -915,9 +915,9 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1, 6));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(list.Length - 1, 2 - list.Length));
-		Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1, 1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1, 6));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(list.Length - 1, 2 - list.Length));
+		Assert.ThrowsExactly<ArgumentException>(() => b = new List<string>(a).Remove(1, 1000));
 		b = new List<string>(a).Remove(..);
 		c = [];
 		Assert.IsTrue(a.Equals(list));
@@ -956,9 +956,9 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1..1000));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1..5));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(^1..1));
+		Assert.ThrowsExactly<ArgumentException>(() => b = new List<string>(a).Remove(1..1000));
 	}
 
 	[TestMethod]
@@ -1055,7 +1055,7 @@ public class ListTests
 		b = [.. list, .. E.Take(E.Skip(defaultCollection, 2), 3)];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentNullException>(() => a.Replace((G.IEnumerable<string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.Replace((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -1072,10 +1072,10 @@ public class ListTests
 		b.InsertRange(2, E.Take(E.Skip(defaultCollection, 2), 3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = list.ToList().ReplaceRange(1, 1000, defaultString));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().ReplaceRange(-1, 3, defaultCollection));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().ReplaceRange(4, -2, defaultCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().ReplaceRange(4, 1, null!));
+		Assert.ThrowsExactly<ArgumentException>(() => a = list.ToList().ReplaceRange(1, 1000, defaultString));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToList().ReplaceRange(-1, 3, defaultCollection));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToList().ReplaceRange(4, -2, defaultCollection));
+		Assert.ThrowsExactly<ArgumentNullException>(() => list.ToList().ReplaceRange(4, 1, null!));
 	}
 
 	[TestMethod]
@@ -1161,10 +1161,10 @@ public class ListTests
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = list.ToList().SetRange(5, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().SetRange(-1, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().SetRange(1000, hs));
-		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().SetRange(4, null!));
+		Assert.ThrowsExactly<ArgumentException>(() => a = list.ToList().SetRange(5, hs));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToList().SetRange(-1, hs));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToList().SetRange(1000, hs));
+		Assert.ThrowsExactly<ArgumentNullException>(() => list.ToList().SetRange(4, null!));
 	}
 
 	[TestMethod]
@@ -1476,50 +1476,50 @@ public class ListTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		var fullList = b.Copy();
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string))fullList[..1]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string))fullList[..1]);
 		Assert.AreEqual(((string, string))fullList[..2], ("AAA", "BBB"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string))fullList[..3]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string))fullList[..2]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string))fullList[..3]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string))fullList[..2]);
 		Assert.AreEqual(((string, string, string))fullList[..3], ("AAA", "BBB", "CCC"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string))fullList[..4]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string))fullList[..3]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string))fullList[..4]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string))fullList[..3]);
 		Assert.AreEqual(((string, string, string, string))fullList[..4], ("AAA", "BBB", "CCC", "DDD"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string))fullList[..5]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string))fullList[..4]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string))fullList[..5]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string))fullList[..4]);
 		Assert.AreEqual(((string, string, string, string, string))fullList[..5], ("AAA", "BBB", "CCC", "DDD", "EEE"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string))fullList[..6]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string))fullList[..5]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string))fullList[..6]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string))fullList[..5]);
 		Assert.AreEqual(((string, string, string, string, string, string))fullList[..6], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string))fullList[..7]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string))fullList[..6]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string))fullList[..7]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string))fullList[..6]);
 		Assert.AreEqual(((string, string, string, string, string, string, string))fullList[..7], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string))fullList[..8]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string))fullList[..7]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string))fullList[..8]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string))fullList[..7]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string))fullList[..8], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string))fullList[..9]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string))fullList[..8]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string))fullList[..9]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string))fullList[..8]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string))fullList[..9], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string))fullList[..10]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string))fullList[..9]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string))fullList[..10]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string))fullList[..9]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string))fullList[..10], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string))fullList[..11]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string))fullList[..10]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string))fullList[..11]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string))fullList[..10]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string))fullList[..11], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string))fullList[..12]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..11]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string))fullList[..12]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..11]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..12], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..12]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..12]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO"));
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..16]);
-		Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..16]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
 		Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..16], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP"));
-		Assert.ThrowsException<ArgumentException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..17]);
+		Assert.ThrowsExactly<ArgumentException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..17]);
 	}
 }
