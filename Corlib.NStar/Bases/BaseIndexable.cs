@@ -781,7 +781,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual TCertain GetAfter(IEnumerable<T> collection, int index, int length)
 	{
 		var foundIndex = IndexOf(collection, index, length, out var collectionLength);
-		return foundIndex == -1 ? new() : GetRange(foundIndex + collectionLength);
+		return foundIndex == -1 ? new() : GetRange(foundIndex + collectionLength, true);
 	}
 
 	public virtual TCertain GetAfter(TCertain collection) => GetAfter((IEnumerable<T>)collection, 0, _size);
@@ -797,7 +797,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index, int length)
 	{
 		var foundIndex = LastIndexOf(collection, index, length, out var collectionLength);
-		return foundIndex == -1 ? new() : GetRange(foundIndex + collectionLength);
+		return foundIndex == -1 ? new() : GetRange(foundIndex + collectionLength, true);
 	}
 
 	public virtual TCertain GetAfterLast(TCertain collection) => GetAfterLast((IEnumerable<T>)collection, _size - 1, _size);

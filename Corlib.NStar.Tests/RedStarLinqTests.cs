@@ -158,6 +158,18 @@ public class RedStarLinqTests
 		}
 	}
 
+	public static void TestSpan(Action<ReadOnlySpan<string>> action)
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
+			action(array);
+			action(array.AsSpan());
+			action((ReadOnlySpan<string>)array.AsSpan());
+		}
+	}
+
 	[TestMethod]
 	public void TestAll() => Test(a =>
 	{
@@ -181,6 +193,30 @@ public class RedStarLinqTests
 		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
 		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, int, bool>)null!));
+	});
+
+	[TestMethod]
+	public void TestAllSpan() => TestSpan(a =>
+	{
+		var a2 = a.ToArray();
+		var c = a.All(x => x.Length > 0);
+		var d = E.All(a2, x => x.Length > 0);
+		Assert.AreEqual(d, c);
+		c = a.All(x => x.StartsWith('#'));
+		d = E.All(a2, x => x.StartsWith('#'));
+		Assert.AreEqual(d, c);
+		c = a.All(x => x.StartsWith('M'));
+		d = E.All(a2, x => x.StartsWith('M'));
+		Assert.AreEqual(d, c);
+		c = a.All((x, index) => x.Length > 0 && index >= 0);
+		d = E.All(E.Select(a2, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
+		Assert.AreEqual(d, c);
+		c = a.All((x, index) => index < 0);
+		d = E.All(E.Select(a2, (elem, index) => (elem, index)), x => x.index < 0);
+		Assert.AreEqual(d, c);
+		c = a.All((x, index) => x.StartsWith('M') && index > 0);
+		d = E.All(E.Select(a2, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
+		Assert.AreEqual(d, c);
 	});
 
 	[TestMethod]
@@ -307,6 +343,33 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestAnySpan() => TestSpan(a =>
+	{
+		var a2 = a.ToArray();
+		var c = a.Any(x => x.Length > 0);
+		var d = E.Any(a2, x => x.Length > 0);
+		Assert.AreEqual(d, c);
+		c = a.Any(x => x.StartsWith('#'));
+		d = E.Any(a2, x => x.StartsWith('#'));
+		Assert.AreEqual(d, c);
+		c = a.Any(x => x.StartsWith('M'));
+		d = E.Any(a2, x => x.StartsWith('M'));
+		Assert.AreEqual(d, c);
+		c = a.Any((x, index) => x.Length > 0 && index >= 0);
+		d = E.Any(E.Select(a2, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
+		Assert.AreEqual(d, c);
+		c = a.Any((x, index) => index < 0);
+		d = E.Any(E.Select(a2, (elem, index) => (elem, index)), x => x.index < 0);
+		Assert.AreEqual(d, c);
+		c = a.Any((x, index) => x.StartsWith('M') && index > 0);
+		d = E.Any(E.Select(a2, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
+		Assert.AreEqual(d, c);
+		c = a.Any();
+		d = a2.Length != 0;
+		Assert.AreEqual(d, c);
+	});
+
+	[TestMethod]
 	public void TestBreak() => Test(a =>
 	{
 		var c = a.Break(x => x[0], x => x[1..]);
@@ -347,6 +410,36 @@ public class RedStarLinqTests
 		Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (Func<string, int, char>)null!, (Func<string, int, string>)null!));
 		Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (x, index) => (char)(x[^1] * index + 5), (Func<string, int, string>)null!));
 		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, (char, char, string)>)null!));
+	});
+
+	[TestMethod]
+	public void TestBreakSpan() => TestSpan(a =>
+	{
+		var a2 = a.ToArray();
+		var c = a.Break(x => x[0], x => x[1..]);
+		var d = (E.Select(a2, x => x[0]), E.Select(a2, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.Break(x => (x[0], x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = E.Select(a2, x => (x[0], x[1..])).Break();
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.Break((x, index) => (char)(x[0] + index), (x, index) => x[1..] + index.ToString("D2"));
+		d = (E.Select(a2, (x, index) => (char)(x[0] + index)), E.Select(a2, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.Break((x, index) => ((char)(x[0] + index), x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		var c2 = a.Break(x => x[0], x => x[^1], x => x[1..]);
+		var d2 = (E.Select(a2, x => x[0]), E.Select(a2, x => x[^1]), E.Select(a2, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.Break(x => (x[0], x[^1], x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = E.Select(a2, x => (x[0], x[^1], x[1..])).Break();
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.Break((x, index) => (char)(x[0] + index), (x, index) => (char)(x[^1] * index + 5), (x, index) => x[1..] + index.ToString("D2"));
+		d2 = (E.Select(a2, (x, index) => (char)(x[0] + index)), E.Select(a2, (x, index) => (char)(x[^1] * index + 5)), E.Select(a2, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.Break((x, index) => ((char)(x[0] + index), (char)(x[^1] * index + 5), x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
 	});
 
 	[TestMethod]
@@ -976,6 +1069,129 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
 			c = a.FrequencyTable((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
 			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+		}
+	}
+
+	[TestMethod]
+	public void TestFrequencyTableSpan()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
+			ProcessA(original);
+			ProcessA(original.AsSpan());
+			ProcessA((ReadOnlySpan<int>)original.AsSpan());
+		}
+		void ProcessA(ReadOnlySpan<int> a)
+		{
+			var a2 = a.ToArray();
+			var c = a.FrequencyTable();
+			var d = E.GroupBy(a2, x => x);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2);
+			d = E.GroupBy(a2, x => x / 2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(comparer);
+			d = E.GroupBy(a2, x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2, comparer);
+			d = E.GroupBy(a2, x => x / 2, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10, comparer);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.GroupBy(a2, x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x, equalFunction: (x, y) => x / 3 == y / 3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.GroupBy(a2, x => x / 2, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(comparer2);
+			d = E.GroupBy(a2, x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2, comparer2);
+			d = E.GroupBy(a2, x => x / 2, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10, comparer2);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.GroupBy(a2, x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.GroupBy(a2, x => x / 2, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(comparer3);
+			d = E.GroupBy(a2, x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2, comparer3);
+			d = E.GroupBy(a2, x => x / 2, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10, comparer3);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.GroupBy(a2, x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.GroupBy(a2, x => x / 2, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
+			c = a.FrequencyTable((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.Select(E.GroupBy(E.Select(a2, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
 			Assert.IsTrue(c.Equals(d, (x, y) => x.Count == E.Count(y)));
 			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
 		}

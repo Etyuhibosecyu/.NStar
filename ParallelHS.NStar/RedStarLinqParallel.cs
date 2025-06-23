@@ -2,6 +2,16 @@
 
 namespace ParallelHS.NStar;
 
+[Serializable]
+public class FakeIndexesException : Exception
+{
+	public FakeIndexesException() : this("Внимание! Вы пытаетесь получить или установить элемент по индексу, но он является фейковым. Вы можете получить недействительный элемент, либо же элемент, действительный \"номер\" которого в коллекции существенно отличается от указанного вами индекса. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
+
+	public FakeIndexesException(string? message) : base(message) { }
+
+	public FakeIndexesException(string? message, Exception? innerException) : base(message, innerException) { }
+}
+
 public static class RedStarLinqParallel
 {
 	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function)

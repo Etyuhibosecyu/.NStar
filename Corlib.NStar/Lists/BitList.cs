@@ -1,6 +1,8 @@
 ﻿namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+// Представляет компактный список значений битов, которые представлены в виде логических значений, где
+// true указывает, что бит включен (1), а false указывает, что бит выключен (0).
 public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 {
 	private protected uint* _items;

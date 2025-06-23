@@ -60,30 +60,6 @@ public readonly struct Chain : IReadOnlyCollection<int>
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Group<T, TKey> : List<T>
-{
-	public virtual TKey Key { get; private protected set; }
-
-	public Group(int capacity, TKey key) : base(capacity) => Key = key;
-
-	public Group(IEnumerable<T> collection, TKey key) : base(collection) => Key = key;
-
-	public Group(int capacity, T item, TKey key) : base(capacity, item) => Key = key;
-}
-
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class NGroup<T, TKey> : NList<T> where T : unmanaged
-{
-	public virtual TKey Key { get; private protected set; }
-
-	public NGroup(int capacity, TKey key) : base(capacity) => Key = key;
-
-	public NGroup(IEnumerable<T> collection, TKey key) : base(collection) => Key = key;
-
-	public NGroup(int capacity, T item, TKey key) : base(capacity, item) => Key = key;
-}
-
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable, IDisposable
 {
 	private protected T[] _array;

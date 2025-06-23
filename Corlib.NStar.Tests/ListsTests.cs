@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using ExtraReplacing.NStar;
+using System.Numerics;
 
 namespace Corlib.NStar.Tests;
 

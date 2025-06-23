@@ -1,5 +1,27 @@
 ﻿namespace BigCollections.NStar;
 
+public interface IBigCollection<T> : G.IEnumerable<T>
+{
+	bool IsReadOnly { get; }
+	MpzT Length { get; }
+
+	void Add(T item);
+	void Clear();
+	bool Contains(T item);
+	void CopyTo(T[] array, int arrayIndex);
+	void CopyTo(IBigList<T> list, MpzT listIndex);
+	bool RemoveValue(T item);
+}
+
+public interface IBigList<T> : IBigCollection<T>
+{
+	T this[MpzT index] { get; set; }
+
+	MpzT IndexOf(T item);
+	void Insert(MpzT index, T item);
+	void RemoveAt(MpzT index);
+}
+
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 {

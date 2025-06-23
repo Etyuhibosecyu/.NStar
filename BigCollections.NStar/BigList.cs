@@ -564,7 +564,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected static void CheckParams(CopyRangeContext context)
 	{
-		if (context.Source.Capacity == 0)
+		if (context.Source.Capacity == 0 && !(context.SourceIndex == 0 && context.Length == 0))
 			throw new ArgumentException("Исходный массив не может быть пустым.");
 		if (context.Destination == null)
 			throw new ArgumentNullException(nameof(context.Destination), "Целевой массив не может быть нулевым.");

@@ -1,3 +1,4 @@
+global using BufferLib.NStar;
 global using Dictionaries.NStar;
 global using LINQ.NStar;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;

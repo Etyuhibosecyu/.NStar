@@ -23,8 +23,10 @@ public static class EasyEval
 	{
 		var sb = new StringBuilder();
 		var errors = new StringWriter(sb);
-		var assembly = CompileAndGetAssembly(((String)@"using Corlib.NStar;
+		var assembly = CompileAndGetAssembly(((String)@"using BufferLib.NStar;
+using Corlib.NStar;
 using Dictionaries.NStar;
+using ExtraReplacing.NStar;
 using LINQ.NStar;
 using MathLib.NStar;
 using Mpir.NET;
@@ -82,7 +84,8 @@ public static void Main()
 		var codeString = SourceText.From(sourceCode.ToString());
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-		var references = new ListHashSet<String>("Corlib.NStar", "Dictionaries.NStar", "LINQ.NStar", "MathLib.NStar",
+		var references = new ListHashSet<String>("BufferLib.NStar", "Corlib.NStar", "Dictionaries.NStar",
+			"ExtraReplacing.NStar", "LINQ.NStar", "MathLib.NStar",
 			"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "ParallelHS.NStar", "RemoveDoubles.NStar",
 			"SumCollections.NStar", "System", "System.Console", "System.Core", "System.Linq.Expressions",
 			"System.Private.CoreLib", "System.Runtime")

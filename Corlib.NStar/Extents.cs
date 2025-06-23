@@ -73,25 +73,6 @@ public class EComparer<T> : IEqualityComparer<T>
 	public int GetHashCode(T obj) => hashCode(obj);
 }
 
-public class ArrayEComparer<T> : IListEComparer<T>, IEqualityComparer<T[]>
-{
-	public ArrayEComparer() : base()
-	{
-	}
-
-	public ArrayEComparer(Func<T, T, bool> equals) : base(equals)
-	{
-	}
-
-	public ArrayEComparer(Func<T, T, bool> equals, Func<T, int> hashCode) : base(equals, hashCode)
-	{
-	}
-
-	public bool Equals(T[]? x, T[]? y) => base.Equals(x, y);
-
-	public int GetHashCode(T[] x) => base.GetHashCode(x);
-}
-
 public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
 {
 	private protected readonly Func<T, T, bool> equals;
@@ -146,102 +127,6 @@ public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
 	}
 }
 
-public class ListEComparer<T> : IListEComparer<T>, IEqualityComparer<List<T>>
-{
-	public ListEComparer() : base()
-	{
-	}
-
-	public ListEComparer(Func<T, T, bool> equals) : base(equals)
-	{
-	}
-
-	public ListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode) : base(equals, hashCode)
-	{
-	}
-
-	public bool Equals(List<T>? x, List<T>? y) => base.Equals(x, y);
-
-	public int GetHashCode(List<T> x) => base.GetHashCode(x);
-}
-
-public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
-{
-	private protected readonly Func<T, T, bool> equals;
-	private protected readonly Func<T, int> hashCode;
-	private protected readonly bool defaultEquals;
-
-	public NListEComparer()
-	{
-		equals = default!;
-		hashCode = x => x.GetHashCode();
-		defaultEquals = true;
-	}
-
-	public NListEComparer(Func<T, T, bool> equals)
-	{
-		this.equals = equals;
-		hashCode = x => x.GetHashCode();
-		defaultEquals = false;
-	}
-
-	public NListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
-	{
-		this.equals = equals;
-		this.hashCode = hashCode;
-		defaultEquals = false;
-	}
-
-	public NListEComparer(Func<T, int> hashCode)
-	{
-		equals = default!;
-		this.hashCode = hashCode;
-		defaultEquals = true;
-	}
-
-	public bool Equals(NList<T>? x, NList<T>? y)
-	{
-		if (x == null && y == null)
-			return true;
-		else if (x == null || y == null)
-			return false;
-		else if (defaultEquals)
-			return x.Equals(y);
-		if (x.Length != y.Length)
-			return false;
-		for (var i = 0; i < x.Length; i++)
-			if (!equals(x[i], y[i]))
-				return false;
-		return true;
-	}
-
-	public int GetHashCode(NList<T> x)
-	{
-		var hash = 486187739;
-		var en = x.GetEnumerator();
-		if (en.MoveNext())
-		{
-			hash = (hash * 16777619) ^ hashCode(en.Current);
-			if (en.MoveNext())
-			{
-				hash = (hash * 16777619) ^ hashCode(en.Current);
-				hash = (hash * 16777619) ^ hashCode(x[^1]);
-			}
-		}
-		return hash;
-	}
-}
-
-[Serializable]
-public class FakeIndexesException : Exception
-{
-	public FakeIndexesException() : this("Внимание! Вы пытаетесь получить или установить элемент по индексу, но он является фейковым. Вы можете получить недействительный элемент, либо же элемент, действительный \"номер\" которого в коллекции существенно отличается от указанного вами индекса. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
-
-	public FakeIndexesException(string? message) : base(message) { }
-
-	public FakeIndexesException(string? message, Exception? innerException) : base(message, innerException) { }
-}
-
 [Serializable]
 public class SlowOperationException : Exception
 {
@@ -250,38 +135,6 @@ public class SlowOperationException : Exception
 	public SlowOperationException(string? message) : base(message) { }
 
 	public SlowOperationException(string? message, Exception? innerException) : base(message, innerException) { }
-}
-
-[Serializable]
-public class ValueNotFoundException : SystemException
-{
-	public ValueNotFoundException() : this("The given value was not present in the dictionary.") { }
-
-	public ValueNotFoundException(string? message) : base(message) { }
-
-	public ValueNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
-}
-
-public interface IBigCollection<T> : IEnumerable<T>
-{
-	bool IsReadOnly { get; }
-	MpzT Length { get; }
-
-	void Add(T item);
-	void Clear();
-	bool Contains(T item);
-	void CopyTo(T[] array, int arrayIndex);
-	void CopyTo(IBigList<T> list, MpzT listIndex);
-	bool RemoveValue(T item);
-}
-
-public interface IBigList<T> : IBigCollection<T>
-{
-	T this[MpzT index] { get; set; }
-
-	MpzT IndexOf(T item);
-	void Insert(MpzT index, T item);
-	void RemoveAt(MpzT index);
 }
 
 public interface ICollection : System.Collections.ICollection

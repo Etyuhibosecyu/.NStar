@@ -1539,3 +1539,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		}
 	}
 }
+
+[Serializable]
+public class ValueNotFoundException : SystemException
+{
+	public ValueNotFoundException() : this("The given value was not present in the dictionary.") { }
+
+	public ValueNotFoundException(string? message) : base(message) { }
+
+	public ValueNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
+}

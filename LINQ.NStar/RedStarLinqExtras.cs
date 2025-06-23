@@ -35205,6 +35205,59 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(comparer);
+		var length = source.Length;
+		List<(TResult Key, int Count)> result = new(length);
+		TResult f;
+		for (var i = 0; i < length; i++)
+		{
+			if (!dic.TryAdd(f = function(source[i]), out var index))
+				result[index] = (result[index].Key, result[index].Count + 1);
+			else
+				result.Add((f, 1));
+		}
+		result.TrimExcess();
+		return result;
+	}
+
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(comparer);
+		var length = source.Length;
+		List<(TResult Key, int Count)> result = new(length);
+		TResult f;
+		for (var i = 0; i < length; i++)
+		{
+			if (!dic.TryAdd(f = function(source[i], i), out var index))
+				result[index] = (result[index].Key, result[index].Count + 1);
+			else
+				result.Add((f, 1));
+		}
+		result.TrimExcess();
+		return result;
+	}
+
+	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source, G.IEqualityComparer<T> comparer)
+	{
+		ListHashSet<T> dic = new(comparer);
+		var length = source.Length;
+		List<(T Key, int Count)> result = new(length);
+		T f;
+		for (var i = 0; i < length; i++)
+		{
+			if (!dic.TryAdd(f = source[i], out var index))
+				result[index] = (result[index].Key, result[index].Count + 1);
+			else
+				result.Add((f, 1));
+		}
+		result.TrimExcess();
+		return result;
+	}
+
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
