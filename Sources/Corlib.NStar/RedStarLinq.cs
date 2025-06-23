@@ -821,7 +821,11 @@ public static class RedStarLinq
 				length = s.Length;
 				return length >= 0;
 			}
-			else if (CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.Enumerable+Iterator`1")?.MakeGenericType(typeof(T)) ?? throw new InvalidOperationException(), out var targetType).IsInstanceOfType(source) && targetType.GetMethod("GetCount")?.Invoke(source, [true]) is int n)
+			else if (CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.Enumerable+Iterator`1")
+				?.MakeGenericType(typeof(T))
+				?? throw new TypeLoadException("Не удалось загрузить тип-образец для сравнения с типом коллекции." +
+				" Обратитесь к разработчикам .NStar."), out var targetType).IsInstanceOfType(source)
+				&& targetType.GetMethod("GetCount")?.Invoke(source, [true]) is int n)
 			{
 				length = n;
 				return length >= 0;

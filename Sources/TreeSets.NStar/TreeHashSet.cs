@@ -173,7 +173,9 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		if (buckets == null)
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя ошибка." +
+				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var targetBucket = hashCode % buckets.Length;
 		if (deleted.Length > 0)
 			index = deleted.GetAndRemove(^1);
@@ -285,7 +287,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		public bool MoveNext()
 		{
 			if (fixes != hashSet.fixes)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			while ((uint)index < (uint)hashSet._size)
 			{
 				if (hashSet.entries[index].hashCode < 0)

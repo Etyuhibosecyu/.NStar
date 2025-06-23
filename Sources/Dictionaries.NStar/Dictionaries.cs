@@ -358,29 +358,29 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public Dictionary(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, bool unordered = false) : this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null, unordered) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection) : this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, G.IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection, unordered), comparer) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection), comparer) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction), unordered) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) : this(collection, (G.IEqualityComparer<TKey>?)null, unordered) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, bool unordered = false) : this(collection, (G.IEqualityComparer<TKey>?)null, unordered) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
 	public override TValue this[TKey key]
 	{
@@ -721,25 +721,42 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	[NonSerialized]
 	private protected object _syncRoot = new();
 
-	public UnsortedDictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = E.DistinctBy(E.Zip(keyCollection, valueCollection), x => x.First).Break();
+	public UnsortedDictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection) =>
+		(keys, values) = E.DistinctBy(E.Zip(keyCollection, valueCollection), x => x.First).Break();
 
-	public UnsortedDictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = E.DistinctBy(collection, x => x.Key).Break();
+	public UnsortedDictionary(G.IEnumerable<(TKey Key, TValue Value)> collection) =>
+		(keys, values) = E.DistinctBy(collection, x => x.Key).Break();
 
-	public UnsortedDictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = E.DistinctBy(collection, x => x.Key).Break(x => x.Key, x => x.Value);
+	public UnsortedDictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection) =>
+		(keys, values) = E.DistinctBy(collection, x => x.Key).Break(x => x.Key, x => x.Value);
 
-	public virtual TValue this[TKey key] => throw new NotSupportedException();
+	public virtual TValue this[TKey key] => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
-	TValue G.IDictionary<TKey, TValue>.this[TKey key] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+	TValue G.IDictionary<TKey, TValue>.this[TKey key]
+	{
+		get => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		set => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+	}
 
-	public virtual G.IEnumerable<TKey> Keys => throw new NotSupportedException();
+	public virtual G.IEnumerable<TKey> Keys => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
 	public virtual int Length => keys.Length;
 
-	public virtual G.IEnumerable<TValue> Values => throw new NotSupportedException();
+	public virtual G.IEnumerable<TValue> Values =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
-	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => throw new NotSupportedException();
+	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
-	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => throw new NotSupportedException();
+	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
 	public virtual bool IsReadOnly => false;
 
@@ -772,9 +789,13 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 	public virtual bool ContainsKey(TKey key) => keys.Contains(key);
 
-	public void CopyTo(Array array, int index) => throw new NotSupportedException();
+	public void CopyTo(Array array, int index) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
-	public virtual void CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
+	public virtual void CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
 	public virtual Enumerator GetEnumerator() => new(this);
 
@@ -784,9 +805,12 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 	private protected int IndexOfKey(TKey key) => keys.IndexOf(key);
 
-	public virtual bool Remove(TKey key) => throw new NotSupportedException();
+	public virtual bool Remove(TKey key) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
-	public virtual bool RemoveValue(G.KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
+	public virtual bool RemoveValue(G.KeyValuePair<TKey, TValue> item) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
 
 	public virtual bool TryGetValue(TKey key, out TValue value)
 	{

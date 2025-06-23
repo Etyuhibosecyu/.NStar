@@ -580,7 +580,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		root?.ColorBlack();
 #if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
@@ -1018,7 +1019,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		root?.ColorBlack();
 #if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
@@ -1117,7 +1119,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 #if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
@@ -1416,7 +1419,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
 #if VERIFY
 		if (_size + 1 != root.LeavesCount)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
 			x?.Verify();
 #endif
@@ -1630,8 +1634,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				if (Parent != null)
 					Parent.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
-				if (Parent != null && Parent.LeavesCount != (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
-					throw new InvalidOperationException();
+				if (Parent == null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+					return;
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
 		}
 
@@ -1643,8 +1649,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				if (Parent != null)
 					Parent.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
-				if (Parent != null && Parent.ValuesSum != (Parent._left?.ValuesSum ?? 0) + (Parent._right?.ValuesSum ?? 0) + Parent.Item.Value)
-					throw new InvalidOperationException();
+				if (Parent == null || Parent.ValuesSum == (Parent._left?.ValuesSum ?? 0) + (Parent._right?.ValuesSum ?? 0) + Parent.Item.Value)
+					return;
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
 		}
 
@@ -1834,7 +1842,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			var child = Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -1860,7 +1870,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			var child = Left!;
 			var grandChild = child.Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -1887,7 +1899,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			var child = Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -1913,7 +1927,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			var child = Right!;
 			var grandChild = child.Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -1965,15 +1981,20 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		internal void Verify()
 		{
 			if (Right != null && Right == Left)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (LeavesCount != (Left?.LeavesCount ?? 0) + (Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (ValuesSum != (Left?.ValuesSum ?? 0) + (Right?.ValuesSum ?? 0) + Item.Value)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (Left != null && Left.Parent == null)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (Right != null && Right.Parent == null)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 #endif
 	}
@@ -2020,7 +2041,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get
 			{
 				if (_current == null)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return _current.Item;
 			}
 		}
@@ -2055,7 +2076,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			// Make sure that the underlying subset has not been changed since
 			_tree.VersionCheck();
 			if (_version != _tree.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -2084,7 +2105,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		internal void Reset()
 		{
 			if (_version != _tree.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_stack.Clear();
 			Initialize();
 		}

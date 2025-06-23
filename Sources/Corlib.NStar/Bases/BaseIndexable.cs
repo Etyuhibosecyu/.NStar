@@ -148,7 +148,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		try
 		{
 			CopyToInternal(array, arrayIndex);
@@ -685,7 +685,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			get
 			{
 				if (index == 0 || index == collection._size + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current!;
 			}
 		}

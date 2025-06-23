@@ -148,7 +148,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 	public virtual T Dequeue()
 	{
 		if (_size == 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Невозможно удалить элемент из очереди, так как она пуста.");
 		_size--;
 		if (!isHigh && low != null)
 			return low.Dequeue();
@@ -167,7 +167,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 	public virtual T Peek()
 	{
 		if (_size == 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди, так как она пуста.");
 		if (!isHigh && low != null)
 			return low.Peek();
 		else if (high != null)
@@ -275,7 +275,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 			get
 			{
 				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return current;
 			}
 		}
@@ -314,7 +314,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 			get
 			{
 				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current!;
 			}
 		}
@@ -356,7 +356,11 @@ public abstract class BigArray<T, TCertain, TLow> where TCertain : BigArray<T, T
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	public virtual MpzT Capacity { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+	public virtual MpzT Capacity { get =>
+			throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
+		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
+		set => throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
+		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают."); }
 
 	public virtual MpzT Length {
 		get =>

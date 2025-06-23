@@ -236,7 +236,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		if (buckets == null)
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя ошибка." +
+				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var targetBucket = hashCode % buckets.Length;
 		if (freeCount > 0)
 		{
@@ -314,7 +316,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		for (var i = ~freeList; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (i == index)
 			{
 				if (last < 0)
@@ -326,7 +330,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			}
 			collisionCount++;
 			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		if (_size == entries.Length)
 		{
@@ -600,13 +606,15 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (buckets == null)
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		uint collisionCount = 0;
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
 			if (~entries[i].next == i)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				index = i;
@@ -614,7 +622,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			}
 			collisionCount++;
 			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 		lock (lockObj)
 			return UnsafeInsert(item, out index, hashCode);
@@ -840,19 +849,20 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
 	{
 		var buckets = this.buckets;
-		if (buckets != null)
+		if (buckets == null)
+			return -1;
+		uint collisionCount = 0;
+		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 		{
-			uint collisionCount = 0;
-			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
-			{
-				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
-					return i;
-				if (~entries[i].next == i)
-					throw new InvalidOperationException();
-				collisionCount++;
-				if (collisionCount > entries.Length)
-					throw new InvalidOperationException();
-			}
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
+				return i;
+			if (~entries[i].next == i)
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 		return -1;
 	}
@@ -864,7 +874,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (buckets == null)
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		var targetBucket = hashCode % buckets.Length;
 		if (freeCount > 0)
 		{

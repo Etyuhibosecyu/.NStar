@@ -220,7 +220,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		try
 		{
 			CopyToInternal(array, arrayIndex);
@@ -772,7 +772,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 			get
 			{
 				if (index == 0 || index == list.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current!;
 			}
 		}

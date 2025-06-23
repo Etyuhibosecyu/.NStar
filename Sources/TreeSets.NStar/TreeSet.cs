@@ -556,20 +556,12 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Changed();
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
-		{
-			if (x?.Right != null && x?.Right == x?.Left)
-				throw new InvalidOperationException();
-			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
-			if (x?.Left != null && x?.Left.Parent == null)
-				throw new InvalidOperationException();
-			if (x?.Right != null && x?.Right.Parent == null)
-				throw new InvalidOperationException();
-		}
+			x?.Verify();
 #endif
 		return found;
 	}
@@ -684,18 +676,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		grandParent.ColorRed();
 		newChildOfGreatGrandParent.ColorBlack();
 		ReplaceChildOrRoot(greatGrandParent, grandParent, newChildOfGreatGrandParent);
-#if DEBUG
+#if VERIFY
 		foreach (var x in new[] { current, parent, grandParent, greatGrandParent })
-		{
-			if (x?.Right != null && x?.Right == x?.Left)
-				throw new InvalidOperationException();
-			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
-			if (x?.Left != null && x?.Left.Parent == null)
-				throw new InvalidOperationException();
-			if (x?.Right != null && x?.Right.Parent == null)
-				throw new InvalidOperationException();
-		}
+			x?.Verify();
 #endif
 	}
 
@@ -925,20 +908,12 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Changed();
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
-		{
-			if (x?.Right != null && x?.Right == x?.Left)
-				throw new InvalidOperationException();
-			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
-			if (x?.Left != null && x?.Left.Parent == null)
-				throw new InvalidOperationException();
-			if (x?.Right != null && x?.Right.Parent == null)
-				throw new InvalidOperationException();
-		}
+			x?.Verify();
 #endif
 		return this;
 	}
@@ -1032,20 +1007,12 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			--_size;
 			Changed();
 		}
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
-		{
-			if (x?.Right != null && x?.Right == x?.Left)
-				throw new InvalidOperationException();
-			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
-			if (x?.Left != null && x?.Left.Parent == null)
-				throw new InvalidOperationException();
-			if (x?.Right != null && x?.Right.Parent == null)
-				throw new InvalidOperationException();
-		}
+			x?.Verify();
 #endif
 		root?.ColorBlack();
 		return foundMatch;
@@ -1118,18 +1085,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		if (successor != null)
 			successor.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
-#if DEBUG
+#if VERIFY
 		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
-		{
-			if (x?.Right != null && x?.Right == x?.Left)
-				throw new InvalidOperationException();
-			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
-			if (x?.Left != null && x?.Left.Parent == null)
-				throw new InvalidOperationException();
-			if (x?.Right != null && x?.Right.Parent == null)
-				throw new InvalidOperationException();
-		}
+			x?.Verify();
 #endif
 	}
 
@@ -1354,20 +1312,12 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// The new node will be red, so we will need to adjust colors if its parent is also red.
 		if (parent.IsRed)
 			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
-#if DEBUG
+#if VERIFY
 		if (_size + 1 != root.LeavesCount)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
-		{
-			if (x?.Right != null && x?.Right == x?.Left)
-				throw new InvalidOperationException();
-			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
-			if (x?.Left != null && x?.Left.Parent == null)
-				throw new InvalidOperationException();
-			if (x?.Right != null && x?.Right.Parent == null)
-				throw new InvalidOperationException();
-		}
+			x?.Verify();
 #endif
 		// The root node is always black.
 		root.ColorBlack();
@@ -1501,18 +1451,10 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				_left = value;
 				if (_left != null)
 					_left.Parent = this;
-#if DEBUG
-				foreach (var x in new[] { this, _left, _right, Parent })
-				{
-					if (x?.Right != null && x?.Right == x?.Left)
-						throw new InvalidOperationException();
-					if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-						throw new InvalidOperationException();
-					if (x?.Left != null && x?.Left.Parent == null)
-						throw new InvalidOperationException();
-					if (x?.Right != null && x?.Right.Parent == null)
-						throw new InvalidOperationException();
-				}
+#if VERIFY
+				Verify();
+				foreach (var x in new[] { _left, _right, Parent })
+					x?.Verify();
 #endif
 			}
 		}
@@ -1530,18 +1472,10 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				_right = value;
 				if (_right != null)
 					_right.Parent = this;
-#if DEBUG
-				foreach (var x in new[] { this, _left, _right, Parent })
-				{
-					if (x?.Right != null && x?.Right == x?.Left)
-						throw new InvalidOperationException();
-					if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
-						throw new InvalidOperationException();
-					if (x?.Left != null && x?.Left.Parent == null)
-						throw new InvalidOperationException();
-					if (x?.Right != null && x?.Right.Parent == null)
-						throw new InvalidOperationException();
-				}
+#if VERIFY
+				Verify();
+				foreach (var x in new[] { _left, _right, Parent })
+					x?.Verify();
 #endif
 			}
 		}
@@ -1554,8 +1488,10 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				if (Parent != null)
 					Parent.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
-				if (Parent != null && Parent.LeavesCount != (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
-					throw new InvalidOperationException();
+				if (Parent == null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+					return;
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
 		}
 
@@ -1714,7 +1650,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			var child = Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -1735,7 +1673,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			var child = Left!;
 			var grandChild = child.Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -1757,7 +1697,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			var child = Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -1778,7 +1720,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			var child = Right!;
 			var grandChild = child.Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -1804,7 +1748,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Right.ColorBlack();
 		}
 
-#if DEBUG
+#if VERIFY
 		private int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
 
 		private bool HasChild(Node child) => child == Left || child == Right;
@@ -1814,6 +1758,22 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Debug.Assert(child1 != child2);
 			return Left == child1 && Right == child2
 				|| Left == child2 && Right == child1;
+		}
+
+		internal void Verify()
+		{
+			if (Right != null && Right == Left)
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+			if (LeavesCount != (Left?.LeavesCount ?? 0) + (Right?.LeavesCount ?? 0) + 1)
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+			if (Left != null && Left.Parent == null)
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+			if (Right != null && Right.Parent == null)
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 #endif
 	}
@@ -1860,7 +1820,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			get
 			{
 				if (_current == null)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return _current.Item;
 			}
 		}
@@ -1895,7 +1855,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			// Make sure that the underlying subset has not been changed since
 			_set.VersionCheck();
 			if (_version != _set.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -1924,7 +1884,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		internal void Reset()
 		{
 			if (_version != _set.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_stack.Clear();
 			Initialize();
 		}

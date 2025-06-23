@@ -644,35 +644,35 @@ public unsafe class NList<T> : NList<T, NList<T>> where T : unmanaged
 
 	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
-	public static explicit operator (T, T)(NList<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+	public static explicit operator (T, T)(NList<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException("Список должен иметь 2 элемента.");
 
-	public static explicit operator (T, T, T)(NList<T> x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T)(NList<T> x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException("Список должен иметь 3 элемента.");
 
-	public static explicit operator (T, T, T, T)(NList<T> x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T)(NList<T> x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException("Список должен иметь 4 элемента.");
 
-	public static explicit operator (T, T, T, T, T)(NList<T> x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T)(NList<T> x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException("Список должен иметь 5 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T)(NList<T> x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T)(NList<T> x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException("Список должен иметь 6 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T)(NList<T> x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T)(NList<T> x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException("Список должен иметь 7 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException("Список должен иметь 8 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException("Список должен иметь 9 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException("Список должен иметь 10 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException("Список должен иметь 11 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException("Список должен иметь 12 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException("Список должен иметь 13 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException("Список должен иметь 14 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException("Список должен иметь 15 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException("Список должен иметь 16 элементов.");
 }
 
 [DebuggerDisplay("{ToString()}")]
@@ -687,7 +687,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 	private const string CompareRangeMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
 		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
 		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.";
-	private const string CompareTrivialMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение."
+	private const string ComparecharrivialMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение."
 		+ " Используйте strA.CompareTo(strB).";
 
 	public String() : base() { }
@@ -725,9 +725,9 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual String AddRange(string s) => Insert(_size, s);
 
-	[Obsolete(CompareTrivialMessage, true)]
+	[Obsolete(ComparecharrivialMessage, true)]
 	public static int Compare(String? strA, String? strB) =>
-		throw new NotSupportedException(CompareTrivialMessage);
+		throw new NotSupportedException(ComparecharrivialMessage);
 
 	[Obsolete(CompareMessage, true)]
 	public static int Compare(String? strA, String? strB, bool ignoreCase) =>
@@ -746,7 +746,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		throw new NotSupportedException(CompareMessage);
 
 	[Obsolete(CompareMessage, true)]
-	public static int Compare(String? strA, String? strB, StringComparison comparisonType) =>
+	public static int Compare(String? strA, String? strB, StringComparison comparisoncharype) =>
 		throw new NotSupportedException(CompareMessage);
 
 	[Obsolete(CompareRangeMessage, true)]
@@ -771,7 +771,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length,
-		StringComparison comparisonType) =>
+		StringComparison comparisoncharype) =>
 		throw new NotSupportedException(CompareRangeMessage);
 
 	public virtual int CompareTo(object? other) => other switch
@@ -821,11 +821,11 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		CompareInfo.GetCompareInfo(culture.LCID).Compare(AsSpan(), (other ?? []).AsSpan(), options);
 
 	/// <summary>
-	/// WARNING!!! This methods works wrong with StringComparison.Ordinal!
+	/// WARNING!!! charhis methods works wrong with StringComparison.Ordinal!
 	/// (But probably works right with StringComparison.OrdinalIgnoreCase.)
 	/// </summary>
-	/// <param name="comparisonType">NOT StringComparison.Ordinal!!!</param>
-	public virtual int CompareTo(String? other, StringComparison comparisonType) => comparisonType switch
+	/// <param name="comparisoncharype">NOchar StringComparison.Ordinal!!!</param>
+	public virtual int CompareTo(String? other, StringComparison comparisoncharype) => comparisoncharype switch
 	{
 		StringComparison.CurrentCulture => CurrentCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan()),
 		StringComparison.CurrentCultureIgnoreCase => CurrentCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan(),
@@ -836,7 +836,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		StringComparison.Ordinal => DefaultCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan(), CompareOptions.Ordinal),
 		StringComparison.OrdinalIgnoreCase => DefaultCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan(),
 			CompareOptions.OrdinalIgnoreCase),
-		_ => throw new ArgumentException("Такой способ сравнения строк не существует!", nameof(comparisonType)),
+		_ => throw new ArgumentException("Такой способ сравнения строк не существует!", nameof(comparisoncharype)),
 	};
 
 	protected virtual int CompareToNotNull([NotNull] char[] other) => DefaultCompareInfo.Compare(AsSpan(), other);
@@ -845,27 +845,27 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual bool Contains(char value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool Contains(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).Contains([value], comparisonType);
+	public virtual bool Contains(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).Contains([value], comparisoncharype);
 
 	public virtual bool Contains(ReadOnlySpan<char> value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool Contains(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).Contains(value, comparisonType);
+	public virtual bool Contains(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).Contains(value, comparisoncharype);
 
 	public virtual bool Contains(String value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool Contains(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).Contains(value.AsSpan(), comparisonType);
+	public virtual bool Contains(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).Contains(value.AsSpan(), comparisoncharype);
 
 	public virtual bool EndsWith(char value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool EndsWith(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).EndsWith([value], comparisonType);
+	public virtual bool EndsWith(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).EndsWith([value], comparisoncharype);
 
 	public virtual bool EndsWith(ReadOnlySpan<char> value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool EndsWith(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value, comparisonType);
+	public virtual bool EndsWith(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value, comparisoncharype);
 
 	public virtual bool EndsWith(String value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool EndsWith(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value.AsSpan(), comparisonType);
+	public virtual bool EndsWith(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value.AsSpan(), comparisoncharype);
 
 	public override bool Equals(object? obj) => base.Equals(obj);
 
@@ -873,15 +873,15 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual int IndexOf(char value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual int IndexOf(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).IndexOf([value], comparisonType);
+	public virtual int IndexOf(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).IndexOf([value], comparisoncharype);
 
 	public virtual int IndexOf(ReadOnlySpan<char> value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual int IndexOf(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value, comparisonType);
+	public virtual int IndexOf(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value, comparisoncharype);
 
 	public virtual int IndexOf(String value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual int IndexOf(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value.AsSpan(), comparisonType);
+	public virtual int IndexOf(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value.AsSpan(), comparisoncharype);
 
 	public virtual String Insert(int index, string s)
 	{
@@ -1062,7 +1062,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual String Replace(string s) => Replace(s.AsSpan());
 
-	// TODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
+	// charODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
 	public virtual List<String> Split(char separator, StringSplitOptions options = StringSplitOptions.None)
 	{
 		if (_size == 0)
@@ -1088,7 +1088,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		return result;
 	}
 
-	// TODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
+	// charODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
 	public virtual List<String> Split(String separator, StringSplitOptions options = StringSplitOptions.None)
 	{
 		if (_size == 0)
@@ -1116,15 +1116,15 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual bool StartsWith(char value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool StartsWith(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).StartsWith([value], comparisonType);
+	public virtual bool StartsWith(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).StartsWith([value], comparisoncharype);
 
 	public virtual bool StartsWith(ReadOnlySpan<char> value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool StartsWith(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value, comparisonType);
+	public virtual bool StartsWith(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value, comparisoncharype);
 
 	public virtual bool StartsWith(String value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool StartsWith(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value.AsSpan(), comparisonType);
+	public virtual bool StartsWith(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value.AsSpan(), comparisoncharype);
 
 	public virtual String ToLower()
 	{
@@ -1280,33 +1280,33 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
-	public static explicit operator (char, char)(String x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+	public static explicit operator (char, char)(String x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException("Список должен иметь 2 элемента.");
 
-	public static explicit operator (char, char, char)(String x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char)(String x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException("Список должен иметь 3 элемента.");
 
-	public static explicit operator (char, char, char, char)(String x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char)(String x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException("Список должен иметь 4 элемента.");
 
-	public static explicit operator (char, char, char, char, char)(String x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char)(String x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException("Список должен иметь 5 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char)(String x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char)(String x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException("Список должен иметь 6 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char)(String x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char)(String x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException("Список должен иметь 7 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char)(String x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char)(String x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException("Список должен иметь 8 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char)(String x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char)(String x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException("Список должен иметь 9 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException("Список должен иметь 10 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException("Список должен иметь 11 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException("Список должен иметь 12 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException("Список должен иметь 13 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException("Список должен иметь 14 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException("Список должен иметь 15 элементов.");
 
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException("Список должен иметь 16 элементов.");
 }

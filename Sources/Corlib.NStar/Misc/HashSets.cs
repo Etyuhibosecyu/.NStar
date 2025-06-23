@@ -112,20 +112,23 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets != null)
+		if (buckets == null)
+			return -1;
+		uint collisionCount = 0;
+		Debug.Assert(hashCode >= 0);
+		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 		{
-			uint collisionCount = 0;
-			Debug.Assert(hashCode >= 0);
-			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
-			{
-				if (~entries[i].next == i)
-					throw new InvalidOperationException();
-				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
-					return i;
-				collisionCount++;
-				if (collisionCount > entries.Length)
-					throw new InvalidOperationException();
-			}
+			if (~entries[i].next == i)
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
+				return i;
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		return -1;
 	}
@@ -144,7 +147,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		var this2 = (TCertain)this;
 		var set = CollectionCreator(collection).ExceptWith(this);
 		if (CreateVar(set.GetType(), out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet"))
-			(type.GetMethod("FixUpFakeIndexes") ?? throw new MissingMethodException()).Invoke(set, null);
+			(type.GetMethod("FixUpFakeIndexes")
+				?? throw new MissingMethodException("Не удалось загрузить метод \"починки\" фейковых индексов." +
+				" Обратитесь к разработчикам .NStar.")).Invoke(set, null);
 		var length = set.Length;
 		if (length > 0)
 		{
@@ -163,7 +168,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		var this2 = (TCertain)this;
 		var set = SpanCreator(span).ExceptWith(this);
 		if (CreateVar(set.GetType(), out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet"))
-			(type.GetMethod("FixUpFakeIndexes") ?? throw new MissingMethodException()).Invoke(set, null);
+			(type.GetMethod("FixUpFakeIndexes")
+				?? throw new MissingMethodException("Не удалось загрузить метод \"починки\" фейковых индексов." +
+				" Обратитесь к разработчикам .NStar.")).Invoke(set, null);
 		var length = set.Length;
 		if (length > 0)
 		{
@@ -183,7 +190,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (i == index)
 			{
 				if (last < 0)
@@ -194,7 +203,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			}
 			collisionCount++;
 			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		t.hashCode = 0;
 		t.item = default!;
@@ -208,7 +219,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (last < 0)
@@ -223,7 +236,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			}
 			collisionCount++;
 			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		return false;
 	}
@@ -242,8 +257,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			for (var i = 0; i < _size; i++)
 			{
 				ref var t = ref newEntries[i];
-				if (t.hashCode != 0)
-					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
+				if (t.hashCode == 0)
+					continue;
+				t.hashCode = ~Comparer.GetHashCode(t.item
+					?? throw new InvalidOperationException("Произошла внутренняя ошибка." +
+					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")) & 0x7FFFFFFF;
 			}
 		for (var i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
@@ -373,7 +392,9 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		if (buckets == null)
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя ошибка." +
+				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var targetBucket = hashCode % buckets.Length;
 		if (_size == entries.Length)
 		{
@@ -415,7 +436,9 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		for (var i = oldBucket >= 0 ? ~buckets[oldBucket] : -1; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (i == index)
 			{
 				if (last < 0)
@@ -426,7 +449,9 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			}
 			collisionCount++;
 			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка." +
+				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
+				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		t.hashCode = ~hashCode;
 		t.next = buckets[bucket];

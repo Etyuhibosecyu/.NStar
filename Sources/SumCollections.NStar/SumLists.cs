@@ -314,7 +314,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		root?.ColorBlack();
 #if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
@@ -430,7 +431,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		}
 #if VERIFY
 		if (index != 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 #endif
 		Debug.Assert(parent != null);
 		// We're ready to insert the new node.
@@ -444,7 +446,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
 #if VERIFY
 		if (_size + 1 != root.LeavesCount)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
 			x?.Verify();
 #endif
@@ -525,7 +528,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		root?.ColorBlack();
 #if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
@@ -721,8 +725,10 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 				if (Parent != null)
 					Parent.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
-				if (Parent != null && Parent.LeavesCount != (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
-					throw new InvalidOperationException();
+				if (Parent == null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+					return;
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
 		}
 
@@ -887,7 +893,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		{
 			var child = Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -913,7 +921,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			var child = Left!;
 			var grandChild = child.Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -940,7 +950,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		{
 			var child = Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -966,7 +978,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			var child = Right!;
 			var grandChild = child.Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -1016,13 +1030,17 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		internal virtual void Verify()
 		{
 			if (Right != null && Right == Left)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (LeavesCount != (Left?.LeavesCount ?? 0) + (Right?.LeavesCount ?? 0) + 1)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (Left != null && Left.Parent == null)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (Right != null && Right.Parent == null)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 #endif
 	}
@@ -1218,7 +1236,9 @@ public class SumList : BaseSumList<int, SumList>
 				current = current.Right;
 			}
 		}
-		sumExceedsBy += (-sum >> 32 == 0) ? (int)sum : throw new InvalidOperationException();
+		sumExceedsBy += (-sum >> 32 == 0) ? (int)sum
+			: throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return index - 1;
 	}
 
@@ -1284,8 +1304,10 @@ public class SumList : BaseSumList<int, SumList>
 				if (Parent != null)
 					Parent.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
-				if (Parent != null && Parent.ValuesSum != (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
-					throw new InvalidOperationException();
+				if (Parent == null || Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
+					return;
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
 		}
 
@@ -1321,11 +1343,15 @@ public class SumList : BaseSumList<int, SumList>
 		/// <summary>
 		/// Gets the sibling of one of this node's children.
 		/// </summary>
-		internal Node GetSibling(Node node) => base.GetSibling(node) as Node ?? throw new InvalidOperationException();
+		internal Node GetSibling(Node node) => base.GetSibling(node) as Node
+			?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+			" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 
 		private protected override BaseSumList<int, SumList>.Node Reconstruct(int value, NodeColor color)
 		{
-			var node = base.Reconstruct(value, color) as Node ?? throw new InvalidOperationException();
+			var node = base.Reconstruct(value, color) as Node
+			?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+			" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			node._valuesSum = value;
 			return node;
 		}
@@ -1345,7 +1371,8 @@ public class SumList : BaseSumList<int, SumList>
 		{
 			base.Verify();
 			if (ValuesSum != (Left?.ValuesSum ?? 0) + (Right?.ValuesSum ?? 0) + Value)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 #endif
 	}
@@ -1392,7 +1419,7 @@ public class SumList : BaseSumList<int, SumList>
 			get
 			{
 				if (_current == null)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return _current.Value;
 			}
 		}
@@ -1412,7 +1439,9 @@ public class SumList : BaseSumList<int, SumList>
 				other = (_reverse ? node.Left : node.Right) as Node;
 				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
 				{
-					_stack.Push(node as Node ?? throw new InvalidOperationException());
+					_stack.Push(node as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					node = next;
 				}
 				else if (next == null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
@@ -1427,7 +1456,7 @@ public class SumList : BaseSumList<int, SumList>
 			// Make sure that the underlying subset has not been changed since
 			_list.VersionCheck();
 			if (_version != _list.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -1456,7 +1485,7 @@ public class SumList : BaseSumList<int, SumList>
 		internal void Reset()
 		{
 			if (_version != _list.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_stack.Clear();
 			Initialize();
 		}
@@ -1547,7 +1576,9 @@ public class SumList : BaseSumList<int, SumList>
 			if (root == null)
 				return true;
 			using Queue<Node> processQueue = [];
-			processQueue.Enqueue(root as Node ?? throw new InvalidOperationException());
+			processQueue.Enqueue(root as Node
+				?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 			Node current;
 			while (processQueue.Length != 0)
 			{
@@ -1623,7 +1654,9 @@ public class SumList : BaseSumList<int, SumList>
 			{
 				if (IsWithinRange(index))
 				{
-					stack.Push(current as Node ?? throw new InvalidOperationException());
+					stack.Push(current as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					indexStack.Push(index);
 					flagStack.Push(true);
 					current = current.Left;
@@ -1636,7 +1669,9 @@ public class SumList : BaseSumList<int, SumList>
 				}
 				else
 				{
-					stack.Push(current as Node ?? throw new InvalidOperationException());
+					stack.Push(current as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					indexStack.Push(index);
 					flagStack.Push(false);
 					current = current.Left;
@@ -1654,7 +1689,9 @@ public class SumList : BaseSumList<int, SumList>
 				{
 					if (IsWithinRange(index))
 					{
-						stack.Push(node as Node ?? throw new InvalidOperationException());
+						stack.Push(node as Node
+							?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 						indexStack.Push(index);
 						flagStack.Push(true);
 						node = node.Left;
@@ -1667,7 +1704,9 @@ public class SumList : BaseSumList<int, SumList>
 					}
 					else
 					{
-						stack.Push(node as Node ?? throw new InvalidOperationException());
+						stack.Push(node as Node
+							?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
 						flagStack.Push(false);
 						node = node.Left;
@@ -2016,8 +2055,10 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				if (Parent != null)
 					Parent.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
-				if (Parent != null && Parent.ValuesSum != (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
-					throw new InvalidOperationException();
+				if (Parent == null || Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
+					return;
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
 		}
 
@@ -2083,7 +2124,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 		private protected override BaseSumList<MpzT, BigSumList>.Node Reconstruct(MpzT value, NodeColor color)
 		{
-			var node = base.Reconstruct(new(value), color) as Node ?? throw new InvalidOperationException();
+			var node = base.Reconstruct(new(value), color) as Node
+				?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			node._valuesSum = new(value);
 			return node;
 		}
@@ -2104,7 +2147,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		{
 			base.Verify();
 			if (ValuesSum != (Left?.ValuesSum ?? 0) + (Right?.ValuesSum ?? 0) + Value)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 #endif
 	}
@@ -2151,7 +2195,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			get
 			{
 				if (_current == null)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return _current.Value;
 			}
 		}
@@ -2171,7 +2215,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				other = (_reverse ? node.Left : node.Right) as Node;
 				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
 				{
-					_stack.Push(node as Node ?? throw new InvalidOperationException());
+					_stack.Push(node as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					node = next;
 				}
 				else if (next == null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
@@ -2186,7 +2232,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			// Make sure that the underlying subset has not been changed since
 			_list.VersionCheck();
 			if (_version != _list.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -2215,7 +2261,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		internal void Reset()
 		{
 			if (_version != _list.version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_stack.Clear();
 			Initialize();
 		}
@@ -2306,7 +2352,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			if (root == null)
 				return true;
 			using Queue<Node> processQueue = [];
-			processQueue.Enqueue(root as Node ?? throw new InvalidOperationException());
+			processQueue.Enqueue(root as Node
+				?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 			Node current;
 			while (processQueue.Length != 0)
 			{
@@ -2383,7 +2431,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			{
 				if (IsWithinRange(index))
 				{
-					stack.Push(current as Node ?? throw new InvalidOperationException());
+					stack.Push(current as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					indexStack.Push(index);
 					flagStack.Push(true);
 					current = current.Left;
@@ -2396,7 +2446,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				}
 				else
 				{
-					stack.Push(current as Node ?? throw new InvalidOperationException());
+					stack.Push(current as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					indexStack.Push(index);
 					flagStack.Push(false);
 					current = current.Left;
@@ -2414,7 +2466,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				{
 					if (IsWithinRange(index))
 					{
-						stack.Push(node as Node ?? throw new InvalidOperationException());
+						stack.Push(node as Node
+							?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+							" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 						indexStack.Push(index);
 						flagStack.Push(true);
 						node = node.Left;
@@ -2427,7 +2481,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 					}
 					else
 					{
-						stack.Push(node as Node ?? throw new InvalidOperationException());
+						stack.Push(node as Node
+							?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+							" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
 						flagStack.Push(false);
 						node = node.Left;

@@ -389,7 +389,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		if (array.GetLowerBound(0) != 0)
 			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 		if ((uint)index > (uint)array.Length)
@@ -448,7 +448,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			current = mirrored ? entries[current].next : entries[current].nextM;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		return last;
 	}
@@ -511,7 +512,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			goto ConcurrentOperation;
 		}
 	ConcurrentOperation:
-		throw new InvalidOperationException();
+		throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	ReturnFound:
 		ref var key = ref entry.key;
 	Return:
@@ -579,7 +581,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			goto ConcurrentOperation;
 		}
 	ConcurrentOperation:
-		throw new InvalidOperationException();
+		throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	ReturnFound:
 		ref var value = ref entry.value;
 	Return:
@@ -721,7 +724,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		return false;
 	}
@@ -775,7 +779,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		value = default;
 		return false;
@@ -826,7 +831,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		return false;
 	}
@@ -880,7 +886,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		key = default;
 		return false;
@@ -1189,7 +1196,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		current = mirrored ? entries[current].nextM : entries[current].next;
 		collisionCount++;
 		if (collisionCount > (uint)entries.Length)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return 3;
 	}
 
@@ -1219,7 +1227,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				if (_getEnumeratorRetType == DictEntry)
 					return new DictionaryEntry(Current.Key, Current.Value);
 				return new G.KeyValuePair<TKey, TValue>(Current.Key, Current.Value);
@@ -1231,7 +1239,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return new DictionaryEntry(Current.Key, Current.Value);
 			}
 		}
@@ -1241,7 +1249,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current.Key;
 			}
 		}
@@ -1251,7 +1259,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current.Value;
 			}
 		}
@@ -1261,7 +1269,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		public bool MoveNext()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			// Use unsigned comparison since we set index to dictionary.length+1 when the enumeration ends.
 			// dictionary.length+1 could be negative if dictionary.length is int.MaxValue
 			while ((uint)_index < (uint)_dictionary._count)
@@ -1281,7 +1289,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		void IEnumerator.Reset()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_index = 0;
 			Current = default;
 		}
@@ -1328,7 +1336,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		{
 			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
-				throw new RankException();
+				throw new RankException("Массив должен иметь одно измерение.");
 			if (array.GetLowerBound(0) != 0)
 				throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 			if ((uint)index > (uint)array.Length)
@@ -1380,7 +1388,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current;
 			}
 		}
@@ -1390,7 +1398,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		public bool MoveNext()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			while ((uint)_index < (uint)_dictionary._count)
 			{
 				ref var entry = ref _dictionary._entries![_index++];
@@ -1404,10 +1412,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			Current = default!;
 			return false;
 		}
+
 		void IEnumerator.Reset()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_index = 0;
 			Current = default!;
 		}
@@ -1454,7 +1463,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		{
 			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
-				throw new RankException();
+				throw new RankException("Массив должен иметь одно измерение.");
 			if (array.GetLowerBound(0) != 0)
 				throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 			if ((uint)index > (uint)array.Length)
@@ -1506,7 +1515,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current;
 			}
 		}
@@ -1516,7 +1525,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		public bool MoveNext()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			while ((uint)_index < (uint)_dictionary._count)
 			{
 				ref var entry = ref _dictionary._entries![_index++];
@@ -1530,10 +1539,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			Current = default!;
 			return false;
 		}
+
 		void IEnumerator.Reset()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException();
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			_index = 0;
 			Current = default!;
 		}

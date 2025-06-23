@@ -174,7 +174,8 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 	{
 		var item = (T?)items.GetType().GetMethod("GetInternal", System.Reflection.BindingFlags.Instance
 			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, invoke])
-			?? throw new InvalidCastException();
+			?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		if (invoke)
 			Changed();
 		return item;

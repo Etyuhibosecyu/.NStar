@@ -127,7 +127,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		var arrayLen = array.Length;
 		if (arrayLen - index < _size)
@@ -168,7 +168,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 	public virtual T Dequeue()
 	{
 		if (_size == 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Невозможно удалить элемент из очереди, так как она пуста.");
 		var removed = _array[_start];
 		_array[_start] = default!;
 		_start = (_start + 1) % _array.Length;
@@ -202,7 +202,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 	public virtual T Peek()
 	{
 		if (_size == 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди, так как она пуста.");
 		return _array[_start];
 	}
 
@@ -283,7 +283,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 			get
 			{
 				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return current;
 			}
 		}
@@ -293,7 +293,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 			get
 			{
 				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return Current!;
 			}
 		}
@@ -454,7 +454,9 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
-		return ((IEnumerable<T>?)_base ?? _base2 ?? throw new InvalidOperationException()).AsSpan(_start + index, length);
+		return ((IEnumerable<T>?)_base ?? _base2
+			?? throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст."))
+			.AsSpan(_start + index, length);
 	}
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
@@ -469,7 +471,10 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public override void Dispose() => GC.SuppressFinalize(this);
 
-	protected override T GetInternal(int index, bool invoke = true) => _base is BaseIndexable<T> collection ? collection[_start + index] : _base != null ? _base[_start + index] : _base2 != null ? _base2[_start + index] : throw new InvalidOperationException();
+	protected override T GetInternal(int index, bool invoke = true) =>
+		_base is BaseIndexable<T> collection ? collection[_start + index] : _base != null
+		? _base[_start + index] : _base2 != null ? _base2[_start + index]
+		: throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
 
 	protected override Slice<T> GetRangeInternal(int index, int length) => GetSliceInternal(index, length);
 
@@ -478,13 +483,17 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		if (_base is BaseIndexable<T> collection)
-			return CreateVar(collection.IndexOf(item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+			return CreateVar(collection.IndexOf(item, _start + index, length), out var foundIndex) >= 0
+				? foundIndex - _start : foundIndex;
 		else if (_base is T[] array)
-			return CreateVar(Array.IndexOf(array, item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+			return CreateVar(Array.IndexOf(array, item, _start + index, length), out var foundIndex) >= 0
+				? foundIndex - _start : foundIndex;
 		else
 		{
 			for (var i = _start + index; i < _start + index + length; i++)
-				if ((_base != null ? _base[i] : _base2 != null ? _base2[i] : throw new InvalidOperationException())?.Equals(item) ?? item == null)
+				if ((_base != null ? _base[i] : _base2 != null ? _base2[i]
+					: throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст."))
+					?.Equals(item) ?? item == null)
 					return i - _start;
 			return -1;
 		}
@@ -493,14 +502,18 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		if (_base is BaseIndexable<T> collection)
-			return CreateVar(collection.LastIndexOf(item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+			return CreateVar(collection.LastIndexOf(item, _start + index, length), out var foundIndex) >= 0
+				? foundIndex - _start : foundIndex;
 		else if (_base is T[] array)
-			return CreateVar(Array.LastIndexOf(array, item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+			return CreateVar(Array.LastIndexOf(array, item, _start + index, length), out var foundIndex) >= 0
+				? foundIndex - _start : foundIndex;
 		else
 		{
 			var endIndex = _start + index - length + 1;
 			for (var i = _start + index; i >= endIndex; i--)
-				if ((_base != null ? _base[i] : _base2 != null ? _base2[i] : throw new InvalidOperationException())?.Equals(item) ?? item == null)
+				if ((_base != null ? _base[i] : _base2 != null ? _base2[i]
+					: throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст."))
+					?.Equals(item) ?? item == null)
 					return i - _start;
 			return -1;
 		}
@@ -620,7 +633,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		if (array.GetLowerBound(0) != 0)
 			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 		if (arrayIndex < 0 || arrayIndex > array.Length)
@@ -662,14 +675,14 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	public virtual T Peek()
 	{
 		if (_size == 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Невозможно получить ближайший элемент в стеке, так как он пуст.");
 		return _array[_size - 1];
 	}
 
 	public virtual T Pop()
 	{
 		if (_size == 0)
-			throw new InvalidOperationException();
+			throw new InvalidOperationException("Невозможно удалить элемент из стека, так как он пуст.");
 		var item = _array[--_size];
 		_array[_size] = default!;     // Free memory quicker.
 		return item;

@@ -756,7 +756,15 @@ public static unsafe class Extents
 		return source;
 	}
 
-	public static PrimitiveType GetPrimitiveType<T>() where T : unmanaged => typeof(T).Equals(typeof(byte)) ? PrimitiveType.ByteType : typeof(T).Equals(typeof(short)) ? PrimitiveType.ShortType : typeof(T).Equals(typeof(ushort)) ? PrimitiveType.UShortType : typeof(T).Equals(typeof(int)) ? PrimitiveType.IntType : typeof(T).Equals(typeof(uint)) ? PrimitiveType.UIntType : typeof(T).Equals(typeof(long)) ? PrimitiveType.LongType : typeof(T).Equals(typeof(ulong)) ? PrimitiveType.ULongType : throw new InvalidOperationException();
+	public static PrimitiveType GetPrimitiveType<T>() where T : unmanaged =>
+		typeof(T).Equals(typeof(byte)) ? PrimitiveType.ByteType
+		: typeof(T).Equals(typeof(short)) ? PrimitiveType.ShortType
+		: typeof(T).Equals(typeof(ushort)) ? PrimitiveType.UShortType
+		: typeof(T).Equals(typeof(int)) ? PrimitiveType.IntType
+		: typeof(T).Equals(typeof(uint)) ? PrimitiveType.UIntType
+		: typeof(T).Equals(typeof(long)) ? PrimitiveType.LongType
+		: typeof(T).Equals(typeof(ulong)) ? PrimitiveType.ULongType
+		: throw new InvalidOperationException("Поддерживаются только типы byte, short, ushort, int, uint, long, ulong.");
 
 	public static int ToInt<T>(T item, PrimitiveType type) where T : unmanaged => type switch
 	{

@@ -569,7 +569,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	protected override void CopyToInternal(Array array, int index)
 	{
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		if (array is int[] intArray)
 			fixed (int* ptr = intArray)
 				CopyMemory(_items, (uint*)(ptr + index), GetArrayLength(_size, BitsPerInt));

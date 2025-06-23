@@ -154,7 +154,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new RankException();
+			throw new RankException("Массив должен иметь одно измерение.");
 		if (array.GetLowerBound(0) != 0)
 			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 		if (arrayIndex < 0 || arrayIndex > array.Length)
@@ -400,7 +400,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			get
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return key!;
 			}
 		}
@@ -410,7 +410,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			get
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				if (getEnumeratorRetType == DictEntry)
 					return new DictionaryEntry(key!, value);
 				else
@@ -423,7 +423,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			get
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return value!;
 			}
 		}
@@ -455,7 +455,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			get
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return new(key!, value);
 			}
 		}
@@ -509,7 +509,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			get
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return currentKey!;
 			}
 		}
@@ -541,7 +541,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			get
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return currentValue;
 			}
 		}
@@ -609,7 +609,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		{
 			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
-				throw new RankException();
+				throw new RankException("Массив должен иметь одно измерение.");
 			try
 			{
 				((System.Collections.ICollection)_dict.keys).CopyTo(array, arrayIndex);
@@ -680,7 +680,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		{
 			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
-				throw new RankException();
+				throw new RankException("Массив должен иметь одно измерение.");
 			try
 			{
 				((System.Collections.ICollection)_dict.values).CopyTo(array, arrayIndex);

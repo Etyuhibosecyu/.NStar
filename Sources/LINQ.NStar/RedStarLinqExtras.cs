@@ -54633,11 +54633,11 @@ public static class RedStarLinqExtras
 	public static T Random<T>(this Span<T> source, Random randomObj) => source[randomObj.Next(source.Length)];
 	public static T Random<T>(this T[] source, Random randomObj) => source[randomObj.Next(source.Length)];
 	public static G.IEnumerable<T> Reverse<T>(this G.IEnumerable<T> source) => E.Reverse(source);
-	public static T[] SetAll<T>(this T[] source, T value) => SetAll((G.IList<T>)source, value) as T[] ?? throw new InvalidOperationException();
-	public static T[] SetAll<T>(this T[] source, T value, Index index) => SetAll((G.IList<T>)source, value, index) as T[] ?? throw new InvalidOperationException();
-	public static T[] SetAll<T>(this T[] source, T value, int index) => SetAll((G.IList<T>)source, value, index) as T[] ?? throw new InvalidOperationException();
-	public static T[] SetAll<T>(this T[] source, T value, int index, int length) => SetAll((G.IList<T>)source, value, index, length) as T[] ?? throw new InvalidOperationException();
-	public static T[] SetAll<T>(this T[] source, T value, Range range) => SetAll((G.IList<T>)source, value, range) as T[] ?? throw new InvalidOperationException();
+	public static T[] SetAll<T>(this T[] source, T value) => SetAll((G.IList<T>)source, value) as T[] ?? throw new InvalidCastException("Произошла внутренняя программная или аппаратная ошибка. Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+	public static T[] SetAll<T>(this T[] source, T value, Index index) => SetAll((G.IList<T>)source, value, index) as T[] ?? throw new InvalidCastException("Произошла внутренняя программная или аппаратная ошибка. Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+	public static T[] SetAll<T>(this T[] source, T value, int index) => SetAll((G.IList<T>)source, value, index) as T[] ?? throw new InvalidCastException("Произошла внутренняя программная или аппаратная ошибка. Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+	public static T[] SetAll<T>(this T[] source, T value, int index, int length) => SetAll((G.IList<T>)source, value, index, length) as T[] ?? throw new InvalidCastException("Произошла внутренняя программная или аппаратная ошибка. Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
+	public static T[] SetAll<T>(this T[] source, T value, Range range) => SetAll((G.IList<T>)source, value, range) as T[] ?? throw new InvalidCastException("Произошла внутренняя программная или аппаратная ошибка. Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 	public static List<TResult> Shuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) => Shuffle(source, function, random);
 	public static List<TResult> Shuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) => Shuffle(source, function, random);
 	public static List<T> Shuffle<T>(this G.IReadOnlyList<T> source) => Shuffle(source, random);

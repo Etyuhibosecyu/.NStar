@@ -1284,7 +1284,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 				float f => f,
 				double d => d,
 				string s => new(s),
-				_ => throw new InvalidCastException(),
+				_ => throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
+				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, string."),
 			};
 			return true;
 		}
@@ -1777,15 +1778,15 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	readonly TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => throw new InvalidCastException();
+	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => ((IConvertible)this).ToBoolean(provider);
 
 	readonly byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
-	readonly char IConvertible.ToChar(IFormatProvider? provider) => throw new InvalidCastException();
+	readonly char IConvertible.ToChar(IFormatProvider? provider) => ((IConvertible)this).ToChar(provider);
 
-	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
+	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => ((IConvertible)this).ToDateTime(provider);
 
-	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => throw new InvalidCastException();
+	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => ((IConvertible)this).ToDecimal(provider);
 
 	readonly double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
 
@@ -1833,7 +1834,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 			return value.ToString(provider);
 		else if (targetType == typeof(object))
 			return value;
-		throw new InvalidCastException();
+		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
+				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
 	}
 
 	readonly ushort IConvertible.ToUInt16(IFormatProvider? provider) => (ushort)this;
@@ -1864,7 +1866,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 				float f => MathF.Ceiling(MathF.Abs(f)) * MathF.Sign(f),
 				double d => Math.Ceiling(Math.Abs(d)) * Math.Sign(d),
 				string s => new(s),
-				_ => throw new InvalidCastException(),
+				_ => throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
+				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, string."),
 			};
 			return true;
 		}
