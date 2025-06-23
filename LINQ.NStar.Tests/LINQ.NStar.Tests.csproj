@@ -19,7 +19,9 @@
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
     <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.7.3" />
     <PackageReference Include="MSTest" Version="3.9.3" />
-    <ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
+    <ProjectReference Include="..\LINQ.NStar\LINQ.NStar.csproj" />
+    <ProjectReference Include="..\ParallelHS.NStar\ParallelHS.NStar.csproj" />
+    <ProjectReference Include="..\RemoveDoubles.NStar\RemoveDoubles.NStar.csproj" />
 		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 

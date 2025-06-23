@@ -167,7 +167,7 @@ public class SliceTests
 			b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			d = c.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(d, b);
@@ -209,7 +209,7 @@ public class SliceTests
 			b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			d = c.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(d, b);
@@ -238,7 +238,7 @@ public class SliceTests
 			b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			d = c.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(d, b);
@@ -267,7 +267,7 @@ public class SliceTests
 			b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			d = c.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(d, b);
@@ -612,7 +612,7 @@ public class SliceTests
 			b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
@@ -733,7 +733,7 @@ public class SliceTests
 			b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));

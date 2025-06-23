@@ -713,8 +713,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 					entry.value = default!;
 				_freeListM = _freeList = current;
 				_freeCount++;
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				return true;
 			}
 			last = current;
@@ -767,8 +767,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 					entry.value = default!;
 				_freeListM = _freeList = current;
 				_freeCount++;
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				return true;
 			}
 			last = current;
@@ -818,8 +818,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 					entry.key = default!;
 				_freeListM = _freeList = currentM;
 				_freeCount++;
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				return true;
 			}
 			lastM = currentM;
@@ -872,8 +872,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 					entry.key = default!;
 				_freeListM = _freeList = currentM;
 				_freeCount++;
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				return true;
 			}
 			lastM = currentM;
@@ -933,8 +933,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 				bucketM = i + 1;
 			}
 		_entries = entries;
-		Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-		Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+		Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+		Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 	}
 
 	public virtual void SetKey(TValue value, TKey key)
@@ -1035,8 +1035,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			while (true)
 			{
 				var a = TryInsertInternal(key, value, behavior, entries, G.EqualityComparer<TKey>.Default, comparerM, hashCode, ref collisionCount, ref current);
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				if (a == 0)
 					break;
 				else if (a == 1)
@@ -1052,8 +1052,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
 				// Test uint in if rather than loop condition to drop range check for following array access
 				var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCode, ref collisionCount, ref current);
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				if (a == 0)
 					break;
 				else if (a == 1)
@@ -1070,8 +1070,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 			while (true)
 			{
 				var a = TryInsertInternal(key, value, behavior, entries, comparer ?? G.EqualityComparer<TKey>.Default, G.EqualityComparer<TValue>.Default, hashCodeM, ref collisionCountM, ref currentM, true);
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				if (a == 0)
 					break;
 				else if (a == 1)
@@ -1087,8 +1087,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
 				// Test uint in if rather than loop condition to drop range check for following array access
 				var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCodeM, ref collisionCountM, ref currentM, true);
-				Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 				if (a == 0)
 					break;
 				else if (a == 1)
@@ -1131,8 +1131,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Corlib.NStar.IDic
 		bucket = index + 1; // Value in _buckets is 1-based
 		bucketM = indexM + 1; // Value in _bucketsM is 1-based
 		_version++;
-		Debug.Assert(E.All(entries, x => x.next >= -1 == x.nextM >= -1));
-		Debug.Assert(E.All(this, x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+		Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+		Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 		// Value types never rehash
 		if (!typeof(TKey).IsValueType && collisionCount > HashHelpers.HashCollisionThreshold || !typeof(TValue).IsValueType && collisionCountM > HashHelpers.HashCollisionThreshold)
 			Resize(entries.Length, true);

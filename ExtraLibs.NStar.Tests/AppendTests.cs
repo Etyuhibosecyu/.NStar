@@ -1,4 +1,4 @@
-﻿namespace Corlib.NStar.Tests;
+﻿namespace ExtraLibs.NStar.Tests;
 
 [TestClass]
 public class AppendTests
@@ -6,13 +6,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestContains()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContains();
 	}
@@ -20,13 +20,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -42,13 +42,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -65,13 +65,13 @@ public class AppendTests
 	public void TestCopyTo()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		void ProcessA(Slice<string> a)
 		{
@@ -93,13 +93,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEndsWith();
 	}
@@ -107,13 +107,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestEquals()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEquals();
 	}
@@ -121,13 +121,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestFind()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFind();
 	}
@@ -135,13 +135,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestFindAll()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindAll();
 	}
@@ -149,13 +149,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindIndex();
 	}
@@ -163,13 +163,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestFindLast()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindLast();
 	}
@@ -177,13 +177,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindLastIndex();
 	}
@@ -191,13 +191,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -221,13 +221,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -251,13 +251,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -281,13 +281,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -311,46 +311,46 @@ public class AppendTests
 	[TestMethod]
 	public void TestGetRange()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
 	}
 
 	[TestMethod]
 	public void TestGetSlice()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
 	}
 
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 	}
 
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -369,13 +369,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -392,24 +392,24 @@ public class AppendTests
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOfAny();
 	}
@@ -417,13 +417,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -440,13 +440,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestSkip()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -480,13 +480,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -520,13 +520,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -541,7 +541,7 @@ public class AppendTests
 			b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
@@ -552,13 +552,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestStartsWith();
 	}
@@ -566,13 +566,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestTake()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -606,13 +606,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		var a = list.ToList().Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -646,13 +646,13 @@ public class AppendTests
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetSlice(0..^1);
+		var a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetSlice(0..^1);
 		ProcessA(a);
-		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new(RedStarLinq.ToArray(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX")), 0..^1);
+		a = new((G.IList<string>)E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX")), 0..^1);
 		ProcessA(a);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Append("XXX").GetRange(0..^1).GetSlice();
+		a = list.ToList().Insert(3, new List<string>("$", "###")).Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
@@ -667,7 +667,7 @@ public class AppendTests
 			b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
@@ -696,7 +696,7 @@ public class AppendTests
 				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
 				b.Add(elem);
 			}
-			array = [.. a.Append("XXX").GetSlice(0..^1)];
+			array = [.. a.Append<string>("XXX").GetSlice(0..^1)];
 			array2 = [.. b];
 			Assert.IsTrue(RedStarLinq.Equals(array, array2));
 			Assert.IsTrue(E.SequenceEqual(array, array2));

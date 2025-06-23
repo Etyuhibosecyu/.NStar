@@ -38,92 +38,6 @@ public class NListTests
 	}
 
 	[TestMethod]
-	public void TestAddRange()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		NList<(char, char, char)> a;
-		for (var i = 0; i < 10000; i++)
-		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-			a = array.ToNList();
-			var b = E.ToList(array);
-			var @case = random.Next(50);
-			var index = random.Next(a.Length);
-			switch (@case)
-			{
-				case 0:
-				a.AddRange(a);
-				b.AddRange(array);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 1:
-				int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
-				a.AddRange(a.GetRange(index2, length));
-				b.AddRange(array.Skip(index2).Take(length));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 2:
-				var array2 = RedStarLinq.Fill(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-				a.AddRange(array2);
-				b.AddRange(array2);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 3:
-				var array3 = RedStarLinq.FillArray(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-				a.AddRange(array3);
-				b.AddRange(array3);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 4:
-				var array4 = new Chain(random.Next(1001)).ToNList(_ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-				a.AddRange(array4);
-				b.AddRange(array4);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 5:
-				var array5 = RedStarLinq.Fill(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1))).ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
-				a.AddRange(array5);
-				b.AddRange(array5);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 6:
-				var array6 = RedStarLinq.Fill(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X'));
-				a.AddRange(array6);
-				b.AddRange(array6);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 7:
-				var seed = random.Next();
-				Random random2 = new(seed), random3 = new(seed);
-				var array7 = E.Select(E.Range(0, random2.Next(1001)), _ => ((char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X'));
-				a.AddRange(array7);
-				b.AddRange(E.Select(E.Range(0, random3.Next(1001)), _ => ((char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X')));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 8:
-				seed = random.Next();
-				random2 = new(seed);
-				random3 = new(seed);
-				var array8 = E.SkipWhile(E.Select(E.Range(0, random2.Next(1001)), _ => ((char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X')), x => x == ('0', '0', '0'));
-				a.AddRange(array8);
-				b.AddRange(E.SkipWhile(E.Select(E.Range(0, random3.Next(1001)), _ => ((char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X')), x => x == ('0', '0', '0')));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-			}
-		}
-		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().AddRange((G.IEnumerable<(char, char, char)>)null!));
-	}
-
-	[TestMethod]
 	public void TestAddSeries()
 	{
 		var a = nList.ToNList();
@@ -200,8 +114,8 @@ public class NListTests
 		Assert.IsTrue(c.Equals(f));
 		Assert.IsTrue(E.SequenceEqual(f, c));
 		b = a.BreakFilter(x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'), out c);
-		e = E.ToList(E.Where(d, x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
-		f = E.ToList(E.Where(d, x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
+		e = E.ToList(E.Where(d, x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z')));
+		f = E.ToList(E.Where(d, x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z')));
 		Assert.IsTrue(a.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, a));
 		Assert.IsTrue(b.Equals(e));
@@ -224,8 +138,8 @@ public class NListTests
 		b = a.BreakFilterInPlace(x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'), out c);
 		d = [.. nList];
 		d.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		e = E.ToList(E.Where(d, x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
-		d = E.ToList(E.Where(d, x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
+		e = E.ToList(E.Where(d, x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z')));
+		d = E.ToList(E.Where(d, x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z')));
 		BaseListTests<(char, char, char), NList<(char, char, char)>>.BreakFilterInPlaceAsserts(a, b, c, d, e);
 	}
 
@@ -592,7 +506,7 @@ public class NListTests
 		b = a.FilterInPlace((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		c = E.ToList(E.Where(c, (x, index) => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z') && index >= 1));
+		c = E.ToList(E.Where(c, (x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index >= 1));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(c));
@@ -616,7 +530,7 @@ public class NListTests
 		b = a.Find(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.Find(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
+		d = c.Find(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -638,7 +552,7 @@ public class NListTests
 		b = a.FindAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindAll(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
+		d = c.FindAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
@@ -660,7 +574,7 @@ public class NListTests
 		b = a.FindIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindIndex(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
+		d = c.FindIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -681,7 +595,7 @@ public class NListTests
 		b = a.FindLast(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindLast(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
+		d = c.FindLast(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -702,7 +616,7 @@ public class NListTests
 		b = a.FindLastIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindLastIndex(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
+		d = c.FindLastIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -883,94 +797,6 @@ public class NListTests
 		b = a.IndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<(char, char, char)>)null!));
-	}
-
-	[TestMethod]
-	public void TestInsert()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		NList<(char, char, char)> a;
-		for (var i = 0; i < 10000; i++)
-		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-			a = array.ToNList();
-			var b = E.ToList(array);
-			var @case = random.Next(50);
-			var index = random.Next(a.Length);
-			switch (@case)
-			{
-				case 0:
-				a.Insert(index, a);
-				b.InsertRange(index, array);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 1:
-				int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
-				a.Insert(index, a.GetRange(index2, length, true));
-				b.InsertRange(index, array.Skip(index2).Take(length));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 2:
-				var array2 = RedStarLinq.Fill(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-				a.Insert(index, array2);
-				b.InsertRange(index, array2);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 3:
-				var array3 = RedStarLinq.FillArray(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-				a.Insert(index, array3);
-				b.InsertRange(index, array3);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 4:
-				var array4 = new Chain(random.Next(1001)).ToNList(_ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1)));
-				a.Insert(index, array4);
-				b.InsertRange(index, array4);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 5:
-				var array5 = RedStarLinq.Fill(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1))).ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
-				a.Insert(index, array5);
-				b.InsertRange(index, array5);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 6:
-				var array6 = RedStarLinq.Fill(random.Next(1001), _ => ((char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1), (char)random.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X'));
-				a.Insert(index, array6);
-				b.InsertRange(index, array6);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 7:
-				var seed = random.Next();
-				Random random2 = new(seed), random3 = new(seed);
-				var array7 = E.Select(E.Range(0, random2.Next(1001)), _ => ((char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X'));
-				a.Insert(index, array7);
-				b.InsertRange(index, E.Select(E.Range(0, random3.Next(1001)), _ => ((char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X')));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 8:
-				seed = random.Next();
-				random2 = new(seed);
-				random3 = new(seed);
-				var array8 = E.SkipWhile(E.Select(E.Range(0, random2.Next(1001)), _ => ((char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1), (char)random2.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X')), x => x == ('0', '0', '0'));
-				a.Insert(index, array8);
-				b.InsertRange(index, E.SkipWhile(E.Select(E.Range(0, random3.Next(1001)), _ => ((char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1), (char)random3.Next('A', 'Z' + 1))).Prepend(('X', 'X', 'X')), x => x == ('0', '0', '0')));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-			}
-		}
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = nList.ToNList().Insert(1000, ('X', 'X', 'X')));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
@@ -1330,7 +1156,7 @@ public class NListTests
 		b = a.RemoveAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.RemoveAll(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
+		d = c.RemoveAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -1351,25 +1177,6 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(b[..index], a[..index]));
 			Assert.IsTrue(a[(index + 1)..].Equals(b[index..]));
 			Assert.IsTrue(E.SequenceEqual(b[index..], a[(index + 1)..]));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-	}
-
-	[TestMethod]
-	public void TestRemoveValue()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var a = new Chain(15, 10).ToNList(x => ((char, char, char))(String)x.ToString("D3"));
-		for (var i = 0; i < 1000; i++)
-		{
-			var value = a.Random(random);
-			var b = new NList<(char, char, char)>(a);
-			b.RemoveValue(value);
-			var c = new G.List<(char, char, char)>(a);
-			c.Remove(value);
-			foreach (var x in a)
-				Assert.AreEqual(b.Contains(x), x != value);
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
@@ -1407,7 +1214,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3));
 		b = [.. nList];
-		b.AddRange(defaultNCollection.Skip(2).Take(3));
+		b.AddRange(E.Take(E.Skip(defaultNCollection, 2), 3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
@@ -1423,7 +1230,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = nList.ToNList().Insert(2, defaultNCollection.AsSpan(2, 3));
 		b = [.. nList];
-		b.InsertRange(2, defaultNCollection.Skip(2).Take(3));
+		b.InsertRange(2, E.Take(E.Skip(defaultNCollection, 2), 3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsException<ArgumentException>(() => a = nList.ToNList().ReplaceRange(1, 1000, defaultNString));
@@ -1442,13 +1249,13 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3)).Reverse();
 		b = [.. nList];
-		b.AddRange(defaultNCollection.Skip(2).Take(3));
+		b.AddRange(E.Take(E.Skip(defaultNCollection, 2), 3));
 		b.Reverse();
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3)).Reverse(2, 4);
 		b = [.. nList];
-		b.AddRange(defaultNCollection.Skip(2).Take(3));
+		b.AddRange(E.Take(E.Skip(defaultNCollection, 2), 3));
 		b.Reverse(2, 4);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -1522,21 +1329,6 @@ public class NListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().SetRange(-1, hs));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().SetRange(1000, hs));
 		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().SetRange(4, null!));
-	}
-
-	[TestMethod]
-	public void TestShuffle()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var toShuffle = new G.List<(char, char, char)>(new byte[256].ToArray(x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536))));
-		var a = new NList<(char, char, char)>(toShuffle);
-		var b = new NList<(char, char, char)>(a).Shuffle();
-		b.Replace(b.ToList().Sort());
-		var c = new G.List<(char, char, char)>(a);
-		c = new(c.Shuffle());
-		c.Sort();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
 
 	[TestMethod]
@@ -1621,7 +1413,7 @@ public class NListTests
 		b = a.SkipWhile((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') || index < 1);
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
+		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z')));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
@@ -1736,7 +1528,7 @@ public class NListTests
 		b = a.TakeWhile((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index < 10);
 		c = [.. nList];
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
+		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z')));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));

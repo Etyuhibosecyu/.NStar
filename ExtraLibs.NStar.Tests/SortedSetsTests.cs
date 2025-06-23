@@ -1,6 +1,6 @@
 ﻿using SortedSets.NStar;
 
-namespace Corlib.NStar.Tests;
+namespace ExtraLibs.NStar.Tests;
 
 [TestClass]
 public class SortedSetTests

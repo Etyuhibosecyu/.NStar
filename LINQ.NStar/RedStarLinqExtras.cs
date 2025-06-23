@@ -9,8 +9,6 @@ global using static Corlib.NStar.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
 global using String = Corlib.NStar.String;
-using System.Numerics;
-using System.Reflection;
 using System.Threading.Tasks;
 using MathLib.NStar;
 using System.Diagnostics.CodeAnalysis;
@@ -20,65 +18,6 @@ namespace LINQ.NStar;
 public static class RedStarLinqExtras
 {
 	internal static readonly Random random = new();
-
-	public static bool All<T>(this G.IEnumerable<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!function(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!function(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!function(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!function(item))
-					return false;
-			}
-			return true;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!function(item))
-					return false;
-				i++;
-			}
-			return true;
-		}
-	}
 
 	public static bool All<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
@@ -54585,8 +54524,6 @@ public static class RedStarLinqExtras
 		return E.OrderByDescending(source, x => function(x, i++), new Comparer<TResult>(compareFunction));
 	}
 
-	public static bool All<T>(this T[] source, Func<T, bool> function) => E.All(source, function);
-	public static bool Any<T>(this T[] source, Func<T, bool> function) => E.Any(source, function);
 	public static G.IEnumerable<T> Append<T>(this G.IEnumerable<T> source, T element) => E.Append(source, element);
 	public static (List<T>, List<T>) BreakFilter<T>(this G.IEnumerable<T> source, Func<T, bool> function) => (BreakFilter(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this G.IEnumerable<T> source, Func<T, int, bool> function) => (BreakFilter(source, function, out var result2), result2);

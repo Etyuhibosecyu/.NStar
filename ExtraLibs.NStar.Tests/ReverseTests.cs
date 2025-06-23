@@ -1,4 +1,4 @@
-﻿namespace Corlib.NStar.Tests;
+﻿namespace ExtraLibs.NStar.Tests;
 
 [TestClass]
 public class ReverseTests
@@ -404,7 +404,7 @@ public class ReverseTests
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
 			c.Reverse();
-			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
@@ -532,7 +532,7 @@ public class ReverseTests
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
 			c.Reverse();
-			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));

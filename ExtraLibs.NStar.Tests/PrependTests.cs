@@ -1,4 +1,4 @@
-﻿namespace Corlib.NStar.Tests;
+﻿namespace ExtraLibs.NStar.Tests;
 
 [TestClass]
 public class PrependTests
@@ -141,7 +141,7 @@ public class PrependTests
 			b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			d = c.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(d, b);
@@ -557,7 +557,7 @@ public class PrependTests
 			b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
@@ -683,7 +683,7 @@ public class PrependTests
 			b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
-			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => x.All(y => y is >= 'A' and <= 'Z')));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));

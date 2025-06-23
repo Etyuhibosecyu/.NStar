@@ -4,6 +4,7 @@ namespace Corlib.NStar;
 
 public static class RedStarLinq
 {
+	public static bool All<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.All(source, function);
 	public static bool Any<T>(this IEnumerable<T> source) => Enumerable.Any(source);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
 	public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<T> source) => source;

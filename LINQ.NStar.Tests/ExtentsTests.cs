@@ -1,4 +1,4 @@
-﻿namespace Corlib.NStar.Tests;
+﻿namespace LINQ.NStar.Tests;
 
 [TestClass]
 public class ExtentsTests

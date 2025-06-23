@@ -1,4 +1,7 @@
-﻿namespace Corlib.NStar.Tests;
+﻿using ParallelHS.NStar;
+using RemoveDoubles.NStar;
+
+namespace LINQ.NStar.Tests;
 
 [TestClass]
 public class RedStarLinqTests
