@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
-    <ProjectReference Include="..\EasyEval.NStar\EasyEval.NStar.csproj" />
+    <ProjectReference Include="..\..\Sources\EasyEval.NStar\EasyEval.NStar.csproj" />
   </ItemGroup>
 
 </Project>

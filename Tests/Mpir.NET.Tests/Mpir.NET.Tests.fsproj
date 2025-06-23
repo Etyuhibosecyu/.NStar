@@ -9,7 +9,6 @@
 
   <ItemGroup>
 		<Compile Include="MpirTests.fs" />
-		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
@@ -22,7 +21,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
-    <ProjectReference Include="..\Mpir.NET\Mpir.NET.csproj" />
+    <ProjectReference Include="..\..\Sources\Mpir.NET\Mpir.NET.csproj" />
   </ItemGroup>
 
 </Project>

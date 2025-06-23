@@ -3,54 +3,54 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Service\Benchmark\Benchmark.csproj", "{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generation", "Generation\Generation.csproj", "{491F0C4B-63F7-445B-91C7-6D8160DEF958}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generation", "Service\Generation\Generation.csproj", "{491F0C4B-63F7-445B-91C7-6D8160DEF958}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corlib.NStar", "Corlib.NStar\Corlib.NStar.csproj", "{0E932ED1-672B-4CD2-9B07-2FBCC816A2BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corlib.NStar", "Sources\Corlib.NStar\Corlib.NStar.csproj", "{0E932ED1-672B-4CD2-9B07-2FBCC816A2BF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{99585F93-044B-49EB-B05A-29D091CDD452}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualClasses.NStar", "VirtualClass.NStar\VirtualClasses.NStar.csproj", "{AEAF4CF8-69A2-4E94-AF0B-3F63FB7B1EEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualClasses.NStar", "Service\VirtualClass.NStar\VirtualClasses.NStar.csproj", "{AEAF4CF8-69A2-4E94-AF0B-3F63FB7B1EEA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mpir.NET", "Mpir.NET\Mpir.NET.csproj", "{46445AD7-52C5-4A52-854D-56BD3D15D926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mpir.NET", "Sources\Mpir.NET\Mpir.NET.csproj", "{46445AD7-52C5-4A52-854D-56BD3D15D926}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Mpir.NET.Tests", "Mpir.NET.Tests\Mpir.NET.Tests.fsproj", "{BD041582-C254-4E3E-9E81-03AFC595C11F}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Mpir.NET.Tests", "Tests\Mpir.NET.Tests\Mpir.NET.Tests.fsproj", "{BD041582-C254-4E3E-9E81-03AFC595C11F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCollections.NStar", "BigCollections.NStar\BigCollections.NStar.csproj", "{E9C5EDB0-7EDB-4234-8A63-3FCD86CC4F55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCollections.NStar", "Sources\BigCollections.NStar\BigCollections.NStar.csproj", "{E9C5EDB0-7EDB-4234-8A63-3FCD86CC4F55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCollections.NStar.Tests", "BigCollections.NStar.Tests\BigCollections.NStar.Tests.csproj", "{2A94E257-F764-4D05-8EAB-378AC668FC29}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCollections.NStar.Tests", "Tests\BigCollections.NStar.Tests\BigCollections.NStar.Tests.csproj", "{2A94E257-F764-4D05-8EAB-378AC668FC29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LINQ.NStar", "LINQ.NStar\LINQ.NStar.csproj", "{7D5475A4-D7C6-50A5-F95E-87FA74FAB643}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LINQ.NStar", "Sources\LINQ.NStar\LINQ.NStar.csproj", "{7D5475A4-D7C6-50A5-F95E-87FA74FAB643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathLib.NStar", "MathLib.NStar\MathLib.NStar.csproj", "{9C705A4E-9D2C-CDFB-6D6F-B975C207D953}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathLib.NStar", "Sources\MathLib.NStar\MathLib.NStar.csproj", "{9C705A4E-9D2C-CDFB-6D6F-B975C207D953}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionaries.NStar", "Dictionaries.NStar\Dictionaries.NStar.csproj", "{F6C2AD27-484D-B376-42EB-73B78EF2E499}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dictionaries.NStar", "Sources\Dictionaries.NStar\Dictionaries.NStar.csproj", "{F6C2AD27-484D-B376-42EB-73B78EF2E499}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyEval.NStar", "EasyEval.NStar\EasyEval.NStar.csproj", "{9D995FBA-3E94-5D95-4AFD-8F1BF9B72359}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyEval.NStar", "Sources\EasyEval.NStar\EasyEval.NStar.csproj", "{9D995FBA-3E94-5D95-4AFD-8F1BF9B72359}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SumCollections.NStar", "SumCollections.NStar\SumCollections.NStar.csproj", "{89B2BFFF-3132-2973-A3DA-FFC282013EAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SumCollections.NStar", "Sources\SumCollections.NStar\SumCollections.NStar.csproj", "{89B2BFFF-3132-2973-A3DA-FFC282013EAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelHS.NStar", "ParallelHS.NStar\ParallelHS.NStar.csproj", "{C5D604E7-C622-6362-9458-3444EBD17F9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelHS.NStar", "Sources\ParallelHS.NStar\ParallelHS.NStar.csproj", "{C5D604E7-C622-6362-9458-3444EBD17F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveDoubles.NStar", "RemoveDoubles.NStar\RemoveDoubles.NStar.csproj", "{D3EEB979-608C-1AD9-B487-DC1B5C58C664}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoveDoubles.NStar", "Sources\RemoveDoubles.NStar\RemoveDoubles.NStar.csproj", "{D3EEB979-608C-1AD9-B487-DC1B5C58C664}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortedSets.NStar", "SortedSets.NStar\SortedSets.NStar.csproj", "{5ED48CC2-C5F4-8690-7083-474644719B7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortedSets.NStar", "Sources\SortedSets.NStar\SortedSets.NStar.csproj", "{5ED48CC2-C5F4-8690-7083-474644719B7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSets.NStar", "TreeSets.NStar\TreeSets.NStar.csproj", "{65EEDD47-EB13-563B-F832-2D807DA45134}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeSets.NStar", "Sources\TreeSets.NStar\TreeSets.NStar.csproj", "{65EEDD47-EB13-563B-F832-2D807DA45134}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraReplacing.NStar", "ExtraReplacing.NStar\ExtraReplacing.NStar.csproj", "{1B99D1FE-F455-B4D0-DB39-CD5DFACE6A0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraReplacing.NStar", "Sources\ExtraReplacing.NStar\ExtraReplacing.NStar.csproj", "{1B99D1FE-F455-B4D0-DB39-CD5DFACE6A0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BufferLib.NStar", "BufferLib.NStar\BufferLib.NStar.csproj", "{BC912F31-E373-BAA2-623A-AB6508955706}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BufferLib.NStar", "Sources\BufferLib.NStar\BufferLib.NStar.csproj", "{BC912F31-E373-BAA2-623A-AB6508955706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LINQ.NStar.Tests", "LINQ.NStar.Tests\LINQ.NStar.Tests.csproj", "{69E3A10B-68C4-7418-C938-200E4C7F77CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LINQ.NStar.Tests", "Tests\LINQ.NStar.Tests\LINQ.NStar.Tests.csproj", "{69E3A10B-68C4-7418-C938-200E4C7F77CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraLibs.NStar.Tests", "ExtraLibs.NStar.Tests\ExtraLibs.NStar.Tests.csproj", "{270A8C9F-3D79-FC81-E5A0-A4B3DE065196}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtraLibs.NStar.Tests", "Tests\ExtraLibs.NStar.Tests\ExtraLibs.NStar.Tests.csproj", "{270A8C9F-3D79-FC81-E5A0-A4B3DE065196}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corlib.NStar.Tests", "Corlib.NStar.Tests\Corlib.NStar.Tests.csproj", "{4ADC51D2-5654-20E0-9968-E28F7B16C648}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corlib.NStar.Tests", "Tests\Corlib.NStar.Tests\Corlib.NStar.Tests.csproj", "{4ADC51D2-5654-20E0-9968-E28F7B16C648}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
