@@ -78,6 +78,6 @@ Max/Mean/Median/Min(params &lt;type&gt;[] source) - позволяет вычи�
 <br>
 ## Контакты
 Payeer: P19926501<br>
-Monero: 4AHvZX6BHNcZ6T2iCq4Ruu3nGXipEzjdyYPpvLGMqCzXartsMJoFBxRjXEeKRXDu96JCyYvvPunNnSMBeKYTS8iXBw9z6p3<br>
+Monero: 49JGnrjidSzFF6Gi9CSNhDWeYWJcTnEkEXs4Bao6Da6peCjgvaUJ33m7Afmtz8qTAU2gMiLKvnxyDgA8QTNCVs7q79Shhph<br>
 TRC20 (TRX, USDT etc.): TUKh42VHJNTSCmCdu5rnGo8fDotDK8rHA5<br>
 Вопросы: adminATred-star-softDOTcom<br>
