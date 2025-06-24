@@ -1,4 +1,4 @@
-﻿using ParallelHS.NStar;
+﻿using NStar.ParallelHS;
 
 namespace Benchmark;
 

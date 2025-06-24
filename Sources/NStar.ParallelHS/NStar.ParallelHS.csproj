@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants)</DefineConstants>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	  <DebugType>none</DebugType>
+	  <Platforms>AnyCPU</Platforms>
+	  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DebugType>portable</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
+		<DefineConstants>VERIFY</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Include="..\NStar.Core\Misc\HashHelpers.cs" Link="HashHelpers.cs" />
+		<ProjectReference Include="..\NStar.Core\NStar.Core.csproj" />
+		<None Update="xmpir64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>

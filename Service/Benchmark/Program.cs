@@ -1,8 +1,8 @@
 ﻿global using BenchmarkDotNet.Attributes;
 global using BenchmarkDotNet.Running;
-global using Corlib.NStar;
-global using LINQ.NStar;
-global using MathLib.NStar;
+global using NStar.Core;
+global using NStar.LINQ;
+global using NStar.MathLib;
 global using System;
 global using System.IO;
 global using System.Net.Http;
@@ -10,10 +10,10 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
-global using static Corlib.NStar.Extents;
+global using static NStar.Core.Extents;
 global using static System.Math;
 using System.Diagnostics;
-using Dictionaries.NStar;
+using NStar.Dictionaries;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);

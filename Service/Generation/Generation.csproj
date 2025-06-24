@@ -9,6 +9,6 @@
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\Corlib.NStar\Corlib.NStar.csproj" />
+    <ProjectReference Include="..\..\Sources\NStar.Core\NStar.Core.csproj" />
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using System.Windows.Forms;
 global using G = System.Collections.Generic;
-using Corlib.NStar;
+using NStar.Core;
 using System.Text.RegularExpressions;
 
 namespace Generation;
