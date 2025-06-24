@@ -1,7 +1,7 @@
 ﻿using NStar.MathLib;
 using System.Numerics;
 
-namespace NStar.LINQ.Tests;
+namespace NStar.Linq.Tests;
 
 [TestClass]
 public class OptimumTests

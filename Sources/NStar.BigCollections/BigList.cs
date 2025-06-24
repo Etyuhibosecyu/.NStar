@@ -1,7 +1,7 @@
-﻿global using NStar.Core;
-global using NStar.LINQ;
+﻿global using Mpir.NET;
+global using NStar.Core;
+global using NStar.Linq;
 global using NStar.MathLib;
-global using Mpir.NET;
 global using NStar.SumCollections;
 global using System;
 global using System.Collections;

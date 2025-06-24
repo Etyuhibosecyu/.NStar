@@ -1,14 +1,11 @@
 ﻿global using NStar.Core;
-global using Mpir.NET;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
 global using G = System.Collections.Generic;
-global using static NStar.Core.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
-global using String = NStar.Core.String;
 using System.Threading;
 using System.Diagnostics.CodeAnalysis;
 

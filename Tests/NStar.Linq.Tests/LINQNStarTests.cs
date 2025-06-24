@@ -1,16 +1,17 @@
-global using NStar.Core;
-global using NStar.LINQ;
 global using Mpir.NET;
+global using NStar.Core;
+global using NStar.Linq;
+global using NStar.MathLib.Extras;
 global using System;
 global using System.Collections.Immutable;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
-global using static NStar.LINQ.Tests.Global;
+global using static NStar.Linq.Tests.Global;
 global using static System.Math;
 global using String = NStar.Core.String;
 
-namespace NStar.LINQ.Tests;
+namespace NStar.Linq.Tests;
 
 public static class Global
 {

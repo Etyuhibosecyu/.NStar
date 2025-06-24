@@ -1,7 +1,7 @@
-﻿global using NStar.Core;
+﻿global using Mpir.NET;
+global using NStar.Core;
 global using NStar.Core.Tests;
-global using NStar.LINQ;
-global using Mpir.NET;
+global using NStar.Linq;
 global using System;
 global using System.Collections;
 global using System.Threading;

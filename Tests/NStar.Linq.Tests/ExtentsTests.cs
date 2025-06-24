@@ -1,4 +1,4 @@
-﻿namespace NStar.LINQ.Tests;
+﻿namespace NStar.Linq.Tests;
 
 [TestClass]
 public class ExtentsTests

@@ -10,7 +10,7 @@
     <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
     <ProjectReference Include="..\..\Sources\NStar.BigCollections\NStar.BigCollections.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.Dictionaries\NStar.Dictionaries.csproj" />
-    <ProjectReference Include="..\..\Sources\NStar.LINQ\NStar.LINQ.csproj" />
+    <ProjectReference Include="..\..\Sources\NStar.Linq\NStar.Linq.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.ParallelHS\NStar.ParallelHS.csproj" />
   </ItemGroup>
 </Project>

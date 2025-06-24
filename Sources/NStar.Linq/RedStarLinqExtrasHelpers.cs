@@ -1,4 +1,4 @@
-﻿namespace NStar.LINQ;
+﻿namespace NStar.Linq;
 
 public class ArrayEComparer<T> : IListEComparer<T>, G.IEqualityComparer<T[]>
 {

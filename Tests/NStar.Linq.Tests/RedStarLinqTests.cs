@@ -1,7 +1,7 @@
 ﻿using NStar.ParallelHS;
 using NStar.RemoveDoubles;
 
-namespace NStar.LINQ.Tests;
+namespace NStar.Linq.Tests;
 
 [TestClass]
 public class RedStarLinqTests

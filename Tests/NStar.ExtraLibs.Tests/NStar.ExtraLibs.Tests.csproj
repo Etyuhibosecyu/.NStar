@@ -21,7 +21,7 @@
     <PackageReference Include="MSTest" Version="3.9.3" />
     <ProjectReference Include="..\NStar.Core.Tests\NStar.Core.Tests.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.ExtraReplacing\NStar.ExtraReplacing.csproj" />
-    <ProjectReference Include="..\..\Sources\NStar.LINQ\NStar.LINQ.csproj" />
+    <ProjectReference Include="..\..\Sources\NStar.Linq\NStar.Linq.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.ParallelHS\NStar.ParallelHS.csproj" />
 		<ProjectReference Include="..\..\Sources\NStar.SumCollections\NStar.SumCollections.csproj" />
 		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />

@@ -1511,7 +1511,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		public Node DeepClone(int length)
 		{
-#if DEBUG
+#if VERIFY
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
@@ -1552,7 +1552,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		public TreeRotation GetRotation(Node current, Node sibling)
 		{
 			Debug.Assert(IsNonNullRed(sibling.Left) || IsNonNullRed(sibling.Right));
-#if DEBUG
+#if VERIFY
 			Debug.Assert(HasChildren(current, sibling));
 #endif
 
