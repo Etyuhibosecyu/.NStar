@@ -379,12 +379,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static bool operator <(decimal x, MpzT y)
 	//{
-	//    return y.CompareTo(x) > 0;
+	//	return y.CompareTo(x) > 0;
 	//}
 
 	//public static bool operator <(MpzT x, decimal y)
 	//{
-	//    return x.CompareTo(y) < 0;
+	//	return x.CompareTo(y) < 0;
 	//}
 
 	public static bool operator <=(MpzT x, MpzT y) => x.CompareTo(y) <= 0;
@@ -416,12 +416,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static bool operator <=(decimal x, MpzT y)
 	//{
-	//    return y.CompareTo(x) >= 0;
+	//	return y.CompareTo(x) >= 0;
 	//}
 
 	//public static bool operator <=(MpzT x, decimal y)
 	//{
-	//    return x.CompareTo(y) <= 0;
+	//	return x.CompareTo(y) <= 0;
 	//}
 
 	public static bool operator >(MpzT x, MpzT y) => x.CompareTo(y) > 0;
@@ -456,12 +456,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static bool operator >(decimal x, MpzT y)
 	//{
-	//    return y.CompareTo(x) < 0;
+	//	return y.CompareTo(x) < 0;
 	//}
 
 	//public static bool operator >(MpzT x, decimal y)
 	//{
-	//    return x.CompareTo(y) > 0;
+	//	return x.CompareTo(y) > 0;
 	//}
 
 	public static bool operator >=(MpzT x, MpzT y) => x.CompareTo(y) >= 0;
@@ -496,12 +496,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static bool operator >=(decimal x, MpzT y)
 	//{
-	//    return y.CompareTo(x) <= 0;
+	//	return y.CompareTo(x) <= 0;
 	//}
 
 	//public static bool operator >=(MpzT x, decimal y)
 	//{
-	//    return x.CompareTo(y) >= 0;
+	//	return x.CompareTo(y) >= 0;
 	//}
 
 	public static MpzT operator <<(MpzT x, int shiftAmount)
@@ -627,7 +627,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 		// original code, but that limitation isn't mentioned in 
 		// http://Gmplib.org/manual/Integer-Division.html#Integer-Division.
 		//if(this.ChunkCount < 0)
-		//    throw new InvalidOperationException("This method may not be called when the instance represents a negative number.");
+		//	throw new InvalidOperationException("This method may not be called when the instance represents a negative number.");
 		var quotient = new MpzT();
 		remainder = Mpir.MpzTdivQUi(quotient, this, x);
 		return quotient;
@@ -1026,7 +1026,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	public static int JacobiSymbol(MpzT x, MpzT y)
 	{
 		if(IsEvenInteger(y) || y < 0)
-		    throw new ArgumentException(nameof(y) + " must be odd and positive");
+			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpzJacobi(x, y);
 	}
 
@@ -1378,7 +1378,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public bool Equals(decimal other)
 	//{
-	//    return this.CompareTo(other) == 0;
+	//	return this.CompareTo(other) == 0;
 	//}
 
 	public readonly bool EqualsMod(MpzT x, MpzT mod) => Mpir.MpzCongruentP(this, x, mod) != 0;
@@ -1429,16 +1429,16 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static bool operator ==(decimal x, MpzT y)
 	//{
-	//    if(y == null)
-	//        return false;
-	//    return y.CompareTo(x) == 0;
+	//	if(y == null)
+	//		return false;
+	//	return y.CompareTo(x) == 0;
 	//}
 
 	//public static bool operator ==(MpzT x, decimal y)
 	//{
-	//    if(x == null)
-	//        return false;
-	//    return x.CompareTo(y) == 0;
+	//	if(x == null)
+	//		return false;
+	//	return x.CompareTo(y) == 0;
 	//}
 
 	public static bool operator !=(MpzT x, MpzT y) => x.CompareTo(y) != 0;
@@ -1473,16 +1473,16 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static bool operator !=(decimal x, MpzT y)
 	//{
-	//    if(y == null)
-	//        return true;
-	//    return y.CompareTo(x) != 0;
+	//	if(y == null)
+	//		return true;
+	//	return y.CompareTo(x) != 0;
 	//}
 
 	//public static bool operator !=(MpzT x, decimal y)
 	//{
-	//    if(x == null)
-	//        return true;
-	//    return x.CompareTo(y) != 0;
+	//	if(x == null)
+	//		return true;
+	//	return x.CompareTo(y) != 0;
 	//}
 
 	public readonly int CompareTo(object? obj) => obj switch
@@ -1530,7 +1530,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public int CompareTo(decimal other)
 	//{
-	//    return mpir.MpzCmpD(this, (double)other);
+	//	return mpir.MpzCmpD(this, (double)other);
 	//}
 
 	public readonly int CompareAbsTo(object obj)
@@ -1558,7 +1558,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 			else if (obj is sbyte sy)
 				return CompareAbsTo(sy);
 			//else if(obj is decimal)
-			//    return this.CompareAbsTo((decimal)obj);
+			//	return this.CompareAbsTo((decimal)obj);
 			else if (obj is string s)
 				return CompareAbsTo(new MpzT(s));
 			else
@@ -1582,7 +1582,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public int CompareAbsTo(decimal other)
 	//{
-	//    return mpir.MpzCmpabsD(this, (double)other);
+	//	return mpir.MpzCmpabsD(this, (double)other);
 	//}
 
 	public static int Compare(MpzT x, object? y) => x.CompareTo(y);
@@ -1613,12 +1613,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static int Compare(MpzT x, decimal y)
 	//{
-	//    return x.CompareTo(y);
+	//	return x.CompareTo(y);
 	//}
 
 	//public static int Compare(decimal x, MpzT y)
 	//{
-	//    return -y.CompareTo(x);
+	//	return -y.CompareTo(x);
 	//}
 
 	public static int CompareAbs(MpzT x, object y) => x.CompareAbsTo(y);
@@ -1649,12 +1649,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static int CompareAbs(MpzT x, decimal y)
 	//{
-	//    return x.CompareAbsTo(y);
+	//	return x.CompareAbsTo(y);
 	//}
 
 	//public static int CompareAbs(decimal x, MpzT y)
 	//{
-	//    return -y.CompareAbsTo(x);
+	//	return -y.CompareAbsTo(x);
 	//}
 
 	readonly int IComparable.CompareTo(object? obj) => Compare(this, obj);
@@ -1683,7 +1683,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static implicit operator MpzT(decimal value)
 	//{
-	//    return new MpzT(value);
+	//	return new MpzT(value);
 	//}
 
 	public static explicit operator MpzT(string value) => new(value, sDefaultStringBase);
@@ -1732,7 +1732,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	//public static explicit operator decimal(MpzT value)
 	//{
-	//    return (decimal)(double)value;
+	//	return (decimal)(double)value;
 	//}
 
 	public static explicit operator string?(MpzT value) => value.ToString();

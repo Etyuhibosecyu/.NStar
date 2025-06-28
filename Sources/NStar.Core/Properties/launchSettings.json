@@ -1,8 +1,8 @@
 {
-  "profiles": {
-    "NStar.Core": {
-      "commandName": "Project",
-      "nativeDebugging": false
-    }
-  }
+	"profiles": {
+	"NStar.Core": {
+		"commandName": "Project",
+		"nativeDebugging": false
+	}
+	}
 }

@@ -3181,7 +3181,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3190,7 +3190,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3205,7 +3205,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3221,7 +3221,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3237,7 +3237,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3252,7 +3252,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3266,7 +3266,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3275,7 +3275,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3290,7 +3290,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3306,7 +3306,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3322,7 +3322,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3337,7 +3337,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3350,7 +3350,7 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3359,7 +3359,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3374,7 +3374,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3390,7 +3390,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3406,7 +3406,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3421,7 +3421,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3435,7 +3435,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3444,7 +3444,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3459,7 +3459,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3475,7 +3475,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3491,7 +3491,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3506,7 +3506,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3520,7 +3520,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3529,7 +3529,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3544,7 +3544,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3560,7 +3560,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3576,7 +3576,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3591,7 +3591,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3604,7 +3604,7 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3613,7 +3613,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3628,7 +3628,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3644,7 +3644,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3660,7 +3660,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3675,7 +3675,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3689,7 +3689,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3698,7 +3698,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3713,7 +3713,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3729,7 +3729,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3745,7 +3745,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3760,7 +3760,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3774,7 +3774,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3783,7 +3783,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3798,7 +3798,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3814,7 +3814,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3830,7 +3830,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3845,7 +3845,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3858,7 +3858,7 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3867,7 +3867,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3882,7 +3882,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3898,7 +3898,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3914,7 +3914,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3929,7 +3929,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3943,7 +3943,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -3952,7 +3952,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3967,7 +3967,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3983,7 +3983,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -3999,7 +3999,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4014,7 +4014,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4028,7 +4028,7 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4037,7 +4037,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4052,7 +4052,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4068,7 +4068,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4084,7 +4084,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4099,7 +4099,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4112,7 +4112,7 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4121,7 +4121,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4136,7 +4136,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4152,7 +4152,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4168,7 +4168,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4183,7 +4183,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4197,7 +4197,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4206,7 +4206,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4221,7 +4221,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4237,7 +4237,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4253,7 +4253,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4268,7 +4268,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4282,7 +4282,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4291,7 +4291,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4306,7 +4306,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4322,7 +4322,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4338,7 +4338,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4353,7 +4353,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4367,7 +4367,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4376,7 +4376,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4391,7 +4391,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4407,7 +4407,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4423,7 +4423,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4438,7 +4438,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4452,7 +4452,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4461,7 +4461,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4476,7 +4476,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4492,7 +4492,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4508,7 +4508,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4523,7 +4523,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4536,7 +4536,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4545,7 +4545,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4560,7 +4560,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4576,7 +4576,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4592,7 +4592,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4607,7 +4607,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4621,7 +4621,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4630,7 +4630,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4645,7 +4645,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4661,7 +4661,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4677,7 +4677,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4692,7 +4692,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4706,7 +4706,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4715,7 +4715,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4730,7 +4730,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4746,7 +4746,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4762,7 +4762,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4777,7 +4777,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4790,7 +4790,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4799,7 +4799,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4814,7 +4814,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4830,7 +4830,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4846,7 +4846,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4861,7 +4861,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4875,7 +4875,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4884,7 +4884,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4899,7 +4899,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4915,7 +4915,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4931,7 +4931,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4946,7 +4946,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4960,7 +4960,7 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -4969,7 +4969,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -4984,7 +4984,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5000,7 +5000,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5016,7 +5016,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5031,7 +5031,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5044,7 +5044,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5053,7 +5053,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5068,7 +5068,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5084,7 +5084,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5100,7 +5100,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5115,7 +5115,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5129,7 +5129,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5138,7 +5138,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5153,7 +5153,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5169,7 +5169,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5185,7 +5185,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5200,7 +5200,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5214,7 +5214,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5223,7 +5223,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5238,7 +5238,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5254,7 +5254,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5270,7 +5270,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5285,7 +5285,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5298,7 +5298,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5307,7 +5307,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5322,7 +5322,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5338,7 +5338,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5354,7 +5354,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5369,7 +5369,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5383,7 +5383,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5392,7 +5392,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5407,7 +5407,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5423,7 +5423,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5439,7 +5439,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5454,7 +5454,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5468,7 +5468,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5477,7 +5477,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5492,7 +5492,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5508,7 +5508,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5524,7 +5524,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5539,7 +5539,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5552,7 +5552,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5561,7 +5561,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5576,7 +5576,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5592,7 +5592,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5608,7 +5608,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5623,7 +5623,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5637,7 +5637,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5646,7 +5646,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5661,7 +5661,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5677,7 +5677,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5693,7 +5693,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5708,7 +5708,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5722,7 +5722,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5731,7 +5731,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5746,7 +5746,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5762,7 +5762,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5778,7 +5778,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5793,7 +5793,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5806,7 +5806,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5815,7 +5815,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5830,7 +5830,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5846,7 +5846,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5862,7 +5862,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5877,7 +5877,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5891,7 +5891,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5900,7 +5900,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5915,7 +5915,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5931,7 +5931,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5947,7 +5947,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5962,7 +5962,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5976,7 +5976,7 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -5985,7 +5985,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6000,7 +6000,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6016,7 +6016,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6032,7 +6032,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6047,7 +6047,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6060,7 +6060,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -6069,7 +6069,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6084,7 +6084,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6100,7 +6100,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6116,7 +6116,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6131,7 +6131,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6377,5015 +6377,6 @@ public static class RedStarLinqExtras
 				i++;
 			}
 			return -1;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is decimal[] array)
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is double[] array)
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is int[] array)
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is uint[] array)
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is long[] array)
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMax(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is MpzT[] array)
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Mean());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Mean());
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is decimal[] array)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Mean());
-		}
-		else
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Mean());
-		}
-	}
-
-	public static int IndexOfMean(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is double[] array)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Mean());
-		}
-		else
-		{
-			var list_ = NList<double>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Mean());
-		}
-	}
-
-	public static int IndexOfMean(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var value = (int)(list.Sum(x => (long)x) / Max(list.Length, 1));
-			return IndexOf(list, value);
-		}
-		else if (source is int[] array)
-		{
-			var value = (int)(array.Sum(x => (long)x) / Max(array.Length, 1));
-			return IndexOf(array, value);
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var value = (int)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
-			return IndexOf(list2, value);
-		}
-		else
-		{
-			var list_ = NList<int>.ReturnOrConstruct(source);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var value = (uint)(list.Sum(x => (long)x) / Max(list.Length, 1));
-			return IndexOf(list, value);
-		}
-		else if (source is uint[] array)
-		{
-			var value = (uint)(array.Sum(x => (long)x) / Max(array.Length, 1));
-			return IndexOf(array, value);
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var value = (uint)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
-			return IndexOf(list2, value);
-		}
-		else
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(source);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var value = (long)(list.Sum(x => (MpzT)x) / Max(list.Length, 1));
-			return IndexOf(list, value);
-		}
-		else if (source is long[] array)
-		{
-			var value = (long)(array.Sum(x => (MpzT)x) / Max(array.Length, 1));
-			return IndexOf(array, value);
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var value = (long)(list2.Sum(x => (MpzT)x) / Max(list2.Count, 1));
-			return IndexOf(list2, value);
-		}
-		else
-		{
-			var list_ = List<long>.ReturnOrConstruct(source);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMean(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var value = list.Sum() / Max(list.Length, 1);
-			return IndexOf(list, value);
-		}
-		else if (source is MpzT[] array)
-		{
-			var value = array.Sum() / Max(array.Length, 1);
-			return IndexOf(array, value);
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var value = list2.Sum() / Max(list2.Count, 1);
-			return IndexOf(list2, value);
-		}
-		else
-		{
-			var list_ = List<MpzT>.ReturnOrConstruct(source);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return IndexOf(list_, value);
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is decimal[] array)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is double[] array)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<double>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is int[] array)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<int>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is uint[] array)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is long[] array)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<long>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMedian(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(list);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is MpzT[] array)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(array);
-			return IndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(list2);
-			return IndexOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(source);
-			return IndexOf(list_, list_.Median());
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is decimal[] array)
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is double[] array)
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is int[] array)
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is uint[] array)
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is long[] array)
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static int IndexOfMin(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is MpzT[] array)
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-		{
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-				i++;
-			}
-			return result;
 		}
 	}
 
@@ -12364,4202 +7355,6 @@ public static class RedStarLinqExtras
 			return LastIndexOf([.. source], target, equalFunction, hashCodeFunction);
 	}
 
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMax(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is decimal[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new NList<decimal>(source));
-	}
-
-	public static int LastIndexOfMax(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is double[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new NList<double>(source));
-	}
-
-	public static int LastIndexOfMax(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is int[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new NList<int>(source));
-	}
-
-	public static int LastIndexOfMax(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is uint[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new NList<uint>(source));
-	}
-
-	public static int LastIndexOfMax(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is long[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new NList<long>(source));
-	}
-
-	public static int LastIndexOfMax(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is MpzT[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMax(new NList<MpzT>(source));
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return -1;
-			return LastIndexOf(list_, value);
-		}
-		else
-			return LastIndexOfMean(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMean(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is decimal[] array)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else
-			return LastIndexOfMean(new NList<decimal>(source));
-	}
-
-	public static int LastIndexOfMean(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is double[] array)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Mean());
-		}
-		else
-			return LastIndexOfMean(new NList<double>(source));
-	}
-
-	public static int LastIndexOfMean(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var value = (int)(list.Sum(x => (long)x) / Max(list.Length, 1));
-			return LastIndexOf(list, value);
-		}
-		else if (source is int[] array)
-		{
-			var value = (int)(array.Sum(x => (long)x) / Max(array.Length, 1));
-			return LastIndexOf(array, value);
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var value = (int)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
-			return LastIndexOf(list2, value);
-		}
-		else
-			return LastIndexOfMean(new NList<int>(source));
-	}
-
-	public static int LastIndexOfMean(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var value = (uint)(list.Sum(x => (long)x) / Max(list.Length, 1));
-			return LastIndexOf(list, value);
-		}
-		else if (source is uint[] array)
-		{
-			var value = (uint)(array.Sum(x => (long)x) / Max(array.Length, 1));
-			return LastIndexOf(array, value);
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var value = (uint)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
-			return LastIndexOf(list2, value);
-		}
-		else
-			return LastIndexOfMean(new NList<uint>(source));
-	}
-
-	public static int LastIndexOfMean(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var value = (long)(list.Sum(x => (MpzT)x) / Max(list.Length, 1));
-			return LastIndexOf(list, value);
-		}
-		else if (source is long[] array)
-		{
-			var value = (long)(array.Sum(x => (MpzT)x) / Max(array.Length, 1));
-			return LastIndexOf(array, value);
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var value = (long)(list2.Sum(x => (MpzT)x) / Max(list2.Count, 1));
-			return LastIndexOf(list2, value);
-		}
-		else
-			return LastIndexOfMean(new NList<long>(source));
-	}
-
-	public static int LastIndexOfMean(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var value = list.Sum() / Max(list.Length, 1);
-			return LastIndexOf(list, value);
-		}
-		else if (source is MpzT[] array)
-		{
-			var value = array.Sum() / Max(array.Length, 1);
-			return LastIndexOf(array, value);
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var value = list2.Sum() / Max(list2.Count, 1);
-			return LastIndexOf(list2, value);
-		}
-		else
-			return LastIndexOfMean(new NList<MpzT>(source));
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = list.ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = array.AsSpan().ToList(function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMedian(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is decimal[] array)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new NList<decimal>(source));
-	}
-
-	public static int LastIndexOfMedian(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is double[] array)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new NList<double>(source));
-	}
-
-	public static int LastIndexOfMedian(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is int[] array)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new NList<int>(source));
-	}
-
-	public static int LastIndexOfMedian(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is uint[] array)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new NList<uint>(source));
-	}
-
-	public static int LastIndexOfMedian(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is long[] array)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new NList<long>(source));
-	}
-
-	public static int LastIndexOfMedian(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(list);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is MpzT[] array)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(array);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(list2);
-			return LastIndexOf(list_, list_.Median());
-		}
-		else
-			return LastIndexOfMedian(new NList<MpzT>(source));
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item);
-					result = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (i == length - 1)
-				{
-					indicator = function(item, i);
-					result = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new List<T>(source), function);
-	}
-
-	public static int LastIndexOfMin(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is decimal[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			decimal indicator = 0;
-			decimal f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new NList<decimal>(source));
-	}
-
-	public static int LastIndexOfMin(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is double[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			double indicator = 0;
-			double f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new NList<double>(source));
-	}
-
-	public static int LastIndexOfMin(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is int[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			var indicator = 0;
-			int f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new NList<int>(source));
-	}
-
-	public static int LastIndexOfMin(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is uint[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			uint indicator = 0;
-			uint f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new NList<uint>(source));
-	}
-
-	public static int LastIndexOfMin(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is long[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			long indicator = 0;
-			long f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new NList<long>(source));
-	}
-
-	public static int LastIndexOfMin(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var length = list.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is MpzT[] array)
-		{
-			var length = array.Length;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var length = list2.Count;
-			var result = -1;
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (i == length - 1)
-				{
-					indicator = item;
-					result = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result = i;
-				}
-			}
-			return result;
-		}
-		else
-			return LastIndexOfMin(new NList<MpzT>(source));
-	}
-
 	public static Slice<TResult> Pairs<T, TResult>(this G.IReadOnlyList<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -16959,7 +7754,7 @@ public static class RedStarLinqExtras
 
 	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -16968,7 +7763,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -16979,7 +7774,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -16991,7 +7786,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17003,7 +7798,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17014,7 +7809,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 				i++;
 			}
 			return result;
@@ -17023,7 +7818,7 @@ public static class RedStarLinqExtras
 
 	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -17032,7 +7827,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17043,7 +7838,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17055,7 +7850,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17067,7 +7862,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17078,7 +7873,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 				i++;
 			}
 			return result;
@@ -17087,7 +7882,7 @@ public static class RedStarLinqExtras
 
 	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -17096,7 +7891,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17107,7 +7902,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17119,7 +7914,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17131,7 +7926,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17142,7 +7937,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 				i++;
 			}
 			return result;
@@ -17151,7 +7946,7 @@ public static class RedStarLinqExtras
 
 	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -17160,7 +7955,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17171,7 +7966,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17183,7 +7978,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17195,7 +7990,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 			}
 			return result;
 		}
@@ -17206,7 +8001,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result.Add(!dic.TryAdd(item, out var index) ? index : j++);
+				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
 				i++;
 			}
 			return result;
@@ -18961,13 +9756,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i]), out var index))
+			if (!hs.TryAdd(f = function(source[i]), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -18979,13 +9774,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i], i), out var index))
+			if (!hs.TryAdd(f = function(source[i], i), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -18996,13 +9791,13 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		var length = source.Length;
 		List<(T Key, int Count)> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = source[i], out var index))
+			if (!hs.TryAdd(f = source[i], out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19014,13 +9809,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i]), out var index))
+			if (!hs.TryAdd(f = function(source[i]), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19032,13 +9827,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i], i), out var index))
+			if (!hs.TryAdd(f = function(source[i], i), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19049,13 +9844,13 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = source.Length;
 		List<(T Key, int Count)> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = source[i], out var index))
+			if (!hs.TryAdd(f = source[i], out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19067,13 +9862,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i]), out var index))
+			if (!hs.TryAdd(f = function(source[i]), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19085,13 +9880,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i], i), out var index))
+			if (!hs.TryAdd(f = function(source[i], i), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19102,13 +9897,13 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		var length = source.Length;
 		List<(T Key, int Count)> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = source[i], out var index))
+			if (!hs.TryAdd(f = source[i], out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19120,13 +9915,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i]), out var index))
+			if (!hs.TryAdd(f = function(source[i]), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19138,13 +9933,13 @@ public static class RedStarLinqExtras
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = function(source[i], i), out var index))
+			if (!hs.TryAdd(f = function(source[i], i), out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19155,13 +9950,13 @@ public static class RedStarLinqExtras
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<(T Key, int Count)> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
-			if (!dic.TryAdd(f = source[i], out var index))
+			if (!hs.TryAdd(f = source[i], out var index))
 				result[index] = (result[index].Key, result[index].Count + 1);
 			else
 				result.Add((f, 1));
@@ -19173,14 +9968,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19192,14 +9987,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19211,14 +10006,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19230,14 +10025,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19248,14 +10043,14 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19267,14 +10062,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19286,14 +10081,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19304,14 +10099,14 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19323,14 +10118,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19342,14 +10137,14 @@ public static class RedStarLinqExtras
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19360,14 +10155,14 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -19379,14 +10174,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19398,14 +10193,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19416,14 +10211,14 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		var length = source.Length;
 		List<Group<int, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19435,14 +10230,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19454,14 +10249,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19472,14 +10267,14 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source, G.IEqualityComparer<T> comparer)
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		var length = source.Length;
 		List<Group<int, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19491,14 +10286,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19510,14 +10305,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19528,14 +10323,14 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = source.Length;
 		List<Group<int, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19547,14 +10342,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item), out var index))
+			if (!hs.TryAdd(f = function(item), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19566,14 +10361,14 @@ public static class RedStarLinqExtras
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = function(item, i), out var index))
+			if (!hs.TryAdd(f = function(item, i), out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -19584,1129 +10379,19 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<int, T>> result = new(length);
 		T f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
+			if (!hs.TryAdd(f = item, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
 		}
 		result.TrimExcess();
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax(this ReadOnlySpan<double> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMax(this ReadOnlySpan<MpzT> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? IndexOf(list_, value2) : -1;
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? IndexOf(list_, value2) : -1;
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? IndexOf(list_, value2) : -1;
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? IndexOf(list_, value2) : -1;
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Sum() / (MpzT)list_.Length;
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Sum() / (MpzT)list_.Length;
-		return IndexOf(list_, value);
-	}
-
-	public static int IndexOfMean(this ReadOnlySpan<decimal> source)
-	{
-		var value = source.Mean();
-		var value2 = value;
-		return value == value2 ? source.IndexOf(value2) : -1;
-	}
-
-	public static int IndexOfMean(this ReadOnlySpan<double> source)
-	{
-		var value = source.Mean();
-		var value2 = value;
-		return value == value2 ? source.IndexOf(value2) : -1;
-	}
-
-	public static int IndexOfMean(this ReadOnlySpan<int> source)
-	{
-		var value = (int)(source.Sum(x => (long)x) / Max(source.Length, 1));
-		return source.IndexOf(value);
-	}
-
-	public static int IndexOfMean(this ReadOnlySpan<uint> source)
-	{
-		var value = (uint)(source.Sum(x => (long)x) / Max(source.Length, 1));
-		return source.IndexOf(value);
-	}
-
-	public static int IndexOfMean(this ReadOnlySpan<long> source)
-	{
-		var value = (long)(source.Sum(x => (MpzT)x) / Max(source.Length, 1));
-		return source.IndexOf(value);
-	}
-
-	public static int IndexOfMean(this ReadOnlySpan<MpzT> source)
-	{
-		var value = source.Sum() / (MpzT)source.Length;
-		return source.IndexOf(value);
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return IndexOf(list_, list_.Median());
-	}
-
-	public static int IndexOfMedian(this ReadOnlySpan<decimal> source) => source.IndexOf(source.Median());
-
-	public static int IndexOfMedian(this ReadOnlySpan<double> source) => source.IndexOf(source.Median());
-
-	public static int IndexOfMedian(this ReadOnlySpan<int> source) => source.IndexOf(source.Median());
-
-	public static int IndexOfMedian(this ReadOnlySpan<uint> source) => source.IndexOf(source.Median());
-
-	public static int IndexOfMedian(this ReadOnlySpan<long> source) => source.IndexOf(source.Median());
-
-	public static int IndexOfMedian(this ReadOnlySpan<MpzT> source) => source.IndexOf(source.Median());
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin(this ReadOnlySpan<double> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int IndexOfMin(this ReadOnlySpan<MpzT> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
 		return result;
 	}
 
@@ -20903,1116 +10588,6 @@ public static class RedStarLinqExtras
 				result.AddRange(separator);
 			var item = source[i];
 			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax(this ReadOnlySpan<double> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMax(this ReadOnlySpan<MpzT> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? LastIndexOf(list_, value2) : -1;
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? LastIndexOf(list_, value2) : -1;
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? LastIndexOf(list_, value2) : -1;
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Mean();
-		var value2 = value;
-		return value == value2 ? LastIndexOf(list_, value2) : -1;
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Sum() / (MpzT)list_.Length;
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		var value = list_.Sum() / (MpzT)list_.Length;
-		return LastIndexOf(list_, value);
-	}
-
-	public static int LastIndexOfMean(this ReadOnlySpan<decimal> source)
-	{
-		var value = source.Mean();
-		var value2 = value;
-		return value == value2 ? source.LastIndexOf(value2) : -1;
-	}
-
-	public static int LastIndexOfMean(this ReadOnlySpan<double> source)
-	{
-		var value = source.Mean();
-		var value2 = value;
-		return value == value2 ? source.LastIndexOf(value2) : -1;
-	}
-
-	public static int LastIndexOfMean(this ReadOnlySpan<int> source)
-	{
-		var value = (int)(source.Sum(x => (long)x) / Max(source.Length, 1));
-		return source.LastIndexOf(value);
-	}
-
-	public static int LastIndexOfMean(this ReadOnlySpan<uint> source)
-	{
-		var value = (uint)(source.Sum(x => (long)x) / Max(source.Length, 1));
-		return source.LastIndexOf(value);
-	}
-
-	public static int LastIndexOfMean(this ReadOnlySpan<long> source)
-	{
-		var value = (long)(source.Sum(x => (MpzT)x) / Max(source.Length, 1));
-		return source.LastIndexOf(value);
-	}
-
-	public static int LastIndexOfMean(this ReadOnlySpan<MpzT> source)
-	{
-		var value = source.Sum() / (MpzT)source.Length;
-		return source.LastIndexOf(value);
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = source.ToList(function);
-		return LastIndexOf(list_, list_.Median());
-	}
-
-	public static int LastIndexOfMedian(this ReadOnlySpan<decimal> source) => source.LastIndexOf(source.Median());
-
-	public static int LastIndexOfMedian(this ReadOnlySpan<double> source) => source.LastIndexOf(source.Median());
-
-	public static int LastIndexOfMedian(this ReadOnlySpan<int> source) => source.LastIndexOf(source.Median());
-
-	public static int LastIndexOfMedian(this ReadOnlySpan<uint> source) => source.LastIndexOf(source.Median());
-
-	public static int LastIndexOfMedian(this ReadOnlySpan<long> source) => source.LastIndexOf(source.Median());
-
-	public static int LastIndexOfMedian(this ReadOnlySpan<MpzT> source) => source.LastIndexOf(source.Median());
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item);
-				result = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = function(item, i);
-				result = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		decimal indicator = 0;
-		decimal f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin(this ReadOnlySpan<double> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		double indicator = 0;
-		double f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		var indicator = 0;
-		int f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		uint indicator = 0;
-		uint f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		long indicator = 0;
-		long f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
-		}
-		return result;
-	}
-
-	public static int LastIndexOfMin(this ReadOnlySpan<MpzT> source)
-	{
-		var length = source.Length;
-		var result = -1;
-		MpzT indicator = 0;
-		MpzT f;
-		for (var i = length - 1; i >= 0; i--)
-		{
-			var item = source[i];
-			if (i == length - 1)
-			{
-				indicator = item;
-				result = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result = i;
-			}
 		}
 		return result;
 	}
@@ -24049,7 +12624,7 @@ public static class RedStarLinqExtras
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
+		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], source3[i]);
@@ -24059,7 +12634,7 @@ public static class RedStarLinqExtras
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
+		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], source3[i], i);
@@ -24068,7 +12643,7 @@ public static class RedStarLinqExtras
 
 	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
 	{
-		var length = RedStarLinqMath.Min((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
+		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
 		NList<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result[i] = (source[i], source2[i], source3[i]);
@@ -24112,7 +12687,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
+		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], source3[i]);
@@ -24124,7 +12699,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
+		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], source3[i], i);
@@ -24135,7 +12710,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
-		var length = RedStarLinqMath.Min((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
+		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
 		NList<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result[i] = (source[i], source2[i], source3[i]);
@@ -24392,7 +12967,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24401,7 +12976,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24416,7 +12991,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24432,7 +13007,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24448,7 +13023,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24463,7 +13038,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24477,7 +13052,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = [];
+		ListHashSet<TResult> hs = [];
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24486,7 +13061,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24501,7 +13076,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24517,7 +13092,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24533,7 +13108,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24548,7 +13123,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24562,7 +13137,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24571,7 +13146,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24586,7 +13161,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24602,7 +13177,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24618,7 +13193,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24633,7 +13208,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24647,7 +13222,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(comparer);
+		ListHashSet<TResult> hs = new(comparer);
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24656,7 +13231,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24671,7 +13246,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24687,7 +13262,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24703,7 +13278,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24718,7 +13293,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24731,7 +13306,7 @@ public static class RedStarLinqExtras
 
 	public static List<NGroup<T, T>> NGroup<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer) where T : unmanaged
 	{
-		ListHashSet<T> dic = new(comparer);
+		ListHashSet<T> hs = new(comparer);
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24740,7 +13315,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24755,7 +13330,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24771,7 +13346,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24787,7 +13362,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24802,7 +13377,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24816,7 +13391,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24825,7 +13400,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24840,7 +13415,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24856,7 +13431,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24872,7 +13447,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24887,7 +13462,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24901,7 +13476,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24910,7 +13485,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24925,7 +13500,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24941,7 +13516,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24957,7 +13532,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24972,7 +13547,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -24985,7 +13560,7 @@ public static class RedStarLinqExtras
 
 	public static List<NGroup<T, T>> NGroup<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction) where T : unmanaged
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -24994,7 +13569,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25009,7 +13584,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25025,7 +13600,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25041,7 +13616,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25056,7 +13631,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25070,7 +13645,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -25079,7 +13654,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25094,7 +13669,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25110,7 +13685,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25126,7 +13701,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25141,7 +13716,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out var index))
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25155,7 +13730,7 @@ public static class RedStarLinqExtras
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where T : unmanaged where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -25164,7 +13739,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25179,7 +13754,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25195,7 +13770,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25211,7 +13786,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25226,7 +13801,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = function(item, i), out var index))
+				if (!hs.TryAdd(f = function(item, i), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25239,7 +13814,7 @@ public static class RedStarLinqExtras
 
 	public static List<NGroup<T, T>> NGroup<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : unmanaged
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is NList<T> list)
 		{
 			var length = list.Length;
@@ -25248,7 +13823,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25263,7 +13838,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25279,7 +13854,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25295,7 +13870,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25310,7 +13885,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!dic.TryAdd(f = item, out var index))
+				if (!hs.TryAdd(f = item, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -25408,5979 +13983,6 @@ public static class RedStarLinqExtras
 		result.Resize(j);
 		result.TrimExcess();
 		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is decimal[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is double[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is int[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is uint[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is long[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is MpzT[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMean(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is decimal[] array)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(array);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list2);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(source);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is double[] array)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(array);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list2);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = NList<double>.ReturnOrConstruct(source);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var value = (int)(list.Sum(x => (long)x) / Max(list.Length, 1));
-			return IndexesOf(list, value);
-		}
-		else if (source is int[] array)
-		{
-			var value = (int)(array.Sum(x => (long)x) / Max(array.Length, 1));
-			return IndexesOf(array.AsSpan(), value);
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var value = (int)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
-			return IndexesOf(list2, value);
-		}
-		else
-		{
-			var list_ = NList<int>.ReturnOrConstruct(source);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var value = (uint)(list.Sum(x => (long)x) / Max(list.Length, 1));
-			return IndexesOf(list, value);
-		}
-		else if (source is uint[] array)
-		{
-			var value = (uint)(array.Sum(x => (long)x) / Max(array.Length, 1));
-			return IndexesOf(array.AsSpan(), value);
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var value = (uint)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
-			return IndexesOf(list2, value);
-		}
-		else
-		{
-			var list_ = NList<int>.ReturnOrConstruct(source);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var value = (long)(list.Sum(x => (MpzT)x) / Max(list.Length, 1));
-			return IndexesOf(list, value);
-		}
-		else if (source is long[] array)
-		{
-			var value = (long)(array.Sum(x => (MpzT)x) / Max(array.Length, 1));
-			return IndexesOf(array.AsSpan(), value);
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var value = (long)(list2.Sum(x => (MpzT)x) / Max(list2.Count, 1));
-			return IndexesOf(list2, value);
-		}
-		else
-		{
-			var list_ = NList<long>.ReturnOrConstruct(source);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var value = list.Sum() / Max(list.Length, 1);
-			return IndexesOf(list, value);
-		}
-		else if (source is MpzT[] array)
-		{
-			var value = array.Sum() / Max(array.Length, 1);
-			return IndexesOf(array.AsSpan(), value);
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var value = list2.Sum() / Max(list2.Count, 1);
-			return IndexesOf(list2, value);
-		}
-		else
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(source);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMin(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is decimal[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is double[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is int[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is uint[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is long[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is MpzT[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = item;
-					result[j++] = i;
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = item;
-					result.Add(i);
-				}
-				else if ((f = item) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMax<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) > indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = list_.Mean();
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = ToNList(list, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = ToNList(array.AsSpan(), function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = ToNList(list2, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = ToNList(list3, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			var sum = list_.Sum();
-			var value = sum / Max(list_.Length, 1);
-			if (value * list_.Length != sum)
-				return [];
-			return IndexesOf(list_, value);
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var list_ = RedStarLinq.Convert(list, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var list_ = RedStarLinq.Convert(array, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var list_ = RedStarLinq.Convert(list3, function);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = ToNList(source, function);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian(this G.IEnumerable<decimal> source)
-	{
-		if (source is NList<decimal> list)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is decimal[] array)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(array);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(list2);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<decimal>.ReturnOrConstruct(source);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian(this G.IEnumerable<double> source)
-	{
-		if (source is NList<double> list)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is double[] array)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(array);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var list_ = NList<double>.ReturnOrConstruct(list2);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<double>.ReturnOrConstruct(source);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian(this G.IEnumerable<int> source)
-	{
-		if (source is NList<int> list)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(list);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is int[] array)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(array);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var list_ = NList<int>.ReturnOrConstruct(list2);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<int>.ReturnOrConstruct(source);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian(this G.IEnumerable<uint> source)
-	{
-		if (source is NList<uint> list)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(list);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is uint[] array)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(array);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(list2);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<uint>.ReturnOrConstruct(source);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian(this G.IEnumerable<long> source)
-	{
-		if (source is NList<long> list)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(list);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is long[] array)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(array);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var list_ = NList<long>.ReturnOrConstruct(list2);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<long>.ReturnOrConstruct(source);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMedian(this G.IEnumerable<MpzT> source)
-	{
-		if (source is NList<MpzT> list)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(list);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is MpzT[] array)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(array);
-			return IndexesOf(list_, list_.Median());
-		}
-		else if (source is G.IList<MpzT> list2)
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(list2);
-			return IndexesOf(list_, list_.Median());
-		}
-		else
-		{
-			var list_ = NList<MpzT>.ReturnOrConstruct(source);
-			return IndexesOf(list_, list_.Median());
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			decimal indicator = 0;
-			var j = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			double indicator = 0;
-			var j = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			var indicator = 0;
-			var j = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			uint indicator = 0;
-			var j = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			long indicator = 0;
-			var j = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item);
-					result[j++] = i;
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item);
-					result.Add(i);
-				}
-				else if ((f = function(item)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static NList<int> IndexesOfMin<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
-			MpzT indicator = 0;
-			var j = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result[j++] = i;
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result[j = 0] = i;
-					j++;
-				}
-				else if (f == indicator!)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			MpzT indicator = 0;
-			MpzT f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-				{
-					indicator = function(item, i);
-					result.Add(i);
-				}
-				else if ((f = function(item, i)) < indicator!)
-				{
-					indicator = f;
-					result.Clear(false);
-					result.Add(i);
-				}
-				else if (f == indicator!)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
 	}
 
 	public static NList<TResult> NPairs<T, TResult>(this G.IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged
@@ -31684,42 +14286,42 @@ public static class RedStarLinqExtras
 
 	public static NList<int> RepresentIntoNumbers<T>(this NList<T> source) where T : unmanaged
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		var length = source.Length;
 		var result = RedStarLinq.NEmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
 		}
 		return result;
 	}
 
 	public static NList<int> RepresentIntoNumbers<T>(this NList<T> source, Func<T, T, bool> equalFunction) where T : unmanaged
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = source.Length;
 		var result = RedStarLinq.NEmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
 		}
 		return result;
 	}
 
 	public static NList<int> RepresentIntoNumbers<T>(this NList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : unmanaged
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		var result = RedStarLinq.NEmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
 		}
 		return result;
 	}
@@ -32475,1364 +15077,44 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		decimal indicator = 0;
-		var j = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		decimal indicator = 0;
-		var j = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		double indicator = 0;
-		var j = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		double indicator = 0;
-		var j = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var indicator = 0;
-		var j = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var indicator = 0;
-		var j = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		uint indicator = 0;
-		var j = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		uint indicator = 0;
-		var j = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		long indicator = 0;
-		var j = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		long indicator = 0;
-		var j = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		MpzT indicator = 0;
-		var j = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		MpzT indicator = 0;
-		var j = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		decimal indicator = 0;
-		var j = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this ReadOnlySpan<double> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		double indicator = 0;
-		var j = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var indicator = 0;
-		var j = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		uint indicator = 0;
-		var j = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		long indicator = 0;
-		var j = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMax(this ReadOnlySpan<MpzT> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		MpzT indicator = 0;
-		var j = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) > indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = list_.Mean();
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = list_.Mean();
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = list_.Mean();
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = list_.Mean();
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = list_.Sum() / (MpzT)list_.Length;
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		var value = list_.Sum() / (MpzT)list_.Length;
-		return IndexesOf(list_, value);
-	}
-
-	public static NList<int> IndexesOfMean(this ReadOnlySpan<decimal> source)
-	{
-		var value = source.Mean();
-		return IndexesOf(source, value);
-	}
-
-	public static NList<int> IndexesOfMean(this ReadOnlySpan<double> source)
-	{
-		var value = source.Mean();
-		return IndexesOf(source, value);
-	}
-
-	public static NList<int> IndexesOfMean(this ReadOnlySpan<int> source)
-	{
-		var value = (int)(source.Sum(x => (long)x) / Max(source.Length, 1));
-		return IndexesOf(source, value);
-	}
-
-	public static NList<int> IndexesOfMean(this ReadOnlySpan<uint> source)
-	{
-		var value = (uint)(source.Sum(x => (long)x) / Max(source.Length, 1));
-		return IndexesOf(source, value);
-	}
-
-	public static NList<int> IndexesOfMean(this ReadOnlySpan<long> source)
-	{
-		var value = (long)(source.Sum(x => (MpzT)x) / Max(source.Length, 1));
-		return IndexesOf(source, value);
-	}
-
-	public static NList<int> IndexesOfMean(this ReadOnlySpan<MpzT> source)
-	{
-		var value = source.Sum() / (MpzT)source.Length;
-		return IndexesOf(source, value);
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var list_ = ToNList(source, function);
-		return IndexesOf(list_, list_.Median());
-	}
-
-	public static NList<int> IndexesOfMedian(this ReadOnlySpan<decimal> source) => IndexesOf(source, source.Median());
-
-	public static NList<int> IndexesOfMedian(this ReadOnlySpan<double> source) => IndexesOf(source, source.Median());
-
-	public static NList<int> IndexesOfMedian(this ReadOnlySpan<int> source) => IndexesOf(source, source.Median());
-
-	public static NList<int> IndexesOfMedian(this ReadOnlySpan<uint> source) => IndexesOf(source, source.Median());
-
-	public static NList<int> IndexesOfMedian(this ReadOnlySpan<long> source) => IndexesOf(source, source.Median());
-
-	public static NList<int> IndexesOfMedian(this ReadOnlySpan<MpzT> source) => IndexesOf(source, source.Median());
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		decimal indicator = 0;
-		var j = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		decimal indicator = 0;
-		var j = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		double indicator = 0;
-		var j = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		double indicator = 0;
-		var j = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var indicator = 0;
-		var j = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var indicator = 0;
-		var j = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		uint indicator = 0;
-		var j = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		uint indicator = 0;
-		var j = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		long indicator = 0;
-		var j = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		long indicator = 0;
-		var j = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		MpzT indicator = 0;
-		var j = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item);
-				result[j++] = i;
-			}
-			else if ((f = function(item)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		MpzT indicator = 0;
-		var j = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = function(item, i);
-				result[j++] = i;
-			}
-			else if ((f = function(item, i)) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		decimal indicator = 0;
-		var j = 0;
-		decimal f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin(this ReadOnlySpan<double> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		double indicator = 0;
-		var j = 0;
-		double f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var indicator = 0;
-		var j = 0;
-		int f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		uint indicator = 0;
-		var j = 0;
-		uint f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		long indicator = 0;
-		var j = 0;
-		long f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOfMin(this ReadOnlySpan<MpzT> source)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		MpzT indicator = 0;
-		var j = 0;
-		MpzT f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (i == 0)
-			{
-				indicator = item;
-				result[j++] = i;
-			}
-			else if ((f = item) < indicator!)
-			{
-				indicator = f;
-				result[j = 0] = i;
-				j++;
-			}
-			else if (f == indicator!)
-				result[j++] = i;
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
 	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = [];
+		ListHashSet<T> hs = [];
 		var length = source.Length;
 		var result = RedStarLinq.NEmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
 		}
 		return result;
 	}
 
 	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = source.Length;
 		var result = RedStarLinq.NEmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
 		}
 		return result;
 	}
 
 	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
-		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		var result = RedStarLinq.NEmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
 		}
 		return result;
 	}
@@ -34454,10 +15736,10 @@ public static class RedStarLinqExtras
 	public static String ToNString(this char[] source) => new((G.IList<char>)source);
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, char> function) => new(ToArray(source, function));
 	public static string ToString<T>(this Span<T> source, Func<T, char> function) => new(ToArray((ReadOnlySpan<T>)source, function));
-	public static string ToString<T>(this T[] source, Func<T, char> function) => new(RedStarLinq.ToArray((G.IList<T>)source, function));
+	public static string ToString<T>(this T[] source, Func<T, char> function) => new(RedStarLinq.ToArray(source, function));
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, int, char> function) => new(ToArray(source, function));
 	public static string ToString<T>(this Span<T> source, Func<T, int, char> function) => new(ToArray((ReadOnlySpan<T>)source, function));
-	public static string ToString<T>(this T[] source, Func<T, int, char> function) => new(RedStarLinq.ToArray((G.IList<T>)source, function));
+	public static string ToString<T>(this T[] source, Func<T, int, char> function) => new(RedStarLinq.ToArray(source, function));
 	public static string ToString(this ReadOnlySpan<char> source) => new(source.ToArray());
 	public static string ToString(this Span<char> source) => new((ReadOnlySpan<char>)source.ToArray());
 	public static string ToString(this char[] source) => new(source);

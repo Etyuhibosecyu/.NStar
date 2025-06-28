@@ -7,7 +7,6 @@ global using System.Threading.Tasks;
 global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static System.Math;
-global using String = NStar.Core.String;
 
 namespace NStar.ParallelHS;
 

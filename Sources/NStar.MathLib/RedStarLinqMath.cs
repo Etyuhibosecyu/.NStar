@@ -5364,196 +5364,87 @@ public static class RedStarLinqMath
 		return indicator;
 	}
 
-	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
+	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => MeanInternal<T, decimal, decimal, decimal>(source, function);
+
+	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => MeanInternal<T, decimal, decimal, decimal>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => MeanInternal<T, double, double, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => MeanInternal<T, double, double, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => MeanInternal<T, int, long, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => MeanInternal<T, int, long, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => MeanInternal<T, uint, ulong, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => MeanInternal<T, uint, ulong, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => MeanInternal<T, long, MpzT, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => MeanInternal<T, long, MpzT, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => MeanInternal<T, MpzT, MpzT, double>(source, function);
+
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => MeanInternal<T, MpzT, MpzT, double>(source, function);
+
+	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		decimal result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i]);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		decimal result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i], i);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += (double)function(source[i]);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += (double)function(source[i], i);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i]);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i], i);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i]);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i], i);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i]);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += function(source[i], i);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += (double)function(source[i]);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-			result += (double)function(source[i], i);
-		return result / Math.Max(source.Length, 1);
-	}
-
-	public static decimal Mean(this ReadOnlySpan<decimal> source)
-	{
-		var length = source.Length;
-		decimal result = 0;
-		for (var i = 0; i < length; i++)
+		if (source.Length == 0)
+			return TResult.Zero;
+		var sum = TAccumulator.CreateChecked(function(source[0]));
+		for (var i = 1; i < source.Length; i++)
 		{
-			var item = source[i];
-			result += item;
+			checked
+			{
+				sum += TAccumulator.CreateChecked(function(source[i]));
+			}
 		}
-		return result / Math.Max(source.Length, 1);
+		return TResult.CreateChecked(sum) / TResult.CreateChecked(source.Length);
 	}
 
-	public static double Mean(this ReadOnlySpan<double> source)
+	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
 	{
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
+		ArgumentNullException.ThrowIfNull(function);
+		if (source.Length == 0)
+			return TResult.Zero;
+		var sum = TAccumulator.CreateChecked(function(source[0], 0));
+		for (var i = 1; i < source.Length; i++)
 		{
-			var item = source[i];
-			result += (double)item;
+			checked
+			{
+				sum += TAccumulator.CreateChecked(function(source[i], i));
+			}
 		}
-		return result / Math.Max(source.Length, 1);
+		return TResult.CreateChecked(sum) / TResult.CreateChecked(source.Length);
 	}
 
-	public static double Mean(this ReadOnlySpan<int> source)
-	{
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result += item;
-		}
-		return result / Math.Max(source.Length, 1);
-	}
+	public static decimal Mean(this ReadOnlySpan<decimal> source) => MeanInternal<decimal, decimal, decimal>(source);
 
-	public static double Mean(this ReadOnlySpan<uint> source)
-	{
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result += item;
-		}
-		return result / Math.Max(source.Length, 1);
-	}
+	public static double Mean(this ReadOnlySpan<double> source) => MeanInternal<double, double, double>(source);
 
-	public static double Mean(this ReadOnlySpan<long> source)
-	{
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result += item;
-		}
-		return result / Math.Max(source.Length, 1);
-	}
+	public static double Mean(this ReadOnlySpan<int> source) => MeanInternal<int, long, double>(source);
 
-	public static double Mean(this ReadOnlySpan<MpzT> source)
+	public static double Mean(this ReadOnlySpan<uint> source) => MeanInternal<uint, ulong, double>(source);
+
+	public static double Mean(this ReadOnlySpan<long> source) => MeanInternal<long, MpzT, double>(source);
+
+	public static double Mean(this ReadOnlySpan<MpzT> source) => MeanInternal<MpzT, MpzT, double>(source);
+
+	private static TResult MeanInternal<TSource, TAccumulator, TResult>(ReadOnlySpan<TSource> source) where TSource : struct, INumber<TSource> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
 	{
-		var length = source.Length;
-		double result = 0;
-		for (var i = 0; i < length; i++)
+		if (source.Length == 0)
+			return TResult.Zero;
+		var sum = TAccumulator.CreateChecked(source[0]);
+		for (var i = 1; i < source.Length; i++)
 		{
-			var item = source[i];
-			result += (double)item;
+			checked
+			{
+				sum += TAccumulator.CreateChecked(source[i]);
+			}
 		}
-		return result / Math.Max(source.Length, 1);
+		return TResult.CreateChecked(sum) / TResult.CreateChecked(source.Length);
 	}
 
 	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => function == null
@@ -5614,7 +5505,7 @@ public static class RedStarLinqMath
 
 	public static long Median(this ReadOnlySpan<long> source) => source.Length == 0 ? default : new NList<long>(source).Sort()[(source.Length - 1) / 2];
 
-	public static MpzT Median(this ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new NList<MpzT>(source).Sort()[(source.Length - 1) / 2];
+	public static MpzT Median(this ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new List<MpzT>(source).Sort()[(source.Length - 1) / 2];
 
 	public static T? Median<T>(this ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).Sort()[(source.Length - 1) / 2];
 

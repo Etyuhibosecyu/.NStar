@@ -257,17 +257,17 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
 		// -  If there are odd # of elements, pick the middle element (in this case 4), and compute
-		//    its left and right branches
+		//	its left and right branches
 		// -  If there are even # of elements, pick the left middle element, save the right middle element
-		//    and call the function on the rest
-		//    1 2 3 4 5 6 -> pick 3, save 4 and call the fn on 1,2 and 5,6
-		//    now add 4 as a red node to the lowest element on the right branch
-		//             3                       3
-		//         1       5       ->     1        5
-		//           2       6             2     4   6
-		//    As we're adding to the leftmost of the right branch, nesting will not hurt the red-black properties
-		//    Leaf nodes are red if they have no sibling (if there are 2 nodes or if a node trickles
-		//    down to the bottom
+		//	and call the function on the rest
+		//	1 2 3 4 5 6 -> pick 3, save 4 and call the fn on 1,2 and 5,6
+		//	now add 4 as a red node to the lowest element on the right branch
+		//			   3					   3
+		//		   1	   5	   ->	  1		   5
+		//		     2	     6			   2	 4   6
+		//	As we're adding to the leftmost of the right branch, nesting will not hurt the red-black properties
+		//	Leaf nodes are red if they have no sibling (if there are 2 nodes or if a node trickles
+		//	down to the bottom
 
 		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
 		// Only some base cases are handled below.
@@ -2189,7 +2189,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 /// A class that generates an G.IEqualityComparer for this SortedSet. Requires that the definition of
 /// equality defined by the G.IComparer for this SortedSet be consistent with the default G.IEqualityComparer
 /// for the type T. If not, such an G.IEqualityComparer should be provided through the constructor.
-/// </summary>    
+/// </summary>	
 internal class TreeSetEqualityComparer<T> : G.IEqualityComparer<TreeSet<T>>
 {
 	private protected readonly G.IComparer<T> comparer;
@@ -2204,7 +2204,7 @@ internal class TreeSetEqualityComparer<T> : G.IEqualityComparer<TreeSet<T>>
 	/// <summary>
 	/// Create a new SetEqualityComparer, given a comparer for member order and another for member equality (these
 	/// must be consistent in their definition of equality)
-	/// </summary>        
+	/// </summary>		
 	public TreeSetEqualityComparer(G.IComparer<T>? comparer, G.IEqualityComparer<T>? memberEqualityComparer)
 	{
 		if (comparer == null)

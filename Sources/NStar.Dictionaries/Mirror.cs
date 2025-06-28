@@ -18,7 +18,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 		/// </summary>
 		public int next;
 		public int nextM;
-		public TKey key;     // Key of entry
+		public TKey key;	 // Key of entry
 		public TValue value; // Value of entry
 	}
 

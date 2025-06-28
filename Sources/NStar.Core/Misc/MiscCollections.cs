@@ -523,8 +523,8 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDisposable
 {
-	private protected T[] _array;     // Storage for stack elements
-	private protected int _size;           // Number of items in the stack.
+	private protected T[] _array;	 // Storage for stack elements
+	private protected int _size;		   // Number of items in the stack.
 	private protected static readonly Queue<Stack<T>> pool = new(256);
 	private protected static readonly object globalLockObj = new();
 	[NonSerialized]
@@ -684,7 +684,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 		if (_size == 0)
 			throw new InvalidOperationException("Невозможно удалить элемент из стека, так как он пуст.");
 		var item = _array[--_size];
-		_array[_size] = default!;     // Free memory quicker.
+		_array[_size] = default!;	 // Free memory quicker.
 		return item;
 	}
 

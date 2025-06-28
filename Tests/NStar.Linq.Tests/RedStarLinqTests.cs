@@ -498,9 +498,9 @@ public class RedStarLinqTests
 	public void TestCombine() => Test(a =>
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
+		G.IEnumerable<string> b = RedStarLinq.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
-		b = E.Skip(list2, 1).ToArray();
+		b = E.ToArray(E.Skip(list2, 1));
 		ProcessB(a, b);
 		b = E.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
@@ -528,9 +528,9 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.SequenceEqual(d2, c2));
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Combine(b, (Func<string, string, string>)null!).ToList());
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Combine(b, (Func<string, string, int, string>)null!).ToList());
-			G.IEnumerable<string> b2 = E.Skip(list2, 2).ToList();
+			G.IEnumerable<string> b2 = RedStarLinq.ToList(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
-			b2 = E.Skip(list2, 2).ToArray();
+			b2 = E.ToArray(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
 			b2 = E.ToList(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
@@ -565,9 +565,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestCombine2() => TestROL(a =>
 	{
-		G.IReadOnlyList<string> b = E.Skip(list2, 1).ToList();
+		G.IReadOnlyList<string> b = RedStarLinq.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
-		b = E.Skip(list2, 1).ToArray();
+		b = E.ToArray(E.Skip(list2, 1));
 		ProcessB(a, b);
 		b = E.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
@@ -589,9 +589,9 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.SequenceEqual(d2, c2));
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Combine(b, (Func<string, string, string>)null!).ToList());
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Combine(b, (Func<string, string, int, string>)null!).ToList());
-			G.IReadOnlyList<string> b2 = E.Skip(list2, 2).ToList();
+			G.IReadOnlyList<string> b2 = RedStarLinq.ToList(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
-			b2 = E.Skip(list2, 2).ToArray();
+			b2 = E.ToArray(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
 			b2 = E.ToList(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
@@ -621,9 +621,9 @@ public class RedStarLinqTests
 	public void TestConcat() => Test(a =>
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
+		G.IEnumerable<string> b = RedStarLinq.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
-		b = E.Skip(list2, 1).ToArray();
+		b = E.ToArray(E.Skip(list2, 1));
 		ProcessB(a, b);
 		b = E.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
@@ -648,9 +648,9 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Concat((G.IEnumerable<string>)null!));
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Concat((G.IEnumerable<string>[])null!));
-			G.IEnumerable<string> b2 = E.Skip(list2, 2).ToList();
+			G.IEnumerable<string> b2 = RedStarLinq.ToList(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
-			b2 = E.Skip(list2, 2).ToArray();
+			b2 = E.ToArray(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
 			b2 = E.ToList(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
@@ -806,13 +806,13 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			G.IEnumerable<string> a = new List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			G.IEnumerable<string> a = RedStarLinq.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
 			a = E.ToArray(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
-			a = new G.List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			a = E.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
-			a = new List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))).Insert(0, "XXX").GetSlice(1);
+			a = RedStarLinq.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))).Insert(0, "XXX").GetSlice(1);
 			ProcessA(a);
 			a = E.Select(E.ToArray(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))), x => x);
 			ProcessA(a);
@@ -854,7 +854,7 @@ public class RedStarLinqTests
 		}
 		void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
-			G.IEnumerable<string> c = new List<string>(b);
+			G.IEnumerable<string> c = RedStarLinq.ToList(b);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
 			c = E.ToArray(b);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
@@ -952,7 +952,7 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
-			G.IEnumerable<int> a = new List<int>(original);
+			G.IEnumerable<int> a = RedStarLinq.ToList(original);
 			ProcessA(a);
 			a = RedStarLinq.ToArray(original);
 			ProcessA(a);
@@ -1262,7 +1262,7 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
-			G.IEnumerable<int> a = new List<int>(original);
+			G.IEnumerable<int> a = RedStarLinq.ToList(original);
 			ProcessA(a);
 			a = RedStarLinq.ToArray(original);
 			ProcessA(a);
@@ -1512,7 +1512,7 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
-			G.IEnumerable<int> a = new List<int>(original);
+			G.IEnumerable<int> a = RedStarLinq.ToList(original);
 			ProcessA(a);
 			a = RedStarLinq.ToArray(original);
 			ProcessA(a);
@@ -1841,7 +1841,7 @@ public class RedStarLinqTests
 
 		static void ProcessA(ImmutableArray<int> original, ImmutableArray<long> original2, int @default)
 		{
-			G.IReadOnlyList<int> a = new List<int>(original);
+			G.IReadOnlyList<int> a = RedStarLinq.ToList(original);
 			G.IReadOnlyList<long> a2 = new List<long>(original2);
 			ProcessA2(a, a2);
 			a = new NList<int>(original);
@@ -2112,13 +2112,13 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			G.IEnumerable<string> a = new List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			G.IEnumerable<string> a = RedStarLinq.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
 			a = E.ToArray(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
-			a = new G.List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			a = E.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
-			a = new List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))).Insert(0, "XXX").GetSlice(1);
+			a = RedStarLinq.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))).Insert(0, "XXX").GetSlice(1);
 			ProcessA(a);
 			a = E.Select(E.ToArray(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))), x => x);
 			ProcessA(a);
@@ -2513,7 +2513,7 @@ public class RedStarLinqTests
 
 		static void ProcessA(ImmutableArray<int> original, ImmutableArray<long> original2, int @default)
 		{
-			G.IReadOnlyList<int> a = new List<int>(original);
+			G.IReadOnlyList<int> a = RedStarLinq.ToList(original);
 			G.IReadOnlyList<long> a2 = new List<long>(original2);
 			ProcessA2(a, a2);
 			a = new NList<int>(original);
@@ -2837,7 +2837,7 @@ public class RedStarLinqTestsN
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
-			G.IEnumerable<int> a = new List<int>(original);
+			G.IEnumerable<int> a = RedStarLinq.ToList(original);
 			ProcessA(a);
 			a = RedStarLinq.ToArray(original);
 			ProcessA(a);

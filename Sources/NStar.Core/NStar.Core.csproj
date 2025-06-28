@@ -6,9 +6,9 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-	  <DebugType>none</DebugType>
-	  <Platforms>AnyCPU</Platforms>
-	  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+		<DebugType>none</DebugType>
+		<Platforms>AnyCPU</Platforms>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -17,7 +17,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\Mpir.NET\Mpir.NET.csproj" />
 		<None Update="xmpir64.dll">
