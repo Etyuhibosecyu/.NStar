@@ -653,7 +653,7 @@ public class NListTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast([]);
-		c = [];
+		c = [.. nList];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast(new(('D', 'D', 'D'), ('M', 'M', 'M')));
@@ -693,7 +693,7 @@ public class NListTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast([]);
-		c = [.. nList];
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast(new(('D', 'D', 'D'), ('M', 'M', 'M')));

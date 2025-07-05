@@ -651,6 +651,24 @@ public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain :
 			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		}, () =>
 		{
+			var sl2 = sl.Reverse();
+			gl.Reverse();
+			Assert.IsTrue(sl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
+			Assert.AreEqual(sl2, sl);
+		}, () =>
+		{
+			var length = Min(random.Next(17), (int)sl.Length);
+			if (sl.Length < length)
+				return;
+			var start = random.Next((int)sl.Length - length + 1);
+			var sl2 = sl.Reverse(start, length);
+			gl.Reverse(start, length);
+			Assert.IsTrue(sl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
+			Assert.AreEqual(sl2, sl);
+		}, () =>
+		{
 			collectionActions.Random(random)();
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 			Assert.IsTrue(E.SequenceEqual(gl, sl));

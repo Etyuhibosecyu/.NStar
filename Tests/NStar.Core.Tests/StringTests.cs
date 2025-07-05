@@ -949,7 +949,7 @@ public class StringTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast([]);
-		c = "";
+		c = new(E.ToArray(nString));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast(new('D', 'M'));
@@ -989,7 +989,7 @@ public class StringTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast([]);
-		c = new(E.ToArray(nString));
+		c = "";
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast(new('D', 'M'));

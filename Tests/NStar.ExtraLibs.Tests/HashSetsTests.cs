@@ -302,50 +302,72 @@ public class ParallelHashSetTests
 	public void CrashTest()
 	{
 		var random = RedStarLinq.FillArray(Environment.ProcessorCount, _ =>
-			Lock(lockObj, () => new Random(Global.random.Next())));
+			Lock(Global.lockObj, () => new Random(Global.random.Next())));
 		var counter = 0;
 	l1:
+		var lockObj = RedStarLinq.FillArray(random.Length, _ => new object());
 		var arr = RedStarLinq.FillArray(16, _ => random[0].Next(16));
 		var toInsert = Array.Empty<int>();
 		ParallelHashSet<int> phs = new(arr);
 		var collectionActions = new[] { (int[] arr) => phs.ExceptWith(arr), phs.IntersectWith, phs.SymmetricExceptWith, phs.UnionWith };
 		var collectionActions2 = new[] { (int tn) =>
 		{
-			toInsert = RedStarLinq.FillArray(random[tn].Next(6), _ => random[tn].Next(16));
+			lock (lockObj[tn % random.Length])
+				toInsert = RedStarLinq.FillArray(random[tn].Next(6), _ => random[tn].Next(16));
 			phs.AddRange(toInsert);
 		}, tn =>
 		{
-			var n = random[tn].Next(phs.Length);
-			toInsert = RedStarLinq.FillArray(random[tn].Next(6), _ => random[tn].Next(16));
+			int n;
+			lock (lockObj[tn % random.Length])
+			{
+				n = random[tn].Next(phs.Length);
+				toInsert = RedStarLinq.FillArray(random[tn].Next(6), _ => random[tn].Next(16));
+			}
 			phs.Insert(n, toInsert);
 		}, tn =>
 		{
-			var length = Min(random[tn].Next(9), phs.Length);
-			if (phs.Length < length)
-				return;
-			var start = random[tn].Next(phs.Length - length + 1);
+			int start, length;
+			lock (lockObj[tn % random.Length])
+			{
+				length = Min(random[tn].Next(9), phs.Length);
+				if (phs.Length < length)
+					return;
+				start = random[tn].Next(phs.Length - length + 1);
+			}
 			phs.Remove(start, length);
 		} };
 		var actions = new[] { (int tn) =>
 		{
-			var n = random[tn].Next(16);
+			int n;
+			lock (lockObj[tn % random.Length])
+				n = random[tn].Next(16);
 			phs.Add(n);
 		}, tn =>
 		{
+			int index, n;
+			lock (lockObj[tn % random.Length])
+			{
+				index = random[tn].Next(phs.Size);
+				n = random[tn].Next(16);
+			}
+			phs.Insert(index, n);
+		}, tn =>
+		{
 			if (phs.Length == 0) return;
-			if (random[tn].Next(2) == 0)
+			int index;
+			lock (lockObj[tn % random.Length])
 			{
-				int n;
 				do
-					n = random[tn].Next(phs.Size);
-				while (!phs.IsValidIndex(n));
-				phs.RemoveAt(n);
+					index = random[tn].Next(phs.Size);
+				while (!phs.IsValidIndex(index));
 			}
-			else
-			{
-				var n = random[tn].Next(16);
-				phs.RemoveValue(n);
-			}
+			phs.RemoveAt(index);
+		}, tn =>
+		{
+			int n;
+			lock (lockObj[tn % random.Length])
+				n = random[tn].Next(16);
+			phs.RemoveValue(n);
 		}, tn =>
 		{
 			var arr = RedStarLinq.FillArray(5, _ => random[tn].Next(16));

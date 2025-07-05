@@ -599,21 +599,19 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		while (current != null)
 		{
 			stack.Push(current);
-			if (i++ >= index)
-				nodes.Add(current);
 			current = current.Left;
 		}
 		while (stack.Length != 0)
 		{
 			current = stack.Pop();
+			if (i++ >= index)
+				nodes.Add(current);
 			if (i >= index + length)
 				break;
 			var node = current.Right;
 			while (node != null)
 			{
 				stack.Push(node);
-				if (i++ >= index)
-					nodes.Add(node);
 				node = node.Left;
 			}
 		}

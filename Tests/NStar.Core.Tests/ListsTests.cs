@@ -491,7 +491,7 @@ public class ListTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast([]);
-		c = [];
+		c = [.. list];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast(new("DDD", "MMM"));
@@ -531,7 +531,7 @@ public class ListTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast([]);
-		c = [.. list];
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast(new("DDD", "MMM"));

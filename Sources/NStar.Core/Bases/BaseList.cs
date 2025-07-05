@@ -245,7 +245,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			throw new ArgumentException("Копируемая последовательность выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(destination);
 		ArgumentOutOfRangeException.ThrowIfNegative(destinationIndex);
-		if (destinationIndex + length > destination.Length)
+		if (destinationIndex > destination.Length)
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевой коллекции.");
 		if (this == destination && sourceIndex == destinationIndex)
 			return;
