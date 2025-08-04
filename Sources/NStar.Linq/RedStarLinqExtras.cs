@@ -1916,7 +1916,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<TResult> Combine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, TResult> function)
+	public static G.IEnumerable<TResult> Combine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
@@ -1924,58 +1924,49 @@ public static class RedStarLinqExtras
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
 				var item2 = list2[i];
 				var item3 = list3[i];
-				result[i] = function(item, item2, item3);
+				yield return function(item, item2, item3);
 			}
-			return result;
 		}
 		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
 		{
 			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = array[i];
 				var item2 = array2[i];
 				var item3 = array3[i];
-				result[i] = function(item, item2, item3);
+				yield return function(item, item2, item3);
 			}
-			return result;
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
-				result[i] = function(item, item2, item3);
+				yield return function(item, item2, item3);
 			}
-			return result;
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
 			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
 				var item2 = list3_2[i];
 				var item3 = list3_3[i];
-				result[i] = function(item, item2, item3);
+				yield return function(item, item2, item3);
 			}
-			return result;
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : source2.TryGetLengthEasily(out length) ? length : source3.TryGetLengthEasily(out length) ? length : 1024);
 			using var en = source.GetEnumerator();
 			using var en2 = source2.GetEnumerator();
 			using var en3 = source3.GetEnumerator();
@@ -1985,15 +1976,13 @@ public static class RedStarLinqExtras
 				var item = en.Current;
 				var item2 = en2.Current;
 				var item3 = en3.Current;
-				result.Add(function(item, item2, item3));
+				yield return function(item, item2, item3);
 				i++;
 			}
-			result.Resize(i);
-			return result;
 		}
 	}
 
-	public static List<TResult> Combine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function)
+	public static G.IEnumerable<TResult> Combine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
@@ -2001,58 +1990,49 @@ public static class RedStarLinqExtras
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
 				var item2 = list2[i];
 				var item3 = list3[i];
-				result[i] = function(item, item2, item3, i);
+				yield return function(item, item2, item3, i);
 			}
-			return result;
 		}
 		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
 		{
 			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = array[i];
 				var item2 = array2[i];
 				var item3 = array3[i];
-				result[i] = function(item, item2, item3, i);
+				yield return function(item, item2, item3, i);
 			}
-			return result;
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
-				result[i] = function(item, item2, item3, i);
+				yield return function(item, item2, item3, i);
 			}
-			return result;
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
 			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
-			var result = RedStarLinq.EmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
 				var item2 = list3_2[i];
 				var item3 = list3_3[i];
-				result[i] = function(item, item2, item3, i);
+				yield return function(item, item2, item3, i);
 			}
-			return result;
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : source2.TryGetLengthEasily(out length) ? length : source3.TryGetLengthEasily(out length) ? length : 1024);
 			using var en = source.GetEnumerator();
 			using var en2 = source2.GetEnumerator();
 			using var en3 = source3.GetEnumerator();
@@ -2062,11 +2042,9 @@ public static class RedStarLinqExtras
 				var item = en.Current;
 				var item2 = en2.Current;
 				var item3 = en3.Current;
-				result.Add(function(item, item2, item3, i));
+				yield return function(item, item2, item3, i);
 				i++;
 			}
-			result.Resize(i);
-			return result;
 		}
 	}
 
@@ -12737,7 +12715,7 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	public static NList<TResult> NFill<T, TResult>(this Func<int, TResult> function, int length) where T : unmanaged where TResult : unmanaged
+	public static NList<TResult> NFill<T, TResult>(Func<int, TResult> function, int length) where T : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
@@ -12746,7 +12724,7 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	public static NList<TResult> NFill<T, TResult>(this TResult elem, int length) where T : unmanaged where TResult : unmanaged
+	public static NList<TResult> NFill<T, TResult>(TResult elem, int length) where T : unmanaged where TResult : unmanaged
 	{
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)

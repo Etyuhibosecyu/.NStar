@@ -11,7 +11,8 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(101), _ => new string((char)random.Next('A', 'Z' + 1), random.Next(1, 6)));
+			var array = i == 0 ? [.. list] : RedStarLinq.FillArray(random.Next(101), _ =>
+				new string((char)random.Next('A', 'Z' + 1), random.Next(1, 6)));
 			G.IEnumerable<string> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToHashSet(array);
@@ -38,7 +39,8 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
+			var array = i == 0 ? [.. list] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				new string((char)random.Next('A', 'Z' + 1), 3));
 			G.IList<string> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToHashSet(array);
@@ -55,7 +57,8 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
+			var array = i == 0 ? [.. list] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				new string((char)random.Next('A', 'Z' + 1), 3));
 			G.IReadOnlyList<string> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToHashSet(array);
@@ -77,7 +80,8 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
+			var array = i == 0 ? [.. nList] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				(@char = (char)random.Next('A', 'Z' + 1), @char, @char));
 			G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToArray(array);
@@ -103,7 +107,8 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
+			var array = i == 0 ? [.. nList] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				(@char = (char)random.Next('A', 'Z' + 1), @char, @char));
 			G.IReadOnlyList<(char, char, char)> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToArray(array);
@@ -122,7 +127,8 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			var array = i == 0 ? [.. nString] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				(char)random.Next('A', 'Z' + 1));
 			G.IEnumerable<char> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToArray(array);
@@ -147,7 +153,8 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			var array = i == 0 ? [.. nString] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				(char)random.Next('A', 'Z' + 1));
 			G.IReadOnlyList<char> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToArray(array);
@@ -166,10 +173,24 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
+			var array = i == 0 ? [.. list] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				new string((char)random.Next('A', 'Z' + 1), 3));
 			action(array);
 			action(array.AsSpan());
 			action((ReadOnlySpan<string>)array.AsSpan());
+		}
+	}
+
+	public static void TestSpanN(Action<ReadOnlySpan<(char, char, char)>> action)
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var array = i == 0 ? [.. nList] : RedStarLinq.FillArray(random.Next(1001), _ =>
+			((char, char, char))new String((char)random.Next('A', 'Z' + 1), 3));
+			action(array);
+			action(array.AsSpan());
+			action((ReadOnlySpan<(char, char, char)>)array.AsSpan());
 		}
 	}
 
@@ -2437,6 +2458,20 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestToNListSpan() => TestSpanN(a =>
+	{
+		var a2 = a.ToArray();
+		var c = a.ToNList(x => (x.Item2, x.Item3, '\0'));
+		var d = E.ToList(E.Select(a2, x => (x.Item2, x.Item3, '\0')));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a2.ToNList((Func<(char, char, char), (char, char, char)>)null!));
+		c = a.ToNList((x, index) => (x.Item2, x.Item3, (char)index));
+		d = E.ToList(E.Select(a2, (x, index) => (x.Item2, x.Item3, (char)index)));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a2.ToNList((Func<(char, char, char), int, (char, char, char)>)null!));
+	});
+
+	[TestMethod]
 	public void TestToNString()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
@@ -2722,20 +2757,28 @@ public class RedStarLinqTestsN
 	public static void Test(Action<G.IEnumerable<(char, char, char)>> action)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(nList);
-		action(a);
-		a = RedStarLinq.ToArray(nList);
-		action(a);
-		a = E.ToList(nList);
-		action(a);
-		a = nList.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
-		action(a);
-		a = nEnumerable;
-		action(a);
-		a = nEnumerable2;
-		action(a);
-		a = E.SkipWhile(nList, _ => random.Next(10) != -1);
-		action(a);
+		for (var i = 0; i < 1000; i++)
+		{
+			char @char;
+			var array = i == 0 ? [.. nList] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				(@char = (char)random.Next('A', 'Z' + 1), @char, @char));
+			G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(array);
+			action(a);
+			a = RedStarLinq.ToArray(array);
+			action(a);
+			a = E.ToList(array);
+			action(a);
+			a = array.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
+			action(a);
+			a = array.Prepend(('X', 'X', 'X'));
+			action(a);
+			a = nEnumerable;
+			action(a);
+			a = nEnumerable2;
+			action(a);
+			a = E.SkipWhile(array, _ => random.Next(10) != -1);
+			action(a);
+		}
 	}
 
 	public static void Test2(Action<G.IReadOnlyList<(char, char, char)>> action)
@@ -2744,7 +2787,8 @@ public class RedStarLinqTestsN
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
+			var array = i == 0 ? [.. nList] : RedStarLinq.FillArray(random.Next(1001), _ =>
+				(@char = (char)random.Next('A', 'Z' + 1), @char, @char));
 			G.IReadOnlyList<(char, char, char)> a = RedStarLinq.ToList(array);
 			action(a);
 			a = RedStarLinq.ToArray(array);
@@ -2755,6 +2799,18 @@ public class RedStarLinqTestsN
 			action(a);
 			a = array.Prepend(('X', 'X', 'X'));
 			action(a);
+		}
+	}
+
+	public static void TestSpan(Action<ReadOnlySpan<(char, char, char)>> action)
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => ((char, char, char))new String((char)random.Next('A', 'Z' + 1), 3));
+			action(array);
+			action(array.AsSpan());
+			action((ReadOnlySpan<(char, char, char)>)array.AsSpan());
 		}
 	}
 
@@ -2799,6 +2855,36 @@ public class RedStarLinqTestsN
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.NBreak((x, index) => (char)(x.Item1 + index), (Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.NBreak((x, index) => (char)(x.Item1 + index), (x, index) => (char)(x.Item3 * index + 5), (Func<(char, char, char), int, (char, char, char)>)null!));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), int, (char, char, (char, char, char))>)null!));
+	});
+
+	[TestMethod]
+	public void TestNBreakSpan() => TestSpan(a =>
+	{
+		var a2 = a.ToArray();
+		var c = a.NBreak(x => x.Item1, x => (x.Item2, x.Item3));
+		var d = (E.Select(a2, x => x.Item1), E.Select(a2, x => (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.NBreak(x => (x.Item1, (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = E.Select(a2, x => (x.Item1, (x.Item2, x.Item3))).NBreak();
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.NBreak((x, index) => (char)(x.Item1 + index), (x, index) => (x.Item2, (char)(x.Item3 + index)));
+		d = (E.Select(a2, (x, index) => (char)(x.Item1 + index)), E.Select(a2, (x, index) => (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.NBreak((x, index) => ((char)(x.Item1 + index), (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		var c2 = a.NBreak(x => x.Item1, x => x.Item3, x => (x.Item2, x.Item3));
+		var d2 = (E.Select(a2, x => x.Item1), E.Select(a2, x => x.Item3), E.Select(a2, x => (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.NBreak(x => (x.Item1, x.Item3, (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = E.Select(a2, x => (x.Item1, x.Item3, (x.Item2, x.Item3))).NBreak();
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.NBreak((x, index) => (char)(x.Item1 + index), (x, index) => (char)(x.Item3 * index + 5), (x, index) => (x.Item2, (char)(x.Item3 + index)));
+		d2 = (E.Select(a2, (x, index) => (char)(x.Item1 + index)), E.Select(a2, (x, index) => (char)(x.Item3 * index + 5)), E.Select(a2, (x, index) => (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.NBreak((x, index) => ((char)(x.Item1 + index), (char)(x.Item3 * index + 5), (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
 	});
 
 	[TestMethod]
