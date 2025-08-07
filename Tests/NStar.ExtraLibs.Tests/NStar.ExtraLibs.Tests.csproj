@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
     <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.7.3" />
     <PackageReference Include="MSTest" Version="3.9.3" />
+    <ProjectReference Include="..\..\Sources\NStar.ExtraHS\NStar.ExtraHS.csproj" />
     <ProjectReference Include="..\NStar.Core.Tests\NStar.Core.Tests.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.ExtraReplacing\NStar.ExtraReplacing.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.Linq\NStar.Linq.csproj" />

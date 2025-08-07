@@ -13,6 +13,8 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override TCertain AddRange(IEnumerable<T> collection) => UnionWith(collection);
 
+	public override TCertain AddRange(T[] array) => UnionWith(array);
+
 	protected override void AddSeriesInternal(T item, int length)
 	{
 		if (length != 0)

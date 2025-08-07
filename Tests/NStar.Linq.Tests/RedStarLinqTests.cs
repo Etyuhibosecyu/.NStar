@@ -1,4 +1,5 @@
-﻿using NStar.ParallelHS;
+﻿using NStar.ExtraHS;
+using NStar.ParallelHS;
 using NStar.RemoveDoubles;
 
 namespace NStar.Linq.Tests;
@@ -825,7 +826,8 @@ public class RedStarLinqTests
 	public void TestEquals()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		for (var i = 0; i < 1000; i++)
+		EComparer<string> comparer = new((x, y) => x[0] == y[0]);
+		for (var i = 0; i < 10000; i++)
 		{
 			G.IEnumerable<string> a = RedStarLinq.ToList(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
@@ -860,33 +862,57 @@ public class RedStarLinqTests
 #pragma warning disable IDE0301 // Упростите инициализацию коллекции
 			b = new List<string>();
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+			Assert.AreEqual(RedStarLinq.Equals(a, b, (x, y) => x[0] == y[0]), E.SequenceEqual(a, b, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, b, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, b, comparer) && E.Count(a) <= 16);
 			b = Array.Empty<string>();
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+			Assert.AreEqual(RedStarLinq.Equals(a, b, (x, y) => x[0] == y[0]), E.SequenceEqual(a, b, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, b, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, b, comparer) && E.Count(a) <= 16);
 			b = new G.List<string>();
 #pragma warning restore IDE0301 // Упростите инициализацию коллекции
 #pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+			Assert.AreEqual(RedStarLinq.Equals(a, b, (x, y) => x[0] == y[0]), E.SequenceEqual(a, b, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, b, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, b, comparer) && E.Count(a) <= 16);
 			b = new List<string>().Insert(0, "XXX").GetSlice(1);
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+			Assert.AreEqual(RedStarLinq.Equals(a, b, (x, y) => x[0] == y[0]), E.SequenceEqual(a, b, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, b, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, b, comparer) && E.Count(a) <= 16);
 			b = E.Select(E.Take(a, 0), x => x);
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+			Assert.AreEqual(RedStarLinq.Equals(a, b, (x, y) => x[0] == y[0]), E.SequenceEqual(a, b, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, b, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, b, comparer) && E.Count(a) <= 16);
 			b = E.TakeWhile(a, _ => random.Next(10) == -1);
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+			Assert.AreEqual(RedStarLinq.Equals(a, b, (x, y) => x[0] == y[0]), E.SequenceEqual(a, b, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, b, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, b, comparer) && E.Count(a) <= 16);
 		}
 		void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 			G.IEnumerable<string> c = RedStarLinq.ToList(b);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+			Assert.AreEqual(RedStarLinq.Equals(a, c, (x, y) => x[0] == y[0]), E.SequenceEqual(a, c, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, c, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, c, comparer) && E.Count(a) <= 16);
 			c = E.ToArray(b);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+			Assert.AreEqual(RedStarLinq.Equals(a, c, (x, y) => x[0] == y[0]), E.SequenceEqual(a, c, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, c, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, c, comparer) && E.Count(a) <= 16);
 			c = E.ToList(b);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+			Assert.AreEqual(RedStarLinq.Equals(a, c, (x, y) => x[0] == y[0]), E.SequenceEqual(a, c, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, c, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, c, comparer) && E.Count(a) <= 16);
 			c = new List<string>(b).Insert(0, "XXX").GetSlice(1);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+			Assert.AreEqual(RedStarLinq.Equals(a, c, (x, y) => x[0] == y[0]), E.SequenceEqual(a, c, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, c, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, c, comparer) && E.Count(a) <= 16);
 			c = E.Select(b, x => x);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+			Assert.AreEqual(RedStarLinq.Equals(a, c, (x, y) => x[0] == y[0]), E.SequenceEqual(a, c, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, c, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, c, comparer) && E.Count(a) <= 16);
 			c = E.SkipWhile(b, _ => random.Next(10) != -1);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+			Assert.AreEqual(RedStarLinq.Equals(a, c, (x, y) => x[0] == y[0]), E.SequenceEqual(a, c, comparer));
+			Assert.AreEqual(RedStarLinqExtras.Equals(a, c, (x, y, index) => x[0] == y[0] && index < 16), E.SequenceEqual(a, c, comparer) && E.Count(a) <= 16);
 		}
 	}
 
@@ -963,6 +989,109 @@ public class RedStarLinqTests
 		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.Filter((Func<string, int, bool>)null!));
+	});
+
+	[TestMethod]
+	public void TestFind() => Test(a =>
+	{
+		var c = a.Find(x => x.Length > 0);
+		var d = E.FirstOrDefault(a, x => x.Length > 0);
+		Assert.AreEqual(d, c);
+		var c2 = a.FindAll(x => x.Length > 0);
+		var d2 = E.Where(a, x => x.Length > 0);
+		Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		var c3 = a.FindIndex(x => x.Length > 0);
+		var d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0), out var found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.FindLast(x => x.Length > 0);
+		d = E.LastOrDefault(a, x => x.Length > 0);
+		Assert.AreEqual(d, c);
+		c3 = a.FindLastIndex(x => x.Length > 0);
+		d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.Find(x => x.StartsWith('#'));
+		d = E.FirstOrDefault(a, x => x.StartsWith('#'));
+		Assert.AreEqual(d, c);
+		c2 = a.FindAll(x => x.StartsWith('#'));
+		d2 = E.Where(a, x => x.StartsWith('#'));
+		Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c3 = a.FindIndex(x => x.StartsWith('#'));
+		d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('#')), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.FindLast(x => x.StartsWith('#'));
+		d = E.LastOrDefault(a, x => x.StartsWith('#'));
+		Assert.AreEqual(d, c);
+		c3 = a.FindLastIndex(x => x.StartsWith('#'));
+		d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('#')), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.Find(x => x.StartsWith('M'));
+		d = E.FirstOrDefault(a, x => x.StartsWith('M'));
+		Assert.AreEqual(d, c);
+		c2 = a.FindAll(x => x.StartsWith('M'));
+		d2 = E.Where(a, x => x.StartsWith('M'));
+		Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c3 = a.FindIndex(x => x.StartsWith('M'));
+		d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M')), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.FindLast(x => x.StartsWith('M'));
+		d = E.LastOrDefault(a, x => x.StartsWith('M'));
+		Assert.AreEqual(d, c);
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.FindAll((Func<string, bool>)null!));
+		c3 = a.FindLastIndex(x => x.StartsWith('M'));
+		d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M')), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.Find((x, index) => x.Length > 0 && index >= 0);
+		d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0).elem;
+		Assert.AreEqual(d, c);
+		c2 = a.FindAll((x, index) => x.Length > 0 && index >= 0);
+		d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c3 = a.FindIndex((x, index) => x.Length > 0 && index >= 0);
+		d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.FindLast((x, index) => x.Length > 0 && index >= 0);
+		d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0).elem;
+		Assert.AreEqual(d, c);
+		c3 = a.FindLastIndex((x, index) => x.Length > 0 && index >= 0);
+		d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.Find((x, index) => index < 0);
+		d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0).elem;
+		Assert.AreEqual(d, c);
+		c2 = a.FindAll((x, index) => index < 0);
+		d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c3 = a.FindIndex((x, index) => index < 0);
+		d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.FindLast((x, index) => index < 0);
+		d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0).elem;
+		Assert.AreEqual(d, c);
+		c3 = a.FindLastIndex((x, index) => index < 0);
+		d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.Find((x, index) => x.StartsWith('M') && index > 0);
+		d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0).elem;
+		Assert.AreEqual(d, c);
+		c2 = a.FindAll((x, index) => x.StartsWith('M') && index > 0);
+		d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c3 = a.FindIndex((x, index) => x.StartsWith('M') && index > 0);
+		d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		c = a.FindLast((x, index) => x.StartsWith('M') && index > 0);
+		d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0).elem;
+		Assert.AreEqual(d, c);
+		c3 = a.FindLastIndex((x, index) => x.StartsWith('M') && index > 0);
+		d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), out found).elem == null ? -1 : found.index;
+		Assert.AreEqual(d3, c3);
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.FindAll((Func<string, int, bool>)null!));
 	});
 
 	[TestMethod]
@@ -1859,14 +1988,15 @@ public class RedStarLinqTests
 			var original2 = ImmutableArray.Create(RedStarLinq.FillArray(1000, _ => (long)random.Next(100)));
 			ProcessA(original, original2, 1234567890);
 		}
-
 		static void ProcessA(ImmutableArray<int> original, ImmutableArray<long> original2, int @default)
 		{
 			G.IReadOnlyList<int> a = RedStarLinq.ToList(original);
+#pragma warning disable IDE0028 // Упростите инициализацию коллекции
 			G.IReadOnlyList<long> a2 = new List<long>(original2);
 			ProcessA2(a, a2);
 			a = new NList<int>(original);
 			a2 = new NList<long>(original2);
+#pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			ProcessA2(a, a2);
 			a = E.ToArray(original);
 			a2 = E.ToArray(original2);
@@ -2194,9 +2324,7 @@ public class RedStarLinqTests
 		void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 #pragma warning disable IDE0028 // Упростите инициализацию коллекции
-#pragma warning disable IDE0306 // Упростите инициализацию коллекции
 			G.IEnumerable<string> c = new List<string>(b);
-#pragma warning restore IDE0306 // Упростите инициализацию коллекции
 #pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			Assert.AreEqual(RedStarLinqExtras.StartsWith(a, c), E.SequenceEqual(E.Take(a, E.Count(c)), c));
 			Assert.AreEqual(RedStarLinqExtras.StartsWith(a, c, (x, y) => (x.Length == 0 ? "" : x[1..]) == y),
@@ -2549,10 +2677,12 @@ public class RedStarLinqTests
 		static void ProcessA(ImmutableArray<int> original, ImmutableArray<long> original2, int @default)
 		{
 			G.IReadOnlyList<int> a = RedStarLinq.ToList(original);
+#pragma warning disable IDE0028 // Упростите инициализацию коллекции
 			G.IReadOnlyList<long> a2 = new List<long>(original2);
 			ProcessA2(a, a2);
 			a = new NList<int>(original);
 			a2 = new NList<long>(original2);
+#pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			ProcessA2(a, a2);
 			a = E.ToArray(original);
 			a2 = E.ToArray(original2);

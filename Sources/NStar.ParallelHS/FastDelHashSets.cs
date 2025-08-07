@@ -131,7 +131,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		else
 		{
 			for (var i = length - destinationIndex + sourceIndex; i < length; i++)
-				CopyOne(sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex, destination, destinationIndex + i);
 			for (var i = length - 1; i >= 0; i--)
 				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 		}

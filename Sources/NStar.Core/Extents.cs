@@ -293,6 +293,33 @@ public static unsafe class Extents
 
 	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => new Span<byte>((byte*)source, sizeof(T) * length).Fill(fill);
 
+	private static KeyValuePair<int, T>? FindMinGreaterOrEqual<T>(this SortedSet<KeyValuePair<int, T>> set, int value)
+	{
+		if (value > set.Max.Key)
+			return default;
+		// Получаем представление набора от value до максимального элемента
+		var view = set.GetViewBetween(new(value, default!), set.Max);
+		// Возвращаем первый элемент, если он есть
+		var en = view.GetEnumerator();
+		return en.MoveNext() ? en.Current : default;
+	}
+
+	internal static T[] GetAndRemove<T>(this SortedDictionary<int, G.List<T[]>> dic, int value)
+	{
+		if (dic.GetType().GetField("_set", System.Reflection.BindingFlags.Instance
+			| System.Reflection.BindingFlags.NonPublic)?.GetValue(dic) is not SortedSet<KeyValuePair<int, G.List<T[]>>> set)
+			return GC.AllocateUninitializedArray<T>(value);
+		if (set.FindMinGreaterOrEqual(value) is not KeyValuePair<int, G.List<T[]>> found)
+			return GC.AllocateUninitializedArray<T>(value);
+		var index = found.Key;
+		var list = dic[index];
+		var result = list[^1];
+		list.RemoveAt(list.Count - 1);
+		if (list.Count == 0)
+			dic.Remove(index);
+		return result;
+	}
+
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 
 	/// Returns (n+(div-1))/div, rearranged to avoid arithmetic overflow. 
@@ -311,6 +338,14 @@ public static unsafe class Extents
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
 	public static MpzT GetArrayLength(MpzT n, MpzT div) => n > 0 ? ((n - 1) / div + 1) : 0;
+
+	private static int GetMedian(int low, int hi)
+	{
+		// Note both may be negative, if we are dealing with arrays w/ negative lower bounds.
+		Debug.Assert(low <= hi);
+		Debug.Assert(hi - low >= 0, "Length overflow!");
+		return low + ((hi - low) >> 1);
+	}
 
 	public static MpzT GetOffset(this Index index, MpzT length) => index.IsFromEnd ? length - index.Value : index.Value;
 
@@ -551,6 +586,8 @@ public static unsafe class Extents
 	public static T[] NSort<T>(this T[] array, Func<T, ushort> function, int index, int length) => NSort<T, ushort>(array, function, index, length);
 
 	public static T* NSort<T>(T* array, Func<T, ushort> function, int index, int length) where T : unmanaged => NSort<T, ushort>(array, function, index, length);
+
+	public static void NSort<T, T2>(T* @in, T2* in2, int n) where T : unmanaged where T2 : unmanaged => RadixSort(@in, in2, n);
 
 	public static T[] NSort<T, T2>(this T[] array, Func<T, T2> function, int index, int length) where T2 : unmanaged
 	{

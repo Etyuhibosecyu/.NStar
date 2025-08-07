@@ -51,6 +51,7 @@ public class FastDelHashSetTests
 		{
 			var n = random.Next(fhs.Length);
 			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			var fhs2 = fhs.Copy();
 			fhs.Insert(n, toInsert);
 			gs.UnionWith(toInsert);
 			Assert.IsTrue(fhs.SetEquals(gs));

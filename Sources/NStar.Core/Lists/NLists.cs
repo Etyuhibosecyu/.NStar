@@ -10,14 +10,12 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	private protected int _capacity;
 	private protected bool _isRange;
 
-	private protected static readonly T* _emptyArray = null;
-
-	public NList() => _items = _emptyArray;
+	public NList() => _items = null;
 
 	public NList(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-		_items = capacity == 0 ? _emptyArray : (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
+		_items = capacity == 0 ? null : (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
 	}
 
 	public NList(IEnumerable<T> collection)
@@ -27,7 +25,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		{
 			var length = c.Count;
 			if (length == 0)
-				_items = _emptyArray;
+				_items = null;
 			else
 			{
 				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length));
@@ -39,7 +37,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		else
 		{
 			_size = 0;
-			_items = collection.TryGetLengthEasily(out var length) ? (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length)) : _emptyArray;
+			_items = collection.TryGetLengthEasily(out var length) ? (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length)) : null;
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
@@ -154,7 +152,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			{
 				if (_capacity != 0)
 					Marshal.FreeHGlobal((nint)_items);
-				_items = _emptyArray;
+				_items = null;
 			}
 			_capacity = value;
 			Changed();
@@ -551,9 +549,25 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return (TCertain)this;
 	}
 
+	public virtual TCertain Sort(Func<T, byte> function) => Sort(function, 0, _size);
+
+	public virtual TCertain Sort(Func<T, byte> function, int index, int length)
+	{
+		NSort(_items, function, index, length);
+		return (TCertain)this;
+	}
+
 	public virtual TCertain Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
 	public virtual TCertain Sort(Func<T, uint> function, int index, int length)
+	{
+		NSort(_items, function, index, length);
+		return (TCertain)this;
+	}
+
+	public virtual TCertain Sort(Func<T, ushort> function) => Sort(function, 0, _size);
+
+	public virtual TCertain Sort(Func<T, ushort> function, int index, int length)
 	{
 		NSort(_items, function, index, length);
 		return (TCertain)this;

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
     <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="1.7.3" />
     <PackageReference Include="MSTest" Version="3.9.3" />
+    <ProjectReference Include="..\..\Sources\NStar.ExtraHS\NStar.ExtraHS.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.MathLib.Extras\NStar.MathLib.Extras.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.ParallelHS\NStar.ParallelHS.csproj" />
     <ProjectReference Include="..\..\Sources\NStar.RemoveDoubles\NStar.RemoveDoubles.csproj" />

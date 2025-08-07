@@ -379,15 +379,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				highElementBeforeI.Compactify();
 			if (highLengthElementI > amount)
 			{
-				highElementI.CopyToInternal(0, highElementBeforeI, highLength[i - 1], amount);
+				highElementBeforeI.Resize(highLength[i - 1] + amount);
+				highElementI.CopyToInternal(ProcessReverse(highElementI, 0, amount), highElementBeforeI, highLength[i - 1], amount, true);
 				highElementI.RemoveInternal(0, amount);
 				highLength[i - 1] = fragment;
 				highLength[i] -= amount;
 			}
 			else
 			{
-				highElementI.CopyToInternal(0, highElementBeforeI,
-					highLength[i - 1], highLengthElementI);
+				highElementBeforeI.Resize(highLength[i - 1] + highLengthElementI);
+				highElementI.CopyToInternal(0, highElementBeforeI, highLength[i - 1], highLengthElementI, true);
 				var temp = highElementI;
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
 				if (i != highLength.Length - 1)
@@ -590,10 +591,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	protected static void CopyRange(TCertain source, MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length, bool ignoreReversed = false)
+	protected static void CopyRange(TCertain source, MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
 	{
 		List<CopyRangeContext> stack
-			= [(source, sourceIndex, destination, destinationIndex, length, ignoreReversed)];
+			= [(source, sourceIndex, destination, destinationIndex, length)];
 		while (stack.Length > 0)
 			CopyRangeIteration(stack);
 	}
@@ -608,25 +609,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var fragment = context.Source.fragment;
 		// Тривиальный случай - оба списка являются листьями дерева
 		if (context.Source.low != null && context.Destination.low != null)
-		{
-			CopyRangeTrivial(context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length, context.IgnoreReversed);
-			return;
-		}
+			CopyRangeTrivial(context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length);
 		// Только целевой список является листом дерева
 		else if (context.Destination.low != null && context.Source.high != null && context.Source.highLength != null)
-		{
-			CopyRangeToLeaf(stack, (context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length, context.IgnoreReversed), stackIndex, fragment);
-			return;
-		}
+			CopyRangeToLeaf(stack, (context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length), stackIndex, fragment);
 		// Исходный список является более мелкой веткой (возможно, даже листом)
 		else if ((context.Source.low != null || context.Destination.fragment > fragment) && context.Destination.high != null && context.Destination.highLength != null)
-		{
-			CopyRangeToLarger(stack, (context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length, context.IgnoreReversed), stackIndex);
-			return;
-		}
+			CopyRangeToLarger(stack, (context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length), stackIndex);
 		// Самый сложный случай: исходный список является соизмеримой или более крупной веткой,
 		// а целевой также не является листом
-		CopyRangeToSimilar(stack, (context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length, context.IgnoreReversed), stackIndex);
+		else
+			CopyRangeToSimilar(stack, (context.Source, context.SourceIndex, context.Destination, context.DestinationIndex, context.Length), stackIndex);
 	}
 
 	protected static void CopyRangeToLarger(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex)
@@ -636,20 +629,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	destinationFragmentBigger:
 		MpzT destinationIndexOld = new(context.DestinationIndex); // Сохраняем значение как изменяющееся после реверса
 		var endIndex = context.DestinationIndex + context.Length - 1;
-		// Если один или оба списка перевернуты, корректируем индексы
-		if (context.Source.bReversed && !context.IgnoreReversed)
-			context.SourceIndex = context.Source.Length - context.Length - context.SourceIndex;
-		// Если целевой список перевернут и в нем не хватает места, расширяем
-		if (context.Destination.bReversed && !context.IgnoreReversed && context.DestinationIndex + context.Length > context.Destination.Length)
-		{
-			var dummy = context.Source.CapacityCreator(RedStarLinqMath.Max(context.DestinationIndex + context.Length - (context.Destination.Length << 1), 0));
-			dummy.Length = dummy.Capacity;
-			context.Destination.InsertInternal(0, dummy);
-			stack.Insert(stackIndex, (context.Destination, 0, context.Destination, context.DestinationIndex + context.Length - context.Destination.Length, context.Destination.Length, true));
-		}
-		if (context.Destination.bReversed && !context.IgnoreReversed)
-			(context.DestinationIndex, endIndex) = (context.Destination.Length - 1 - endIndex,
-				context.Destination.Length - 1 - context.DestinationIndex);
 		CopyRangeIndex start = new(context.Destination.highLength, context.DestinationIndex);
 		CopyRangeIndex end = new(context.Destination.highLength, endIndex);
 		MpzT index2Old = new(end.IntIndex);
@@ -677,7 +656,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		// Весь диапазон помещается в одну ветку
 		if (start.IntIndex == end.IntIndex)
 		{
-			stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[start.IntIndex], start.RestIndex, context.Length, true));
+			stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[start.IntIndex], start.RestIndex, context.Length));
 			context.Destination.highLength.SetOrAdd(start.IntIndex, RedStarLinqMath.Max(context.Destination.highLength.Length
 				> start.IntIndex ? context.Destination.highLength[start.IntIndex] : 0, start.RestIndex + context.Length));
 		}
@@ -693,79 +672,85 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void CopyRangeToLargerDiagonal(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide indexes)
+	protected static void CopyRangeToLargerDiagonal(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
-		Debug.Assert((context.Source.low != null || context.Destination.fragment > context.Source.fragment) && context.Destination.high != null && context.Destination.highLength != null);
+		Debug.Assert((context.Source.low != null || context.Destination.fragment > context.Source.fragment)
+			&& context.Destination.high != null && context.Destination.highLength != null);
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 		var previousPart = RedStarLinqMath.Min((indexes.Start.IntIndex < context.Destination.highLength.Length - 1
 			? context.Destination.highLength[indexes.Start.IntIndex] : fragment) - indexes.Start.RestIndex, context.Length);
-		stack.Insert(stackIndex, (context.Source, context.SourceIndex + context.Length - previousPart, context.Destination.high[indexes.Start.IntIndex], indexes.Start.RestIndex, previousPart, true));
-		context.Destination.highLength.SetOrAdd(indexes.Start.IntIndex, RedStarLinqMath.Max(indexes.Start.IntIndex < context.Destination.highLength.Length - 1
+		stack.Insert(stackIndex, (context.Source, context.SourceIndex + context.Length - previousPart,
+			context.Destination.high[indexes.Start.IntIndex], indexes.Start.RestIndex, previousPart));
+		context.Destination.highLength.SetOrAdd(indexes.Start.IntIndex,
+			RedStarLinqMath.Max(indexes.Start.IntIndex < context.Destination.highLength.Length - 1
 			? context.Destination.highLength[indexes.Start.IntIndex] : 0, indexes.Start.RestIndex + previousPart));
 		for (var i = indexes.Start.IntIndex + 1; i < indexes.End.IntIndex; i++)
 		{
 			var branchLength = i < context.Destination.highLength.Length - 1 ? context.Destination.highLength[i] : fragment;
 			previousPart += branchLength;
-			stack.Insert(stackIndex, (context.Source, context.SourceIndex + context.Length - previousPart, context.Destination.high[i], 0, branchLength, true));
+			stack.Insert(stackIndex, (context.Source, context.SourceIndex + context.Length - previousPart,
+				context.Destination.high[i], 0, branchLength));
 			context.Destination.highLength.SetOrAdd(i, branchLength);
 		}
-		stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[indexes.End.IntIndex], 0, context.Length - previousPart, true));
+		stack.Insert(stackIndex, (context.Source, context.SourceIndex,
+			context.Destination.high[indexes.End.IntIndex], 0, context.Length - previousPart));
 		if (context.Length != previousPart)
-			context.Destination.highLength.SetOrAdd(indexes.End.IntIndex, RedStarLinqMath.Max(context.Destination.highLength.Length > indexes.End.IntIndex ? context.Destination.highLength[indexes.End.IntIndex] : 0, context.Length - previousPart));
+			context.Destination.highLength.SetOrAdd(indexes.End.IntIndex,
+				RedStarLinqMath.Max(context.Destination.highLength.Length > indexes.End.IntIndex
+				? context.Destination.highLength[indexes.End.IntIndex] : 0, context.Length - previousPart));
 	}
 
-	protected static void CopyRangeToLargerLTR(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide indexes)
+	protected static void CopyRangeToLargerLTR(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		Debug.Assert((context.Source.low != null || context.Destination.fragment > context.Source.fragment) && context.Destination.high != null && context.Destination.highLength != null);
 		// Диапазон копируется слева направо
 		var previousPart = RedStarLinqMath.Min((indexes.Start.IntIndex < context.Destination.highLength.Length - 1
 			? context.Destination.highLength[indexes.Start.IntIndex] : fragment) - indexes.Start.RestIndex, context.Length);
-		stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[indexes.Start.IntIndex], indexes.Start.RestIndex, previousPart, true));
+		stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[indexes.Start.IntIndex], indexes.Start.RestIndex, previousPart));
 		context.Destination.highLength.SetOrAdd(indexes.Start.IntIndex, RedStarLinqMath.Max(context.Destination.highLength.Length
 			> indexes.Start.IntIndex ? context.Destination.highLength[indexes.Start.IntIndex] : 0, indexes.Start.RestIndex + previousPart));
 		for (var i = indexes.Start.IntIndex + 1; i < indexes.End.IntIndex; i++)
 		{
 			var branchLength = i < context.Destination.highLength.Length - 1 ? context.Destination.highLength[i] : fragment;
-			stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[i], 0, branchLength, true));
+			stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[i], 0, branchLength));
 			context.Destination.highLength.SetOrAdd(i, branchLength);
 			previousPart += branchLength;
 		}
-		stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[indexes.End.IntIndex], 0, context.Length - previousPart, true));
+		stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[indexes.End.IntIndex], 0, context.Length - previousPart));
 		if (context.Length != previousPart)
 			context.Destination.highLength.SetOrAdd(indexes.End.IntIndex, RedStarLinqMath.Max(context.Destination.highLength.Length > indexes.End.IntIndex ? context.Destination.highLength[indexes.End.IntIndex] : 0, context.Length - previousPart));
 	}
 
-	protected static void CopyRangeToLargerRTL(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide indexes, MpzT index2Old)
+	protected static void CopyRangeToLargerRTL(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide indexes, MpzT index2Old)
 	{
 		Debug.Assert((context.Source.low != null || context.Destination.fragment > context.Source.fragment) && context.Destination.high != null && context.Destination.highLength != null);
 		// Диапазон копируется справа налево
 		for (var i = context.Destination.highLength.Length; i < indexes.End.IntIndex; i++)
 			context.Destination.highLength.Add(1);
 		var previousPart = RedStarLinqMath.Min(fragment - indexes.Start.RestIndex, context.Length) + (indexes.End.IntIndex - indexes.Start.IntIndex - 1) * fragment;
-		stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[indexes.End.IntIndex], 0, context.Length - previousPart, true));
+		stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[indexes.End.IntIndex], 0, context.Length - previousPart));
 		if (context.Length != previousPart)
 			context.Destination.highLength.SetOrAdd(indexes.End.IntIndex, RedStarLinqMath.Max(context.Destination.highLength.Length > indexes.End.IntIndex ? context.Destination.highLength[indexes.End.IntIndex] : 0, context.Length - previousPart));
 		for (var i = indexes.End.IntIndex - 1; i > indexes.Start.IntIndex; i--)
 		{
 			var branchLength = i < index2Old ? context.Destination.highLength[i] : fragment;
 			previousPart -= branchLength;
-			stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[i], 0, branchLength, true));
+			stack.Insert(stackIndex, (context.Source, context.SourceIndex + previousPart, context.Destination.high[i], 0, branchLength));
 			context.Destination.highLength[i] = branchLength;
 		}
-		stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[indexes.Start.IntIndex], indexes.Start.RestIndex, previousPart, true));
+		stack.Insert(stackIndex, (context.Source, context.SourceIndex, context.Destination.high[indexes.Start.IntIndex], indexes.Start.RestIndex, previousPart));
 		context.Destination.highLength[indexes.Start.IntIndex] = RedStarLinqMath.Max(context.Destination.highLength.Length > indexes.Start.IntIndex ? context.Destination.highLength[indexes.Start.IntIndex] : 0, indexes.Start.RestIndex + previousPart);
 	}
 
-	protected static void CopyRangeToLeaf(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment)
+	protected static void CopyRangeToLeaf(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment)
 	{
 		Debug.Assert(context.Destination.low != null && context.Source.high != null && context.Source.highLength != null);
 		MpzT destinationIndexOld = new(context.DestinationIndex); // Сохраняем значение как изменяющееся после реверса
 		var endIndex = context.SourceIndex + context.Length - 1;
-		// Если один или оба списка перевернуты, корректируем индексы
-		if (context.Source.bReversed && !context.IgnoreReversed)
-			(context.SourceIndex, endIndex) = (context.Source.Length - 1 - endIndex, context.Source.Length - 1 - context.SourceIndex);
-		if (context.Destination.bReversed && !context.IgnoreReversed)
-			context.DestinationIndex = context.Destination.Length - context.Length - context.DestinationIndex;
 		CopyRangeIndex start = new(context.Source.highLength, context.SourceIndex);
 		CopyRangeIndex end = new(context.Source.highLength, endIndex);
 		// Диапазон дописывается после конца списка
@@ -781,7 +766,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		// Весь диапазон помещается в одну ветку
 		if (start.IntIndex == end.IntIndex)
-			stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex, context.Length, true));
+			stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex, context.Length));
 		else if (context.Source.IsReversed != context.Destination.IsReversed)
 			CopyRangeToLeafDiagonal(stack, context, stackIndex, fragment, (start, end));
 		else if (context.SourceIndex >= context.DestinationIndex || context.Source != context.Destination)
@@ -796,39 +781,42 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void CopyRangeToLeafDiagonal(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide indexes)
+	protected static void CopyRangeToLeafDiagonal(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		Debug.Assert(context.Destination.low != null && context.Source.high != null && context.Source.highLength != null);
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 		var (start, end) = indexes;
 		var previousPart = end.RestIndex + 1;
-		stack.Insert(stackIndex, (context.Source.high[end.IntIndex], 0, context.Destination, context.DestinationIndex, previousPart, true));
+		stack.Insert(stackIndex, (context.Source.high[end.IntIndex], 0, context.Destination, context.DestinationIndex, previousPart));
 		for (var i = end.IntIndex - 1; i > start.IntIndex; i--)
 		{
 			var branchLength = i < context.Source.highLength.Length - 1 ? context.Source.highLength[i] : fragment;
-			stack.Insert(stackIndex, (context.Source.high[i], 0, context.Destination, context.DestinationIndex + previousPart, branchLength, true));
+			stack.Insert(stackIndex, (context.Source.high[i], 0, context.Destination, context.DestinationIndex + previousPart, branchLength));
 			previousPart += branchLength;
 		}
-		stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex + previousPart, context.Length - previousPart, true));
+		stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex + previousPart, context.Length - previousPart));
 	}
 
-	protected static void CopyRangeToLeafLTR(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide indexes)
+	protected static void CopyRangeToLeafLTR(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		Debug.Assert(context.Destination.low != null && context.Source.high != null && context.Source.highLength != null);
 		// Диапазон копируется слева направо
 		var (start, end) = indexes;
 		var previousPart = (start.IntIndex < context.Source.highLength.Length - 1 ? context.Source.highLength[start.IntIndex] : fragment) - start.RestIndex;
-		stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex, previousPart, true));
+		stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex, previousPart));
 		for (var i = start.IntIndex + 1; i < end.IntIndex; i++)
 		{
 			var branchLength = i < context.Source.highLength.Length - 1 ? context.Source.highLength[i] : fragment;
-			stack.Insert(stackIndex, (context.Source.high[i], 0, context.Destination, context.DestinationIndex + previousPart, branchLength, true));
+			stack.Insert(stackIndex, (context.Source.high[i], 0, context.Destination, context.DestinationIndex + previousPart, branchLength));
 			previousPart += branchLength;
 		}
-		stack.Insert(stackIndex, (context.Source.high[end.IntIndex], 0, context.Destination, context.DestinationIndex + previousPart, context.Length - previousPart, true));
+		stack.Insert(stackIndex, (context.Source.high[end.IntIndex], 0, context.Destination, context.DestinationIndex + previousPart, context.Length - previousPart));
 	}
 
-	protected static void CopyRangeToLeafRTL(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide indexes)
+	protected static void CopyRangeToLeafRTL(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		Debug.Assert(context.Destination.low != null && context.Source.high != null && context.Source.highLength != null);
 		// Диапазон копируется справа налево
@@ -836,14 +824,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var previousPart = (end.IntIndex < context.Source.highLength.Length - 1 ? context.Source.highLength[start.IntIndex] : fragment) - start.RestIndex;
 		for (var i = start.IntIndex + 1; i < end.IntIndex; i++)
 			previousPart += context.Source.highLength[i];
-		stack.Insert(stackIndex, (context.Source.high[end.IntIndex], 0, context.Destination, context.DestinationIndex + previousPart, context.Length - previousPart, true));
+		stack.Insert(stackIndex, (context.Source.high[end.IntIndex], 0, context.Destination, context.DestinationIndex + previousPart, context.Length - previousPart));
 		for (var i = end.IntIndex - 1; i > start.IntIndex; i--)
 		{
 			var branchLength = i < context.Source.highLength.Length - 1 ? context.Source.highLength[i] : fragment;
 			previousPart -= branchLength;
-			stack.Insert(stackIndex, (context.Source.high[i], 0, context.Destination, context.DestinationIndex + previousPart, branchLength, true));
+			stack.Insert(stackIndex, (context.Source.high[i], 0, context.Destination, context.DestinationIndex + previousPart, branchLength));
 		}
-		stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex, previousPart, true));
+		stack.Insert(stackIndex, (context.Source.high[start.IntIndex], start.RestIndex, context.Destination, context.DestinationIndex, previousPart));
 	}
 
 	protected static void CopyRangeToSimilar(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex)
@@ -863,11 +851,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	sameFragment:
 		if (context.Length == 0)
 			return;
-		// Если один или оба списка перевернуты, корректируем индексы
-		if (context.Source.bReversed && !context.IgnoreReversed)
-			context.SourceIndex = context.Source.Length - context.Length - context.SourceIndex;
-		if (context.Destination.bReversed && !context.IgnoreReversed)
-			context.DestinationIndex = RedStarLinqMath.Max(context.Destination.Length - context.Length - context.DestinationIndex, 0);
 		var sourceEndIndex = context.SourceIndex + context.Length - 1;
 		var destinationEndIndex = context.DestinationIndex + context.Length - 1;
 		CopyRangeIndex sourceStart = new(context.Source.highLength, context.SourceIndex);
@@ -913,7 +896,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	protected static void CopyRangeToSimilarDiagonal(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
+	protected static void CopyRangeToSimilarDiagonal(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
 		Debug.Assert(context.Source.high != null && context.Source.highLength != null && context.Destination.high != null && context.Destination.highLength != null);
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
@@ -939,7 +923,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			var sourceThresholdReached = (sourceCurrentRestIndex -= step) == 0;
 			stack.Insert(stackIndex, (context.Source.high[sourceCurrentIntIndex], sourceCurrentRestIndex,
-				context.Destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step, true));
+				context.Destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step));
 			var destinationThresholdReached = (destinationCurrentRestIndex += step) == destinationMax;
 			leftLength -= step;
 			if (sourceThresholdReached)
@@ -962,7 +946,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void CopyRangeToSimilarLTR(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
+	protected static void CopyRangeToSimilarLTR(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
 		Debug.Assert(context.Source.high != null && context.Source.highLength != null && context.Destination.high != null && context.Destination.highLength != null);
 		// Диапазон копируется слева направо
@@ -986,8 +971,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				step = 0;
 				continue;
 			}
-			stack.Insert(stackIndex, (context.Source.high[sourceCurrentIntIndex], sourceCurrentRestIndex,
-				context.Destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step, true));
+			stack.Insert(stackIndex, (context.Source.high[sourceCurrentIntIndex],
+				ProcessReverse(context.Source.high[sourceCurrentIntIndex], sourceCurrentRestIndex, step),
+				context.Destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step));
 			var sourceThresholdReached = (sourceCurrentRestIndex += step) == context.Source.highLength[sourceCurrentIntIndex];
 			var destinationThresholdReached = (destinationCurrentRestIndex += step) == destinationMax;
 			leftLength -= step;
@@ -1011,7 +997,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void CopyRangeToSimilarRTL(List<CopyRangeContext> stack, CopyRangeContext context, int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
+	protected static void CopyRangeToSimilarRTL(List<CopyRangeContext> stack, CopyRangeContext context,
+		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
 		Debug.Assert(context.Source.high != null && context.Source.highLength != null && context.Destination.high != null && context.Destination.highLength != null);
 		MpzT destinationHighLengthOld = new(context.Destination.highLength.Length);
@@ -1046,9 +1033,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				stack.Insert(stackIndex, (context.Source, sourceIndexes.End.Index + 1 + context.Destination.high[destinationCurrentIntIndex].Length
 					- destinationCurrentRestIndex, context.Destination.high[destinationCurrentIntIndex],
 					context.Destination.high[destinationCurrentIntIndex].Length,
-					destinationCurrentRestIndex - context.Destination.high[destinationCurrentIntIndex].Length, true));
-			stack.Insert(stackIndex, (context.Source.high[sourceCurrentIntIndex], sourceCurrentRestIndex,
-				context.Destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step, true));
+					destinationCurrentRestIndex - context.Destination.high[destinationCurrentIntIndex].Length));
+			stack.Insert(stackIndex, (context.Source.high[sourceCurrentIntIndex],
+				ProcessReverse(context.Source.high[sourceCurrentIntIndex], sourceCurrentRestIndex, step),
+				context.Destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step));
 			leftLength -= step;
 			if (sourceThresholdReached)
 			{
@@ -1068,14 +1056,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void CopyRangeTrivial(TCertain source, MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length, bool ignoreReversed)
+	protected static void CopyRangeTrivial(TCertain source, MpzT sourceIndex,
+		TCertain destination, MpzT destinationIndex, MpzT length)
 	{
 		Debug.Assert(source.low != null && destination.low != null);
 		MpzT oldLength = new(destination.Length);
-		if (source.bReversed && !ignoreReversed)
-			sourceIndex = source.Length - length - sourceIndex;
 		// Если копируемый диапазон не помещается в целевой список, расширяем его
 		if (destination.low.Length < destinationIndex + length)
+		{
 			if (destination.bReversed)
 			{
 				// Если список был перевернут, расширяем слева
@@ -1089,18 +1077,18 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				destination.low.Resize((int)(destinationIndex + length));
 				destination.Length = destinationIndex + length;
 			}
+		}
 		MpzT destinationIndexOld = new(destinationIndex); // Сохраняем также и целевой индекс
 		if (destination.bReversed)
 			destinationIndex = destination.Length - length - destinationIndex;
 		// Если оба списка направлены одинаково, копируем напрямую
-		if ((source.parent?.IsReversed ?? false) ^ (source.bReversed && ignoreReversed)
-			^ (destination.parent?.IsReversed ?? false) ^ (!destination.bReversed || oldLength < destinationIndex + length))
+		if (source.IsReversed ^ (destination.parent?.IsReversed ?? false) ^ (!destination.bReversed || oldLength < destinationIndex + length))
 			source.low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
 		else // Иначе используем срезы для предотвращения лишних проходов
 			source.CollectionLowCreator(source.low.Skip((int)sourceIndex).Take((int)length).Reverse())
 				.CopyRangeTo(0, destination.low, (int)destinationIndex, (int)length);
 		// И, наконец, возвращаем направление следования списков к тому, что было до этого вызова
-		if (destination.bReversed && ignoreReversed && destinationIndex == 0 && length == destination.Length)
+		if (destination.bReversed && destinationIndex == 0 && length == destination.Length)
 			destination.Reverse();
 #if VERIFY
 		Debug.Assert(destination.Length == RedStarLinqMath.Max(oldLength, destinationIndexOld + length));
@@ -1110,8 +1098,27 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	}
 
 	protected override void CopyToInternal(MpzT sourceIndex, TCertain destination,
-		MpzT destinationIndex, MpzT length, bool ignoreReversed = false) =>
-		CopyRange((TCertain)this, sourceIndex, destination, destinationIndex, length, ignoreReversed);
+		MpzT destinationIndex, MpzT length, bool ignoreReversed = false)
+	{
+		bool bReversedOld = bReversed, destinationReversedOld = destination.bReversed;
+		if (bReversedOld && !ignoreReversed)
+		{
+			Reverse();
+			sourceIndex = Length - length - sourceIndex;
+		}
+		if (destinationReversedOld && !ignoreReversed)
+		{
+			destination.Reverse();
+			if (destination.Length < destinationIndex + length)
+				destination.Resize(destinationIndex + length);
+			destinationIndex = destination.Length - length - destinationIndex;
+		}
+		CopyRange((TCertain)this, sourceIndex, destination, destinationIndex, length);
+		if (bReversedOld && !ignoreReversed)
+			Reverse();
+		if (destinationReversedOld && !ignoreReversed)
+			destination.Reverse();
+	}
 
 	protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{
@@ -1436,7 +1443,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			temp.Capacity = fragment;
 			high.CopyRangeTo(intIndex + 1, high, intIndex + 2, high.Length - intIndex - 2);
 			high[intIndex + 1] = temp;
-			high[intIndex].CopyToInternal(bitsIndex, temp, 0, high[intIndex].Length - bitsIndex);
+			high[intIndex].CopyToInternal(bitsIndex, temp, 0, high[intIndex].Length - bitsIndex, true);
 			temp.parent = this2;
 			highLength.Insert(intIndex + 1, high[intIndex].Length - bitsIndex);
 			high[intIndex].SetOrAddInternal(bitsIndex, item);
@@ -1549,6 +1556,26 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
+	}
+
+	public static MpzT ProcessReverse(TCertain source, MpzT sourceIndex, MpzT length)
+	{
+		if (source.Length < sourceIndex + length)
+		{
+			if (source.bReversed)
+			{
+				// Если список был перевернут, расширяем слева
+				using var toInsert = RedStarLinq.EmptyList<T>((int)(sourceIndex + length - source.Length));
+				source.Insert(0, toInsert);
+			}
+			else
+			{
+				// Иначе справа
+				source.Resize(sourceIndex + length);
+				source.Length = sourceIndex + length;
+			}
+		}
+		return source.bReversed ? source.Length - length - sourceIndex : sourceIndex;
 	}
 
 	protected virtual void ReduceCapacityExponential(MpzT newFragment)
@@ -1766,6 +1793,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (tempRange.Length != 0)
 			{
 				tempRange[0].RemoveEndInternal(RedStarLinqMath.Min(high[^1].Length, tempRange[0].Length));
+				tempRange[0].bReversed = false;
 				high[^1].CopyToInternal(0, tempRange[0], 0, high[^1].Length);
 				high[^1].ClearInternal(false);
 			}
@@ -1801,7 +1829,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected override void ReverseInternal(MpzT index, MpzT length)
 	{
-		if (length == 0)
+		if (length <= 1)
 			return;
 		if (index == 0 && length == Length)
 		{
@@ -1848,9 +1876,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			TCertain tempRange;
 			if (endBitsIndex + 1 == highLength[intIndex] - bitsIndex)
 			{
-				tempRange = high[intIndex].GetRange(bitsIndex);
+				tempRange = high[endIntIndex].GetRange(0, endBitsIndex + 1, endBitsIndex + 1 == high[endIntIndex].Length);
 				high[intIndex].CopyToInternal(bitsIndex, high[endIntIndex], 0, endBitsIndex + 1, true);
-				high[endIntIndex].Reverse(0, endBitsIndex + 1);
+				high[endIntIndex].ReverseInternal(0, endBitsIndex + 1);
 				tempRange.Reverse();
 				tempRange.CopyToInternal(0, high[intIndex], bitsIndex, tempRange.Length, true);
 				return;
@@ -1886,7 +1914,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			tempRange = high[endIntIndex].GetRange(endCommonIndex, commonLength);
 			high[intIndex].CopyToInternal(bitsIndex, high[endIntIndex], endCommonIndex, commonLength, true);
-			high[endIntIndex].Reverse(endCommonIndex, commonLength);
+			high[endIntIndex].ReverseInternal(endCommonIndex, commonLength);
 			tempRange.Reverse();
 			tempRange.CopyToInternal(0, high[intIndex], bitsIndex, commonLength, true);
 			var takeIndex = greaterAtEnd ? 0 : bitsIndex + commonLength;
@@ -1897,71 +1925,22 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					less.Capacity = fragment;
 				less.InsertInternal(insertIndex, greater.GetRange(takeIndex, difference));
 				greater.Remove(takeIndex, difference);
-				less.Reverse(insertIndex, difference);
+				less.ReverseInternal(insertIndex, difference);
 				highLength[greaterIndex] -= difference;
 				highLength[lessIndex] += difference;
 				return;
 			}
+			if (difference <= 1 && (greaterAtEnd || commonLength == 1))
+				return;
 			var insertionIncrement = greaterAtEnd ? highLength[intIndex] - bitsIndex : 0;
 			tempRange = greater.GetRange(takeIndex, difference);
 			greater.Remove(takeIndex, difference);
 			tempRange.Reverse();
 			highLength[greaterIndex] -= difference;
+#if VERIFY
+			Verify();
+#endif
 			InsertInternal(highLength.GetLeftValuesSum(lessIndex, out _) + endCommonIndex + insertionIncrement, tempRange);
-		//	return;
-		//	var compactified = false;
-		//tryAddBranch:
-		//	if (highLength.Length < high.Length)
-		//	{
-		//		var offsetFromEnd = 0;
-		//		if (high[^1].Capacity == fragment) { }
-		//		else if (highLength.Length < high.Length - 1)
-		//			offsetFromEnd = 1;
-		//		else
-		//			high[^1].Capacity = fragment;
-		//		less = high[^(offsetFromEnd + 1)];
-		//		var shiftIndex = greaterAtEnd ? endIntIndex : intIndex + 1;
-		//		less.AddRange(greater.GetRange(takeIndex, difference));
-		//		less.Reverse();
-		//		greater.Remove(takeIndex, difference);
-		//		highLength[greaterIndex] -= difference;
-		//		high.CopyRangeTo(shiftIndex, high, shiftIndex + 1, high.Length - shiftIndex - offsetFromEnd - 1);
-		//		high[shiftIndex] = less;
-		//		highLength.CopyRangeTo(shiftIndex, highLength, shiftIndex + 1,
-		//			RedStarLinqMath.Min(high.Length - shiftIndex - offsetFromEnd - 1, highLength.Length - shiftIndex));
-		//		highLength[shiftIndex] = difference;
-		//	}
-		//	else if (high.Length < Subbranches)
-		//	{
-		//		IncreaseCapacityLinear(Min(high.Length << 1, Subbranches) * fragment);
-		//		goto tryAddBranch;
-		//	}
-		//	else if (!compactified)
-		//	{
-		//		Compactify();
-		//		compactified = true;
-		//		goto tryAddBranch;
-		//	}
-		//	else
-		//	{
-		//		IncreaseCapacityExponential(Capacity << 1, fragment << SubbranchesBitLength);
-		//		Debug.Assert(high != null && high.Length == 2 && highLength != null && highLength.Length == 1
-		//			&& high[0].low == null && high[0].high != null && high[0].highLength != null
-		//			&& high[0].high!.Length > 1 && high[0].highLength!.Length > 1);
-		//		less = high[0].high![^1];
-		//		high[1].AddRange(less);
-		//		highLength[1].Add(less.Length);
-		//		less.Clear();
-		//		var shiftIndex = greaterAtEnd ? endIntIndex : intIndex + 1;
-		//		high[0].high!.CopyRangeTo(shiftIndex, high[0].high!, shiftIndex + 1, high[0].high!.Length - shiftIndex - 1);
-		//		less.AddRange(greater.GetRange(takeIndex, difference));
-		//		less.Reverse();
-		//		greater.Remove(takeIndex, difference);
-		//		high[0].high![shiftIndex] = less;
-		//		high[0].highLength!.CopyRangeTo(shiftIndex, high[0].highLength!, shiftIndex + 1,
-		//			high[0].highLength!.Length - shiftIndex - 1);
-		//		high[0].highLength![shiftIndex] = difference;
-		//	}
 		}
 		finally
 		{
@@ -2041,7 +2020,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert(low != null ^ (high != null || highLength != null));
 		Debug.Assert(Length <= Capacity);
 		if (low != null)
+		{
 			Debug.Assert(Length == low.Length);
+			Debug.Assert(Length <= LeafSize);
+		}
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == high.Sum(x => x.Length));
@@ -2058,11 +2040,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 
 	protected record struct CopyRangeContext(TCertain Source, MpzT SourceIndex,
-		TCertain Destination, MpzT DestinationIndex, MpzT Length, bool IgnoreReversed)
+		TCertain Destination, MpzT DestinationIndex, MpzT Length)
 	{
 		public static implicit operator CopyRangeContext((TCertain Source, MpzT SourceIndex,
-			TCertain Destination, MpzT DestinationIndex, MpzT Length, bool IgnoreReversed) x) =>
-			new(x.Source, x.SourceIndex, x.Destination, x.DestinationIndex, x.Length, x.IgnoreReversed);
+			TCertain Destination, MpzT DestinationIndex, MpzT Length) x) =>
+			new(x.Source, x.SourceIndex, x.Destination, x.DestinationIndex, x.Length);
 	}
 
 	protected readonly struct CopyRangeIndex

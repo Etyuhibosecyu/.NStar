@@ -11,10 +11,8 @@
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
+		<DebugType>pdbonly</DebugType>
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
 

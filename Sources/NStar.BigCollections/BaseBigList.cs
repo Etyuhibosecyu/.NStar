@@ -336,11 +336,25 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
-		if (collection is G.IList<T> list && !(CreateVar(list.GetType(),
+		if (collection is IBigList<T> bigList)
+			return EqualsToBigList(bigList, index, toEnd);
+		else if (collection is G.IList<T> list && !(CreateVar(list.GetType(),
 			out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet")))
 			return EqualsToList(list, index, toEnd);
 		else
 			return EqualsToNonList(collection, index, toEnd);
+	}
+
+	protected virtual bool EqualsToBigList(IBigList<T> list, MpzT index, bool toEnd = false)
+	{
+		if (index > Length - list.Length)
+			return false;
+		if (toEnd && index < Length - list.Length)
+			return false;
+		for (var i = 0; i < list.Length; i++, index++)
+			if (!(GetInternal(index)?.Equals(list[i]) ?? list[i] == null))
+				return false;
+		return true;
 	}
 
 	protected virtual bool EqualsToList(G.IList<T> list, MpzT index, bool toEnd = false)
@@ -641,7 +655,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		EnsureCapacity(newSize);
 		if (newSize > Length)
 		{
-			Length = newSize;
+			for (var i = newSize - Length - 1; i >= 0; i--)
+				Add(default!);
 			return (TCertain)this;
 		}
 		else

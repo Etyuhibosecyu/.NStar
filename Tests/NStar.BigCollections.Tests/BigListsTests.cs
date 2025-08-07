@@ -247,7 +247,8 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 		//	Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
-			if (bl.Length == 0) return;
+			if (bl.Length == 0)
+				return;
 			var index = random.Next((int)bl.Length);
 			var n = newValueFunc();
 			bl[index] = n;
@@ -628,27 +629,27 @@ public class BigListTests
 			}
 			Assert.IsTrue(destination.GetRange(0, destinationIndex).Equals(source.GetRange(0, destinationIndex)));
 			Assert.IsTrue(E.SequenceEqual(destination.GetRange(0, destinationIndex), E.Take(source, destinationIndex)));
-			Assert.IsTrue(Process(destination.GetRange(destinationIndex, length)).Equals(source.GetRange(sourceIndex, length)));
-			Assert.IsTrue(E.SequenceEqual(Process(destination.GetRange(destinationIndex, length)),
+			Assert.IsTrue(destination.GetRange(destinationIndex, length).Equals(source.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex, length),
 				E.Take(E.Skip(source, sourceIndex), length)));
 			if (sourceIndex >= 1 && destinationIndex >= 1)
-				Assert.AreEqual(Process(destination.GetRange(destinationIndex - 1, length + 1))
+				Assert.AreEqual(destination.GetRange(destinationIndex - 1, length + 1)
 					.Equals(source.GetRange(sourceIndex - 1, length + 1)),
-					E.SequenceEqual(Process(destination.GetRange(destinationIndex - 1, length + 1)),
+					E.SequenceEqual(destination.GetRange(destinationIndex - 1, length + 1),
 					E.Take(E.Skip(source, sourceIndex - 1), length + 1)));
 			if (sourceIndex + length < regularList.Length - 1 && destinationIndex + length < regularList.Length - 1)
-				Assert.AreEqual(Process(destination.GetRange(destinationIndex, length + 1))
+				Assert.AreEqual(destination.GetRange(destinationIndex, length + 1)
 					.Equals(source.GetRange(sourceIndex, length + 1)),
-					E.SequenceEqual(Process(destination.GetRange(destinationIndex, length + 1)),
+					E.SequenceEqual(destination.GetRange(destinationIndex, length + 1),
 					E.Take(E.Skip(source, sourceIndex), length + 1)));
 			Assert.IsTrue(destination.GetRange(destinationIndex + length).Equals(source.GetRange(destinationIndex + length)));
 			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex + length),
 				E.Skip(source, destinationIndex + length)));
 			Assert.IsTrue(destination.GetRange(0, destinationIndex).Equals(regularList.GetRange(0, destinationIndex)));
 			Assert.IsTrue(E.SequenceEqual(destination.GetRange(0, destinationIndex), E.Take(regularList, destinationIndex)));
-			Assert.IsTrue(Process(destination.GetRange(destinationIndex, length))
+			Assert.IsTrue(destination.GetRange(destinationIndex, length)
 				.Equals(regularList.GetRange(sourceIndex, length)));
-			Assert.IsTrue(E.SequenceEqual(Process(destination.GetRange(destinationIndex, length)),
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex, length),
 				E.Take(E.Skip(regularList, sourceIndex), length)));
 			if (sourceIndex >= 1 && destinationIndex >= 1)
 				Assert.AreEqual(destination.GetRange(destinationIndex - 1, length + 1).Equals(regularList.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(regularList, sourceIndex - 1), length + 1)));
@@ -657,6 +658,5 @@ public class BigListTests
 			Assert.IsTrue(destination.GetRange(destinationIndex + length).Equals(regularList.GetRange(destinationIndex + length)));
 			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex + length), E.Skip(regularList, destinationIndex + length)));
 		}
-		BigList<byte> Process(BigList<byte> input) => reverseSource != reverseDestination ? new BigList<byte>(input).Reverse() : input;
 	}
 }
