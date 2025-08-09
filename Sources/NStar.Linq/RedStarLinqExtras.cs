@@ -10874,7 +10874,6 @@ public static class RedStarLinqExtras
 		return (result, result2, result3);
 	}
 
-	[Experimental("CS9216")]
 	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10889,7 +10888,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10904,7 +10902,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static List<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2)
 	{
 		var length = Min(source.Count, source2.Count);
@@ -10918,7 +10915,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10934,7 +10930,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10950,11 +10945,10 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3)
 	{
 		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		List<(T, T2, T3)> result = new(length);
+		var result = RedStarLinq.EmptyList<(T, T2, T3)>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];

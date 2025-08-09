@@ -304,8 +304,18 @@ public static unsafe class Extents
 		return en.MoveNext() ? en.Current : default;
 	}
 
-	internal static T[] GetAndRemove<T>(this SortedDictionary<int, G.List<T[]>> dic, int value)
+	internal static T[] GetAndRemove<T>(this SortedDictionary<int, G.List<T[]>> dic, int value, bool exact = false)
 	{
+		if (exact)
+		{
+			if (!dic.TryGetValue(value, out var exactList))
+				return GC.AllocateUninitializedArray<T>(value);
+			var exactResult = exactList[^1];
+			exactList.RemoveAt(exactList.Count - 1);
+			if (exactList.Count == 0)
+				dic.Remove(value);
+			return exactResult;
+		}
 		if (dic.GetType().GetField("_set", System.Reflection.BindingFlags.Instance
 			| System.Reflection.BindingFlags.NonPublic)?.GetValue(dic) is not SortedSet<KeyValuePair<int, G.List<T[]>>> set)
 			return GC.AllocateUninitializedArray<T>(value);

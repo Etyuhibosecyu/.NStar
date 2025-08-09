@@ -19,7 +19,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
-		var toInsert = Array.Empty<T>();
+		T[] toInsert;
 	l1:
 		var (bl, gl, bytes) = create();
 		var secondaryActions = new[] { () =>
@@ -183,7 +183,8 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
-			if (bl.Length == 0) return;
+			if (bl.Length == 0)
+				return;
 			var index = random.Next((int)bl.Length);
 			var bl2 = bl.RemoveAt(index);
 			gl.RemoveAt(index);
@@ -192,7 +193,8 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
-			if (bl.Length == 0) return;
+			if (bl.Length == 0)
+				return;
 			var n = newValueFunc();
 			var removed = bl.RemoveValue(n);
 			Assert.AreEqual(removed, gl.Remove(n));
@@ -234,17 +236,17 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 			Assert.AreEqual(bl2, bl);
-		//}, () =>
-		//{
-		//	var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
-		//	if (bl.Length < length)
-		//		return;
-		//	var start = random.Next((int)bl.Length - length + 1);
-		//	var bl2 = bl.Reverse(start, length);
-		//	gl.Reverse(start, length);
-		//	Assert.IsTrue(bl.Equals(gl));
-		//	Assert.IsTrue(E.SequenceEqual(gl, bl));
-		//	Assert.AreEqual(bl2, bl);
+		}, () =>
+		{
+			var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
+			if (bl.Length < length)
+				return;
+			var start = random.Next((int)bl.Length - length + 1);
+			var bl2 = bl.Reverse(start, length);
+			gl.Reverse(start, length);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
 			if (bl.Length == 0)
@@ -257,7 +259,8 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			if (bl.Length == 0) return;
+			if (bl.Length == 0)
+				return;
 			var index = random.Next((int)bl.Length);
 			Assert.AreEqual(bl[index], gl[index]);
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
@@ -280,13 +283,13 @@ public class BigBitListTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		BaseBigListTests<bool, BigBitList, BitList>.ComplexTest(() =>
-	{
-		var arr = RedStarLinq.FillArray(512, _ => random.Next(2) == 1);
-		bl = new(arr, 2, 6);
-		gl = [.. arr];
-		var bytes = new byte[16];
-		return (bl, gl, bytes);
-	}, () => random.Next(2) == 1, BitsPerInt, 250);
+		{
+			var arr = RedStarLinq.FillArray(512, _ => random.Next(2) == 1);
+			bl = new(arr, 2, 6);
+			gl = [.. arr];
+			var bytes = new byte[16];
+			return (bl, gl, bytes);
+		}, () => random.Next(2) == 1, BitsPerInt, 250);
 	}
 
 	[TestMethod]
@@ -503,13 +506,13 @@ public class BigListTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
-	{
-		var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
-		bl = new(arr, 2, 2);
-		gl = [.. arr];
-		var bytes = new byte[16];
-		return (bl, gl, bytes);
-	}, () => random.Next(16), 2, 2500);
+		{
+			var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
+			bl = new(arr, 2, 2);
+			gl = [.. arr];
+			var bytes = new byte[16];
+			return (bl, gl, bytes);
+		}, () => random.Next(16), 2, 2500);
 	}
 
 	[TestMethod]
@@ -517,13 +520,13 @@ public class BigListTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
-	{
-		var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
-		bl = new(arr, 2, 2);
-		gl = [.. arr];
-		var bytes = new byte[16];
-		return (bl, gl, bytes);
-	}, () => random.Next(16), 32, 100);
+		{
+			var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
+			bl = new(arr, random.Next(2, 5), random.Next(2, 7));
+			gl = [.. arr];
+			var bytes = new byte[16];
+			return (bl, gl, bytes);
+		}, () => random.Next(16), 32, 100);
 	}
 
 	[TestMethod]

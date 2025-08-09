@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
-    <ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
-    <ProjectReference Include="..\NStar.SumCollections\NStar.SumCollections.csproj" />
-  </ItemGroup>
+		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
+		<ProjectReference Include="..\NStar.SumCollections\NStar.SumCollections.csproj" />
+	</ItemGroup>
 </Project>

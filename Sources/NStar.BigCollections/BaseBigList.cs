@@ -1,7 +1,8 @@
 ﻿namespace NStar.BigCollections;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, IDisposable where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
+public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, IDisposable
+	where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
 {
 	public virtual T this[MpzT index]
 	{
@@ -214,7 +215,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	public virtual TCertain Copy() => CollectionCreator(this);
 
 	protected abstract void CopyToInternal(MpzT sourceIndex, TCertain destination,
-		MpzT destinationIndex, MpzT length, bool ignoreReversed = false);
+		MpzT destinationIndex, MpzT length);
 
 	public virtual void CopyTo(Array array, int arrayIndex)
 	{
@@ -336,28 +337,30 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
-		if (collection is IBigList<T> bigList)
+		if (collection is TCertain bigList)
 			return EqualsToBigList(bigList, index, toEnd);
-		else if (collection is G.IList<T> list && !(CreateVar(list.GetType(),
+		else if (collection is G.IReadOnlyList<T> list && !(CreateVar(list.GetType(),
 			out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet")))
 			return EqualsToList(list, index, toEnd);
+		else if (collection is G.IList<T> list2)
+			return EqualsToList(list2.GetSlice(), index, toEnd);
 		else
 			return EqualsToNonList(collection, index, toEnd);
 	}
 
-	protected virtual bool EqualsToBigList(IBigList<T> list, MpzT index, bool toEnd = false)
+	protected virtual bool EqualsToBigList(TCertain list, MpzT index, bool toEnd = false)
 	{
 		if (index > Length - list.Length)
 			return false;
 		if (toEnd && index < Length - list.Length)
 			return false;
 		for (var i = 0; i < list.Length; i++, index++)
-			if (!(GetInternal(index)?.Equals(list[i]) ?? list[i] == null))
+			if (!(GetInternal(index)?.Equals(list.GetInternal(i)) ?? list.GetInternal(i) == null))
 				return false;
 		return true;
 	}
 
-	protected virtual bool EqualsToList(G.IList<T> list, MpzT index, bool toEnd = false)
+	protected virtual bool EqualsToList(G.IReadOnlyList<T> list, MpzT index, bool toEnd = false)
 	{
 		if (index > Length - list.Count)
 			return false;
@@ -416,6 +419,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return GetRangeInternal(index, length, alwaysCopy);
 	}
 
+	protected virtual void GetRangeCopyTo(MpzT index, MpzT length, TCertain list) => CopyToInternal(index, list, 0, length);
+
 	protected virtual TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false)
 	{
 		if (length == 0)
@@ -423,7 +428,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		else if (!alwaysCopy && index == 0 && length == Length && this is TCertain thisList)
 			return thisList;
 		var list = CapacityCreator(length);
-		CopyToInternal(index, list, 0, length);
+		GetRangeCopyTo(index, length, list);
 		list.Length = length;
 #if VERIFY
 		Verify();

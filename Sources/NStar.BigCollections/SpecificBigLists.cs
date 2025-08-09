@@ -37,7 +37,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			low = null;
 			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
-			high = new((int)GetArrayLength(length, fragment));
+			high = new((int)GetArrayLength(length, fragment), true);
 			highLength = [];
 			for (MpzT i = 0; i < high.Capacity - 1; i++)
 			{
@@ -327,7 +327,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			low = null;
 			fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var fragment2 = (int)fragment;
-			high = new(GetArrayLength(bitList.Length, fragment2));
+			high = new(GetArrayLength(bitList.Length, fragment2), true);
 			highLength = [];
 			var index = 0;
 			for (; index <= bitList.Length - fragment2; index += fragment2)
@@ -412,7 +412,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			low = null;
 			fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var uintsFragment = fragment / BitsPerInt;
-			high = new((int)GetArrayLength(length, uintsFragment));
+			high = new((int)GetArrayLength(length, uintsFragment), true);
 			highLength = [];
 			MpzT index = 0;
 			for (; index < length - uintsFragment; index += uintsFragment)

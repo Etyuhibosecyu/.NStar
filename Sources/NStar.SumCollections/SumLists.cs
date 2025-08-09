@@ -644,6 +644,25 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			return false;
 	}
 
+	public virtual T UpdateIfGreater(int index, T value)
+	{
+		var node = FindNode(index);
+		if (node != null)
+		{
+			if ((dynamic?)value <= 0)
+				return node.Value;
+			if (value > node.Value)
+				node.Update(value);
+#if VERIFY
+			foreach (var x in new[] { node, root })
+				x?.Verify();
+#endif
+			return node.Value;
+		}
+		else
+			return T.Zero;
+	}
+
 	internal virtual void UpdateVersion() => ++version;
 
 	// Virtual function for TreeSubSet, which may need to update its length.
@@ -1975,29 +1994,32 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 		sum = new(sum);
 		var current = root as Node;
-		sumExceedsBy = 0;
+		sumExceedsBy = MpzT.Zero;
 		var index = 0;
 		while (current != null)
 		{
-			if (sum >= (current.Left?.ValuesSum ?? 0) && sum < (current.Left?.ValuesSum ?? 0) + current.Value)
+			var left = current.Left;
+			var leftCount = left?.LeavesCount ?? 0;
+			var leftSum = left?.ValuesSum ?? 0;
+			if (sum < leftSum)
 			{
-				sumExceedsBy = sum - (current.Left?.ValuesSum ?? 0);
-				return index + (current.Left?.LeavesCount ?? 0);
+				Mpir.NET.Mpir.MpzSet(sumExceedsBy, current.Value);
+				current = left;
 			}
-			else if (sum < (current.Left?.ValuesSum ?? 0))
+			else if (sum < leftSum + current.Value)
 			{
-				sumExceedsBy = new(current.Value);
-				current = current.Left;
+				Mpir.NET.Mpir.MpzSub(sumExceedsBy, sum, leftSum);
+				return index + leftCount;
 			}
 			else
 			{
-				index += (current.Left?.LeavesCount ?? 0) + 1;
-				sum -= (current.Left?.ValuesSum ?? 0) + current.Value;
-				sumExceedsBy = new(current.Value);
+				index += leftCount + 1;
+				Mpir.NET.Mpir.MpzSub(sum, sum, leftSum + current.Value);
+				Mpir.NET.Mpir.MpzSet(sumExceedsBy, current.Value);
 				current = current.Right;
 			}
 		}
-		sumExceedsBy += sum;
+		Mpir.NET.Mpir.MpzAdd(sumExceedsBy, sumExceedsBy, sum);
 		return index - 1;
 	}
 

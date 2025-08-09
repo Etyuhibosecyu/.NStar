@@ -10,7 +10,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public List() => _items = null;
 
-	public List(int capacity)
+	public List(int capacity) : this(capacity, false) { }
+
+	public List(int capacity, bool exact)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity == 0)
@@ -23,7 +25,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (arrayPool.Count == 0)
 				_items = GC.AllocateUninitializedArray<T>(capacity);
 			else
-				_items = arrayPool.GetAndRemove(capacity);
+				_items = arrayPool.GetAndRemove(capacity, exact);
 		}
 	}
 
@@ -58,7 +60,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
-	public List(int capacity, IEnumerable<T> collection) : this(capacity)
+	public List(int capacity, IEnumerable<T> collection) : this(capacity, collection, false) { }
+
+	public List(int capacity, IEnumerable<T> collection, bool exact) : this(capacity, exact)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not G.ICollection<T> c)
@@ -77,7 +81,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				if (arrayPool.Count == 0)
 					_items = GC.AllocateUninitializedArray<T>(length);
 				else
-					_items = arrayPool.GetAndRemove(length);
+					_items = arrayPool.GetAndRemove(length, exact);
 			}
 		Debug.Assert(_items != null);
 		c.CopyTo(_items, 0);
@@ -143,7 +147,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
-	public List(int capacity, ReadOnlySpan<T> span)
+	public List(int capacity, ReadOnlySpan<T> span) : this(capacity, span, false) { }
+
+	public List(int capacity, ReadOnlySpan<T> span, bool exact)
 	{
 		_size = span.Length;
 		if (span.Length > capacity)
@@ -164,7 +170,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				if (arrayPool.Count == 0)
 					_items = GC.AllocateUninitializedArray<T>(capacity);
 				else
-					_items = arrayPool.GetAndRemove(capacity);
+					_items = arrayPool.GetAndRemove(capacity, exact);
 			}
 			span.CopyTo(_items);
 		}
@@ -592,13 +598,19 @@ public class List<T> : List<T, List<T>>
 
 	public List(int capacity) : base(capacity) { }
 
+	public List(int capacity, bool exact) : base(capacity, exact) { }
+
 	public List(IEnumerable<T> collection) : base(collection) { }
 
 	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
+	public List(int capacity, IEnumerable<T> collection, bool exact) : base(capacity, collection, exact) { }
+
 	public List(int capacity, params T[] array) : base(capacity, array) { }
 
 	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
+
+	public List(int capacity, ReadOnlySpan<T> span, bool exact) : base(capacity, span, exact) { }
 
 	public List(params T[] array) : base(array) { }
 

@@ -48,7 +48,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
+				SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			high = new((int)GetArrayLength(capacity, fragment));
 			for (MpzT i = 0; i < capacity / fragment; i++)
 				high.Enqueue(new(fragment));
@@ -58,7 +59,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		_size = 0;
 	}
 
-	public BigQueue(G.IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetLengthEasily(out var length) ? length : 32)
+	public BigQueue(G.IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col))
+		: col.TryGetLengthEasily(out var length) ? length : 32)
 	{
 		using var en = col.GetEnumerator();
 		while (en.MoveNext())
@@ -330,7 +332,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 [Obsolete("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа. Теперь он удален окончательно."
 		+ " Большие списки делают все то же самое и многое другое, и они уже работают.", true)]
-public abstract class BigArray<T, TCertain, TLow> where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
+public abstract class BigArray<T, TCertain, TLow>
+	where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
 	private protected TLow? low;
 	private protected TCertain[]? high;
@@ -404,13 +407,17 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 {
 	public BigArray() { }
 
-	public BigArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
+	public BigArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, subbranchesBitLength, leafSizeBitLength) { }
+	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(length, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
+	public BigArray(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
+	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
 
 	protected virtual Func<MpzT, BigArray<T>> CapacityCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
@@ -426,7 +433,8 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 
 	protected virtual Func<G.IEnumerable<T>, List<T>> CollectionLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");}
+		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
+}
 
 /// <summary>
 /// Представляет компактный строго типизированный массив бит (true или false), упорядоченных по индексу.
@@ -451,9 +459,11 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	public BigBitArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
+	public BigBitArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, subbranchesBitLength, leafSizeBitLength) { }
+	public BigBitArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(length, subbranchesBitLength, leafSizeBitLength) { }
 
 	public BigBitArray(MpzT length, bool defaultValue, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
@@ -521,4 +531,5 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public virtual BigBitArray Xor(BigBitArray value) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");}
+		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
+}

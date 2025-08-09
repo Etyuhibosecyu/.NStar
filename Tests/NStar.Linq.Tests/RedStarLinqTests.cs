@@ -522,6 +522,8 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		G.IEnumerable<string> b = RedStarLinq.ToList(E.Skip(list2, 1));
 		ProcessB(a, b);
+		b = RedStarLinq.ToHashSet(E.Skip(list2, 1));
+		ProcessB(a, b);
 		b = E.ToArray(E.Skip(list2, 1));
 		ProcessB(a, b);
 		b = E.ToList(E.Skip(list2, 1));
@@ -551,6 +553,8 @@ public class RedStarLinqTests
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Combine(b, (Func<string, string, string>)null!).ToList());
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.Combine(b, (Func<string, string, int, string>)null!).ToList());
 			G.IEnumerable<string> b2 = RedStarLinq.ToList(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = RedStarLinq.ToHashSet(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
 			b2 = E.ToArray(E.Skip(list2, 2));
 			ProcessB2(a, b, b2);
@@ -2651,6 +2655,70 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestPCombine() => TestROL(a =>
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		G.IReadOnlyList<string> b = RedStarLinq.ToList(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = RedStarLinq.ToHashSet(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = E.ToArray(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = E.ToList(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessB(a, b);
+		b = list2.Prepend("XXX");
+		ProcessB(a, b);
+		void ProcessB(G.IReadOnlyList<string> a, G.IReadOnlyList<string> b)
+		{
+			var c = a.PCombine(b, (x, y) => x + y);
+			var d = E.Zip(a, b, (x, y) => x + y);
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.PCombine(b, (x, y, index) => x + y + index.ToString());
+			d = E.Zip(E.Select(a, (elem, index) => (elem, index)), b, (x, y) => x.elem + y + x.index.ToString());
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			var c2 = a.PCombine(b);
+			var d2 = E.Zip(a, b);
+			Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PCombine(b, (Func<string, string, string>)null!).ToList());
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PCombine(b, (Func<string, string, int, string>)null!).ToList());
+			G.IReadOnlyList<string> b2 = RedStarLinq.ToList(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = RedStarLinq.ToHashSet(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = E.ToArray(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = E.ToList(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(list2, 2).ToList().Insert(0, "XXX").GetSlice(1);
+			ProcessB2(a, b, b2);
+			b2 = list2.Prepend("XXX");
+			ProcessB2(a, b, b2);
+		}
+		static void ProcessB2(G.IReadOnlyList<string> a, G.IReadOnlyList<string> b, G.IReadOnlyList<string> b2)
+		{
+			var c = a.PCombine(b, b2, (x, y, z) => x + y + z);
+			var d = E.Select(E.Zip(a, b, b2), x => x.First + x.Second + x.Third);
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.PCombine(b, b2, (x, y, z, index) => x + y + z + index.ToString());
+			d = E.Zip(E.Zip(E.Select(a, (elem, index) => (elem, index)), b, (x, y) => (x.elem + y, x.index)), b2, (x, y) => x.Item1 + y + x.index.ToString());
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			var c2 = a.PCombine(b, b2);
+			var d2 = E.Zip(a, b, b2);
+			Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PCombine(b, b2, (Func<string, string, string, string>)null!).ToList());
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PCombine(b, b2, (Func<string, string, string, int, string>)null!).ToList());
+		}
+	});
+
+	[TestMethod]
 	public void TestPConvert() => TestROL(a =>
 	{
 		var c = a.PConvert(x => x[1..]);
@@ -2662,6 +2730,34 @@ public class RedStarLinqTests
 		Assert.IsTrue(E.SequenceEqual(c, d));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.PConvert((Func<string, int, string>)null!));
 	});
+
+	[TestMethod]
+	public void TestPFill()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var @char = (char)random.Next('A', 'Z' + 1);
+			var @string = (@char, @char, @char);
+			var length = random.Next(1001);
+			var a = RedStarLinqExtras.PFill(@string, length);
+			var b = E.ToList(E.Repeat(@string, length));
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinqExtras.PFill(@string, -5));
+			a = RedStarLinqExtras.PFill(index => ((char)(@char + index), (char)(@char + index), (char)(@char + index)), length);
+			b = E.ToList(E.Select(E.Range(0, length), index => ((char)(@char + index), (char)(@char + index), (char)(@char + index))));
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinqExtras.PFill(index => ((char)(@char + index), (char)(@char + index), (char)(@char + index)), -5));
+			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinqExtras.PFill((Func<int, (char, char, char)>)null!, length));
+			a = RedStarLinqExtras.PFill(length, index => ((char)(@char + index), (char)(@char + index), (char)(@char + index)));
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinqExtras.PFill(-5, index => ((char)(@char + index), (char)(@char + index), (char)(@char + index))));
+			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinqExtras.PFill(length, (Func<int, (char, char, char)>)null!));
+		}
+	}
 
 	[TestMethod]
 	public void TestPRemoveDoubles()
@@ -2849,34 +2945,6 @@ public class RedStarLinqTests
 			//Assert.IsTrue(E.SequenceEqual(E.Select(c3, x => x.elem + x.index % 10), b, new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)));
 			//Assert.IsTrue(RedStarLinq.Equals(b, c4, (x, y) => x / 2 == (y.First + y.index % 10) / 2));
 			//Assert.IsTrue(E.SequenceEqual(E.Select(c4, x => (x.First + x.index % 10) / 2), b));
-		}
-	}
-
-	[TestMethod]
-	public void TestPFill()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		for (var i = 0; i < 1000; i++)
-		{
-			var @char = (char)random.Next('A', 'Z' + 1);
-			var @string = (@char, @char, @char);
-			var length = random.Next(1001);
-			var a = RedStarLinqExtras.PFill(@string, length);
-			var b = E.ToList(E.Repeat(@string, length));
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(b, a));
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinqExtras.PFill(@string, -5));
-			a = RedStarLinqExtras.PFill(index => ((char)(@char + index), (char)(@char + index), (char)(@char + index)), length);
-			b = E.ToList(E.Select(E.Range(0, length), index => ((char)(@char + index), (char)(@char + index), (char)(@char + index))));
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(b, a));
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinqExtras.PFill(index => ((char)(@char + index), (char)(@char + index), (char)(@char + index)), -5));
-			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinqExtras.PFill((Func<int, (char, char, char)>)null!, length));
-			a = RedStarLinqExtras.PFill(length, index => ((char)(@char + index), (char)(@char + index), (char)(@char + index)));
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(b, a));
-			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinqExtras.PFill(-5, index => ((char)(@char + index), (char)(@char + index), (char)(@char + index))));
-			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinqExtras.PFill(length, (Func<int, (char, char, char)>)null!));
 		}
 	}
 }
