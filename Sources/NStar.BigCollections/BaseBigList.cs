@@ -655,18 +655,14 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual TCertain Resize(MpzT newSize)
 	{
+		ArgumentOutOfRangeException.ThrowIfNegative(newSize);
 		if (newSize == Length)
 			return (TCertain)this;
-		EnsureCapacity(newSize);
-		if (newSize > Length)
-		{
-			for (var i = newSize - Length - 1; i >= 0; i--)
-				Add(default!);
-			return (TCertain)this;
-		}
-		else
-			return RemoveEnd(newSize);
+		ResizeInternal(newSize);
+		return (TCertain)this;
 	}
+
+	protected abstract void ResizeInternal(MpzT newSize);
 
 	public abstract TCertain Reverse();
 

@@ -2025,7 +2025,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	protected override void SetInternal(int index, MpzT value)
 	{
-		if (value == 0)
+		if (value <= 0)
 		{
 			RemoveAt(index);
 			return;

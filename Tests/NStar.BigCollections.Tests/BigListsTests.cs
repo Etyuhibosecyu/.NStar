@@ -662,4 +662,27 @@ public class BigListTests
 			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex + length), E.Skip(regularList, destinationIndex + length)));
 		}
 	}
+
+	[TestMethod]
+	public void TestReverse()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var counter = 0;
+	l1:
+		var arr = RedStarLinq.FillArray(1000, _ => random.Next(16));
+		bl = new(arr, random.Next(2, 5), random.Next(2, 7));
+		gl = [.. arr];
+		for (var i = 0; i < 1000; i++)
+		{
+			var index = random.Next((int)bl.Length);
+			var index2 = random.Next((int)bl.Length);
+			var (start, length) = (Min(index, index2), Abs(index - index2));
+			bl.Reverse(start, length);
+			gl.Reverse(start, length);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}
+		if (counter++ < 100)
+			goto l1;
+	}
 }

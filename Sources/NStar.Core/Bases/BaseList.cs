@@ -894,6 +894,18 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			return RemoveEnd(newSize);
 	}
 
+	public virtual TCertain ResizeLeft(int newSize)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(newSize);
+		if (newSize < _size)
+			return Remove(0, _size - newSize);
+		var oldSize = _size;
+		EnsureCapacity(newSize);
+		_size = newSize;
+		CopyRangeTo(0, (TCertain)this, newSize - oldSize, oldSize);
+		return (TCertain)this;
+	}
+
 	public virtual TCertain Reverse() => Reverse(0, _size);
 
 	public virtual TCertain Reverse(int index, int length)
