@@ -306,6 +306,8 @@ public static unsafe class Extents
 
 	internal static T[] GetAndRemove<T>(this SortedDictionary<int, G.List<T[]>> dic, int value, bool exact = false)
 	{
+		if (dic.Count == 0)
+			return GC.AllocateUninitializedArray<T>(value);
 		if (exact)
 		{
 			if (!dic.TryGetValue(value, out var exactList))

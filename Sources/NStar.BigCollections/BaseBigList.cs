@@ -51,7 +51,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	public virtual void Clear()
 	{
 		if (Length > 0)
-			ClearInternal();
+			ClearInternal(true);
 	}
 
 	public virtual void Clear(MpzT index, MpzT length)
@@ -63,7 +63,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		ClearInternal(index, length);
 	}
 
-	protected abstract void ClearInternal(bool verify = true);
+	protected abstract void ClearInternal(bool verify);
 
 	protected abstract void ClearInternal(MpzT index, MpzT length);
 
@@ -679,6 +679,17 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	protected abstract void ReverseInternal(MpzT index, MpzT length);
 
 	protected abstract void SetInternal(MpzT index, T value);
+
+	public virtual TCertain SetOrAdd(MpzT index, T value)
+	{
+		if ((uint)index > (uint)Length)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		SetOrAddInternal(index, value);
+		return (TCertain)this;
+	}
+
+	protected abstract void SetOrAddInternal(MpzT index, T value);
 
 	/// <summary>
 	/// Заменяет диапазон, начиная с указанного индекса, на копию указанной коллекции (неглубокое копирование).

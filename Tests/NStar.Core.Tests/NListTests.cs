@@ -1240,6 +1240,54 @@ public class NListTests
 	}
 
 	[TestMethod]
+	public void TestResize()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		NList<int> a = default!;
+		for (var i = 0; i < 1000; i++)
+		{
+			var arr = RedStarLinq.FillArray(random.Next(1, 101), _ => random.Next());
+			a = RedStarLinq.ToNList(arr);
+			var b = E.ToList(arr);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			var n = random.Next(0, 201);
+			var c = a.Resize(n);
+			if (n < b.Count)
+				b.RemoveRange(n, b.Count - n);
+			Assert.IsTrue(a.Equals(b, 0));
+			Assert.IsTrue(E.SequenceEqual(b, E.Take(a, b.Count)));
+			Assert.AreEqual(c, a);
+		}
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Resize(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Resize(-1000));
+	}
+
+	[TestMethod]
+	public void TestResizeLeft()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		NList<int> a = default!;
+		for (var i = 0; i < 1000; i++)
+		{
+			var arr = RedStarLinq.FillArray(random.Next(1, 101), _ => random.Next());
+			a = RedStarLinq.ToNList(arr);
+			var b = E.ToList(arr);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			var n = random.Next(0, 201);
+			var c = a.ResizeLeft(n);
+			if (n < b.Count)
+				b.RemoveRange(0, b.Count - n);
+			Assert.IsTrue(a.Equals(b, n - b.Count));
+			Assert.IsTrue(E.SequenceEqual(b, E.TakeLast(a, b.Count)));
+			Assert.AreEqual(c, a);
+		}
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.ResizeLeft(-1));
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.ResizeLeft(-1000));
+	}
+
+	[TestMethod]
 	public void TestReverse()
 	{
 		var a = nList.ToNList().Reverse();
