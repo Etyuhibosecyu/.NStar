@@ -465,16 +465,37 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 			collection.CopyTo(_start + index, array, arrayIndex, length);
 		else if (_base is T[] array2)
 			Array.Copy(array2, _start + index, array, arrayIndex, length);
+		else if (_base != null)
+		{
+			var start = _start + index;
+			var end = start + length;
+			for (var i = start; i < end; i++)
+				array[arrayIndex++] = _base[i];
+		}
+		else if (_base2 != null)
+		{
+			var start = _start + index;
+			var end = start + length;
+			for (var i = start; i < end; i++)
+				array[arrayIndex++] = _base2[i];
+		}
 		else
-			ForEach(x => array[arrayIndex++] = x, index, length);
+			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
 	}
 
 	public override void Dispose() => GC.SuppressFinalize(this);
 
-	protected override T GetInternal(int index, bool invoke = true) =>
-		_base is BaseIndexable<T> collection ? collection[_start + index] : _base != null
-		? _base[_start + index] : _base2 != null ? _base2[_start + index]
-		: throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
+	protected override T GetInternal(int index, bool invoke = true)
+	{
+		if (_base is BaseIndexable<T> collection)
+			return collection[_start + index];
+		else if (_base != null)
+			return _base[_start + index];
+		else if (_base2 != null)
+			return _base2[_start + index];
+		else
+			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
+	}
 
 	protected override Slice<T> GetRangeInternal(int index, int length) => GetSliceInternal(index, length);
 
@@ -523,8 +544,8 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDisposable
 {
-	private protected T[] _array;	 // Storage for stack elements
-	private protected int _size;		   // Number of items in the stack.
+	private protected T[] _array;	// Storage for stack elements
+	private protected int _size;	// Number of items in the stack.
 	private protected static readonly Queue<Stack<T>> pool = new(256);
 	private protected static readonly object globalLockObj = new();
 	[NonSerialized]

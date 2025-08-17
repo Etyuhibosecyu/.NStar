@@ -566,7 +566,7 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 
 	protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
+	protected override Func<int, List<T>> CapacityLowCreator => x => new(x, true);
 
 	protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }

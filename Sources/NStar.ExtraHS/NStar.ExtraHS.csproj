@@ -5,9 +5,8 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-	  <DebugType>none</DebugType>
-	  <Platforms>AnyCPU</Platforms>
-	  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+		<Platforms>AnyCPU</Platforms>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
@@ -15,7 +14,7 @@
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-	  <Compile Include="..\NStar.Core\Misc\HashHelpers.cs" Link="HashHelpers.cs" />
+		<Compile Include="..\NStar.Core\Misc\HashHelpers.cs" Link="HashHelpers.cs" />
 		<ProjectReference Include="..\NStar.Core\NStar.Core.csproj" />
 		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
 		<None Update="xmpir64.dll">

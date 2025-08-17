@@ -1336,7 +1336,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		uint hash = 0;
 		var bytes = ToByteArray(-1);
-		var len = bytes.Length;  // Make sure it's only evaluated once.
+		var len = bytes.Length; // Make sure it's only evaluated once.
 		var shift = 0;
 		for (var i = 0; i < len; i++)
 		{

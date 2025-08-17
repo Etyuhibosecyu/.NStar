@@ -5,9 +5,8 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-	  <DebugType>none</DebugType>
-	  <Platforms>AnyCPU</Platforms>
-	  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+		<Platforms>AnyCPU</Platforms>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
@@ -16,8 +15,8 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-	  <Compile Include="..\NStar.TreeSets\TreeHelpers.cs" Link="TreeHelpers.cs" />
-	  <ProjectReference Include="..\NStar.TreeSets\NStar.TreeSets.csproj" />
+		<Compile Include="..\NStar.TreeSets\TreeHelpers.cs" Link="TreeHelpers.cs" />
+		<ProjectReference Include="..\NStar.TreeSets\NStar.TreeSets.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

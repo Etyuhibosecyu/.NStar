@@ -1206,7 +1206,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 		private readonly Mirror<TKey, TValue> _dictionary;
 		private readonly int _version;
 		private int _index;
-		private readonly int _getEnumeratorRetType;  // What should Enumerator.Current return?
+		private readonly int _getEnumeratorRetType; // What should Enumerator.Current return?
 
 		internal const int DictEntry = 1;
 		internal const int KeyValuePair = 2;

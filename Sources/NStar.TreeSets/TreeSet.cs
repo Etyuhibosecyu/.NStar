@@ -264,7 +264,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		//	now add 4 as a red node to the lowest element on the right branch
 		//			   3					   3
 		//		   1	   5	   ->	  1		   5
-		//		     2	     6			   2	 4   6
+		//			 2		 6			   2	 4   6
 		//	As we're adding to the leftmost of the right branch, nesting will not hurt the red-black properties
 		//	Leaf nodes are red if they have no sibling (if there are 2 nodes or if a node trickles
 		//	down to the bottom

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net9.0</TargetFramework>
@@ -8,9 +8,9 @@
 	
 	<ItemGroup>
 		<PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
-		<PackageReference Include="Mono.Cecil" Version="0.11.6" />
 		<ProjectReference Include="..\..\Sources\NStar.BigCollections\NStar.BigCollections.csproj" />
 		<ProjectReference Include="..\..\Sources\NStar.Dictionaries\NStar.Dictionaries.csproj" />
 		<ProjectReference Include="..\..\Sources\NStar.ParallelHS\NStar.ParallelHS.csproj" />
+		<ProjectReference Include="..\..\Tests\NStar.BigCollections.Tests\NStar.BigCollections.Tests.csproj" />
 	</ItemGroup>
 </Project>

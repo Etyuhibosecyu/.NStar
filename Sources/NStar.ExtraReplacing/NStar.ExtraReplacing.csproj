@@ -5,9 +5,8 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-	  <DebugType>none</DebugType>
-	  <Platforms>AnyCPU</Platforms>
-	  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+		<Platforms>AnyCPU</Platforms>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
@@ -15,8 +14,8 @@
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\NStar.BufferLib\NStar.BufferLib.csproj" />
-	  <ProjectReference Include="..\NStar.Dictionaries\NStar.Dictionaries.csproj" />
+		<ProjectReference Include="..\NStar.BufferLib\NStar.BufferLib.csproj" />
+		<ProjectReference Include="..\NStar.Dictionaries\NStar.Dictionaries.csproj" />
 	</ItemGroup>
 	
 	<ItemGroup>

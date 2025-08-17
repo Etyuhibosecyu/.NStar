@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
+	<PropertyGroup>
+	<OutputType>WinExe</OutputType>
+	<TargetFramework>net9.0-windows</TargetFramework>
+	<LangVersion>preview</LangVersion>
+	<Nullable>enable</Nullable>
+	<UseWindowsForms>true</UseWindowsForms>
+	<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
 	
-  <ItemGroup>
-    <ProjectReference Include="..\..\Sources\NStar.Core\NStar.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	<ProjectReference Include="..\..\Sources\NStar.Core\NStar.Core.csproj" />
+	</ItemGroup>
 </Project>

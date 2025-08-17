@@ -320,12 +320,16 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		}
 	}
 
-	public virtual bool Equals(G.IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	protected bool EqualItems(MpzT index, T listItem) => GetInternal(index)?.Equals(listItem) ?? listItem == null;
+
+	public virtual bool Equals(G.IEnumerable<T>? collection) =>
+		ReferenceEquals(this, collection) || EqualsInternal(collection, 0, true);
 
 	public virtual bool Equals(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false) =>
 		EqualsInternal(collection, index, toEnd);
 
-	public override bool Equals(object? obj) => obj switch
+	public override bool Equals(object? obj) => ReferenceEquals(this, obj) || obj switch
 	{
 		null => false,
 		G.IEnumerable<T> enumerable => Equals(enumerable),
@@ -333,7 +337,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		_ => false,
 	};
 
-	protected virtual bool EqualsInternal(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	protected bool EqualsInternal(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
@@ -348,31 +353,34 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 			return EqualsToNonList(collection, index, toEnd);
 	}
 
-	protected virtual bool EqualsToBigList(TCertain list, MpzT index, bool toEnd = false)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	protected bool EqualsToBigList(TCertain list, MpzT index, bool toEnd = false)
 	{
 		if (index > Length - list.Length)
 			return false;
 		if (toEnd && index < Length - list.Length)
 			return false;
-		for (var i = 0; i < list.Length; i++, index++)
-			if (!(GetInternal(index)?.Equals(list.GetInternal(i)) ?? list.GetInternal(i) == null))
+		for (var i = 0; i < list.Length; i++)
+			if (!EqualItems(index + i, list.GetInternal(i)))
 				return false;
 		return true;
 	}
 
-	protected virtual bool EqualsToList(G.IReadOnlyList<T> list, MpzT index, bool toEnd = false)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	protected bool EqualsToList(G.IReadOnlyList<T> list, MpzT index, bool toEnd = false)
 	{
 		if (index > Length - list.Count)
 			return false;
 		if (toEnd && index < Length - list.Count)
 			return false;
-		for (var i = 0; i < list.Count; i++, index++)
-			if (!(GetInternal(index)?.Equals(list[i]) ?? list[i] == null))
+		for (var i = 0; i < list.Count; i++)
+			if (!EqualItems(index + i, list[i]))
 				return false;
 		return true;
 	}
 
-	protected virtual bool EqualsToNonList(G.IEnumerable<T> collection, MpzT index, bool toEnd = false)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	protected bool EqualsToNonList(G.IEnumerable<T> collection, MpzT index, bool toEnd = false)
 	{
 		if (collection.TryGetLengthEasily(out var length))
 		{
@@ -383,7 +391,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		}
 		foreach (var item in collection)
 		{
-			if (index >= Length || !(GetInternal(index)?.Equals(item) ?? item == null))
+			if (index >= Length || !EqualItems(index, item))
 				return false;
 			index++;
 		}

@@ -1,8 +1,8 @@
 {
-  "profiles": {
-    "Benchmark": {
-      "commandName": "Project",
-      "nativeDebugging": false
-    }
-  }
+	"profiles": {
+	"Benchmark": {
+		"commandName": "Project",
+		"nativeDebugging": false
+	}
+	}
 }

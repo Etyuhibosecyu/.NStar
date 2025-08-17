@@ -5,26 +5,25 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-	  <DebugType>none</DebugType>
-	  <Platforms>AnyCPU</Platforms>
-	  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-	  <AssemblyVersion>0.2.1.0</AssemblyVersion>
-	  <Authors>Red-Star-Soft</Authors>
-	  <Company>Red-Star-Soft</Company>
-	  <Copyright>Copyright (c) Red-Star-Soft 2019-2099</Copyright>
-	  <Description>Пакет содержит большой набор LINQ-подобных методов расширения (экстентов) для работы с коллекциями, расширяющих стандартный функционал LINQ (Break(), FrequencyTable(), Pairs() и прочие). Экстенты содержат множество перегрузок, в частности, почти всегда содержат перегрузки с лямбда-выражением как только от элемента, так и от элемента и его индекса.
+		<Platforms>AnyCPU</Platforms>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
+		<AssemblyVersion>0.2.1.0</AssemblyVersion>
+		<Authors>Red-Star-Soft</Authors>
+		<Company>Red-Star-Soft</Company>
+		<Copyright>Copyright (c) Red-Star-Soft 2019-2099</Copyright>
+		<Description>Пакет содержит большой набор LINQ-подобных методов расширения (экстентов) для работы с коллекциями, расширяющих стандартный функционал LINQ (Break(), FrequencyTable(), Pairs() и прочие). Экстенты содержат множество перегрузок, в частности, почти всегда содержат перегрузки с лямбда-выражением как только от элемента, так и от элемента и его индекса.
 ВНИМАНИЕ! Пакет не содержит экстенты для вычисления оптимумов (Max(), Mean(), Median(), Min()) или других математических функций (Sum(), Product()) или производные от них (FindMax(), IndexesOfMean(), LastIndexOfMedian() и прочие). Для этих целей используйте пакеты NStar.MathLib и NStar.MathLib.Extras.</Description>
-	  <FileVersion>0.2.1.0</FileVersion>
-	  <NeutralLanguage>ru</NeutralLanguage>
-	  <PackageIcon>Red-Star-Soft.png</PackageIcon>
-	  <PackageLicenseExpression>CC-BY-4.0</PackageLicenseExpression>
-	  <PackageProjectUrl>https://github.com/Etyuhibosecyu/.NStar</PackageProjectUrl>
-	  <PackageReadmeFile>README.md</PackageReadmeFile>
-	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <PackageTags>NStar;Red-Star-Soft;Red-Star;Linq;Linq methods;Morelinq;More Linq;More Linq methods;Extralinq;Extra Linq;Extra Linq methods;Extension;Extension methods;Linq extensions;Linq extension methods;More Linq extensions;More Linq extension methods;Extra Linq extensions;Extra Linq extension methods</PackageTags>
-	  <RepositoryUrl>https://github.com/Etyuhibosecyu/.NStar</RepositoryUrl>
-	  <Title>$(AssemblyName)</Title>
-	  <Version>0.2.1.0-Pre-Pre-I</Version>
+		<FileVersion>0.2.1.0</FileVersion>
+		<NeutralLanguage>ru</NeutralLanguage>
+		<PackageIcon>Red-Star-Soft.png</PackageIcon>
+		<PackageLicenseExpression>CC-BY-4.0</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/Etyuhibosecyu/.NStar</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageTags>NStar;Red-Star-Soft;Red-Star;Linq;Linq methods;Morelinq;More Linq;More Linq methods;Extralinq;Extra Linq;Extra Linq methods;Extension;Extension methods;Linq extensions;Linq extension methods;More Linq extensions;More Linq extension methods;Extra Linq extensions;Extra Linq extension methods</PackageTags>
+		<RepositoryUrl>https://github.com/Etyuhibosecyu/.NStar</RepositoryUrl>
+		<Title>$(AssemblyName)</Title>
+		<Version>0.2.1.0-Pre-Pre-I</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
@@ -33,14 +32,14 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-	  <None Include="..\..\..\Red-Star-Soft.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	  <None Include="..\..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+		<None Include="..\..\..\Red-Star-Soft.png">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+		<Pack>True</Pack>
+		<PackagePath>\</PackagePath>
+		</None>
 		<ProjectReference Include="..\NStar.MathLib\NStar.MathLib.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -8,13 +8,13 @@ open NUnit.Framework
 [<AutoOpen>]
 module NumericLiteralZ =
     let FromZero () = new MpzT(0)
-    let FromOne ()  = new MpzT(1)
+    let FromOne () = new MpzT(1)
     let FromInt32 (n : int32)   = new MpzT(n)
     let FromInt64 (n : int64)   = new MpzT(n)
     let FromString (s : string) = new MpzT(s)
 
 let bigNumLiteral1 = 60239597246800183089356887648914080803568478687972971429218563117893654732155483254Z
-let bigNumStr1 =    "60239597246800183089356887648914080803568478687972971429218563117893654732155483254"
+let bigNumStr1 = "60239597246800183089356887648914080803568478687972971429218563117893654732155483254"
 let bigint1 = bigint.Parse bigNumStr1
 let byte1 = byte (bigint1 % bigint 256)
 let short1 = int16 (bigint1 % bigint 65536)
@@ -187,9 +187,9 @@ type ``MpzT - import and export`` () =
         Assert.That(bigNumStr1, Is.EqualTo(exportStr))
 
     [<TestCase(18446744073709551615UL)>]
-    [<TestCase( 9223372036854775807UL)>] 
-    [<TestCase( 4887567363547568832UL)>] 
-    [<TestCase(                   0UL)>] 
+    [<TestCase(9223372036854775807UL)>] 
+    [<TestCase(4887567363547568832UL)>] 
+    [<TestCase(0UL)>] 
     static member ``Importing uint64, big endian`` (n : uint64) = 
         let bytes = BitConverter.GetBytes(n)
         let bigEndianBytes =
@@ -201,9 +201,9 @@ type ``MpzT - import and export`` () =
         Assert.That(n.ToString(), Is.EqualTo(zStr))
 
     [<TestCase(18446744073709551615UL)>]
-    [<TestCase( 9223372036854775807UL)>] 
-    [<TestCase( 4887567363547568832UL)>] 
-    [<TestCase(                   0UL)>] 
+    [<TestCase(9223372036854775807UL)>] 
+    [<TestCase(4887567363547568832UL)>] 
+    [<TestCase(0UL)>] 
     static member ``Importing uint64, little endian`` (n : uint64) = 
         let bytes = BitConverter.GetBytes(n)
         let littleEndianBytes =
