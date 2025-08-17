@@ -8609,8 +8609,10 @@ public static class RedStarLinqExtras
 
 	public static Slice<T> Skip<T>(this G.IEnumerable<T> source, int length)
 	{
-		if (source is G.IList<T> list)
-			return list.GetSlice(Clamp(length, 0, list.Count));
+		if (source is G.IReadOnlyList<T> list)
+			return list.GetROLSlice(Clamp(length, 0, list.Count));
+		else if (source is G.IList<T> list2)
+			return list2.GetSlice(Clamp(length, 0, list2.Count));
 		else if (length <= 0)
 			return new((G.IReadOnlyList<T>)source.ToList());
 		else
@@ -8628,8 +8630,10 @@ public static class RedStarLinqExtras
 
 	public static Slice<T> SkipLast<T>(this G.IEnumerable<T> source, int length)
 	{
-		if (source is G.IList<T> list)
-			return list.GetSlice(0, Clamp(list.Count - length, 0, list.Count));
+		if (source is G.IReadOnlyList<T> list)
+			return list.GetROLSlice(0, Clamp(list.Count - length, 0, list.Count));
+		else if (source is G.IList<T> list2)
+			return list2.GetSlice(0, Clamp(list2.Count - length, 0, list2.Count));
 		else if (length <= 0)
 			return new((G.IReadOnlyList<T>)source.ToList());
 		else if (source.TryGetLengthEasily(out var length2))
@@ -9015,8 +9019,10 @@ public static class RedStarLinqExtras
 	{
 		if (length <= 0)
 			return new();
-		else if (source is G.IList<T> list)
-			return list.GetSlice(0, Clamp(length, 0, list.Count));
+		else if (source is G.IReadOnlyList<T> list)
+			return list.GetROLSlice(0, Clamp(length, 0, list.Count));
+		else if (source is G.IList<T> list2)
+			return list2.GetSlice(0, Clamp(length, 0, list2.Count));
 		else
 		{
 			var result = RedStarLinq.EmptyList<T>(length);
@@ -9034,11 +9040,17 @@ public static class RedStarLinqExtras
 
 	public static Slice<T> Take<T>(this G.IEnumerable<T> source, Range range)
 	{
-		if (source is G.IList<T> list)
+		if (source is G.IReadOnlyList<T> list)
 		{
 			var start = Clamp(range.Start.GetOffset(list.Count), 0, list.Count);
 			var end = Clamp(range.End.GetOffset(list.Count), 0, list.Count);
-			return start >= end ? new() : list.GetSlice(start, end - start);
+			return start >= end ? new() : list.GetROLSlice(start, end - start);
+		}
+		if (source is G.IList<T> list2)
+		{
+			var start = Clamp(range.Start.GetOffset(list2.Count), 0, list2.Count);
+			var end = Clamp(range.End.GetOffset(list2.Count), 0, list2.Count);
+			return start >= end ? new() : list2.GetSlice(start, end - start);
 		}
 		else if (source.TryGetLengthEasily(out var length))
 		{
@@ -9122,8 +9134,10 @@ public static class RedStarLinqExtras
 	{
 		if (length <= 0)
 			return new();
-		else if (source is G.IList<T> list)
-			return list.GetSlice(Clamp(list.Count - length, 0, list.Count));
+		else if (source is G.IReadOnlyList<T> list)
+			return list.GetROLSlice(Clamp(list.Count - length, 0, list.Count));
+		else if (source is G.IList<T> list2)
+			return list2.GetSlice(Clamp(list2.Count - length, 0, list2.Count));
 		else if (source.TryGetLengthEasily(out var length2))
 		{
 			var start = Max(length2 - length, 0);

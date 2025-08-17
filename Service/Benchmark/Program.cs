@@ -4,6 +4,7 @@ global using NStar.Core;
 global using NStar.Linq;
 global using NStar.MathLib;
 global using System;
+global using System.Diagnostics;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
 global using static System.Math;
