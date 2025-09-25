@@ -9,9 +9,8 @@ public readonly struct Chain : IReadOnlyCollection<int>
 
 	public Chain(int start, int length)
 	{
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		this.start = start;
-		Length = length;
+		Length = Max(length, 0);
 	}
 
 	public int Length { get; }

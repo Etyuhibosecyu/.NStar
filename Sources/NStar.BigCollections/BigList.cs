@@ -139,7 +139,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				if (high != null && highLength != null)
 					ReduceCapacityExponential(LeafSize);
 				if (high != null && highLength != null) // В этом случае в списке очень много пустоты
-					Compactify(Length);
+					Compactify(_capacity);
 				var first = this;
 				var reverse = false;
 				// Ищем первый лист и разрушаем "лишние" ветки
@@ -233,47 +233,58 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var this2 = (TCertain)this;
 		EnsureCapacity(Length + 1);
+		var compactified = false;
 	start:
 		if (low != null)
 		{
 			low.Insert(bReversed ? 0 : ^0, item);
 			Length += 1;
+#if VERIFY
+			if (high != null && highLength != null)
+				Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+			Verify();
+#endif
+			return this2;
 		}
-		else if (high != null && highLength != null)
-		{
-			var bReversedOld = bReversed;
-			if (bReversedOld)
-			{
-				InsertInternal(Length, item);
-				return this2;
-			}
-			var intIndex = highLength.IndexOfNotGreaterSum(Length, out var bitsIndex);
-			if (intIndex != 0 && high[intIndex - 1].Capacity != high[intIndex - 1].Length)
-				intIndex--;
-			if (high.Length == intIndex)
-			{
-				if (high.Length < Subbranches && high[^1].Capacity == fragment)
-				{
-					high.Capacity = Min(high.Capacity << 1, Subbranches);
-					high.Add(CapacityCreator(fragment));
-					high[^1].parent = this2;
-					AddCapacity(fragment);
-				}
-				else
-				{
-					Compactify(Length);
-					goto start;
-				}
-			}
-			high[intIndex].Add(item);
-			if (highLength.Length == intIndex)
-				highLength.Add(1);
-			else
-				highLength[intIndex]++;
-		}
-		else
+		else if (high == null || highLength == null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+		var bReversedOld = bReversed;
+		if (bReversedOld)
+		{
+			InsertInternal(Length, item);
+			return this2;
+		}
+		var intIndex = highLength.IndexOfNotGreaterSum(Length, out var restIndex);
+		if (intIndex != 0 && high[intIndex - 1].Capacity != high[intIndex - 1].Length)
+			intIndex--;
+		if (high.Length == intIndex)
+		{
+			if (high[^1].Capacity != fragment)
+			{
+				high[^1].Capacity = fragment;
+				intIndex--;
+			}
+			else if (high.Length < Subbranches)
+			{
+				high.Capacity = Min(high.Capacity << 1, Subbranches);
+				high.Add(CapacityCreator(fragment));
+				high[^1].parent = this2;
+				AddCapacity(fragment);
+			}
+			else
+			{
+				Debug.Assert(!compactified);
+				Compactify(Length + 1);
+				compactified = true;
+				goto start;
+			}
+		}
+		high[intIndex].Add(item);
+		if (highLength.Length == intIndex)
+			highLength.Add(1);
+		else
+			highLength[intIndex]++;
 #if VERIFY
 		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
@@ -320,15 +331,15 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (bReversed)
 				index = Length - length - index;
 			var endIndex = index + length - 1;
-			var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
+			var intIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);
 			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex);
 			if (intIndex == endIntIndex)
 			{
-				high[intIndex].ClearInternal(bitsIndex, length);
+				high[intIndex].ClearInternal(restIndex, length);
 				return;
 			}
-			var previousPart = highLength[intIndex] - bitsIndex;
-			high[intIndex].ClearInternal(bitsIndex, previousPart);
+			var previousPart = highLength[intIndex] - restIndex;
+			high[intIndex].ClearInternal(restIndex, previousPart);
 			for (var i = intIndex + 1; i < endIntIndex; i++)
 			{
 				high[i].ClearInternal(0, highLength[i]);
@@ -343,26 +354,33 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected virtual void Compactify(MpzT limit)
+	protected virtual void Compactify(MpzT targetLength, bool force = false)
 	{
 		Root.accessCache?.Clear();
 		Debug.Assert(high != null && highLength != null);
+		if (highLength.ValuesSum + (highLength.Length != 0 ? fragment - highLength[^1] : 0)
+			+ (high.Length - highLength.Length - 1) * fragment + high[^1].Capacity >= targetLength && !force)
+			return;
+		targetLength -= highLength[0];
 		var i = 1;
 		for (; i < highLength.Length; i++)
 		{
+			var highLengthAtI = highLength[i];
 			var highLengthBeforeI = highLength[i - 1];
 			if (highLengthBeforeI == fragment)
+			{
+				targetLength -= highLengthAtI;
 				continue;
-			var amount = RedStarLinqMath.Min(fragment - highLengthBeforeI, limit);
+			}
+			var amount = RedStarLinqMath.Min(fragment - highLengthBeforeI, targetLength);
 			if (amount <= 0)
 				break;
 			var highAtI = high[i];
-			var highLengthAtI = highLength[i];
 			var highBeforeI = high[i - 1];
 			if (highBeforeI.high != null && highBeforeI.highLength != null
 				&& highBeforeI.highLength.ValuesSum + highBeforeI.fragment
 				- highBeforeI.highLength[^1] + amount > highBeforeI.Capacity)
-				highBeforeI.Compactify(limit);
+				highBeforeI.Compactify(fragment);
 			if (highLengthAtI > amount)
 			{
 				if (highBeforeI.Length < highLengthBeforeI + amount)
@@ -371,7 +389,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				CopyRange(ProcessReverseContext((highAtI, amount, highAtI, 0, highLengthAtI - amount)));
 				highLength[i - 1] += amount;
 				highLength[i] -= amount;
-				limit -= amount;
+				targetLength -= amount;
 			}
 			else
 			{
@@ -390,11 +408,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				(high[pasteIndex], high[^1]) = (lastHigh, highAtI);
 				highAtI.ClearInternal(false);
 				highLength[i - 1] += highLengthAtI;
-				limit -= highLengthAtI;
+				targetLength += fragment - highLengthAtI;
 				highLength.RemoveAt(i);
 				i--;
 			}
 		}
+		if (targetLength < 0)
+			return;
 		if (i <= highLength.Length)
 		{
 			high[i - 1].RemoveEndInternal(highLength[i - 1]);
@@ -429,7 +449,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			while (fragment << SubbranchesBitLength < capacity)
 				fragment <<= SubbranchesBitLength;
-			var intIndex = capacity.Divide(fragment, out var bitsIndex);
+			var intIndex = capacity.Divide(fragment, out var restIndex);
 			var highCount = (int)GetArrayLength(capacity, fragment);
 			high = new(highCount, true);
 			highLength = [];
@@ -439,11 +459,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high[^1].parent = this2;
 				AddCapacity(fragment);
 			}
-			if (bitsIndex != 0)
+			if (restIndex != 0)
 			{
-				high.Add(CapacityCreator(bitsIndex));
+				high.Add(CapacityCreator(restIndex));
 				high[^1].parent = this2;
-				AddCapacity(bitsIndex);
+				AddCapacity(restIndex);
 			}
 		}
 		Length = 0;
@@ -653,7 +673,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (source.high != null && source.highLength != null && source.highLength.Length != 0
 			&& (source.highLength.Length - 1) * source.fragment + source.highLength[^1] + increment
 			> source.fragment << source.SubbranchesBitLength)
-			source.Compactify(source.Length);
+			source.Compactify(source.Length + increment);
 		Debug.Assert(source.high != null && source.highLength != null);
 		source.EnsureCapacity((source.highLength.Length != 0 ? (source.highLength.Length - 1)
 			* source.fragment + source.highLength[^1] : 0) + increment);
@@ -945,7 +965,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				"Индекс не может быть больше длины содержимого цели.");
 		var fragment = context.Destination.fragment;
 		var compactified = false;
-	sameFragment:
+	start:
 		if (context.Length == 0)
 			return;
 		var sourceEndIndex = context.SourceIndex + context.Length - 1;
@@ -968,7 +988,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			destinationStart = (destinationStart.Index, destinationStart.IntIndex - 1, context.Destination.highLength[^1]);
 		if (destinationEnd.IntIndex != 0 && destinationEnd.RestIndex < 0)
 			destinationEnd = (destinationEnd.Index, destinationEnd.IntIndex - 1, destinationEnd.RestIndex + fragment);
-		// Если список после серии удалений стал слишком "рыхлым", уплотняем
 		if (destinationEnd.IntIndex >= context.Destination.high.Length
 			|| destinationEnd.RestIndex < 0 || context.Destination.highLength.Length != 0
 			&& context.Destination.highLength.ValuesSum + fragment - context.Destination.highLength[^1]
@@ -978,7 +997,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert(!compactified);
 			context.Destination.Compactify(context.DestinationIndex + context.Length);
 			compactified = true;
-			goto sameFragment;
+			goto start;
 		}
 		else
 		{
@@ -1306,18 +1325,18 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if (high != null && highLength != null)
 		{
-			var intIndex = highLength.IndexOfNotGreaterSum(IsReversed ? Length - 1 - index : index, out var bitsIndex);
-			var endIntIndex = highLength.IndexOfNotGreaterSum(index + length - 1, out var endBitsIndex);
+			var intIndex = highLength.IndexOfNotGreaterSum(IsReversed ? Length - 1 - index : index, out var restIndex);
+			var endIntIndex = highLength.IndexOfNotGreaterSum(index + length - 1, out var endRestIndex);
 			if (endIntIndex == intIndex)
 			{
-				high[intIndex].CopyToInternal(bitsIndex, list, listIndex, length);
+				high[intIndex].CopyToInternal(restIndex, list, listIndex, length);
 				return;
 			}
-			high[intIndex].CopyToInternal(bitsIndex, list, listIndex, fragment - bitsIndex);
-			var destIndex = listIndex + fragment - bitsIndex;
+			high[intIndex].CopyToInternal(restIndex, list, listIndex, fragment - restIndex);
+			var destIndex = listIndex + fragment - restIndex;
 			for (var i = intIndex + 1; i < endIntIndex; i++, destIndex += fragment)
 				high[i].CopyToInternal(0, list, destIndex, fragment);
-			high[endIntIndex].CopyToInternal(0, list, destIndex, endBitsIndex + 1);
+			high[endIntIndex].CopyToInternal(0, list, destIndex, endRestIndex + 1);
 		}
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
@@ -1386,9 +1405,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				return false;
 			}
 			reducedIndex = branch.IsReversed ? start + branch.Length - 1 - index : index - start;
-			var intIndex = branch.highLength.IndexOfNotGreaterSum(reducedIndex, out var bitsIndex);
+			var intIndex = branch.highLength.IndexOfNotGreaterSum(reducedIndex, out var restIndex);
 			root.accessCache.Push((branch.high[intIndex], start + (branch.IsReversed
-				? branch.Length - (reducedIndex - bitsIndex + branch.high[intIndex].Length) : reducedIndex - bitsIndex)));
+				? branch.Length - (reducedIndex - restIndex + branch.high[intIndex].Length) : reducedIndex - restIndex)));
 			(branch, start) = root.accessCache.Peek();
 		}
 		reducedIndex = (branch.parent?.IsReversed ?? false) ? start + branch.Length - 1 - index : index - start;
@@ -1575,25 +1594,25 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		try
 		{
-			var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
-			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
-			while (endBitsIndex >= fragment)
+			var intIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);
+			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endRestIndex);
+			while (endRestIndex >= fragment)
 			{
 				endIntIndex++;
-				endBitsIndex -= fragment;
+				endRestIndex -= fragment;
 			}
-			if (intIndex != 0 && intIndex == highLength.Length && bitsIndex == 0 && highLength[intIndex - 1] != fragment)
+			if (intIndex != 0 && intIndex == highLength.Length && restIndex == 0 && highLength[intIndex - 1] != fragment)
 			{
 				intIndex--;
-				bitsIndex = highLength[^1];
+				restIndex = highLength[^1];
 			}
 			MpzT foundIndex;
 			if (intIndex == endIntIndex)
 			{
-				foundIndex = high[intIndex].IndexOfInternal(item, bitsIndex, length, fromEnd);
+				foundIndex = high[intIndex].IndexOfInternal(item, restIndex, length, fromEnd);
 				if (foundIndex >= 0)
 				{
-					foundIndex += index - bitsIndex;
+					foundIndex += index - restIndex;
 					return bReversedOld ? Length - 1 - foundIndex : foundIndex;
 				}
 				return foundIndex;
@@ -1601,16 +1620,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			MpzT offset;
 			if (fromEnd)
 			{
-				offset = endIndex - endBitsIndex;
-				foundIndex = high[endIntIndex].IndexOfInternal(item, 0, endBitsIndex + 1, true);
+				offset = endIndex - endRestIndex;
+				foundIndex = high[endIntIndex].IndexOfInternal(item, 0, endRestIndex + 1, true);
 				if (foundIndex >= 0)
 					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
 				offset -= high[endIntIndex - 1].Length;
 			}
 			else
 			{
-				offset = index - bitsIndex;
-				foundIndex = high[intIndex].IndexOfInternal(item, bitsIndex, high[intIndex].Length - bitsIndex, false);
+				offset = index - restIndex;
+				foundIndex = high[intIndex].IndexOfInternal(item, restIndex, high[intIndex].Length - restIndex, false);
 				if (foundIndex >= 0)
 					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
 				offset += high[intIndex].Length;
@@ -1625,13 +1644,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (fromEnd)
 			{
-				foundIndex = high[intIndex].IndexOfInternal(item, bitsIndex, high[intIndex].Length - bitsIndex, true);
+				foundIndex = high[intIndex].IndexOfInternal(item, restIndex, high[intIndex].Length - restIndex, true);
 				if (foundIndex >= 0)
 					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
 			}
 			else
 			{
-				foundIndex = high[endIntIndex].IndexOfInternal(item, 0, endBitsIndex + 1, false);
+				foundIndex = high[endIntIndex].IndexOfInternal(item, 0, endRestIndex + 1, false);
 				if (foundIndex >= 0)
 					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
 			}
@@ -1688,10 +1707,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Reverse();
 			index = Length - index;
 		}
-		var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
-		if (intIndex != 0 && (intIndex == highLength.Length || bitsIndex == highLength[intIndex])
+		var intIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);
+		if (intIndex != 0 && (intIndex == highLength.Length || restIndex == highLength[intIndex])
 			&& high[intIndex - 1].Capacity != high[intIndex - 1].Length)
-			bitsIndex = high[--intIndex].Length;
+			restIndex = high[--intIndex].Length;
 		if (high.Length == intIndex)
 		{
 			if (high.Length < Subbranches && high[^1].Capacity == fragment)
@@ -1704,7 +1723,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				Debug.Assert(!compactified);
-				Compactify(index);
+				Compactify(Length + 1);
 				compactified = true;
 				goto start;
 			}
@@ -1739,17 +1758,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			temp.Capacity = fragment;
 			high.CopyRangeTo(intIndex + 1, high, intIndex + 2, high.Length - intIndex - 2);
 			high[intIndex + 1] = temp;
-			CopyRange(ProcessReverseContext((high[intIndex], bitsIndex, temp, 0,
-				high[intIndex].Length - bitsIndex), processDestination: false));
+			CopyRange(ProcessReverseContext((high[intIndex], restIndex, temp, 0,
+				high[intIndex].Length - restIndex), processDestination: false));
 			temp.parent = this2;
-			highLength.Insert(intIndex + 1, high[intIndex].Length - bitsIndex);
-			high[intIndex].SetInternal(bitsIndex, item);
-			high[intIndex].RemoveEndInternal(bitsIndex + 1);
-			highLength[intIndex] = bitsIndex + 1;
+			highLength.Insert(intIndex + 1, high[intIndex].Length - restIndex);
+			high[intIndex].SetInternal(restIndex, item);
+			high[intIndex].RemoveEndInternal(restIndex + 1);
+			highLength[intIndex] = restIndex + 1;
 		}
 		else
 		{
-			high[intIndex].InsertInternal(bitsIndex, item);
+			high[intIndex].InsertInternal(restIndex, item);
 			if (highLength.Length == intIndex)
 				highLength.Add(1);
 			else
@@ -1798,17 +1817,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var endIndex = index + length - 1;
 		var compactified = false;
 	start:
-		var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
-		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
-		while (endBitsIndex >= fragment)
+		var intIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);
+		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endRestIndex);
+		while (endRestIndex >= fragment)
 		{
 			endIntIndex++;
-			endBitsIndex -= fragment;
+			endRestIndex -= fragment;
 		}
-		if (intIndex != 0 && intIndex == highLength.Length && bitsIndex == 0 && highLength[intIndex - 1] != fragment)
+		if (intIndex != 0 && intIndex == highLength.Length && restIndex == 0 && highLength[intIndex - 1] != fragment)
 		{
 			intIndex--;
-			bitsIndex = highLength[^1];
+			restIndex = highLength[^1];
 		}
 		if (high.Length == intIndex)
 		{
@@ -1822,14 +1841,21 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				Debug.Assert(!compactified);
-				Compactify(index);
+				Compactify(Length + length);
 				compactified = true;
 				goto start;
 			}
 		}
+		//var intIndexSum = highLength.GetLeftValuesSum(intIndex, out _);
+		//if (intIndexSum + length <= intIndex * fragment && !compactified)
+		//{
+		//	Compactify(intIndexSum, true);
+		//	compactified = true;
+		//	goto start;
+		//}
 		if (intIndex == endIntIndex && high[intIndex].Length + length <= fragment)
 		{
-			high[intIndex].InsertInternal(bitsIndex, bigList);
+			high[intIndex].InsertInternal(restIndex, bigList);
 			if (highLength.Length == intIndex)
 				highLength.Add(length);
 			else
@@ -1838,13 +1864,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (index == Length)
 			bigList.CopyToInternal(0, this2, Length, length, true);
 		else
-		{
-			var oldLength = Length;
-			if (index + length > Length)
-				ResizeInternal(index + length);
-			CopyToInternal(index, this2, index + length, oldLength - index, true);
-			bigList.CopyToInternal(0, this2, index, length, true);
-		}
+			InsertInternal(bigList, ((index, intIndex, restIndex), (endIndex, endIntIndex, endRestIndex)));
 		if (bReversedOld)
 		{
 			Reverse();
@@ -1856,6 +1876,91 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
+	}
+
+	protected virtual void InsertInternal(TCertain bigList, CopyRangeSide copyRange)
+	{
+		var this2 = (TCertain)this;
+		var length = bigList.Length;
+		var ((index, intIndex, restIndex), (_, endIntIndex, endRestIndex)) = copyRange;
+		Debug.Assert(high != null && highLength != null);
+		var oldLength = Length;
+		var targetLength = length;
+		var shiftedIntIndex = intIndex;
+		var intIndexSum = highLength.GetLeftValuesSum(intIndex, out _);
+		var offset = endIntIndex >= highLength.Length ? 1 : 0;
+		high.Capacity = Min(Min(high.Capacity + (int)GetArrayLength(length, fragment), high.Capacity << 1), Subbranches);
+		while (high.Length < Subbranches && targetLength >= fragment)
+		{
+			high.Insert(intIndex, CapacityCreator(fragment));
+			high[intIndex].parent = this2;
+			AddCapacity(fragment);
+			high[intIndex].Resize(fragment);
+			highLength.Insert(intIndex, fragment);
+			shiftedIntIndex++;
+			targetLength -= fragment;
+		}
+		while (highLength.Length < Subbranches && targetLength >= fragment)
+		{
+			var buffer = high[highLength.Length];
+			buffer.Capacity = fragment;
+			high.CopyRangeTo(intIndex, high, intIndex + 1, highLength.Length - intIndex);
+			high[intIndex] = buffer;
+			high[intIndex].Resize(fragment);
+			high[intIndex].bReversed = false;
+			highLength.Insert(intIndex, fragment);
+			shiftedIntIndex++;
+			targetLength -= fragment;
+		}
+		if (targetLength != 0)
+		{
+			if (high.Length < Subbranches)
+			{
+				high.Insert(intIndex, CapacityCreator(fragment));
+				high[intIndex].parent = this2;
+				AddCapacity(fragment);
+				high[intIndex].Resize(targetLength);
+				highLength.Insert(intIndex, targetLength);
+				shiftedIntIndex++;
+				targetLength = 0;
+			}
+			else if (highLength.Length < Subbranches)
+			{
+				var buffer = high[highLength.Length];
+				buffer.Capacity = fragment;
+				high.CopyRangeTo(intIndex, high, intIndex + 1, highLength.Length - intIndex);
+				high[intIndex] = buffer;
+				high[intIndex].Resize(targetLength);
+				high[intIndex].bReversed = false;
+				highLength.Insert(intIndex, targetLength);
+				shiftedIntIndex++;
+				targetLength = 0;
+			}
+		}
+		var shiftedIntIndexSum = highLength.GetLeftValuesSum(shiftedIntIndex, out _);
+		var bResized = false;
+		if (index + length > Length)
+		{
+			ResizeInternal(index + length);
+			bResized = true;
+		}
+		if (intIndex != shiftedIntIndex)
+		{
+			if (bResized)
+				CopyToInternal(shiftedIntIndexSum, this2, intIndexSum, restIndex, true);
+			else
+			{
+				var copyLength = RedStarLinqMath.Min(restIndex, high[intIndex].Length);
+				high[shiftedIntIndex].CopyToInternal(ProcessReverse(high[shiftedIntIndex], 0,
+					copyLength), high[intIndex], 0, copyLength, true);
+				high[shiftedIntIndex].CopyToInternal(ProcessReverse(high[shiftedIntIndex], copyLength,
+					restIndex - copyLength), high[intIndex + 1], ProcessReverse(high[intIndex + 1], 0,
+					restIndex - copyLength), restIndex - copyLength, true);
+			}
+		}
+		if (targetLength != 0)
+			CopyToInternal(index + length - targetLength, this2, index + length, oldLength - index, true);
+		bigList.CopyToInternal(0, this2, index, length, true);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1884,7 +1989,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			Debug.Assert(high != null && highLength != null);
 			if (high.Length > 1 && high[1].Length != 0)
-				Compactify(Length);
+				Compactify(fragment << SubbranchesBitLength);
 			fragment >>= SubbranchesBitLength;
 			var oldHigh = high;
 			var oldHighLength = highLength;
@@ -1918,7 +2023,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert(high != null && highLength != null);
 		var highCount = (int)GetArrayLength(value, fragment);
 		if (highCount == high.Length || high[highCount].Length != 0)
-			Compactify(Length);
+			Compactify(fragment << SubbranchesBitLength);
 		for (var i = high.Length - 1; i >= highCount; i--)
 		{
 			AddCapacity(-high[i].Capacity);
@@ -1929,7 +2034,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (leftCapacity == 0)
 			leftCapacity = fragment;
 		if (high[^1].Length > leftCapacity)
-			Compactify(Length);
+			Compactify(fragment << SubbranchesBitLength);
 		high[^1].Capacity = leftCapacity == 0 ? fragment : leftCapacity;
 #if VERIFY
 		if (high != null && highLength != null)
@@ -1958,7 +2063,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if (high != null && highLength != null)
 		{
-			var intIndex = highLength.IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var bitsIndex);
+			var intIndex = highLength.IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
 			if (intIndex != highLength.Length - 1 && highLength[intIndex] == 1)
 			{
 				Index pasteIndex = intIndex;
@@ -1975,7 +2080,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				highLength.Decrease(intIndex);
-				high[intIndex].RemoveAtInternal(bitsIndex);
+				high[intIndex].RemoveAtInternal(restIndex);
 			}
 		}
 		else
@@ -2005,16 +2110,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if (high != null && highLength != null)
 		{
-			var intIndex = highLength.IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var bitsIndex);
+			var intIndex = highLength.IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
 			for (var i = high.Length - 1; i > intIndex; i--)
 				high[i].ClearInternal(false);
-			high[intIndex].RemoveEndInternal(bitsIndex);
-			if (bitsIndex == 0)
+			high[intIndex].RemoveEndInternal(restIndex);
+			if (restIndex == 0)
 				highLength.RemoveEnd(intIndex);
 			else
 			{
 				highLength.RemoveEnd(intIndex + 1);
-				highLength[intIndex] = bitsIndex;
+				highLength[intIndex] = restIndex;
 			}
 		}
 		else
@@ -2052,12 +2157,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var endIndex = index + length - 1;
 		if (bReversed)
 			(index, endIndex) = (Length - 1 - endIndex, Length - 1 - index);
-		var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
-		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+		var intIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);
+		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endRestIndex);
 		var highAtI = high[intIndex];
 		if (intIndex == endIntIndex)
 		{
-			if (intIndex != highLength.Length - 1 && bitsIndex == 0 && endBitsIndex == highLength[intIndex] - 1)
+			if (intIndex != highLength.Length - 1 && restIndex == 0 && endRestIndex == highLength[intIndex] - 1)
 			{
 				Index pasteIndex = intIndex;
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
@@ -2074,18 +2179,18 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else
 			{
-				high[intIndex].RemoveInternal(bitsIndex, length);
+				high[intIndex].RemoveInternal(restIndex, length);
 				highLength[intIndex] -= length;
 			}
 		}
 		else
 		{
-			var startOffset = bitsIndex == 0 ? 0 : 1;
-			var endOffset = endBitsIndex + 1 == highLength[endIntIndex] ? 1 : 0;
+			var startOffset = restIndex == 0 ? 0 : 1;
+			var endOffset = endRestIndex + 1 == highLength[endIntIndex] ? 1 : 0;
 			if (startOffset == 1)
 			{
-				highAtI.RemoveInternal(bitsIndex, highAtI.Length - bitsIndex);
-				highLength[intIndex] = bitsIndex;
+				highAtI.RemoveInternal(restIndex, highAtI.Length - restIndex);
+				highLength[intIndex] = restIndex;
 			}
 			var pasteIndex = intIndex + startOffset;
 			var bufferLength = endIntIndex + endOffset - (intIndex + startOffset);
@@ -2112,9 +2217,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Length = highLength.ValuesSum;
 			if (endOffset == 0)
 			{
-				high[intIndex + startOffset].RemoveInternal(0, endBitsIndex + 1);
+				high[intIndex + startOffset].RemoveInternal(0, endRestIndex + 1);
 				if (highLength.Length > intIndex + startOffset)
-					highLength[intIndex + startOffset] -= endBitsIndex + 1;
+					highLength[intIndex + startOffset] -= endRestIndex + 1;
 			}
 		}
 #if VERIFY
@@ -2177,14 +2282,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		try
 		{
-			var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
-			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+			var intIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);
+			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endRestIndex);
 			if (intIndex == endIntIndex)
 			{
-				high[intIndex].ReverseInternal(bitsIndex, length);
+				high[intIndex].ReverseInternal(restIndex, length);
 				return;
 			}
-			if (bitsIndex == 0 && endBitsIndex == highLength[endIntIndex] - 1)
+			if (restIndex == 0 && endRestIndex == highLength[endIntIndex] - 1)
 			{
 				for (var i = intIndex; i < endIntIndex + 1; i++)
 					high[i].Reverse().Capacity = fragment;
@@ -2197,31 +2302,31 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high.Reverse(intIndex + 1, endIntIndex - 1 - intIndex);
 			highLength.Reverse(intIndex + 1, endIntIndex - 1 - intIndex);
 			TCertain tempRange;
-			if (endBitsIndex + 1 == highLength[intIndex] - bitsIndex)
+			if (endRestIndex + 1 == highLength[intIndex] - restIndex)
 			{
-				tempRange = high[endIntIndex].GetRangeInternal(0, endBitsIndex + 1, endBitsIndex + 1 == high[endIntIndex].Length);
-				CopyRange(ProcessReverseContext((high[intIndex], bitsIndex, high[endIntIndex], 0, endBitsIndex + 1)));
-				high[endIntIndex].ReverseInternal(0, endBitsIndex + 1);
+				tempRange = high[endIntIndex].GetRangeInternal(0, endRestIndex + 1, endRestIndex + 1 == high[endIntIndex].Length);
+				CopyRange(ProcessReverseContext((high[intIndex], restIndex, high[endIntIndex], 0, endRestIndex + 1)));
+				high[endIntIndex].ReverseInternal(0, endRestIndex + 1);
 				tempRange.Reverse();
-				CopyRange(ProcessReverseContext((tempRange, 0, high[intIndex], bitsIndex,
+				CopyRange(ProcessReverseContext((tempRange, 0, high[intIndex], restIndex,
 					tempRange.Length), processSource: false));
 				return;
 			}
-			var greaterAtEnd = endBitsIndex + 1 > highLength[intIndex] - bitsIndex;
+			var greaterAtEnd = endRestIndex + 1 > highLength[intIndex] - restIndex;
 			var greaterIndex = greaterAtEnd ? endIntIndex : intIndex;
 			var lessIndex = greaterAtEnd ? intIndex : endIntIndex;
 			var greater = high[greaterIndex];
 			var less = high[lessIndex];
-			var commonLength = greaterAtEnd ? highLength[intIndex] - bitsIndex : (endBitsIndex + 1) % fragment;
-			var endCommonIndex = greaterAtEnd ? endBitsIndex + 1 - commonLength : 0;
-			var difference = (endBitsIndex + 1 - highLength[intIndex] + bitsIndex).Abs();
+			var commonLength = greaterAtEnd ? highLength[intIndex] - restIndex : (endRestIndex + 1) % fragment;
+			var endCommonIndex = greaterAtEnd ? endRestIndex + 1 - commonLength : 0;
+			var difference = (endRestIndex + 1 - highLength[intIndex] + restIndex).Abs();
 			tempRange = high[endIntIndex].GetRangeInternal(endCommonIndex, commonLength,
 				endCommonIndex == 0 && commonLength == high[endIntIndex].Length);
-			CopyRange(ProcessReverseContext((high[intIndex], bitsIndex, high[endIntIndex], endCommonIndex, commonLength)));
+			CopyRange(ProcessReverseContext((high[intIndex], restIndex, high[endIntIndex], endCommonIndex, commonLength)));
 			high[endIntIndex].ReverseInternal(endCommonIndex, commonLength);
 			tempRange.Reverse();
-			CopyRange(ProcessReverseContext((tempRange, 0, high[intIndex], bitsIndex, commonLength), processSource: false));
-			var takeIndex = greaterAtEnd ? 0 : bitsIndex + commonLength;
+			CopyRange(ProcessReverseContext((tempRange, 0, high[intIndex], restIndex, commonLength), processSource: false));
+			var takeIndex = greaterAtEnd ? 0 : restIndex + commonLength;
 			var insertIndex = greaterAtEnd ? less.Length : 0;
 			if (less.Length + difference <= fragment)
 			{
@@ -2235,7 +2340,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (difference <= 1 && endIntIndex - 1 - intIndex == 0)
 				return;
-			var insertionIncrement = greaterAtEnd ? highLength[intIndex] - bitsIndex : 0;
+			var insertionIncrement = greaterAtEnd ? highLength[intIndex] - restIndex : 0;
 			tempRange = greater.GetRangeInternal(takeIndex, difference);
 			greater.RemoveInternal(takeIndex, difference);
 			tempRange.Reverse();
@@ -2266,11 +2371,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			low[(int)(bReversed ? Length - 1 - index : index)] = value;
 		else if (high != null && highLength != null)
 		{
-			var intIndex = highLength.IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var bitsIndex);
-			if (intIndex != 0 && (intIndex == highLength.Length || bitsIndex == highLength[intIndex])
+			var intIndex = highLength.IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
+			if (intIndex != 0 && (intIndex == highLength.Length || restIndex == highLength[intIndex])
 				&& high[intIndex - 1].Capacity != high[intIndex - 1].Length)
-				bitsIndex = high[--intIndex].Length;
-			high[intIndex].SetInternal(bitsIndex, value);
+				restIndex = high[--intIndex].Length;
+			high[intIndex].SetInternal(restIndex, value);
 		}
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
@@ -2364,12 +2469,25 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			RestIndex = restIndex;
 		}
 
+		public void Deconstruct(out MpzT index, out int intIndex, out MpzT restIndex)
+		{
+			index = Index;
+			intIndex = IntIndex;
+			restIndex = RestIndex;
+		}
+
 		public static implicit operator CopyRangeIndex((MpzT Index, int IntIndex, MpzT RestIndex) x) =>
 			new(x.Index, x.IntIndex, x.RestIndex);
 	}
 
 	protected record struct CopyRangeSide(CopyRangeIndex Start, CopyRangeIndex End)
 	{
+		public readonly void Deconstruct(out CopyRangeIndex start, out CopyRangeIndex end)
+		{
+			start = Start;
+			end = End;
+		}
+
 		public static implicit operator CopyRangeSide((CopyRangeIndex Start, CopyRangeIndex End) x) => new(x.Start, x.End);
 	}
 }

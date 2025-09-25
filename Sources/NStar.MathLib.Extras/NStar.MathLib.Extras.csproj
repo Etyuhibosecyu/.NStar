@@ -16,7 +16,6 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
-		<ProjectReference Include="..\NStar.MathLib\NStar.MathLib.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

@@ -21,6 +21,7 @@ public static class RedStarLinqExtras
 
 	public static bool All<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -80,6 +81,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllEqual<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -159,6 +161,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllEqual<T>(this G.IEnumerable<T> source, Func<T, T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -238,6 +241,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllEqual<T>(this G.IEnumerable<T> source, Func<T, T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -393,6 +397,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllUnique<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -467,6 +472,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllUnique<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -615,6 +621,7 @@ public static class RedStarLinqExtras
 
 	public static bool Any<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -732,6 +739,7 @@ public static class RedStarLinqExtras
 
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		if (source is List<T> list)
@@ -943,6 +951,7 @@ public static class RedStarLinqExtras
 
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		ArgumentNullException.ThrowIfNull(function3);
@@ -1028,6 +1037,7 @@ public static class RedStarLinqExtras
 
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		ArgumentNullException.ThrowIfNull(function3);
@@ -1317,6 +1327,7 @@ public static class RedStarLinqExtras
 
 	public static List<T> BreakFilter<T>(this G.IEnumerable<T> source, Func<T, bool> function, out List<T> result2)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -1406,6 +1417,7 @@ public static class RedStarLinqExtras
 
 	public static List<T> BreakFilter<T>(this G.IEnumerable<T> source, Func<T, int, bool> function, out List<T> result2)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -1859,6 +1871,7 @@ public static class RedStarLinqExtras
 
 	public static G.IEnumerable<TResult> Combine<T, T2, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, int, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
@@ -1918,6 +1931,7 @@ public static class RedStarLinqExtras
 
 	public static G.IEnumerable<TResult> Combine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
@@ -1984,6 +1998,7 @@ public static class RedStarLinqExtras
 
 	public static G.IEnumerable<TResult> Combine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
@@ -2297,6 +2312,7 @@ public static class RedStarLinqExtras
 
 	public static int Count<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2345,6 +2361,7 @@ public static class RedStarLinqExtras
 
 	public static int Count<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2457,6 +2474,7 @@ public static class RedStarLinqExtras
 
 	public static bool Equals<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -2534,6 +2552,7 @@ public static class RedStarLinqExtras
 
 	public static T? Find<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2593,6 +2612,7 @@ public static class RedStarLinqExtras
 
 	public static T? Find<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2652,6 +2672,7 @@ public static class RedStarLinqExtras
 
 	public static List<T> FindAll<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2721,6 +2742,7 @@ public static class RedStarLinqExtras
 
 	public static List<T> FindAll<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2790,6 +2812,7 @@ public static class RedStarLinqExtras
 
 	public static int FindIndex<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2837,6 +2860,7 @@ public static class RedStarLinqExtras
 
 	public static int FindIndex<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2896,6 +2920,7 @@ public static class RedStarLinqExtras
 
 	public static T? FindLast<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2947,6 +2972,7 @@ public static class RedStarLinqExtras
 
 	public static T? FindLast<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -2998,6 +3024,7 @@ public static class RedStarLinqExtras
 
 	public static int FindLastIndex<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -3037,6 +3064,7 @@ public static class RedStarLinqExtras
 
 	public static int FindLastIndex<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -3158,6 +3186,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
@@ -3243,6 +3272,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
@@ -3412,6 +3442,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
@@ -3497,6 +3528,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
@@ -3666,6 +3698,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
@@ -3751,6 +3784,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
@@ -3920,6 +3954,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -4005,6 +4040,7 @@ public static class RedStarLinqExtras
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -4174,6 +4210,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
@@ -4259,6 +4296,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
@@ -4344,6 +4382,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
@@ -4429,6 +4468,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
@@ -4598,6 +4638,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
@@ -4683,6 +4724,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
@@ -4852,6 +4894,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -4937,6 +4980,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -5106,6 +5150,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
@@ -5191,6 +5236,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
 		if (source is List<T> list)
@@ -5360,6 +5406,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
@@ -5445,6 +5492,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
@@ -5614,6 +5662,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
@@ -5699,6 +5748,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
@@ -5868,6 +5918,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -5953,6 +6004,7 @@ public static class RedStarLinqExtras
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -7335,6 +7387,7 @@ public static class RedStarLinqExtras
 
 	public static Slice<TResult> Pairs<T, TResult>(this G.IReadOnlyList<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source.Count < offset)
@@ -7344,6 +7397,7 @@ public static class RedStarLinqExtras
 
 	public static Slice<TResult> Pairs<T, TResult>(this G.IReadOnlyList<T> source, Func<T, T, int, TResult> function, int offset = 1)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source.Count < offset)
@@ -7361,6 +7415,7 @@ public static class RedStarLinqExtras
 
 	public static G.IEnumerable<TResult> Pairs<T, TResult>(this G.IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T> list)
@@ -7431,6 +7486,7 @@ public static class RedStarLinqExtras
 
 	public static G.IEnumerable<TResult> Pairs<T, TResult>(this G.IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T> list)
@@ -7628,6 +7684,8 @@ public static class RedStarLinqExtras
 
 	public static T? Progression<T>(this G.IEnumerable<T> source, Func<T, T, T> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -7686,6 +7744,8 @@ public static class RedStarLinqExtras
 
 	public static TResult? Progression<T, TResult>(this G.IEnumerable<T> source, TResult seed, Func<TResult, T, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -8211,6 +8271,7 @@ public static class RedStarLinqExtras
 
 	public static List<TResult> Shuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Random random)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -8344,6 +8405,7 @@ public static class RedStarLinqExtras
 
 	public static List<TResult> Shuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Random random)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
@@ -8660,29 +8722,38 @@ public static class RedStarLinqExtras
 
 	public static Slice<T> SkipWhile<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 			return list.SkipWhile(function);
 		else
 		{
 			List<T> result = [];
 			using var en = source.GetEnumerator();
-			var i = 0;
-			for (; en.MoveNext() && function(en.Current); i++) ;
-			for (; en.MoveNext(); i++) result.Add(en.Current);
+			var b = false;
+			for (; (b = en.MoveNext()) && function(en.Current);) ;
+			if (b)
+				result.Add(en.Current);
+			for (; en.MoveNext();) result.Add(en.Current);
 			return result.GetSlice();
 		}
 	}
 
 	public static Slice<T> SkipWhile<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 			return list.SkipWhile(function);
 		else
 		{
 			List<T> result = [];
 			using var en = source.GetEnumerator();
+			var b = false;
 			var i = 0;
-			for (; en.MoveNext() && function(en.Current, i); i++) ;
+			for (; (b = en.MoveNext()) && function(en.Current, i); i++) ;
+			if (b)
+				result.Add(en.Current);
 			for (; en.MoveNext(); i++) result.Add(en.Current);
 			return result.GetSlice();
 		}
@@ -8794,6 +8865,7 @@ public static class RedStarLinqExtras
 
 	public static bool StartsWith<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -8868,6 +8940,7 @@ public static class RedStarLinqExtras
 
 	public static bool StartsWith<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -9163,6 +9236,8 @@ public static class RedStarLinqExtras
 
 	public static Slice<T> TakeWhile<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 			return list.TakeWhile(function);
 		else
@@ -9178,6 +9253,8 @@ public static class RedStarLinqExtras
 
 	public static Slice<T> TakeWhile<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 			return list.TakeWhile(function);
 		else

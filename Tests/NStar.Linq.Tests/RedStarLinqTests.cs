@@ -2249,6 +2249,37 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestSkipWhile() => Test(a =>
+	{
+		var c = a.SkipWhile(x => x.Length > 0);
+		var d = E.SkipWhile(a, x => x.Length > 0);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.SkipWhile(x => x.StartsWith('#'));
+		d = E.SkipWhile(a, x => x.StartsWith('#'));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.SkipWhile(x => x.StartsWith('M'));
+		d = E.SkipWhile(a, x => x.StartsWith('M'));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.SkipWhile((Func<string, bool>)null!));
+		c = a.SkipWhile((x, index) => x.Length > 0 && index >= 0);
+		d = E.Select(E.SkipWhile(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.SkipWhile((x, index) => index < 0);
+		d = E.Select(E.SkipWhile(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.SkipWhile((x, index) => x.StartsWith('M') && index > 0);
+		d = E.Select(E.SkipWhile(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.SkipWhile((Func<string, int, bool>)null!));
+	});
+
+	[TestMethod]
 	public void TestSplitIntoEqual() => Test(a =>
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
@@ -2416,6 +2447,37 @@ public class RedStarLinqTests
 		c = E.TakeLast(a, -5);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
+	});
+
+	[TestMethod]
+	public void TestTakeWhile() => Test(a =>
+	{
+		var c = a.TakeWhile(x => x.Length > 0);
+		var d = E.TakeWhile(a, x => x.Length > 0);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.TakeWhile(x => x.StartsWith('#'));
+		d = E.TakeWhile(a, x => x.StartsWith('#'));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.TakeWhile(x => x.StartsWith('M'));
+		d = E.TakeWhile(a, x => x.StartsWith('M'));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.TakeWhile((Func<string, bool>)null!));
+		c = a.TakeWhile((x, index) => x.Length > 0 && index >= 0);
+		d = E.Select(E.TakeWhile(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.TakeWhile((x, index) => index < 0);
+		d = E.Select(E.TakeWhile(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.TakeWhile((x, index) => x.StartsWith('M') && index > 0);
+		d = E.Select(E.TakeWhile(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.TakeWhile((Func<string, int, bool>)null!));
 	});
 
 	[TestMethod]

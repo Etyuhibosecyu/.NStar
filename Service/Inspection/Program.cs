@@ -18,7 +18,7 @@ var recursiveMethods = methods.Filter(x => GetMethodsCalled(x).Contains(x));
 ListHashSet<(string, string)> hs = [];
 foreach (var x in recursiveMethods)
 	foreach (var y in methods)
-		if (x != y && x.Name.CompareTo(y.Name) < 0 && GetMethodsCalledFull(y).Contains(y)
+		if (x != y && x.Name.CompareTo(y.Name) < 0
 			&& GetMethodsCalledFull(y).Contains(x) && GetMethodsCalledFull(x).Contains(y))
 			hs.Add((x.Name, y.Name));
 ;

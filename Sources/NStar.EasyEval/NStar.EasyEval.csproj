@@ -8,7 +8,6 @@
 
 	<ItemGroup>
 	<PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="6.0.36" />
-	<PackageReference Include="System.Private.Uri" Version="4.3.2" />
 	<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
 	<ProjectReference Include="..\NStar.ExtraReplacing\NStar.ExtraReplacing.csproj" />
 	<ProjectReference Include="..\NStar.MathLib.Extras\NStar.MathLib.Extras.csproj" />

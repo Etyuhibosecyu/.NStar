@@ -26,6 +26,7 @@ public static class EasyEval
 		var assembly = CompileAndGetAssembly(((String)@"using NStar.BufferLib;
 using NStar.Core;
 using NStar.Dictionaries;
+using NStar.ExtraHS;
 using NStar.ExtraReplacing;
 using NStar.Linq;
 using NStar.MathLib;
@@ -85,7 +86,7 @@ public static void Main()
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
 		var references = new ListHashSet<String>("NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
-			"NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
+			"NStar.ExtraHS", "NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
 			"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
 			"NStar.SumCollections", "System", "System.Console", "System.Core", "System.Linq.Expressions",
 			"System.Private.CoreLib", "System.Runtime")
