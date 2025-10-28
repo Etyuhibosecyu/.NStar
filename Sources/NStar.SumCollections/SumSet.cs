@@ -76,7 +76,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	protected override Func<int, SumSet<T>> CapacityCreator => x => [];
 
-	protected override Func<G.IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator { get; } = x => new(x);
 
 	public override G.IComparer<(T Key, int Value)> Comparer => new Comparer<(T Key, int Value)>((x, y) => Comparer2.Compare(x.Key, y.Key));
 
@@ -121,7 +121,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	protected override Func<ReadOnlySpan<(T Key, int Value)>, SumSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<(T Key, int Value)>, SumSet<T>> SpanCreator { get; } = x => new(x);
 
 	public virtual long ValuesSum => root?.ValuesSum ?? 0;
 

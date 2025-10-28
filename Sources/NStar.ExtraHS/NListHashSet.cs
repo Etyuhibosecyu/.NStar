@@ -540,9 +540,9 @@ public class NListHashSet<T> : NListHashSet<T, NListHashSet<T>> where T : unmana
 
 	public NListHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	protected override Func<int, NListHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, NListHashSet<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<T>, NListHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, NListHashSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, NListHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, NListHashSet<T>> SpanCreator { get; } = x => new(x);
 }

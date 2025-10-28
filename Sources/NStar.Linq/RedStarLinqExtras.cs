@@ -12602,7 +12602,7 @@ public static class RedStarLinqExtras
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			NList<(T, T2, T3)> result = new(length);
+			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
@@ -12615,7 +12615,7 @@ public static class RedStarLinqExtras
 		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
 		{
 			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			NList<(T, T2, T3)> result = new(length);
+			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = array[i];
@@ -12628,7 +12628,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
-			NList<(T, T2, T3)> result = new(length);
+			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
@@ -12641,7 +12641,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
 			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
-			NList<(T, T2, T3)> result = new(length);
+			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];

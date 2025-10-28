@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace NStar.Core.Tests;
+﻿namespace NStar.Core.Tests;
 
 [TestClass]
 public class ListHashSetTests

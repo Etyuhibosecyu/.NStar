@@ -11,8 +11,10 @@
 		<Authors>Red-Star-Soft</Authors>
 		<Company>Red-Star-Soft</Company>
 		<Copyright>Copyright (c) Red-Star-Soft 2019-2099</Copyright>
-		<Description>Пакет содержит большой набор LINQ-подобных методов расширения (экстентов) для работы с коллекциями, расширяющих стандартный функционал LINQ (Break(), FrequencyTable(), Pairs() и прочие). Экстенты содержат множество перегрузок, в частности, почти всегда содержат перегрузки с лямбда-выражением как только от элемента, так и от элемента и его индекса.
-ВНИМАНИЕ! Пакет не содержит экстенты для вычисления оптимумов (Max(), Mean(), Median(), Min()) или других математических функций (Sum(), Product()) или производные от них (FindMax(), IndexesOfMean(), LastIndexOfMedian() и прочие). Для этих целей используйте пакеты NStar.MathLib и NStar.MathLib.Extras.</Description>
+		<Description>
+			Пакет содержит большой набор LINQ-подобных методов расширения (экстентов) для работы с коллекциями, расширяющих стандартный функционал LINQ (Break(), FrequencyTable(), Pairs() и прочие). Экстенты содержат множество перегрузок, в частности, почти всегда содержат перегрузки с лямбда-выражением как только от элемента, так и от элемента и его индекса.
+			ВНИМАНИЕ! Пакет не содержит экстенты для вычисления оптимумов (Max(), Mean(), Median(), Min()) или других математических функций (Sum(), Product()) или производные от них (FindMax(), IndexesOfMean(), LastIndexOfMedian() и прочие). Для этих целей используйте пакеты NStar.MathLib и NStar.MathLib.Extras.
+		</Description>
 		<FileVersion>0.2.1.0</FileVersion>
 		<NeutralLanguage>ru</NeutralLanguage>
 		<PackageIcon>Red-Star-Soft.png</PackageIcon>
@@ -30,15 +32,15 @@
 		<DebugType>pdbonly</DebugType>
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<None Include="..\..\..\Red-Star-Soft.png">
-		<Pack>True</Pack>
-		<PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
 		</None>
 		<None Include="..\..\README.md">
-		<Pack>True</Pack>
-		<PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
 		</None>
 		<ProjectReference Include="..\NStar.MathLib\NStar.MathLib.csproj" />
 		<None Update="xmpir64.dll">

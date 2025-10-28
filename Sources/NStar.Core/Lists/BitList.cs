@@ -336,13 +336,13 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 	}
 
-	protected override Func<int, BitList> CapacityCreator => x => new(x);
+	protected override Func<int, BitList> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<IEnumerable<bool>, BitList> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<bool>, BitList> CollectionCreator { get; } = x => new(x);
 
 	protected override int DefaultCapacity => 256;
 
-	protected override Func<ReadOnlySpan<bool>, BitList> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<bool>, BitList> SpanCreator { get; } = x => new(x);
 
 	public virtual BitList AddRange(BitArray bitArray) => Insert(_size, bitArray);
 

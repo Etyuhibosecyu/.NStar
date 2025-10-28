@@ -345,9 +345,9 @@ public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 
 	public TreeHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, TreeHashSet<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<T>, TreeHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, TreeHashSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, TreeHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, TreeHashSet<T>> SpanCreator { get; } = x => new(x);
 }

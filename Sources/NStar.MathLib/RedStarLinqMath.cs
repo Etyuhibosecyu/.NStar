@@ -9118,6 +9118,8 @@ public static class RedStarLinqMath
 
 	public static TResult? Max<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> selector) => E.Max(source, selector);
 	public static T? Max<T>(this G.IEnumerable<T> source) => E.Max(source);
+	public static MpzT Max(MpzT x, MpzT y) => x > y ? x : y;
+	public static MpzT Max(MpzT x, MpzT y, MpzT z) => Max(Max(x, y), z);
 	public static decimal Max(params decimal[] source) => Max(source.AsSpan());
 	public static double Max(params double[] source) => Max(source.AsSpan());
 	public static int Max(params int[] source) => Max(source.AsSpan());
@@ -9125,6 +9127,8 @@ public static class RedStarLinqMath
 	public static long Max(params long[] source) => Max(source.AsSpan());
 	public static MpzT Max(params MpzT[] source) => Max(source.AsSpan());
 	public static T? Max<T>(params T?[] source) => E.Max(source);
+	public static MpzT Mean(MpzT x, MpzT y) => (x + y) >> 1;
+	public static MpzT Mean(MpzT x, MpzT y, MpzT z) => (x + y + z) / 3;
 	public static decimal Mean(params decimal[] source) => Mean(source.AsSpan());
 	public static double Mean(params double[] source) => Mean(source.AsSpan());
 	public static double Mean(params int[] source) => Mean(source.AsSpan());
@@ -9139,6 +9143,8 @@ public static class RedStarLinqMath
 	public static MpzT Median(params MpzT[] source) => Median(source.AsSpan());
 	public static TResult? Min<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> selector) => E.Min(source, selector);
 	public static T? Min<T>(this G.IEnumerable<T> source) => E.Min(source);
+	public static MpzT Min(MpzT x, MpzT y) => x < y ? x : y;
+	public static MpzT Min(MpzT x, MpzT y, MpzT z) => Min(Min(x, y), z);
 	public static decimal Min(params decimal[] source) => Min(source.AsSpan());
 	public static double Min(params double[] source) => Min(source.AsSpan());
 	public static int Min(params int[] source) => Min(source.AsSpan());

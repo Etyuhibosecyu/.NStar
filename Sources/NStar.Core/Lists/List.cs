@@ -141,7 +141,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				return;
 			if (value > 0)
 			{
-				var newItems = arrayPool.GetAndRemove(value, true);
+				T[] newItems;
+				lock (globalLockObj)
+					newItems = arrayPool.GetAndRemove(value, true);
 				if (_size > 0 && _items != null)
 					Array.Copy(_items, 0, newItems, 0, _size);
 				_items = newItems;
@@ -571,11 +573,11 @@ public class List<T> : List<T, List<T>>
 
 	public List(ReadOnlySpan<T> span) : base(span) { }
 
-	protected override Func<int, List<T>> CapacityCreator => x => new(x);
+	protected override Func<int, List<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<IEnumerable<T>, List<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, List<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator { get; } = x => new(x);
 
 	public static implicit operator List<T>(T x) => new(x);
 

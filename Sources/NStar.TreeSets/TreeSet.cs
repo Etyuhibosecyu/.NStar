@@ -88,9 +88,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	protected override Func<int, TreeSet<T>> CapacityCreator => x => [];
 
-	protected override Func<G.IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, TreeSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, TreeSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, TreeSet<T>> SpanCreator { get; } = x => new(x);
 
 	public override G.IComparer<T> Comparer { get; }
 

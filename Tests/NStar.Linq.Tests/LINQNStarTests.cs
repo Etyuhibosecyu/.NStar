@@ -21,6 +21,7 @@ public static class Global
 	internal static readonly ImmutableArray<string> list = ["MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD"];
 	internal static readonly ImmutableArray<string> list2 = ["MMM", "BBB", "#", "PPP", "DDD", "MMM", "EEE", "DDD"];
 	internal static readonly ImmutableArray<(char, char, char)> nList = [('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')];
+	internal static readonly ImmutableArray<(char, char, char)> nList2 = [('M', 'M', 'M'), ('B', 'B', 'B'), ('#', '\0', '\0'), ('D', 'D', 'D'), ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')];
 	internal static readonly ImmutableArray<char> nString = ['M', 'B', 'P', 'D', 'M', 'E', 'D'];
 	internal static readonly G.IEnumerable<string> enumerable = E.Select(list, x => x);
 	internal static readonly G.IEnumerable<string> enumerable2 = E.SkipWhile(list, _ => Lock(lockObj, () => random.Next(10) == -1));

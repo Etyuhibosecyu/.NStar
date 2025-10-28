@@ -431,11 +431,11 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 
 	public FastDelHashSet(G.IEnumerable<T> set, G.IEqualityComparer<T>? comparer) : base(set, comparer) { }
 
-	protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, FastDelHashSet<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, FastDelHashSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, FastDelHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, FastDelHashSet<T>> SpanCreator { get; } = x => new(x);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -493,11 +493,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	protected override Func<int, ParallelHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, ParallelHashSet<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, ParallelHashSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, ParallelHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, ParallelHashSet<T>> SpanCreator { get; } = x => new(x);
 
 	protected override void ClearInternal()
 	{

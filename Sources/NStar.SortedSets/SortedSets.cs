@@ -223,9 +223,9 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 
 	public SortedSet(int capacity, G.IEnumerable<T> collection, G.IComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
-	protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, SortedSet<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, SortedSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, SortedSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, SortedSet<T>> SpanCreator { get; } = x => new(x);
 }

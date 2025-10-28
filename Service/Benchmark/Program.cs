@@ -8,6 +8,7 @@ global using System.Diagnostics;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
 global using static System.Math;
+global using String = NStar.Core.String;
 using NStar.BigCollections;
 using NStar.BigCollections.Tests;
 

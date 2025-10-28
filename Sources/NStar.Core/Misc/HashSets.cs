@@ -496,9 +496,9 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 
 	public ListHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, ListHashSet<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, ListHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, ListHashSet<T>> SpanCreator { get; } = x => new(x);
 }

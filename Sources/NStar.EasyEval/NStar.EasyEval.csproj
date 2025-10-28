@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-	<TargetFramework>net9.0</TargetFramework>
-	<LangVersion>latest</LangVersion>
-	<Nullable>enable</Nullable>
+		<TargetFramework>net9.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
-	<PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="6.0.36" />
-	<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-	<ProjectReference Include="..\NStar.ExtraReplacing\NStar.ExtraReplacing.csproj" />
-	<ProjectReference Include="..\NStar.MathLib.Extras\NStar.MathLib.Extras.csproj" />
-	<ProjectReference Include="..\NStar.ParallelHS\NStar.ParallelHS.csproj" />
-	<ProjectReference Include="..\NStar.SumCollections\NStar.SumCollections.csproj" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="6.0.36" />
+		<PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+		<ProjectReference Include="..\NStar.ExtraReplacing\NStar.ExtraReplacing.csproj" />
+		<ProjectReference Include="..\NStar.MathLib.Extras\NStar.MathLib.Extras.csproj" />
+		<ProjectReference Include="..\NStar.ParallelHS\NStar.ParallelHS.csproj" />
+		<ProjectReference Include="..\NStar.SumCollections\NStar.SumCollections.csproj" />
 	</ItemGroup>
 
 </Project>

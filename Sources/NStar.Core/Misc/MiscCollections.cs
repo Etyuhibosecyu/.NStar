@@ -70,6 +70,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 	private protected readonly object _syncRoot = new();
 
 	internal virtual int Capacity => _array.Length;
+
 	public virtual int Length => _size;
 
 	int System.Collections.ICollection.Count => Length;

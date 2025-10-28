@@ -356,11 +356,11 @@ public class Buffer<T> : Buffer<T, Buffer<T>>
 
 	public Buffer(ReadOnlySpan<T> span) : base(span) { }
 
-	protected override Func<int, Buffer<T>> CapacityCreator => x => new(x);
+	protected override Func<int, Buffer<T>> CapacityCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<T>, Buffer<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, Buffer<T>> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<T>, Buffer<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, Buffer<T>> SpanCreator { get; } = x => new(x);
 
 	public static implicit operator Buffer<T>(T x) => new(x);
 

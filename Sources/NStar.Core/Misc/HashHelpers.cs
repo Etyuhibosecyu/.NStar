@@ -17,6 +17,7 @@ internal static class HashHelpers
 		187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
 		1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369
 	];
+
 	internal static ReadOnlySpan<int> PrimesList =>
 	[
 		3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
@@ -309,7 +310,7 @@ internal static class HashHelpers
 		45943, 45949, 45953, 45959, 45971, 45979, 45989, 46021, 46027, 46049, 46051, 46061, 46073, 46091, 46093, 46099,
 		46103, 46133, 46141, 46147, 46153, 46171, 46181, 46183, 46187, 46199, 46219, 46229, 46237, 46261, 46271, 46273,
 		46279, 46301, 46307, 46309, 46327, 46337
-	];
+			];
 
 	/// <summary>Performs a mod operation using the multiplier pre-computed with <see cref="GetFastModMultiplier"/>.</summary>
 	/// <remarks>This should only be used on 64-bit.</remarks>

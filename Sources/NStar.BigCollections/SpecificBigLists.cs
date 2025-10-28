@@ -226,9 +226,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	protected override int LeafSizeBitLength { get; init; } = 20;
 
-	protected override Func<int, BitList> CapacityLowCreator => x => new(x);
+	protected override Func<int, BitList> CapacityLowCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
+	protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator { get; } = x => new(x);
 
 	protected override Func<G.IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
@@ -568,5 +568,5 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 
 	protected override Func<int, List<T>> CapacityLowCreator => x => new(x, true);
 
-	protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator { get; } = x => new(x);
 }
