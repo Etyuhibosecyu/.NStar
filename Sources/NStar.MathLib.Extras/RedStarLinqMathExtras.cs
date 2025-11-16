@@ -22486,6 +22486,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22513,6 +22514,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22540,6 +22542,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22567,6 +22570,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22594,6 +22598,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22621,6 +22626,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22648,6 +22654,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22675,6 +22682,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22702,6 +22710,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22729,6 +22738,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22756,6 +22766,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22783,6 +22794,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22810,6 +22822,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22837,6 +22850,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22864,6 +22878,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22891,6 +22906,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22918,6 +22934,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22945,6 +22962,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22972,6 +22990,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -22999,6 +23018,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -23026,6 +23046,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -23053,6 +23074,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -23080,6 +23102,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);
@@ -23107,6 +23130,7 @@ public static class RedStarLinqMathExtras
 			{
 				indicator = f;
 				result.Clear();
+				result.Add(item);
 			}
 			else if (f == indicator!)
 				result.Add(item);

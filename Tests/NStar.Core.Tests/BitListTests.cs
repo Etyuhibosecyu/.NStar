@@ -96,7 +96,7 @@ public class BitListTests
 			random => new(new BitList(new BitArray(1600))), random => new(new BitList(new BitArray(1600, false))),
 			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next())))),
 			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))))),
-			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))))
+			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)))),
 		};
 		var array = new BitList[3200];
 		for (var i = 0; i < array.Length; i++)

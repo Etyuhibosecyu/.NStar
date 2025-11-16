@@ -1,19 +1,13 @@
 ﻿namespace NStar.Core;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public readonly struct Chain : IReadOnlyCollection<int>
+public readonly struct Chain(int start, int length) : IReadOnlyCollection<int>
 {
-	private readonly int start;
+	private readonly int start = start;
 
 	public Chain(int length) : this(0, length) { }
 
-	public Chain(int start, int length)
-	{
-		this.start = start;
-		Length = Max(length, 0);
-	}
-
-	public int Length { get; }
+	public int Length { get; } = Max(length, 0);
 
 	public readonly Enumerator GetEnumerator() => new(this);
 

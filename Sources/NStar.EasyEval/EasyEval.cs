@@ -15,14 +15,15 @@ namespace NStar.EasyEvalLib;
 
 public static class EasyEval
 {
-	public static void CompileAndExecute(String sourceCode, G.IEnumerable<String> extraAssemblies, string[] args, TextWriter? errors = null) => Execute(Compile(sourceCode, extraAssemblies, errors), args);
+	public static void CompileAndExecute(String sourceCode, G.IEnumerable<String> extraAssemblies,
+		string[] args, out string errors) => Execute(Compile(sourceCode, extraAssemblies, out errors), args);
 
-	public static Assembly? CompileAndGetAssembly(String sourceCode, G.IEnumerable<String> extraAssemblies, TextWriter? errors = null) => GetAssembly(Compile(sourceCode, extraAssemblies, errors));
+	public static Assembly? CompileAndGetAssembly(String sourceCode, G.IEnumerable<String> extraAssemblies,
+		out string errors) => GetAssembly(Compile(sourceCode, extraAssemblies, out errors));
 
-	public static dynamic? Eval(String sourceCode, G.IEnumerable<String>? extraAssemblies = null, G.IEnumerable<String>? extraUsings = null, params dynamic?[] args)
+	public static dynamic? Eval(String sourceCode, G.IEnumerable<String>? extraAssemblies = null,
+		G.IEnumerable<String>? extraUsings = null, params dynamic?[] args)
 	{
-		var sb = new StringBuilder();
-		var errors = new StringWriter(sb);
 		var assembly = CompileAndGetAssembly(((String)@"using NStar.BufferLib;
 using NStar.Core;
 using NStar.Dictionaries;
@@ -41,7 +42,8 @@ using G = System.Collections.Generic;
 using static NStar.Core.Extents;
 using static System.Math;
 using String = NStar.Core.String;
-").AddRange(String.Join(Environment.NewLine, extraUsings?.ToArray(x => ((String)"using ").AddRange(x).Add(';')) ?? [])).AddRange(@"
+").AddRange(String.Join(Environment.NewLine, extraUsings?.ToArray(x => ((String)"using ").AddRange(x).Add(';')) ?? []))
+.AddRange(@"
 namespace MyProject;
 public static class Program
 {
@@ -55,28 +57,33 @@ public static void Main()
 {
 }
 }
-"), new ListHashSet<String>().UnionWith(extraAssemblies ?? []), errors);
-		if (sb.ToString() != "Compilation done without any error.")
+"), new ListHashSet<String>().UnionWith(extraAssemblies ?? []), out var errors);
+		if (errors != "Compilation done without any error.")
 			throw new EvaluationFailedException();
 		return assembly?.GetType("MyProject.Program")?.GetMethod("F")?.Invoke(null, [args]) ?? null;
 	}
 
-	public static byte[]? Compile(String sourceCode, G.IEnumerable<String> extraAssemblies, TextWriter? errors = null)
+	public static byte[]? Compile(String sourceCode, G.IEnumerable<String> extraAssemblies, out string errors)
 	{
 		using var peStream = new MemoryStream();
+		var sb = new StringBuilder();
+		var sw = new StringWriter(sb);
 		var result = GenerateCode(sourceCode, extraAssemblies).Emit(peStream);
 		if (!result.Success)
 		{
-			errors?.WriteLine("Compilation done with error.");
-			var failures = result.Diagnostics.Filter(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+			sw?.WriteLine("Compilation done with error.");
+			var failures = result.Diagnostics.Filter(diagnostic => diagnostic.IsWarningAsError
+			|| diagnostic.Severity == DiagnosticSeverity.Error);
 			foreach (var diagnostic in failures)
 			{
-				errors?.WriteLine("{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
+				sw?.WriteLine("{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
 			}
+			errors = sb.ToString();
 			return null;
 		}
-		errors?.WriteLine("Compilation done without any error.");
+		sw?.WriteLine("Compilation done without any error.");
 		peStream.Seek(0, SeekOrigin.Begin);
+		errors = sb.ToString();
 		return peStream.ToArray();
 	}
 
@@ -85,12 +92,7 @@ public static void Main()
 		var codeString = SourceText.From(sourceCode.ToString());
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-		var references = new ListHashSet<String>("NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
-			"NStar.ExtraHS", "NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
-			"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
-			"NStar.SumCollections", "System", "System.Console", "System.Core", "System.Linq.Expressions",
-			"System.Private.CoreLib", "System.Runtime")
-			.UnionWith(extraAssemblies).ToList(x =>
+		var references = GetAllAssemblies(extraAssemblies).ToList(x =>
 			MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", []).ToString()).Location));
 		return CSharpCompilation.Create("MyProject.dll",
 			[parsedSyntaxTree],
@@ -99,6 +101,14 @@ public static void Main()
 				optimizationLevel: OptimizationLevel.Release,
 				assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
 	}
+
+	public static ListHashSet<String> GetAllAssemblies(G.IEnumerable<String> extraAssemblies) =>
+		new ListHashSet<String>("NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
+		"NStar.ExtraHS", "NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
+		"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
+		"NStar.SumCollections", "System", "System.Console", "System.Core", "System.Linq.Expressions",
+		"System.Private.CoreLib", "System.Runtime")
+		.UnionWith(extraAssemblies);
 
 	public static void Execute(byte[]? compiledAssembly, string[] args)
 	{
@@ -112,7 +122,12 @@ public static void Main()
 	{
 		var assembly = GetAssembly(compiledAssembly);
 		var entry = assembly?.EntryPoint;
-		_ = entry != null && entry.GetParameters().Length > 0 ? entry.Invoke(null, [args]) : entry?.Invoke(null, null);
+		if (entry == null)
+			return;
+		else if (entry.GetParameters().Length == 0)
+			entry.Invoke(null, null);
+		else
+			entry.Invoke(null, [args]);
 	}
 
 	public static Assembly? GetAssembly(byte[]? compiledAssembly)

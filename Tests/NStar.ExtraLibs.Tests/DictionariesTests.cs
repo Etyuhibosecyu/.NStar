@@ -94,6 +94,264 @@ public class DictionaryTests
 		Dictionary<int, int> dic = new(arr);
 		return (dic, arr);
 	}, () => random.Next(16), () => random.Next(1, 16), () => (random.Next(100), random.Next(100)));
+
+	[TestMethod]
+	public void ConstructionTest()
+	{
+		var seed = Lock(lockObj, Global.random.Next);
+		var random = Lock(lockObj, () => new Random(seed));
+		var random2 = Lock(lockObj, () => new Random(seed));
+		var funcs = new[]
+		{
+			(Random random) => new Dictionary<int, int>(), random => new(1600), random => new(1600),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next()))),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next()))),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => (random.Next(), random.Next()))),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.NFill(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2).ToNList(), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new((G.IEnumerable<(int, int)>)RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next()))),
+			random => new((G.IEnumerable<(int, int)>)RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new((G.IEnumerable<(int, int)>)RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new((G.IEnumerable<(int, int)>)RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next()))),
+			random => new((G.IEnumerable<(int, int)>)RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new((G.IEnumerable<(int, int)>)RedStarLinq.Fill(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())), x => x).RemoveDoubles(x => x.Item1 / 2), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2), _ => random.Next(10) == -1), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.NFill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2).ToNList(), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), x => x), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), _ => random.Next(10) == -1), (x, y) => x / 2 == y / 2, x => x / 2),
+			random => new(new Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(RedStarLinq.Fill(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => (random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(RedStarLinq.NFill(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2).ToNList(), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>((G.IEnumerable<(int, int)>)RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<(int, int)>)RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<(int, int)>)RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>((G.IEnumerable<(int, int)>)RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<(int, int)>)RedStarLinq.Fill(random.Next(50), _ => (random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<(int, int)>)RedStarLinq.Fill(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), x => x))),
+			random => new(new Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())), x => x).RemoveDoubles(x => x.Item1 / 2), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), _ => random.Next(10) == -1))),
+			random => new(new Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => (random.Next(), random.Next())).RemoveDoubles(x => x.Item1 / 2), _ => random.Next(10) == -1), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(RedStarLinq.NFill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2).ToNList(), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2).ToArray(), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>((G.IEnumerable<G.KeyValuePair<int, int>>)RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x))),
+			random => new(new Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), x => x), (x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1))),
+			random => new(new Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), _ => random.Next(10) == -1), (x, y) => x / 2 == y / 2, x => x / 2)),
+		};
+		var funcs2 = new[]
+		{
+			(Random random) => new G.Dictionary<int, int>(), random => new(1600), random => new(1600),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.NFill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.NFill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next()))),
+			random => new(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2)),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.NFill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x))),
+			random => new(new G.Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1))),
+			random => new(new G.Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.NFill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.NFill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(RedStarLinq.Fill(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x))),
+			random => new(new G.Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.Select(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), x => x), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1))),
+			random => new(new G.Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+			random => new(new G.Dictionary<int, int>(E.SkipWhile(RedStarLinq.FillArray(random.Next(5, 50000), _ => new G.KeyValuePair<int, int>(random.Next(), random.Next())).RemoveDoubles(x => x.Key / 2), _ => random.Next(10) == -1), new EComparer<int>((x, y) => x / 2 == y / 2, x => x / 2))),
+		};
+		for (var i = 0; i < 5000; i++)
+		{
+			var a = funcs.Random(random)(random);
+			var b = funcs.Random(random2)(random2);
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a.TryAdd(random.Next(), random.Next());
+			b.TryAdd(random2.Next(), random2.Next());
+		}
+	}
+
+	[TestMethod]
+	public void TestTuples()
+	{
+		var a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"));
+		var b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"), ("NNN", "NNN"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"), ("NNN", "NNN")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"), ("NNN", "NNN"), ("OOO", "OOO"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"), ("NNN", "NNN"), ("OOO", "OOO")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = (Dictionary<string, string>)(("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"), ("NNN", "NNN"), ("OOO", "OOO"), ("PPP", "PPP"));
+		b = new Dictionary<string, string>([("AAA", "AAA"), ("BBB", "BBB"), ("CCC", "CCC"), ("DDD", "DDD"), ("EEE", "EEE"), ("FFF", "FFF"), ("GGG", "GGG"), ("HHH", "HHH"), ("III", "III"), ("JJJ", "JJJ"), ("KKK", "KKK"), ("LLL", "LLL"), ("MMM", "MMM"), ("NNN", "NNN"), ("OOO", "OOO"), ("PPP", "PPP")]);
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+	}
 }
 
 [TestClass]

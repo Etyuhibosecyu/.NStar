@@ -166,7 +166,137 @@ public class OptimumTests
 	});
 
 	[TestMethod]
+	public void TestFindAllMaxSpan() => OptimumTestSpan(1000, (a, list3) =>
+	{
+		var c = RedStarLinq.ToArray(a.FindAllMax(x => x.PowerMod(new MpzT(power), new(mod))), x => x.ToBigInteger());
+		var optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
+		var d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax((x, index) => x.PowerMod(new MpzT(power * index), new(mod))), x => x.ToBigInteger());
+		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax(x => (decimal)((double)x / 1000000000000 / 1000000000000)), x => x.ToBigInteger());
+		var decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), x => x.ToBigInteger());
+		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax(x => (double)x / 1000000000000), x => x.ToBigInteger());
+		var doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax((x, index) => (double)x / 1000000000000 * (index % 5)), x => x.ToBigInteger());
+		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax(x => (int)x), x => x.ToBigInteger());
+		var intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax((x, index) => (int)(x * (index % 5))), x => x.ToBigInteger());
+		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax(x => (uint)x), x => x.ToBigInteger());
+		var uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax((x, index) => (uint)(x * (index % 5))), x => x.ToBigInteger());
+		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax(x => (long)x), x => x.ToBigInteger());
+		var longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMax((x, index) => (long)(x * (index % 5))), x => x.ToBigInteger());
+		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+	});
+
+	[TestMethod]
 	public void TestFindAllMin() => OptimumTest(1000, (a, list3) =>
+	{
+		var c = RedStarLinq.ToArray(a.FindAllMin(x => x.PowerMod(new MpzT(power), new(mod))), x => x.ToBigInteger());
+		var optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
+		var d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin((x, index) => x.PowerMod(new MpzT(power * index), new(mod))), x => x.ToBigInteger());
+		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin(x => (decimal)((double)x / 1000000000000 / 1000000000000)), x => x.ToBigInteger());
+		var decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), x => x.ToBigInteger());
+		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin(x => (double)x / 1000000000000), x => x.ToBigInteger());
+		var doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin((x, index) => (double)x / 1000000000000 * (index % 5)), x => x.ToBigInteger());
+		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin(x => (int)x), x => x.ToBigInteger());
+		var intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin((x, index) => (int)(x * (index % 5))), x => x.ToBigInteger());
+		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin(x => (uint)x), x => x.ToBigInteger());
+		var uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin((x, index) => (uint)(x * (index % 5))), x => x.ToBigInteger());
+		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin(x => (long)x), x => x.ToBigInteger());
+		var longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = RedStarLinq.ToArray(a.FindAllMin((x, index) => (long)(x * (index % 5))), x => x.ToBigInteger());
+		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
+		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => list3[x.index]));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+	});
+
+	[TestMethod]
+	public void TestFindAllMinSpan() => OptimumTestSpan(1000, (a, list3) =>
 	{
 		var c = RedStarLinq.ToArray(a.FindAllMin(x => x.PowerMod(new MpzT(power), new(mod))), x => x.ToBigInteger());
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);

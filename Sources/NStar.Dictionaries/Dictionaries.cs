@@ -379,6 +379,22 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
+	public Dictionary(List<(TKey Key, TValue Value)> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
+
+	public Dictionary(List<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+
+	public Dictionary(List<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+
+	public Dictionary(List<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
+
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+
 	public override TValue this[TKey key]
 	{
 		get
@@ -696,6 +712,38 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
+
+	public static implicit operator Dictionary<TKey, TValue>((TKey, TValue) x) => new() { x };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15 };
+
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16 };
 
 	public static implicit operator G.Dictionary<TKey, TValue>?(Dictionary<TKey, TValue>? x)
 	{

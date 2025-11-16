@@ -97,6 +97,14 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 
 	public SortedDictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, int> compareFunction) : this(collection, new Comparer<TKey>(compareFunction)) { }
 
+	public SortedDictionary(List<(TKey Key, TValue Value)> collection) : this(collection, G.Comparer<TKey>.Default) { }
+
+	public SortedDictionary(List<(TKey Key, TValue Value)> collection, G.IComparer<TKey>? comparer) : this((G.IEnumerable<(TKey Key, TValue Value)>)collection, comparer) { }
+
+	public SortedDictionary(List<G.KeyValuePair<TKey, TValue>> collection) : this(collection, G.Comparer<TKey>.Default) { }
+
+	public SortedDictionary(List<G.KeyValuePair<TKey, TValue>> collection, G.IComparer<TKey>? comparer) : this((G.IEnumerable<G.KeyValuePair<TKey, TValue>>)collection, comparer) { }
+
 	public override TValue this[TKey key]
 	{
 		get
@@ -373,6 +381,38 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		value = default!;
 		return false;
 	}
+
+	public static implicit operator SortedDictionary<TKey, TValue>((TKey, TValue) x) => new() { x };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15 };
+
+	public static implicit operator SortedDictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16 };
 
 	[Serializable()]
 	public struct Enumerator : G.IEnumerator<G.KeyValuePair<TKey, TValue>>, IDictionaryEnumerator
