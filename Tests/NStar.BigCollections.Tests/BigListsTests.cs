@@ -539,7 +539,7 @@ public class BigListTests
 		var sourceIndex = 5;
 		var destinationIndex = 9;
 		BigList<byte> modified, original;
-		NList<byte> bitList;
+		List<byte> bitList;
 		PerformIteration();
 		for (var i = 0; i < 5000; i++)
 		{
@@ -584,7 +584,7 @@ public class BigListTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[2500];
 		random.NextBytes(bytes);
-		NList<byte> regularList = new(bytes);
+		List<byte> regularList = new(bytes);
 		regularList.Resize(1250);
 		var length = 435;
 		var sourceIndex = 123;

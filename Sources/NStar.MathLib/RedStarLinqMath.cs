@@ -1542,7 +1542,7 @@ public static class RedStarLinqMath
 
 	public static decimal Max(this G.IEnumerable<decimal> source)
 	{
-		if (source is NList<decimal> list)
+		if (source is List<decimal> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -1638,7 +1638,7 @@ public static class RedStarLinqMath
 
 	public static double Max(this G.IEnumerable<double> source)
 	{
-		if (source is NList<double> list)
+		if (source is List<double> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -1734,7 +1734,7 @@ public static class RedStarLinqMath
 
 	public static int Max(this G.IEnumerable<int> source)
 	{
-		if (source is NList<int> list)
+		if (source is List<int> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -1830,7 +1830,7 @@ public static class RedStarLinqMath
 
 	public static uint Max(this G.IEnumerable<uint> source)
 	{
-		if (source is NList<uint> list)
+		if (source is List<uint> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -1926,7 +1926,7 @@ public static class RedStarLinqMath
 
 	public static long Max(this G.IEnumerable<long> source)
 	{
-		if (source is NList<long> list)
+		if (source is List<long> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -2022,7 +2022,7 @@ public static class RedStarLinqMath
 
 	public static MpzT Max(this G.IEnumerable<MpzT> source)
 	{
-		if (source is NList<MpzT> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -4205,7 +4205,7 @@ public static class RedStarLinqMath
 
 	public static decimal Min(this G.IEnumerable<decimal> source)
 	{
-		if (source is NList<decimal> list)
+		if (source is List<decimal> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -4301,7 +4301,7 @@ public static class RedStarLinqMath
 
 	public static double Min(this G.IEnumerable<double> source)
 	{
-		if (source is NList<double> list)
+		if (source is List<double> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -4397,7 +4397,7 @@ public static class RedStarLinqMath
 
 	public static int Min(this G.IEnumerable<int> source)
 	{
-		if (source is NList<int> list)
+		if (source is List<int> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -4493,7 +4493,7 @@ public static class RedStarLinqMath
 
 	public static uint Min(this G.IEnumerable<uint> source)
 	{
-		if (source is NList<uint> list)
+		if (source is List<uint> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -4589,7 +4589,7 @@ public static class RedStarLinqMath
 
 	public static long Min(this G.IEnumerable<long> source)
 	{
-		if (source is NList<long> list)
+		if (source is List<long> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -4685,7 +4685,7 @@ public static class RedStarLinqMath
 
 	public static MpzT Min(this G.IEnumerable<MpzT> source)
 	{
-		if (source is NList<MpzT> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -6690,19 +6690,19 @@ public static class RedStarLinqMath
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? 0 : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static decimal Median(this ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new NList<decimal>(source).Sort()[(source.Length - 1) / 2];
+	public static decimal Median(this ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new List<decimal>(source).NSort()[(source.Length - 1) / 2];
 
-	public static double Median(this ReadOnlySpan<double> source) => source.Length == 0 ? default : new NList<double>(source).Sort()[(source.Length - 1) / 2];
+	public static double Median(this ReadOnlySpan<double> source) => source.Length == 0 ? default : new List<double>(source).NSort()[(source.Length - 1) / 2];
 
-	public static int Median(this ReadOnlySpan<int> source) => source.Length == 0 ? default : new NList<int>(source).Sort()[(source.Length - 1) / 2];
+	public static int Median(this ReadOnlySpan<int> source) => source.Length == 0 ? default : new List<int>(source).NSort()[(source.Length - 1) / 2];
 
-	public static uint Median(this ReadOnlySpan<uint> source) => source.Length == 0 ? default : new NList<uint>(source).Sort()[(source.Length - 1) / 2];
+	public static uint Median(this ReadOnlySpan<uint> source) => source.Length == 0 ? default : new List<uint>(source).NSort()[(source.Length - 1) / 2];
 
-	public static long Median(this ReadOnlySpan<long> source) => source.Length == 0 ? default : new NList<long>(source).Sort()[(source.Length - 1) / 2];
+	public static long Median(this ReadOnlySpan<long> source) => source.Length == 0 ? default : new List<long>(source).NSort()[(source.Length - 1) / 2];
 
-	public static MpzT Median(this ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new List<MpzT>(source).Sort()[(source.Length - 1) / 2];
+	public static MpzT Median(this ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new List<MpzT>(source).NSort()[(source.Length - 1) / 2];
 
-	public static T? Median<T>(this ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).Sort()[(source.Length - 1) / 2];
+	public static T? Median<T>(this ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).NSort()[(source.Length - 1) / 2];
 
 	public static decimal Min<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -7198,7 +7198,7 @@ public static class RedStarLinqMath
 
 	public static decimal Product(this G.IEnumerable<decimal> source)
 	{
-		if (source is NList<decimal> list)
+		if (source is List<decimal> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7281,7 +7281,7 @@ public static class RedStarLinqMath
 
 	public static double Product(this G.IEnumerable<double> source)
 	{
-		if (source is NList<double> list)
+		if (source is List<double> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7364,7 +7364,7 @@ public static class RedStarLinqMath
 
 	public static int Product(this G.IEnumerable<int> source)
 	{
-		if (source is NList<int> list)
+		if (source is List<int> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7447,7 +7447,7 @@ public static class RedStarLinqMath
 
 	public static uint Product(this G.IEnumerable<uint> source)
 	{
-		if (source is NList<uint> list)
+		if (source is List<uint> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7530,7 +7530,7 @@ public static class RedStarLinqMath
 
 	public static long Product(this G.IEnumerable<long> source)
 	{
-		if (source is NList<long> list)
+		if (source is List<long> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7613,7 +7613,7 @@ public static class RedStarLinqMath
 
 	public static MpzT Product(this G.IEnumerable<MpzT> source)
 	{
-		if (source is NList<MpzT> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list.Length;
 			MpzT result = 1;
@@ -7684,7 +7684,7 @@ public static class RedStarLinqMath
 
 	public static decimal Sum(this G.IEnumerable<decimal> source)
 	{
-		if (source is NList<decimal> list)
+		if (source is List<decimal> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7767,7 +7767,7 @@ public static class RedStarLinqMath
 
 	public static double Sum(this G.IEnumerable<double> source)
 	{
-		if (source is NList<double> list)
+		if (source is List<double> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7850,7 +7850,7 @@ public static class RedStarLinqMath
 
 	public static int Sum(this G.IEnumerable<int> source)
 	{
-		if (source is NList<int> list)
+		if (source is List<int> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -7933,7 +7933,7 @@ public static class RedStarLinqMath
 
 	public static uint Sum(this G.IEnumerable<uint> source)
 	{
-		if (source is NList<uint> list)
+		if (source is List<uint> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -8016,7 +8016,7 @@ public static class RedStarLinqMath
 
 	public static long Sum(this G.IEnumerable<long> source)
 	{
-		if (source is NList<long> list)
+		if (source is List<long> list)
 		{
 			var length = list.Length;
 			if (length <= 3)
@@ -8099,7 +8099,7 @@ public static class RedStarLinqMath
 
 	public static MpzT Sum(this G.IEnumerable<MpzT> source)
 	{
-		if (source is NList<MpzT> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list.Length;
 			MpzT result = 0;

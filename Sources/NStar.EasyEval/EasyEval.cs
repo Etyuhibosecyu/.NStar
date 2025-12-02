@@ -104,7 +104,7 @@ public static void Main()
 
 	public static ListHashSet<String> GetAllAssemblies(G.IEnumerable<String> extraAssemblies) =>
 		new ListHashSet<String>("NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
-		"NStar.ExtraHS", "NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
+		"NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
 		"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
 		"NStar.SumCollections", "System", "System.Console", "System.Core", "System.Linq.Expressions",
 		"System.Private.CoreLib", "System.Runtime")

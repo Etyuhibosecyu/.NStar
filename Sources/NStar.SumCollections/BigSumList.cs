@@ -596,7 +596,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		{
 			if (Length == 0)
 				return;
-			NList<int> toRemove = [];
+			List<int> toRemove = [];
 			var i = 0;
 			InOrderTreeWalk(n => { toRemove.Add(_min + i++); return true; });
 			while (toRemove.Length != 0)

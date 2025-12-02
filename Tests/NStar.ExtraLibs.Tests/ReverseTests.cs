@@ -14,7 +14,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContains();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestContains();
 	}
 
 	[TestMethod]
@@ -28,7 +28,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContainsAny();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestContainsAny();
 	}
 
 	[TestMethod]
@@ -93,7 +93,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEndsWith();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestEndsWith();
 	}
 
 	[TestMethod]
@@ -107,7 +107,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEquals();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestEquals();
 	}
 
 	[TestMethod]
@@ -206,11 +206,11 @@ public class ReverseTests
 	public void TestIndexOf()
 	{
 		var a = list.ToList().Reverse<string>();
-		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
+		new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestIndexOf();
 		a = new(RedStarLinq.ToArray(list.ToList().Reverse<string>()));
-		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
+		new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestIndexOf();
 		a = new((G.IList<string>)E.ToList(list.ToList().Reverse<string>()));
-		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
+		new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestIndexOf();
 	}
 
 	[TestMethod]
@@ -224,7 +224,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOfAny();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestIndexOfAny();
 	}
 
 	[TestMethod]
@@ -272,7 +272,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOfAny();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestLastIndexOfAny();
 	}
 
 	[TestMethod]
@@ -423,7 +423,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestStartsWith();
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, [.. E.Reverse(list)], defaultString, defaultCollection).TestStartsWith();
 	}
 
 	[TestMethod]

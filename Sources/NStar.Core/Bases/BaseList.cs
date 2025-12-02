@@ -1,20 +1,8 @@
 ﻿namespace NStar.Core;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, ICloneable, IList<T>, IList where TCertain : BaseList<T, TCertain>, new()
+public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>, ICloneable, IList<T>, IList where TCertain : BaseList<T, TCertain>, new()
 {
-	public override T this[Index index, bool invoke = true]
-	{
-		get => base[index, invoke];
-		set
-		{
-			var index2 = index.GetOffset(_size);
-			if ((uint)index2 >= (uint)_size)
-				throw new IndexOutOfRangeException();
-			SetInternal(index2, value);
-		}
-	}
-
 	T G.IList<T>.this[int index] { get => this[index]; set => this[index] = value; }
 
 	object? System.Collections.IList.this[int index]
@@ -919,35 +907,6 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	}
 
 	protected abstract void ReverseInternal(int index, int length);
-
-	public virtual TCertain SetAll(T value) => SetAll(value, 0, _size);
-
-	public virtual TCertain SetAll(T value, Index index) => SetAll(value, index.GetOffset(_size));
-
-	public virtual TCertain SetAll(T value, int index) => SetAll(value, index, _size - index);
-
-	public virtual TCertain SetAll(T value, int index, int length)
-	{
-		if ((uint)index > (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > _size)
-			throw new ArgumentException("Устанавливаемый диапазон выходит за текущий размер коллекции.");
-		SetAllInternal(value, index, length);
-		return (TCertain)this;
-	}
-
-	protected virtual void SetAllInternal(T value, int index, int length)
-	{
-		var endIndex = index + length - 1;
-		for (var i = index; i <= endIndex; i++)
-			SetInternal(i, value);
-	}
-
-	public virtual TCertain SetAll(T value, Range range) => SetAll(value, CreateVar(range.GetOffsetAndLength(_size), out var range2).Offset, range2.Length);
-
-	protected abstract void SetInternal(int index, T value);
 
 	public virtual TCertain SetOrAdd(int index, T value)
 	{

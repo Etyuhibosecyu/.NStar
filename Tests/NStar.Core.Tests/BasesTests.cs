@@ -171,6 +171,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 {
 	public void TestContains()
 	{
+		Assert.AreEqual(OriginalCollection.Contains(DefaultString), TestCollection.Contains(DefaultString));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, startIndex;
 		G.List<string> b;
@@ -196,6 +197,8 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestContainsAny()
 	{
+		Assert.AreEqual(E.Any(E.Select(DefaultCollection, OriginalCollection.Contains)),
+			E.Any(E.Select(DefaultCollection, x => TestCollection.Contains(x))));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, startIndex;
 		G.List<string> b;
@@ -223,6 +226,8 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestContainsAnyExcluding()
 	{
+		Assert.AreEqual(E.Any(E.Except(OriginalCollection, DefaultCollection)),
+			E.Any(E.Except(TestCollection, DefaultCollection)));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, startIndex;
 		G.List<string> b;
@@ -249,6 +254,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestEndsWith()
 	{
+		Assert.IsTrue(E.SequenceEqual(OriginalCollection, E.TakeLast(TestCollection, OriginalCollection.Length)));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length;
 		G.List<string> b;
@@ -272,6 +278,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestEquals()
 	{
+		Assert.IsTrue(E.SequenceEqual(OriginalCollection, TestCollection));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length;
 		G.List<string> b;
@@ -302,14 +309,14 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
 #pragma warning restore IDE0028 // Упростите инициализацию коллекции
 		}
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!));
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals(null!));
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 3));
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals(null!, 3));
+		Assert.IsFalse(TestCollection.Equals((G.IEnumerable<string>)null!));
+		Assert.IsFalse(TestCollection.Equals(null!));
+		Assert.IsFalse(TestCollection.Equals((G.IEnumerable<string>)null!, 3));
+		Assert.IsFalse(TestCollection.Equals(null!, 3));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, -1));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => TestCollection.Equals(null!, -1));
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 1000));
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Equals(null!, 1000));
+		Assert.IsFalse(TestCollection.Equals((G.IEnumerable<string>)null!, 1000));
+		Assert.IsFalse(TestCollection.Equals(null!, 1000));
 	}
 
 	public void TestFind()
@@ -454,6 +461,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestIndexOf()
 	{
+		Assert.AreEqual(OriginalCollection.IndexOf(DefaultString), TestCollection.IndexOf(DefaultString));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int index, length, startIndex;
 		G.List<string> b;
@@ -490,6 +498,8 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestIndexOfAny()
 	{
+		Assert.AreEqual(E.Min(E.Select(DefaultCollection, x => (uint)OriginalCollection.IndexOf(x))),
+			E.Min(E.Select(DefaultCollection, x => (uint)TestCollection.IndexOf(x))));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int index, index2, length, startIndex;
 		G.List<string> b;
@@ -531,6 +541,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestLastIndexOf()
 	{
+		Assert.AreEqual(OriginalCollection.LastIndexOf(DefaultString), TestCollection.LastIndexOf(DefaultString));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int index, length, startIndex;
 		G.List<string> b;
@@ -565,6 +576,8 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestLastIndexOfAny()
 	{
+		Assert.AreEqual(E.Max(E.Select(DefaultCollection, x => OriginalCollection.LastIndexOf(x))),
+			E.Max(E.Select(DefaultCollection, x => TestCollection.LastIndexOf(x))));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int index, index2, length, startIndex;
 		G.List<string> b;
@@ -606,6 +619,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestStartsWith()
 	{
+		Assert.IsTrue(E.SequenceEqual(OriginalCollection, E.Take(TestCollection, OriginalCollection.Length)));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length;
 		G.List<string> b;
@@ -624,6 +638,6 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
 			Assert.AreEqual(b.Count >= 2 && E.First(E.Zip(b, E.Skip(b, 1))) == (elem, elem2), a.StartsWith([elem, elem2]));
 		}
-		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.StartsWith((G.IEnumerable<string>)null!));
+		Assert.IsFalse(TestCollection.StartsWith((G.IEnumerable<string>)null!));
 	}
 }

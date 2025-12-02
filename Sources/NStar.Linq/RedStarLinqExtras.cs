@@ -716,9 +716,9 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(T item, int index, int length)
 		{
 			for (var i = index; i < Min(index + length, source.Count); i++)
-				if (source[i - 1]?.Equals(item) ?? item == null)
+				if (source[i]?.Equals(item) ?? item == null)
 					return i;
-			if (index == _size - length && (element?.Equals(item) ?? item == null))
+			if (index + length - 1 == _size && (element?.Equals(item) ?? item == null))
 				return source.Count;
 			return -1;
 		}
@@ -728,8 +728,8 @@ public static class RedStarLinqExtras
 			if (index == source.Count && (element?.Equals(item) ?? item == null))
 				return 0;
 			var endIndex = index - length + 1;
-			for (var i = Min(index, source.Count - 1); i >= endIndex; i++)
-				if (source[i - 1]?.Equals(item) ?? item == null)
+			for (var i = Min(index, source.Count - 1); i >= endIndex; i--)
+				if (source[i]?.Equals(item) ?? item == null)
 					return i;
 			return -1;
 		}
@@ -1556,7 +1556,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if (function(source[i], source2[i])?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -1614,7 +1614,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if (function(source[i], source2[i], i)?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -1668,7 +1668,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal((T, T2) item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null))
 					return i;
 			return -1;
@@ -1730,7 +1730,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -1792,7 +1792,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -1850,7 +1850,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal((T, T2, T3) item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 == null))
 					return i;
 			return -1;
@@ -7671,7 +7671,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(T item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= Max(endIndex, 1); i++)
+			for (var i = index; i >= Max(endIndex, 1); i--)
 				if (source[i - 1]?.Equals(item) ?? item == null)
 					return i;
 			if (endIndex == 0 && (element?.Equals(item) ?? item == null))
@@ -7790,13 +7790,13 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source)
+	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source)
 	{
 		ListHashSet<T> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7807,7 +7807,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			NList<int> result = new(array.Length);
+			List<int> result = new(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -7819,7 +7819,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7831,7 +7831,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7842,7 +7842,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
 			foreach (var item in source)
@@ -7854,13 +7854,13 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
+	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
 		ListHashSet<T> hs = new(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7871,7 +7871,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			NList<int> result = new(array.Length);
+			List<int> result = new(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -7883,7 +7883,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7895,7 +7895,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7906,7 +7906,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
 			foreach (var item in source)
@@ -7918,13 +7918,13 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
+	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7935,7 +7935,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			NList<int> result = new(array.Length);
+			List<int> result = new(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -7947,7 +7947,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7959,7 +7959,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7970,7 +7970,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
 			foreach (var item in source)
@@ -7982,13 +7982,13 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -7999,7 +7999,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			NList<int> result = new(array.Length);
+			List<int> result = new(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -8011,7 +8011,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -8023,7 +8023,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			NList<int> result = new(length);
+			List<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -8034,7 +8034,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
 			foreach (var item in source)
@@ -8078,7 +8078,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(T item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (source[_size - 1 - index]?.Equals(item) ?? item == null)
+				if (source[_size - 1 - i]?.Equals(item) ?? item == null)
 					return i;
 			return -1;
 		}
@@ -8086,8 +8086,8 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(T item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
-				if (source[_size - 1 - index]?.Equals(item) ?? item == null)
+			for (var i = index; i >= endIndex; i--)
+				if (source[_size - 1 - i]?.Equals(item) ?? item == null)
 					return i;
 			return -1;
 		}
@@ -10809,7 +10809,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10826,7 +10825,6 @@ public static class RedStarLinqExtras
 		return (result, result2);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10843,7 +10841,6 @@ public static class RedStarLinqExtras
 		return (result, result2);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<T>, List<T2>) PBreak<T, T2>(this G.IReadOnlyList<(T, T2)> source)
 	{
 		var length = source.Count;
@@ -10853,7 +10850,6 @@ public static class RedStarLinqExtras
 		return (result, result2);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10868,7 +10864,6 @@ public static class RedStarLinqExtras
 		return (result, result2);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10883,7 +10878,6 @@ public static class RedStarLinqExtras
 		return (result, result2);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10903,11 +10897,11 @@ public static class RedStarLinqExtras
 		return (result, result2, result3);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Count;
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		var result2 = RedStarLinq.EmptyList<TResult2>(length);
@@ -10922,7 +10916,6 @@ public static class RedStarLinqExtras
 		return (result, result2, result3);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<T>, List<T2>, List<T3>) PBreak<T, T2, T3>(this G.IReadOnlyList<(T, T2, T3)> source)
 	{
 		var length = source.Count;
@@ -10933,7 +10926,6 @@ public static class RedStarLinqExtras
 		return (result, result2, result3);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2, TResult3)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -10949,7 +10941,6 @@ public static class RedStarLinqExtras
 		return (result, result2, result3);
 	}
 
-	[Experimental("CS9216")]
 	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -11250,1648 +11241,13 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-			}
-			return (result, result2);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-			}
-			return (result, result2);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(function(item));
-				result2.Add(function2(item));
-				i++;
-			}
-			return (result, result2);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-			}
-			return (result, result2);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-			}
-			return (result, result2);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-				i++;
-			}
-			return (result, result2);
-		}
-	}
-
-	public static (NList<T>, NList<T2>) NBreak<T, T2>(this G.IEnumerable<(T, T2)> source) where T : unmanaged where T2 : unmanaged
-	{
-		if (source is List<(T, T2)> list)
-		{
-			var length = list.Length;
-			NList<T> result = new(length);
-			NList<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is (T, T2)[] array)
-		{
-			var length = array.Length;
-			NList<T> result = new(length);
-			NList<T2> result2 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<(T, T2)> list2)
-		{
-			var length = list2.Count;
-			NList<T> result = new(length);
-			NList<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else
-		{
-			NList<T> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<T2> result2 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				i++;
-			}
-			return (result, result2);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
+	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = function(array[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list2[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list3[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				var x = function(item);
-				result.Add(x.Item1);
-				result2.Add(x.Item2);
-				i++;
-			}
-			return (result, result2);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = function(array[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list2[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list3[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-			}
-			return (result, result2);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				var x = function(item, i);
-				result.Add(x.Item1);
-				result2.Add(x.Item2);
-				i++;
-			}
-			return (result, result2);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		ArgumentNullException.ThrowIfNull(function3);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-				result3.Add(function3(item));
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-				result3.Add(function3(item));
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-				result3.Add(function3(item));
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result.Add(function(item));
-				result2.Add(function2(item));
-				result3.Add(function3(item));
-			}
-			return (result, result2, result3);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(function(item));
-				result2.Add(function2(item));
-				result3.Add(function3(item));
-				i++;
-			}
-			return (result, result2, result3);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		ArgumentNullException.ThrowIfNull(function3);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-				result3.Add(function3(item, i));
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-				result3.Add(function3(item, i));
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-				result3.Add(function3(item, i));
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-				result3.Add(function3(item, i));
-			}
-			return (result, result2, result3);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(function(item, i));
-				result2.Add(function2(item, i));
-				result3.Add(function3(item, i));
-				i++;
-			}
-			return (result, result2, result3);
-		}
-	}
-
-	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this G.IEnumerable<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		if (source is List<(T, T2, T3)> list)
-		{
-			var length = list.Length;
-			NList<T> result = new(length);
-			NList<T2> result2 = new(length);
-			NList<T3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is (T, T2, T3)[] array)
-		{
-			var length = array.Length;
-			NList<T> result = new(length);
-			NList<T2> result2 = new(length);
-			NList<T3> result3 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<(T, T2, T3)> list2)
-		{
-			var length = list2.Count;
-			NList<T> result = new(length);
-			NList<T2> result2 = new(length);
-			NList<T3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else
-		{
-			NList<T> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<T2> result2 = new(length);
-			NList<T3> result3 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-				i++;
-			}
-			return (result, result2, result3);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = function(array[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list2[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list3[i]);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				var x = function(item);
-				result.Add(x.Item1);
-				result2.Add(x.Item2);
-				result3.Add(x.Item3);
-				i++;
-			}
-			return (result, result2, result3);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = function(array[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list2[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = function(list3[i], i);
-				result.Add(item.Item1);
-				result2.Add(item.Item2);
-				result3.Add(item.Item3);
-			}
-			return (result, result2, result3);
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
-			NList<TResult2> result2 = new(length);
-			NList<TResult3> result3 = new(length);
-			var i = 0;
-			foreach (var item in source)
-			{
-				var x = function(item, i);
-				result.Add(x.Item1);
-				result2.Add(x.Item2);
-				result3.Add(x.Item3);
-				i++;
-			}
-			return (result, result2, result3);
-		}
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item));
-			result2.Add(function2(item));
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item, i));
-			result2.Add(function2(item, i));
-		}
-		return (result, result2);
-	}
-
-	public static (NList<T>, NList<T2>) NBreak<T, T2>(this ReadOnlySpan<(T, T2)> source) where T : unmanaged where T2 : unmanaged
-	{
-		var length = source.Length;
-		NList<T> result = new(length);
-		NList<T2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i]);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i], i);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		ArgumentNullException.ThrowIfNull(function3);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item));
-			result2.Add(function2(item));
-			result3.Add(function3(item));
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item, i));
-			result2.Add(function2(item, i));
-			result3.Add(function3(item, i));
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this ReadOnlySpan<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		var length = source.Length;
-		NList<T> result = new(length);
-		NList<T2> result2 = new(length);
-		NList<T3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-			result3.Add(item.Item3);
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i]);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-			result3.Add(item.Item3);
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i], i);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-			result3.Add(item.Item3);
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item));
-			result2.Add(function2(item));
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item, i));
-			result2.Add(function2(item, i));
-		}
-		return (result, result2);
-	}
-
-	public static (NList<T>, NList<T2>) NBreak<T, T2>(this NList<(T, T2)> source) where T : unmanaged where T2 : unmanaged
-	{
-		var length = source.Length;
-		NList<T> result = new(length);
-		NList<T2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i]);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i], i);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-		}
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this NList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		ArgumentNullException.ThrowIfNull(function3);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item));
-			result2.Add(function2(item));
-			result3.Add(function3(item));
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this NList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(function(item, i));
-			result2.Add(function2(item, i));
-			result3.Add(function3(item, i));
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this NList<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		var length = source.Length;
-		NList<T> result = new(length);
-		NList<T2> result2 = new(length);
-		NList<T3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-			result3.Add(item.Item3);
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this NList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i]);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-			result3.Add(item.Item3);
-		}
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this NList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = function(source[i], i);
-			result.Add(item.Item1);
-			result2.Add(item.Item2);
-			result3.Add(item.Item3);
-		}
-		return (result, result2, result3);
-	}
-
-	public static NList<TResult> NCombine<T, T2, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
-		{
-			var length = Min(list2_.Count, list2_2.Count);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
-		{
-			var length = Min(list3_.Count, list3_2.Count);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else
-			return NCombine(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), function);
-	}
-
-	public static NList<TResult> NCombine<T, T2, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
-		{
-			var length = Min(list2_.Count, list2_2.Count);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
-		{
-			var length = Min(list3_.Count, list3_2.Count);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else
-			return NCombine(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), function);
-	}
-
-	public static NList<(T, T2)> NCombine<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2) where T : unmanaged where T2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			NList<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			NList<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
-		{
-			var length = Min(list2_.Count, list2_2.Count);
-			NList<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
-		{
-			var length = Min(list3_.Count, list3_2.Count);
-			NList<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else
-			return NCombine(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2));
-	}
-
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
-		{
-			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
-				result[i] = function(item, item2, item3);
-			}
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
-		{
-			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				var item3 = array3[i];
-				result[i] = function(item, item2, item3);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
-		{
-			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				var item3 = list2_3[i];
-				result[i] = function(item, item2, item3);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
-		{
-			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				var item3 = list3_3[i];
-				result[i] = function(item, item2, item3);
-			}
-			return result;
-		}
-		else
-			return NCombine(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), List<T3>.ReturnOrConstruct(source3), function);
-	}
-
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
-		{
-			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
-				result[i] = function(item, item2, item3, i);
-			}
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
-		{
-			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				var item3 = array3[i];
-				result[i] = function(item, item2, item3, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
-		{
-			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				var item3 = list2_3[i];
-				result[i] = function(item, item2, item3, i);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
-		{
-			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				var item3 = list3_3[i];
-				result[i] = function(item, item2, item3, i);
-			}
-			return result;
-		}
-		else
-			return NCombine(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), List<T3>.ReturnOrConstruct(source3), function);
-	}
-
-	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, G.IEnumerable<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
-		{
-			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
-				result[i] = (item, item2, item3);
-			}
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
-		{
-			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				var item3 = array3[i];
-				result[i] = (item, item2, item3);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
-		{
-			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
-			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				var item3 = list2_3[i];
-				result[i] = (item, item2, item3);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
-		{
-			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
-			var result = RedStarLinq.NEmptyList<(T, T2, T3)>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				var item3 = list3_3[i];
-				result[i] = (item, item2, item3);
-			}
-			return result;
-		}
-		else
-			return NCombine(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), List<T3>.ReturnOrConstruct(source3));
-	}
-
-	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = Min(source.Length, source2.Length);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = Min(source.Length, source2.Length);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i], i);
-		return result;
-	}
-
-	public static NList<(T, T2)> NCombine<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2) where T : unmanaged where T2 : unmanaged
-	{
-		var length = Min(source.Length, source2.Length);
-		NList<(T, T2)> result = new(length);
-		for (var i = 0; i < length; i++)
-			result[i] = (source[i], source2[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i], source3[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i], source3[i], i);
-		return result;
-	}
-
-	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
-		NList<(T, T2, T3)> result = new(length);
-		for (var i = 0; i < length; i++)
-			result[i] = (source[i], source2[i], source3[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, TResult>(this NList<T> source, NList<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(function);
-		var length = Min(source.Length, source2.Length);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, TResult>(this NList<T> source, NList<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(function);
-		var length = Min(source.Length, source2.Length);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i], i);
-		return result;
-	}
-
-	public static NList<(T, T2)> NCombine<T, T2>(this NList<T> source, NList<T2> source2) where T : unmanaged where T2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		var length = Min(source.Length, source2.Length);
-		NList<(T, T2)> result = new(length);
-		for (var i = 0; i < length; i++)
-			result[i] = (source[i], source2[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i], source3[i]);
-		return result;
-	}
-
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], source2[i], source3[i], i);
-		return result;
-	}
-
-	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this NList<T> source, NList<T2> source2, NList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		var length = RedStarLinqMath.Min([source.Length, source2.Length, source3.Length]);
-		NList<(T, T2, T3)> result = new(length);
-		for (var i = 0; i < length; i++)
-			result[i] = (source[i], source2[i], source3[i]);
-		return result;
-	}
-
-	public static NList<TResult> ConvertAndJoin<T, TResult>(this NList<T> source, Func<T, G.IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result.AddRange(function(source[i]));
-		return result;
-	}
-
-	public static NList<TResult> ConvertAndJoin<T, TResult>(this NList<T> source, Func<T, int, G.IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result.AddRange(function(source[i], i));
-		return result;
-	}
-
-	public static NList<TResult> NFill<T, TResult>(Func<int, TResult> function, int length) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(i);
-		return result;
-	}
-
-	public static NList<TResult> NFill<T, TResult>(TResult elem, int length) where T : unmanaged where TResult : unmanaged
-	{
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = elem;
-		return result;
-	}
-
-	public static NList<T> Filter<T>(this NList<T> source, Func<T, bool> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<T> result = new(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (function(item))
-				result.Add(item);
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<T> Filter<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<T> result = new(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (function(item, i))
-				result.Add(item);
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<T> FindAll<T>(this NList<T> source, Func<T, bool> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<T> result = new(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (function(item))
-				result.Add(item);
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<T> FindAll<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<T> result = new(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (function(item, i))
-				result.Add(item);
-		}
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 				if (function(list[i]))
@@ -12902,7 +11258,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			NList<int> result = new(array.Length);
+			List<int> result = new(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 				if (function(array[i]))
@@ -12914,7 +11270,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 				if (function(list2[i]))
@@ -12926,7 +11282,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 				if (function(list3[i]))
@@ -12937,7 +11293,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -12950,13 +11306,13 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
+	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -12970,7 +11326,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			NList<int> result = new(array.Length);
+			List<int> result = new(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -12985,7 +11341,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -13000,7 +11356,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -13014,7 +11370,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -13027,12 +11383,12 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> IndexesOf<T>(this G.IEnumerable<T> source, T target)
+	public static List<int> IndexesOf<T>(this G.IEnumerable<T> source, T target)
 	{
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -13046,7 +11402,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array)
 		{
-			var result = RedStarLinq.NEmptyList<int>(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -13061,7 +11417,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -13076,7 +11432,7 @@ public static class RedStarLinqExtras
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<int>(length);
+			var result = RedStarLinq.EmptyList<int>(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
@@ -13090,7 +11446,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -13103,939 +11459,16 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static NList<int> IndexesOf<T>(this NList<T> source, T target) where T : unmanaged
+	public static List<int> IndexesOf<T>(this List<T> source, T target) where T : unmanaged
 	{
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
+		var result = RedStarLinq.EmptyList<int>(length);
 		var j = 0;
 		for (var i = 0; i < length; i++)
 			if (source[i].Equals(target))
 				result[j++] = i;
 		result.Resize(j);
 		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<TResult> NPairs<T, TResult>(this G.IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		if (source is List<T> list)
-		{
-			var length = list.Length - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list[i + offset];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array[i + offset];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				var item2 = list2[i + offset];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				var item2 = list3[i + offset];
-				result[i] = function(item, item2);
-			}
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? Max(length - offset, 0) : 1024);
-			if (result.Capacity == 0)
-				return result;
-			using var en = source.GetEnumerator();
-			using LimitedQueue<T> queue = new(offset);
-			while (!queue.IsFull && en.MoveNext())
-				queue.Enqueue(en.Current);
-			var i = 0;
-			while (en.MoveNext())
-			{
-				var item = queue.Dequeue();
-				var item2 = en.Current;
-				result.Add(function(item, item2));
-				queue.Enqueue(item2);
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-	}
-
-	public static NList<TResult> NPairs<T, TResult>(this G.IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		if (source is List<T> list)
-		{
-			var length = list.Length - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list[i + offset];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array[i + offset];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				var item2 = list2[i + offset];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count - offset;
-			if (length <= 0)
-				return [];
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				var item2 = list3[i + offset];
-				result[i] = function(item, item2, i);
-			}
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? Max(length - offset, 0) : 1024);
-			if (result.Capacity == 0)
-				return result;
-			using var en = source.GetEnumerator();
-			using LimitedQueue<T> queue = new(offset);
-			while (!queue.IsFull && en.MoveNext())
-				queue.Enqueue(en.Current);
-			var i = 0;
-			while (en.MoveNext())
-			{
-				var item = queue.Dequeue();
-				var item2 = en.Current;
-				result.Add(function(item, item2, i));
-				queue.Enqueue(item2);
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-	}
-
-	public static NList<(T, T)> NPairs<T>(this G.IEnumerable<T> source, int offset = 1) where T : unmanaged
-	{
-		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		if (source is List<T> list)
-		{
-			var length = list.Length - offset;
-			if (length <= 0)
-				return [];
-			NList<(T, T)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list[i + offset];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length - offset;
-			if (length <= 0)
-				return [];
-			NList<(T, T)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array[i + offset];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count - offset;
-			if (length <= 0)
-				return [];
-			NList<(T, T)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				var item2 = list2[i + offset];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count - offset;
-			if (length <= 0)
-				return [];
-			NList<(T, T)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				var item2 = list3[i + offset];
-				result.Add((item, item2));
-			}
-			return result;
-		}
-		else
-		{
-			NList<(T, T)> result = new(source.TryGetLengthEasily(out var length) ? Max(length - offset, 0) : 1024);
-			if (result.Capacity == 0)
-				return result;
-			using var en = source.GetEnumerator();
-			using LimitedQueue<T> queue = new(offset);
-			while (!queue.IsFull && en.MoveNext())
-				queue.Enqueue(en.Current);
-			var i = 0;
-			while (en.MoveNext())
-			{
-				var item = queue.Dequeue();
-				var item2 = en.Current;
-				result.Add((item, item2));
-				queue.Enqueue(item2);
-				i++;
-			}
-			result.Resize(i);
-			result.Resize(i);
-			return result;
-		}
-	}
-
-	public static NList<TResult> NPairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		var length = source.Length - offset;
-		if (length <= 0)
-			return [];
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			var item2 = source[i + offset];
-			result[i] = function(item, item2);
-		}
-		return result;
-	}
-
-	public static NList<TResult> NPairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		var length = source.Length - offset;
-		if (length <= 0)
-			return [];
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			var item2 = source[i + offset];
-			result[i] = function(item, item2, i);
-		}
-		return result;
-	}
-
-	public static NList<(T, T)> NPairs<T>(this ReadOnlySpan<T> source, int offset = 1) where T : unmanaged
-	{
-		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		var length = source.Length - offset;
-		if (length <= 0)
-			return [];
-		NList<(T, T)> result = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			var item2 = source[i + offset];
-			result.Add((item, item2));
-		}
-		return result;
-	}
-
-	public static NList<int> RepresentIntoNumbers<T>(this NList<T> source) where T : unmanaged
-	{
-		ListHashSet<T> hs = [];
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
-		}
-		return result;
-	}
-
-	public static NList<int> RepresentIntoNumbers<T>(this NList<T> source, Func<T, T, bool> equalFunction) where T : unmanaged
-	{
-		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
-		}
-		return result;
-	}
-
-	public static NList<int> RepresentIntoNumbers<T>(this NList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : unmanaged
-	{
-		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
-		}
-		return result;
-	}
-
-	public static NList<T> Reverse<T>(this NList<T> source) where T : unmanaged
-	{
-		var length = source.Length;
-		NList<T> result = new(length);
-		for (var i = 0; i < length; i++)
-			result[source.Length - 1 - i] = source[i];
-		return result;
-	}
-
-	public static NList<TResult> NShuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Random random) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list[0]);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<TResult>(array.Length);
-			if (array.Length == 0)
-				return result;
-			result[0] = function(array[0]);
-			int blend;
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list2[0]);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list2[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list3[0]);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list3[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-			}
-			return result;
-		}
-		else if (source.TryGetLengthEasily(out var length))
-		{
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			int blend;
-			var i = 0;
-			foreach (var item in source)
-			{
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(1024);
-			int blend;
-			var i = 0;
-			foreach (var item in source)
-			{
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result.Add(function(item));
-				else
-				{
-					result.Add(result[blend]);
-					result[blend] = function(item);
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static NList<TResult> NShuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Random random) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list[0], 0);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<TResult>(array.Length);
-			if (array.Length == 0)
-				return result;
-			result[0] = function(array[0], 0);
-			int blend;
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list2[0], 0);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list2[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list3[0], 0);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list3[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-			}
-			return result;
-		}
-		else if (source.TryGetLengthEasily(out var length))
-		{
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			int blend;
-			var i = 0;
-			foreach (var item in source)
-			{
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(1024);
-			int blend;
-			var i = 0;
-			foreach (var item in source)
-			{
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result.Add(function(item, i));
-				else
-				{
-					result.Add(result[blend]);
-					result[blend] = function(item, i);
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static NList<T> NShuffle<T>(this G.IEnumerable<T> source, Random random) where T : unmanaged
-	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<T>(length);
-			if (length == 0)
-				return result;
-			result[0] = list[0];
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<T>(array.Length);
-			if (array.Length == 0)
-				return result;
-			result[0] = array[0];
-			int blend;
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<T>(length);
-			if (length == 0)
-				return result;
-			result[0] = list2[0];
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list2[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<T>(length);
-			if (length == 0)
-				return result;
-			result[0] = list3[0];
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list3[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-			}
-			return result;
-		}
-		else if (source.TryGetLengthEasily(out var length))
-		{
-			var result = RedStarLinq.NEmptyList<T>(length);
-			if (length == 0)
-				return result;
-			int blend;
-			var i = 0;
-			foreach (var item in source)
-			{
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-		else
-		{
-			NList<T> result = new(1024);
-			int blend;
-			var i = 0;
-			foreach (var item in source)
-			{
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result.Add(item);
-				else
-				{
-					result.Add(result[blend]);
-					result[blend] = item;
-				}
-				i++;
-			}
-			return result;
-		}
-	}
-
-	public static List<NList<T>> NSplitIntoEqual<T>(this G.IReadOnlyList<T> source, int fragmentLength) where T : unmanaged
-	{
-		if (fragmentLength <= 0)
-			throw new ArgumentException("Длина фрагмента должна быть положительной.", nameof(fragmentLength));
-		var length = GetArrayLength(source.Count, fragmentLength);
-		List<NList<T>> result = new(length);
-		var length2 = source.Count / fragmentLength;
-		var index = 0;
-		for (var i = 0; i < length2; i++)
-		{
-			result.Add(RedStarLinq.NEmptyList<T>(fragmentLength));
-			for (var j = 0; j < fragmentLength; j++)
-				result[i][j] = source[index++];
-		}
-		var rest = source.Count % fragmentLength;
-		if (rest != 0)
-		{
-			result.Add(RedStarLinq.NEmptyList<T>(rest));
-			for (var j = 0; j < rest; j++)
-				result[length2][j] = source[index++];
-		}
-		return result;
-	}
-
-	public static NList<TResult> ToNList<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-				result[i] = function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<TResult>(array.Length);
-			for (var i = 0; i < array.Length; i++)
-				result[i] = function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-				result[i] = function(list2[i]);
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-				result[i] = function(list3[i]);
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : 1024);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(function(item));
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-	}
-
-	public static NList<TResult> ToNList<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result[i] = function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.NEmptyList<TResult>(array.Length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result[i] = function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result[i] = function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result[i] = function(item, i);
-			}
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : 1024);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.Add(function(item, i));
-				i++;
-			}
-			result.Resize(i);
-			return result;
-		}
-	}
-
-	public static NList<TResult> ToNList<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i]);
-		return result;
-	}
-
-	public static NList<TResult> ToNList<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i], i);
-		return result;
-	}
-
-	public static NList<TResult> ToNList<T, TResult>(this NList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(source[i]);
-		return result;
-	}
-
-	public static NList<TResult> ToNList<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = function(item, i);
-		}
 		return result;
 	}
 
@@ -14147,6 +11580,89 @@ public static class RedStarLinqExtras
 		}
 	}
 
+	public static List<int> FindIndexes<T>(this ReadOnlySpan<T> source, Func<T, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		var result = RedStarLinq.EmptyList<int>(length);
+		var j = 0;
+		for (var i = 0; i < length; i++)
+			if (function(source[i]))
+				result[j++] = i;
+		result.Resize(j);
+		result.TrimExcess();
+		return result;
+	}
+
+	public static List<int> FindIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		var result = RedStarLinq.EmptyList<int>(length);
+		var j = 0;
+		for (var i = 0; i < length; i++)
+			if (function(source[i], i))
+				result[j++] = i;
+		result.Resize(j);
+		result.TrimExcess();
+		return result;
+	}
+
+	public static List<int> IndexesOf<T>(this ReadOnlySpan<T> source, T target)
+	{
+		var length = source.Length;
+		var result = RedStarLinq.EmptyList<int>(length);
+		var j = 0;
+		for (var i = 0; i < length; i++)
+			if (source[i]?.Equals(target) ?? false)
+				result[j++] = i;
+		result.Resize(j);
+		result.TrimExcess();
+		return result;
+	}
+
+	public static List<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source)
+	{
+		ListHashSet<T> hs = [];
+		var length = source.Length;
+		var result = RedStarLinq.EmptyList<int>(length);
+		var j = 0;
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
+		}
+		return result;
+	}
+
+	public static List<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction)
+	{
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
+		var length = source.Length;
+		var result = RedStarLinq.EmptyList<int>(length);
+		var j = 0;
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
+		}
+		return result;
+	}
+
+	public static List<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	{
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		var length = source.Length;
+		var result = RedStarLinq.EmptyList<int>(length);
+		var j = 0;
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
+		}
+		return result;
+	}
+
 	public static String ToNString<T>(this ReadOnlySpan<T> source, Func<T, char> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -14167,242 +11683,12 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	public static NList<int> FindIndexes<T>(this ReadOnlySpan<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-			if (function(source[i]))
-				result[j++] = i;
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> FindIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-			if (function(source[i], i))
-				result[j++] = i;
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> IndexesOf<T>(this ReadOnlySpan<T> source, T target)
-	{
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-			if (source[i]?.Equals(target) ?? false)
-				result[j++] = i;
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
-	}
-
-	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source)
-	{
-		ListHashSet<T> hs = [];
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
-		}
-		return result;
-	}
-
-	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction)
-	{
-		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
-		}
-		return result;
-	}
-
-	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
-	{
-		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result[i] = !hs.TryAdd(item, out var index) ? index : j++;
-		}
-		return result;
-	}
-
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			result[i] = function(item);
-			result2[i] = function2(item);
-		});
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			result[i] = function(item, i);
-			result2[i] = function2(item, i);
-		});
-		return (result, result2);
-	}
-
-	public static (NList<T>, NList<T2>) PNBreak<T, T2>(this G.IReadOnlyList<(T, T2)> source) where T : unmanaged where T2 : unmanaged
-	{
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<T>(length);
-		var result2 = RedStarLinq.NEmptyList<T2>(length);
-		Parallel.For(0, length, i => (result[i], result2[i]) = source[i]);
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			(result[i], result2[i]) = function(item);
-		});
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			(result[i], result2[i]) = function(item, i);
-		});
-		return (result, result2);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		ArgumentNullException.ThrowIfNull(function3);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			result[i] = function(item);
-			result2[i] = function2(item);
-			result3[i] = function3(item);
-		});
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		ArgumentNullException.ThrowIfNull(function2);
-		ArgumentNullException.ThrowIfNull(function3);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			result[i] = function(item, i);
-			result2[i] = function2(item, i);
-			result3[i] = function3(item, i);
-		});
-		return (result, result2, result3);
-	}
-
-	public static (NList<T>, NList<T2>, NList<T3>) PNBreak<T, T2, T3>(this G.IReadOnlyList<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<T>(length);
-		var result2 = RedStarLinq.NEmptyList<T2>(length);
-		var result3 = RedStarLinq.NEmptyList<T3>(length);
-		Parallel.For(0, length, i => (result[i], result2[i], result3[i]) = source[i]);
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			(result[i], result2[i], result3[i]) = function(item);
-		});
-		return (result, result2, result3);
-	}
-
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
-		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			(result[i], result2[i], result3[i]) = function(item, i);
-		});
-		return (result, result2, result3);
-	}
-
 	[Experimental("CS9216")]
-	public static NList<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged
+	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Count, source2.Count);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -14413,11 +11699,11 @@ public static class RedStarLinqExtras
 	}
 
 	[Experimental("CS9216")]
-	public static NList<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged
+	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Count, source2.Count);
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -14428,10 +11714,10 @@ public static class RedStarLinqExtras
 	}
 
 	[Experimental("CS9216")]
-	public static NList<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged
+	public static List<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged
 	{
 		var length = Min(source.Count, source2.Count);
-		var result = RedStarLinq.NEmptyList<(T, T2)>(length);
+		var result = RedStarLinq.EmptyList<(T, T2)>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -14442,11 +11728,11 @@ public static class RedStarLinqExtras
 	}
 
 	[Experimental("CS9216")]
-	public static NList<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged
+	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -14458,11 +11744,11 @@ public static class RedStarLinqExtras
 	}
 
 	[Experimental("CS9216")]
-	public static NList<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged
+	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -14474,10 +11760,10 @@ public static class RedStarLinqExtras
 	}
 
 	[Experimental("CS9216")]
-	public static NList<(T, T2, T3)> PCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
+	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
 	{
 		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		NList<(T, T2, T3)> result = new(length);
+		List<(T, T2, T3)> result = new(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -14485,73 +11771,6 @@ public static class RedStarLinqExtras
 			var item3 = source3[i];
 			result[i] = (item, item2, item3);
 		});
-		return result;
-	}
-
-	public static NList<TResult> PNConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		Parallel.For(0, length, i => result[i] = function(source[i]));
-		return result;
-	}
-
-	public static NList<TResult> PNConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			result[i] = function(item, i);
-		});
-		return result;
-	}
-
-	public static NList<T> PNFill<T>(T elem, int length) where T : unmanaged
-	{
-		var result = RedStarLinq.NEmptyList<T>(length);
-		Parallel.For(0, length, i => result[i] = elem);
-		return result;
-	}
-
-	public static NList<T> PNFill<T>(Func<int, T> function, int length) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var result = RedStarLinq.NEmptyList<T>(length);
-		Parallel.For(0, length, i => result[i] = function(i));
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static NList<T> PNFilter<T>(this G.IReadOnlyList<T> source, Func<T, bool> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		NList<bool> values = new(length);
-		Parallel.For(0, length, i => values[i] = function(source[i]));
-		NList<T> result = new(length / 2);
-		for (var i = 0; i < length; i++)
-			if (values[i])
-				result.Add(source[i]);
-		result.TrimExcess();
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static NList<T> PNFilter<T>(this G.IReadOnlyList<T> source, Func<T, int, bool> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		NList<bool> values = new(length);
-		Parallel.For(0, length, i => values[i] = function(source[i], i));
-		NList<T> result = new(length / 2);
-		for (var i = 0; i < length; i++)
-			if (values[i])
-				result.Add(source[i]);
-		result.TrimExcess();
 		return result;
 	}
 
@@ -14716,8 +11935,8 @@ public static class RedStarLinqExtras
 	public static (List<T>, List<T>) BreakFilter<T>(this G.IEnumerable<T> source, Func<T, int, bool> function) => (BreakFilter(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => (BreakFilter(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => (BreakFilter(source, function, out var result2), result2);
-	public static (List<T>, List<T>) BreakFilter<T>(this Span<T> source, Func<T, bool> function) => (BreakFilter((ReadOnlySpan<T>)source, function, out var result2), result2);
-	public static (List<T>, List<T>) BreakFilter<T>(this Span<T> source, Func<T, int, bool> function) => (BreakFilter((ReadOnlySpan<T>)source, function, out var result2), result2);
+	public static (List<T>, List<T>) BreakFilter<T>(this Span<T> source, Func<T, bool> function) => (BreakFilter(source, function, out var result2), result2);
+	public static (List<T>, List<T>) BreakFilter<T>(this Span<T> source, Func<T, int, bool> function) => (BreakFilter(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this T[] source, Func<T, bool> function) => (BreakFilter((G.IList<T>)source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this T[] source, Func<T, int, bool> function) => (BreakFilter((G.IList<T>)source, function, out var result2), result2);
 	public static G.IEnumerable<TResult> Combine<T, T2, TResult>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, TResult> function) => E.Zip(source, source2, function);
@@ -14849,39 +12068,27 @@ public static class RedStarLinqExtras
 	public static BitList ToBitList(this int[] source) => new(source);
 	public static BitList ToBitList(this uint[] source) => new(source);
 	public static ListHashSet<T> ToHashSet<T>(this ReadOnlySpan<T> source) => new(source);
-	public static ListHashSet<T> ToHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
+	public static ListHashSet<T> ToHashSet<T>(this Span<T> source) => new(source);
 	public static ListHashSet<T> ToHashSet<T>(this T[] source) => [.. (G.IList<T>)source];
-	public static NList<TResult> ToNList<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : unmanaged => ToNList((ReadOnlySpan<T>)source, function);
-	public static NList<TResult> ToNList<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : unmanaged => ToNList((ReadOnlySpan<T>)source, function);
-	public static NList<TResult> ToNList<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : unmanaged => ToNList((G.IList<T>)source, function);
-	public static NList<TResult> ToNList<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : unmanaged => ToNList((G.IList<T>)source, function);
-	public static NList<T> ToNList<T>(this ReadOnlySpan<T> source) where T : unmanaged => new(source);
-	public static NList<T> ToNList<T>(this Span<T> source) where T : unmanaged => new((ReadOnlySpan<T>)source);
-	public static NList<T> ToNList<T>(this T[] source) where T : unmanaged => [.. (G.IList<T>)source];
 	public static String ToNString<T>(this Span<T> source, Func<T, char> function) => ToNString((ReadOnlySpan<T>)source, function);
 	public static String ToNString<T>(this Span<T> source, Func<T, int, char> function) => ToNString((ReadOnlySpan<T>)source, function);
 	public static String ToNString<T>(this T[] source, Func<T, char> function) => ToNString((G.IList<T>)source, function);
 	public static String ToNString<T>(this T[] source, Func<T, int, char> function) => ToNString((G.IList<T>)source, function);
 	public static String ToNString(this ReadOnlySpan<char> source) => new(source);
-	public static String ToNString(this Span<char> source) => new((ReadOnlySpan<char>)source);
+	public static String ToNString(this Span<char> source) => new(source);
 	public static String ToNString(this char[] source) => new((G.IList<char>)source);
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, char> function) => new(ToArray(source, function));
-	public static string ToString<T>(this Span<T> source, Func<T, char> function) => new(ToArray((ReadOnlySpan<T>)source, function));
+	public static string ToString<T>(this Span<T> source, Func<T, char> function) => new(ToArray(source, function));
 	public static string ToString<T>(this T[] source, Func<T, char> function) => new(RedStarLinq.ToArray(source, function));
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, int, char> function) => new(ToArray(source, function));
-	public static string ToString<T>(this Span<T> source, Func<T, int, char> function) => new(ToArray((ReadOnlySpan<T>)source, function));
+	public static string ToString<T>(this Span<T> source, Func<T, int, char> function) => new(ToArray(source, function));
 	public static string ToString<T>(this T[] source, Func<T, int, char> function) => new(RedStarLinq.ToArray(source, function));
 	public static string ToString(this ReadOnlySpan<char> source) => new(source.ToArray());
 	public static string ToString(this Span<char> source) => new((ReadOnlySpan<char>)source.ToArray());
 	public static string ToString(this char[] source) => new(source);
 	public static List<List<T>> Transpose<T>(this List<List<T>> source, bool widen = false) => List<T>.Transpose(source, widen);
-	public static List<NList<T>> Transpose<T>(this List<NList<T>> source, bool widen = false) where T : unmanaged => NList<T>.Transpose(source, widen);
 	public static G.IEnumerable<T> Union<T>(this G.IEnumerable<T> source, G.IEnumerable<T> source2) => E.Union(source, source2);
 	public static G.IEnumerable<T> Union<T>(this G.IEnumerable<T> source, G.IEnumerable<T> source2, G.IEqualityComparer<T> comparer) => E.Union(source, source2, comparer);
-	public static NList<TResult> NShuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged => NShuffle(source, function, random);
-	public static NList<TResult> NShuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NShuffle(source, function, random);
-	public static NList<T> NShuffle<T>(this G.IEnumerable<T> source) where T : unmanaged => NShuffle(source, random);
 	public static List<T> PFill<T>(int length, Func<int, T> function) => PFill(function, length);
 	public static T[] PFillArray<T>(int length, Func<int, T> function) => PFillArray(function, length);
-	public static NList<T> PNFill<T>(int length, Func<int, T> function) where T : unmanaged => PNFill(function, length);
 }

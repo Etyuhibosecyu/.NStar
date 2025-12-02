@@ -210,7 +210,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentNullException.ThrowIfNull(collection);
+		if (collection is null)
+			return false;
 		if (collection is G.IList<T> list && !(CreateVar(list.GetType(),
 			out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet")))
 			return EqualsToList(list, index, toEnd);
@@ -904,4 +905,49 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index, int length) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
 
 	public virtual bool StartsWith(TCertain collection) => StartsWith((IEnumerable<T>)collection);
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCertain> where TCertain : BaseMutableIndexable<T, TCertain>, new()
+{
+	public override T this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set
+		{
+			var index2 = index.GetOffset(_size);
+			if ((uint)index2 >= (uint)_size)
+				throw new IndexOutOfRangeException();
+			SetInternal(index2, value);
+		}
+	}
+
+	public virtual TCertain SetAll(T value) => SetAll(value, 0, _size);
+
+	public virtual TCertain SetAll(T value, Index index) => SetAll(value, index.GetOffset(_size));
+
+	public virtual TCertain SetAll(T value, int index) => SetAll(value, index, _size - index);
+
+	public virtual TCertain SetAll(T value, int index, int length)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException("Устанавливаемый диапазон выходит за текущий размер коллекции.");
+		SetAllInternal(value, index, length);
+		return (TCertain)this;
+	}
+
+	protected virtual void SetAllInternal(T value, int index, int length)
+	{
+		var endIndex = index + length - 1;
+		for (var i = index; i <= endIndex; i++)
+			SetInternal(i, value);
+	}
+
+	public virtual TCertain SetAll(T value, Range range) => SetAll(value, CreateVar(range.GetOffsetAndLength(_size), out var range2).Offset, range2.Length);
+
+	protected abstract void SetInternal(int index, T value);
 }

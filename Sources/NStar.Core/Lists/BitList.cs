@@ -758,20 +758,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		ArgumentNullException.ThrowIfNull(ints);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (ints is NList<int> intNList)
-		{
-			var length = intNList.Length * BitsPerInt;
-			if (length == 0)
-				return this;
-			EnsureCapacity(_size + length);
-			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
-			fixed (int* intPtr = intNList.AsSpan())
-				CopyBits((uint*)intPtr, intNList.Length, 0, _items, _capacity, index, length);
-			_size += length;
-			Changed();
-			return this;
-		}
-		else if (ints is List<int> intList)
+		if (ints is List<int> intList)
 		{
 			var length = intList.Length * BitsPerInt;
 			if (length == 0)
@@ -806,20 +793,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		ArgumentNullException.ThrowIfNull(uints);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (uints is NList<uint> uintNList)
-		{
-			var length = uintNList.Length * BitsPerInt;
-			if (length == 0)
-				return this;
-			EnsureCapacity(_size + length);
-			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
-			fixed (uint* uintPtr = uintNList.AsSpan())
-				CopyBits(uintPtr, uintNList.Length, 0, _items, _capacity, index, length);
-			_size += length;
-			Changed();
-			return this;
-		}
-		else if (uints is List<uint> uintList)
+		if (uints is List<uint> uintList)
 		{
 			var length = uintList.Length * BitsPerInt;
 			if (length == 0)
@@ -1005,16 +979,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		ArgumentNullException.ThrowIfNull(ints);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (ints is NList<int> intNList)
-		{
-			if (index + intNList.Length > _size)
-				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
-			if (intNList.Length <= 0)
-				return this;
-			fixed (int* intPtr = intNList.AsSpan())
-				CopyBits((uint*)intPtr, intNList.Length, 0, _items, _capacity, index, intNList.Length);
-		}
-		else if (ints is List<int> intList)
+		if (ints is List<int> intList)
 		{
 			if (index + intList.Length > _size)
 				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
@@ -1042,16 +1007,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		ArgumentNullException.ThrowIfNull(uints);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (uints is NList<uint> uintNList)
-		{
-			if (index + uintNList.Length > _size)
-				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
-			if (uintNList.Length <= 0)
-				return this;
-			fixed (uint* uintPtr = uintNList.AsSpan())
-				CopyBits(uintPtr, uintNList.Length, 0, _items, _capacity, index, uintNList.Length);
-		}
-		else if (uints is List<uint> uintList)
+		if (uints is List<uint> uintList)
 		{
 			if (index + uintList.Length > _size)
 				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
@@ -1074,17 +1030,17 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public NList<byte> ToByteList()
+	public List<byte> ToByteList()
 	{
 		using var uints = ToUIntList();
 		fixed (uint* ptr = uints.AsSpan())
-			return new(GetArrayLength(_size, BitsPerByte), (byte*)ptr);
+			return List<byte>.FromPointer(GetArrayLength(_size, BitsPerByte), ptr);
 	}
 
-	public virtual NList<uint> ToUIntList()
+	public virtual List<uint> ToUIntList()
 	{
 		var length = GetArrayLength(_size, BitsPerInt);
-		NList<uint> result = new(length);
+		List<uint> result = new(length);
 		for (var i = 0; i < length; i++)
 			result.Add(_items[i]);
 		return result;

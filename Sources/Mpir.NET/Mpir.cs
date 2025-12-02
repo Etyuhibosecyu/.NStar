@@ -153,14 +153,14 @@ public static partial class Mpir
 	private unsafe delegate void __Mpir_internal_mpz_import(nint rop, uint count, int order, uint size, int endian, uint nails, void* op);
 	private static readonly nint __ptr__Mpir_internal_mpz_import = GetProcAddressSafe(hxmpir, "Mpir_internal_mpz_import");
 	private static readonly __Mpir_internal_mpz_import Mpir_internal_mpz_import = (__Mpir_internal_mpz_import)Marshal.GetDelegateForFunctionPointer(__ptr__Mpir_internal_mpz_import, typeof(__Mpir_internal_mpz_import));
-	public static unsafe void MpirMpzImport(MpzT rop, uint count, int order, uint size, int endian, uint nails, byte[] op)
+	public static unsafe void MpirMpzImport(MpzT rop, uint count, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
 	{
 		fixed (void* srcPtr = op)
 		{
 			Mpir_internal_mpz_import(rop.val, count, order, size, endian, nails, srcPtr);
 		}
 	}
-	public static unsafe void MpirMpzImportByOffset(MpzT rop, int startOffset, int endOffset, int order, uint size, int endian, uint nails, byte[] op)
+	public static unsafe void MpirMpzImportByOffset(MpzT rop, int startOffset, int endOffset, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
 	{
 		fixed (byte* srcPtr = op)
 		{

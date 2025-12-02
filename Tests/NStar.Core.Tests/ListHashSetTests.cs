@@ -1216,7 +1216,7 @@ public class ListHashSetTests
 		Assert.IsTrue(b);
 		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
 		Assert.IsFalse(b);
-		Assert.ThrowsExactly<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		Assert.IsFalse(a.StartsWith((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]

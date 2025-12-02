@@ -20,7 +20,6 @@ public class StringTests
 				() => new(RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000)).AsSpan()),
 				() => new((G.IEnumerable<char>)RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000))),
 				() => new(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000))),
-				() => new(RedStarLinq.NFill(random.Next(500), _ => (char)random.Next(1, 1000))),
 				() => new(E.Select(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), x => x)),
 				() => new(E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), _ => random.Next(10) == -1)),
 				() => new('c', 500),
@@ -28,7 +27,6 @@ public class StringTests
 				() => new(500, RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000)).AsSpan()),
 				() => new(500, (G.IEnumerable<char>)RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000))),
 				() => new(500, RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000))),
-				() => new(500, RedStarLinq.NFill(random.Next(500), _ => (char)random.Next(1, 1000))),
 				() => new(500, E.Select(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), x => x)),
 				() => new(500, E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), _ => random.Next(10) == -1))
 			}.Random(random)();

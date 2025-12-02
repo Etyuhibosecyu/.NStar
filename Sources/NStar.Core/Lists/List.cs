@@ -232,6 +232,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	internal static List<T> EmptyList(int length) => new(length) { _size = length };
 
+	public static unsafe TCertain FromPointer(int capacity, void* ptr)
+	{
+		if (ptr == null)
+			throw new ArgumentNullException(nameof(ptr));
+		TCertain list = [];
+		list._size = capacity;
+		list._items = GC.AllocateUninitializedArray<T>(capacity);
+		new Span<T>(ptr, list._size).CopyTo(list._items);
+		return list;
+	}
+
 	protected override T GetInternal(int index, bool invoke = true)
 	{
 		Debug.Assert(_items != null);

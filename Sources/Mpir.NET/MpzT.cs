@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Mpir.NET;
 
-public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
+public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 {
 	#region Data
 	private const uint sDefaultStringBase = 10u;
@@ -62,7 +62,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	/// Initializes a new MpzT to the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
 	/// for little endian.
-	public MpzT(byte[] bytes, int order) : this() => FromByteArray(bytes, order);
+	public MpzT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
 
 	#endregion
 
@@ -71,7 +71,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	/// Import the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
 	/// for little endian.
-	public readonly void FromByteArray(byte[] source, int order)
+	public readonly void FromByteArray(ReadOnlySpan<byte> source, int order)
 	{
 		Mpir.MpirMpzImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
 		if (source[order == 1 ? 0 : ^1] >= 128)
@@ -82,7 +82,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	/// and ending at endOffset.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
 	/// for little endian.
-	public readonly void ImportByOffset(byte[] source, int startOffset, int endOffset, int order) => Mpir.MpirMpzImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
+	public readonly void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpzImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
 
 	/// Export to the value to a byte array.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
@@ -518,6 +518,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 		return z;
 	}
 
+	public static MpzT operator >>>(MpzT x, int shiftAmount)
+	{
+		if (x >= 0)
+			return x >> shiftAmount;
+		return -((-x) >> shiftAmount);
+	}
+
 	public readonly int this[int bitIndex] => Mpir.MpzTstbit(this, (uint)bitIndex);
 
 	public readonly MpzT ChangeBit(int bitIndex, int value)
@@ -813,7 +820,15 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 		return true;
 	}
 
+	public readonly int GetByteCount() => (BitLength + 7) / 8;
+
+	public readonly int GetShortestBitLength() => BitLength;
+
 	public readonly int BitLength => (int)Mpir.MpzSizeinbase(this, 2);
+
+	public readonly int Sign =>
+		IsPositive(this) ? 1 : IsZero(this) ? 0 : IsNegative(this) ? -1
+		: throw new ArithmeticException("Произошла ошибка при  вычислении знака.");
 
 	public readonly MpzT GetFullBitLength() => Mpir.MpzSizeinbase(this, 2);
 
@@ -1230,6 +1245,32 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 			// Note that the result might be uint.MaxValue in which case it gets cast to -1, which is what is intended.
 			return (int)Mpir.MpzScan1(this, (uint)startingIndex);
 		}
+	}
+
+	public static MpzT PopCount(MpzT value) => value.CountOnes();
+
+	public static MpzT TrailingZeroCount(MpzT value)
+	{
+		if (value == Zero)
+			return Zero;
+		var result = 0;
+		const int ulongBits = sizeof(ulong) * 8;
+		for (MpzT i = ulong.MaxValue; i < value; i <<= ulongBits)
+			if ((value & i) == 0)
+				result += ulongBits;
+		for (var i = One << value.BitLength / ulongBits * ulongBits; i < value; i <<= 1)
+			if ((value & i) == 0)
+				result++;
+		return result;
+	}
+
+	public static bool IsPow2(MpzT value) => value.CountOnes() == 1;
+
+	public static MpzT Log2(MpzT value)
+	{
+		var bitLength = value.BitLength;
+		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
+		return value >= sqrt ? bitLength : bitLength - 1;
 	}
 
 	#endregion
@@ -1885,6 +1926,46 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	static bool INumberBase<MpzT>.TryConvertToSaturating<TOther>(MpzT value, out TOther result) => TryConvertToChecked(value, out result);
 
 	static bool INumberBase<MpzT>.TryConvertToTruncating<TOther>(MpzT value, out TOther result) => TryConvertToChecked(value, out result);
+
+	public static bool TryReadBigEndian(ReadOnlySpan<byte> source, bool isUnsigned, out MpzT value)
+	{
+		value = new(source, 1);
+		if (!isUnsigned && value.BitLength == source.Length * 8)
+			value -= One << value.BitLength;
+		return true;
+	}
+
+	public static bool TryReadLittleEndian(ReadOnlySpan<byte> source, bool isUnsigned, out MpzT value)
+	{
+		value = new(source, -1);
+		if (!isUnsigned && value.BitLength == source.Length * 8)
+			value -= One << value.BitLength;
+		return true;
+	}
+
+	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
+	{
+		var bytes = ToByteArray(1);
+		if (bytes.AsSpan().TryCopyTo(destination))
+		{
+			bytesWritten = bytes.Length;
+			return true;
+		}
+		bytesWritten = 0;
+		return false;
+	}
+
+	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
+	{
+		var bytes = ToByteArray(-1);
+		if (bytes.AsSpan().TryCopyTo(destination))
+		{
+			bytesWritten = bytes.Length;
+			return true;
+		}
+		bytesWritten = 0;
+		return false;
+	}
 
 	#endregion Conversions
 }

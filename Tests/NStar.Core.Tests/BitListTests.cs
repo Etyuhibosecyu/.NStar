@@ -909,7 +909,7 @@ public class BitListTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 100000; i++)
 		{
-			BitList a = new(RedStarLinq.NFill(3, _ => random.Next(10) switch
+			BitList a = new(RedStarLinq.Fill(3, _ => random.Next(10) switch
 				{
 					0 => 0u,
 					1 => 4294967295,

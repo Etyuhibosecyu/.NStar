@@ -6,7 +6,7 @@ namespace NStar.Core;
 [DebuggerDisplay("{ToString()}")]
 [ComVisible(true)]
 [Serializable]
-public unsafe class String : NList<char, String>, IComparable, IComparable<char[]>, IComparable<IEnumerable<char>>, IComparable<string>, IComparable<String>
+public unsafe class String : List<char, String>, IComparable, IComparable<char[]>, IComparable<IEnumerable<char>>, IComparable<string>, IComparable<String>
 {
 	private protected static readonly CompareInfo CurrentCompareInfo = CompareInfo.GetCompareInfo(CultureInfo.CurrentCulture.LCID);
 	private protected static readonly CompareInfo DefaultCompareInfo = CompareInfo.GetCompareInfo(CultureInfo.InvariantCulture.LCID);
@@ -15,7 +15,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 	private const string CompareRangeMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
 		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
 		+ " NStar.Core.String, метод GetRange() использует арифметику указателей и работает очень быстро.";
-	private const string ComparecharrivialMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение."
+	private const string CompareTrivialMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение."
 		+ " Используйте strA.CompareTo(strB).";
 
 	public String() : base() { }
@@ -53,9 +53,9 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual String AddRange(string s) => Insert(_size, s);
 
-	[Obsolete(ComparecharrivialMessage, true)]
+	[Obsolete(CompareTrivialMessage, true)]
 	public static int Compare(String? strA, String? strB) =>
-		throw new NotSupportedException(ComparecharrivialMessage);
+		throw new NotSupportedException(CompareTrivialMessage);
 
 	[Obsolete(CompareMessage, true)]
 	public static int Compare(String? strA, String? strB, bool ignoreCase) =>
@@ -74,7 +74,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		throw new NotSupportedException(CompareMessage);
 
 	[Obsolete(CompareMessage, true)]
-	public static int Compare(String? strA, String? strB, StringComparison comparisoncharype) =>
+	public static int Compare(String? strA, String? strB, StringComparison comparisonType) =>
 		throw new NotSupportedException(CompareMessage);
 
 	[Obsolete(CompareRangeMessage, true)]
@@ -99,7 +99,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length,
-		StringComparison comparisoncharype) =>
+		StringComparison comparisonType) =>
 		throw new NotSupportedException(CompareRangeMessage);
 
 	public virtual int CompareTo(object? other) => other switch
@@ -119,7 +119,6 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		null => 1,
 		char[] chars => CompareTo(chars.AsSpan()),
 		List<char> list => CompareTo(list.AsSpan()),
-		NList<char> nList => CompareTo(nList.AsSpan()),
 		string s => CompareToNotNull(s),
 		String ns => CompareTo(ns.AsSpan()),
 		IComparable<String> icns => -icns.CompareTo(this),
@@ -149,11 +148,11 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		CompareInfo.GetCompareInfo(culture.LCID).Compare(AsSpan(), (other ?? []).AsSpan(), options);
 
 	/// <summary>
-	/// WARNING!!! charhis methods works wrong with StringComparison.Ordinal!
+	/// WARNING!!! This methods works wrong with StringComparison.Ordinal!
 	/// (But probably works right with StringComparison.OrdinalIgnoreCase.)
 	/// </summary>
-	/// <param name="comparisoncharype">NOchar StringComparison.Ordinal!!!</param>
-	public virtual int CompareTo(String? other, StringComparison comparisoncharype) => comparisoncharype switch
+	/// <param name="comparisonType">NOchar StringComparison.Ordinal!!!</param>
+	public virtual int CompareTo(String? other, StringComparison comparisonType) => comparisonType switch
 	{
 		StringComparison.CurrentCulture => CurrentCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan()),
 		StringComparison.CurrentCultureIgnoreCase => CurrentCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan(),
@@ -164,7 +163,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		StringComparison.Ordinal => DefaultCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan(), CompareOptions.Ordinal),
 		StringComparison.OrdinalIgnoreCase => DefaultCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan(),
 			CompareOptions.OrdinalIgnoreCase),
-		_ => throw new ArgumentException("Такой способ сравнения строк не существует!", nameof(comparisoncharype)),
+		_ => throw new ArgumentException("Такой способ сравнения строк не существует!", nameof(comparisonType)),
 	};
 
 	protected virtual int CompareToNotNull([NotNull] char[] other) => DefaultCompareInfo.Compare(AsSpan(), other);
@@ -173,27 +172,27 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual bool Contains(char value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool Contains(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).Contains([value], comparisoncharype);
+	public virtual bool Contains(char value, StringComparison comparisonType) => AsSpan().Contains([value], comparisonType);
 
 	public virtual bool Contains(ReadOnlySpan<char> value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool Contains(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).Contains(value, comparisoncharype);
+	public virtual bool Contains(ReadOnlySpan<char> value, StringComparison comparisonType) => AsSpan().Contains(value, comparisonType);
 
 	public virtual bool Contains(String value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool Contains(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).Contains(value.AsSpan(), comparisoncharype);
+	public virtual bool Contains(String value, StringComparison comparisonType) => AsSpan().Contains(value.AsSpan(), comparisonType);
 
 	public virtual bool EndsWith(char value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool EndsWith(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).EndsWith([value], comparisoncharype);
+	public virtual bool EndsWith(char value, StringComparison comparisonType) => AsSpan().EndsWith([value], comparisonType);
 
 	public virtual bool EndsWith(ReadOnlySpan<char> value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool EndsWith(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value, comparisoncharype);
+	public virtual bool EndsWith(ReadOnlySpan<char> value, StringComparison comparisonType) => AsSpan().EndsWith(value, comparisonType);
 
 	public virtual bool EndsWith(String value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool EndsWith(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value.AsSpan(), comparisoncharype);
+	public virtual bool EndsWith(String value, StringComparison comparisonType) => AsSpan().EndsWith(value.AsSpan(), comparisonType);
 
 	public override bool Equals(object? obj) => base.Equals(obj);
 
@@ -201,22 +200,18 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual int IndexOf(char value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual int IndexOf(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).IndexOf([value], comparisoncharype);
+	public virtual int IndexOf(char value, StringComparison comparisonType) => AsSpan().IndexOf([value], comparisonType);
 
 	public virtual int IndexOf(ReadOnlySpan<char> value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual int IndexOf(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value, comparisoncharype);
+	public virtual int IndexOf(ReadOnlySpan<char> value, StringComparison comparisonType) => AsSpan().IndexOf(value, comparisonType);
 
 	public virtual int IndexOf(String value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual int IndexOf(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value.AsSpan(), comparisoncharype);
+	public virtual int IndexOf(String value, StringComparison comparisonType) => AsSpan().IndexOf(value.AsSpan(), comparisonType);
 
 	public virtual String Insert(int index, string s)
 	{
-		if (_isRange)
-			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
-				+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем изменять его,"
-				+ " в методе GetRange() установите параметр alwaysCopy в true.");
 		var length = s.Length;
 		if (length == 0)
 			return this;
@@ -228,24 +223,26 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 				newCapacity = int.MaxValue;
 			if (newCapacity < min)
 				newCapacity = min;
-			var newItems = (char*)Marshal.AllocHGlobal(sizeof(char) * newCapacity);
-			if (index > 0)
-				CopyMemory(_items, 0, newItems, 0, index);
-			if (index < _size)
-				CopyMemory(_items, index, newItems, index + length, _size - index);
+			var newItems = new char[newCapacity];
+			if (_items != null)
+			{
+				if (index > 0)
+					CopyMemory(_items, 0, newItems, 0, index);
+				if (index < _size)
+					CopyMemory(_items, index, newItems, index + length, _size - index);
+			}
 			fixed (char* ptr = s)
-				CopyMemory(ptr, 0, newItems, index, length);
-			if (_capacity != 0)
-				Marshal.FreeHGlobal((nint)_items);
+				fixed (char* newItemsPtr = newItems)
+					CopyMemory(ptr, 0, newItemsPtr, index, length);
 			_items = newItems;
-			_capacity = newCapacity;
 		}
 		else
 		{
-			if (index < _size)
+			if (_items != null && index < _size)
 				CopyMemory(_items, index, _items, index + length, _size - index);
 			fixed (char* ptr = s)
-				CopyMemory(ptr, 0, _items, index, length);
+				fixed (char* _itemsPtr = _items)
+					CopyMemory(ptr, 0, _itemsPtr, index, length);
 		}
 		_size += length;
 		Changed();
@@ -444,15 +441,15 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual bool StartsWith(char value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool StartsWith(char value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).StartsWith([value], comparisoncharype);
+	public virtual bool StartsWith(char value, StringComparison comparisonType) => AsSpan().StartsWith([value], comparisonType);
 
 	public virtual bool StartsWith(ReadOnlySpan<char> value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool StartsWith(ReadOnlySpan<char> value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value, comparisoncharype);
+	public virtual bool StartsWith(ReadOnlySpan<char> value, StringComparison comparisonType) => AsSpan().StartsWith(value, comparisonType);
 
 	public virtual bool StartsWith(String value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 
-	public virtual bool StartsWith(String value, StringComparison comparisoncharype) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value.AsSpan(), comparisoncharype);
+	public virtual bool StartsWith(String value, StringComparison comparisonType) => AsSpan().StartsWith(value.AsSpan(), comparisonType);
 
 	public virtual String ToLower()
 	{

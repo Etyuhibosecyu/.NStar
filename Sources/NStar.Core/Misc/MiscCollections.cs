@@ -15,9 +15,9 @@ public readonly struct Chain(int start, int length) : IReadOnlyCollection<int>
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public readonly NList<int> ToNList()
+	public readonly List<int> ToList()
 	{
-		NList<int> list = new(Length);
+		List<int> list = new(Length);
 		for (var i = 0; i < Length; i++)
 			list.Add(start + i);
 		return list;
@@ -353,7 +353,7 @@ public class LimitedQueue<T> : Queue<T>
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Slice<T> : BaseIndexable<T, Slice<T>>
+public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 {
 	private protected readonly G.IList<T>? _base;
 	private protected readonly G.IReadOnlyList<T>? _base2;
@@ -466,6 +466,8 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 			for (var i = start; i < end; i++)
 				array[arrayIndex++] = _base[i];
 		}
+		else if (_base2 is BaseIndexable<T> collection2)
+			collection2.CopyTo(_start + index, array, arrayIndex, length);
 		else if (_base2 != null)
 		{
 			var start = _start + index;
@@ -485,6 +487,8 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 			return collection[_start + index];
 		else if (_base != null)
 			return _base[_start + index];
+		else if (_base2 is BaseIndexable<T> collection2)
+			return collection2[_start + index];
 		else if (_base2 != null)
 			return _base2[_start + index];
 		else
@@ -502,6 +506,9 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 				? foundIndex - _start : foundIndex;
 		else if (_base is T[] array)
 			return CreateVar(Array.IndexOf(array, item, _start + index, length), out var foundIndex) >= 0
+				? foundIndex - _start : foundIndex;
+		else if (_base2 is BaseIndexable<T> collection2)
+			return CreateVar(collection2.IndexOf(item, _start + index, length), out var foundIndex) >= 0
 				? foundIndex - _start : foundIndex;
 		else
 		{
@@ -522,6 +529,9 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		else if (_base is T[] array)
 			return CreateVar(Array.LastIndexOf(array, item, _start + index, length), out var foundIndex) >= 0
 				? foundIndex - _start : foundIndex;
+		else if (_base2 is BaseIndexable<T> collection2)
+			return CreateVar(collection2.LastIndexOf(item, _start + index, length), out var foundIndex) >= 0
+				? foundIndex - _start : foundIndex;
 		else
 		{
 			var endIndex = _start + index - length + 1;
@@ -532,6 +542,21 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 					return i - _start;
 			return -1;
 		}
+	}
+
+	protected override void SetInternal(int index, T value)
+	{
+		if (_base is BaseIndexable<T> collection)
+			collection[_start + index] = value;
+		else if (_base != null)
+			_base[_start + index] = value;
+		else if (_base2 is BaseIndexable<T> collection2)
+			collection2[_start + index] = value;
+		else if (_base2 != null)
+			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как коллекция, на которой"
+				+ " основан срез, доступна только для чтения.");
+		else
+			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
 	}
 }
 

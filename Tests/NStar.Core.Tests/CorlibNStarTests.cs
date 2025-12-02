@@ -17,9 +17,6 @@ public static class Global
 	internal static readonly G.IEnumerable<string> defaultCollection = new List<string>("AAA", "BBB", "AAA", "BBB", "CCC", "BBB", "CCC", "DDD", "CCC");
 	internal static readonly string defaultString = "XXX";
 	internal static readonly ImmutableArray<string> list = ["MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD"];
-	internal static readonly G.IEnumerable<(char, char, char)> defaultNCollection = new NList<(char, char, char)>(('A', 'A', 'A'), ('B', 'B', 'B'), ('A', 'A', 'A'), ('B', 'B', 'B'), ('C', 'C', 'C'), ('B', 'B', 'B'), ('C', 'C', 'C'), ('D', 'D', 'D'), ('C', 'C', 'C'));
-	internal static readonly (char, char, char) defaultNString = ('X', 'X', 'X');
-	internal static readonly ImmutableArray<(char, char, char)> nList = [('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')];
 	internal static readonly G.IEnumerable<char> defaultNSCollection = new String('A', 'B', 'A', 'B', 'C', 'B', 'C', 'D', 'C');
 	internal static readonly char defaultNChar = 'X';
 	internal static readonly ImmutableArray<char> nString = ['M', 'B', 'P', 'D', 'M', 'E', 'D'];

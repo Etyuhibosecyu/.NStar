@@ -180,7 +180,7 @@ public static class RedStarLinq
 		protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if (function(source[i])?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -234,7 +234,7 @@ public static class RedStarLinq
 		protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= endIndex; i++)
+			for (var i = index; i >= endIndex; i--)
 				if (function(source[i], i)?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -464,27 +464,6 @@ public static class RedStarLinq
 			return n;
 		}
 	}
-
-	public static NList<T> NEmptyList<T>(int length) where T : unmanaged => NList<T>.EmptyList(length);
-
-	public static NList<T> NFill<T>(T elem, int length) where T : unmanaged
-	{
-		var result = NEmptyList<T>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = elem;
-		return result;
-	}
-
-	public static NList<T> NFill<T>(Func<int, T> function, int length) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var result = NEmptyList<T>(length);
-		for (var i = 0; i < length; i++)
-			result[i] = function(i);
-		return result;
-	}
-
-	public static NList<T> NFill<T>(int length, Func<int, T> function) where T : unmanaged => NFill(function, length);
 
 	public static T Random<T>(this G.IReadOnlyList<T> source) => source[random.Next(source.Count)];
 
@@ -788,10 +767,8 @@ public static class RedStarLinq
 	public static List<TResult> ToList<T, TResult>(this T[] source, Func<T, TResult> function) => ToList((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<TResult> ToList<T, TResult>(this T[] source, Func<T, int, TResult> function) => ToList((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> ToList<T>(this ReadOnlySpan<T> source) => new(source);
-	public static List<T> ToList<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
+	public static List<T> ToList<T>(this Span<T> source) => new(source);
 	public static List<T> ToList<T>(this T[] source) => [.. (G.IList<T>)source];
-
-	public static NList<T> ToNList<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.ReturnOrConstruct(source);
 	public static String ToNString(this IEnumerable<char> source) => new(source);
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, char> function) => new(ToArray(source, function));
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, int, char> function) => new(ToArray(source, function));

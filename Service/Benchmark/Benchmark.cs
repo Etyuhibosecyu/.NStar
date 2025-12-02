@@ -6,7 +6,7 @@ namespace Benchmark;
 public class Benchmark
 {
 	private static readonly Random random = new(1234567890);
-	private static readonly NList<int> list8 = RedStarLinq.NFill(x => random.Next(0, 65536), 100000000);
+	private static readonly List<int> list8 = RedStarLinq.Fill(x => random.Next(0, 65536), 100000000);
 
 	public G.HashSet<int> GHashSet { get; set; } = [];
 	public ParallelHashSet<int> ParallelHashSet { get; set; } = [];

@@ -511,6 +511,6 @@ public static class RedStarLinqParallel
 
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this G.IEnumerable<T> source) => [.. source];
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this ReadOnlySpan<T> source) => new(source);
-	public static ParallelHashSet<T> ToParallelHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
+	public static ParallelHashSet<T> ToParallelHashSet<T>(this Span<T> source) => new(source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this T[] source) => [.. (G.IList<T>)source];
 }

@@ -47,7 +47,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContains();
 	}
 
@@ -60,7 +65,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
@@ -81,7 +91,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
@@ -102,6 +117,12 @@ public class SliceTests
 		a = new(RedStarLinq.ToArray(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
+		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		ProcessA(a);
 		void ProcessA(Slice<string> a)
 		{
@@ -129,6 +150,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEndsWith();
 	}
 
@@ -141,7 +168,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEquals();
 	}
 
@@ -283,7 +315,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.GetAfter(new List<string>("DDD"));
@@ -312,7 +349,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.GetAfterLast(new List<string>("MMM"));
@@ -341,7 +383,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.GetBefore(new List<string>("DDD"));
@@ -370,7 +417,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.GetBeforeLast(new List<string>("MMM"));
@@ -399,6 +451,12 @@ public class SliceTests
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
+		a = list.ToList().Convert(x => x);
+		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
+		a = list.ToList().Convert((x, index) => x);
+		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetRange();
 	}
 
 	[TestMethod]
@@ -409,6 +467,12 @@ public class SliceTests
 		a = new(RedStarLinq.ToArray(list.ToList().Insert(0, "XXX")), 1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
+		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
+		a = list.ToList().Convert(x => x);
+		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
+		a = list.ToList().Convert((x, index) => x);
+		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		new BaseIndexableTests<string, Slice<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
 	}
 
@@ -421,6 +485,12 @@ public class SliceTests
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
+		a = list.ToList().Convert(x => x);
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
+		a = list.ToList().Convert((x, index) => x);
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 	}
 
 	[TestMethod]
@@ -431,6 +501,12 @@ public class SliceTests
 		a = new(RedStarLinq.ToArray(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
+		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		ProcessA(a);
 		void ProcessA(Slice<string> a)
 		{
@@ -455,6 +531,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		void ProcessA(Slice<string> a)
 		{
 			var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
@@ -476,6 +558,12 @@ public class SliceTests
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
+		a = list.ToList().Convert(x => x);
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
+		a = list.ToList().Convert((x, index) => x);
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 	}
 
 	[TestMethod]
@@ -486,6 +574,12 @@ public class SliceTests
 		a = new(RedStarLinq.ToArray(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
+		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOfAny();
 	}
@@ -498,6 +592,12 @@ public class SliceTests
 		a = new(RedStarLinq.ToArray(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
+		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		ProcessA(a);
 		void ProcessA(Slice<string> a)
 		{
@@ -520,7 +620,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.Skip(2);
@@ -559,7 +664,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.SkipLast(2);
@@ -629,6 +739,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestStartsWith();
 	}
 
@@ -641,7 +757,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.Take(2);
@@ -680,7 +801,12 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
+		a = list.ToList().Convert(x => x);
+		ProcessA(a);
+		a = list.ToList().Convert((x, index) => x);
+		ProcessA(a);
+		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
+		ProcessA(a);
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.TakeLast(2);

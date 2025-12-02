@@ -13,7 +13,6 @@ global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
-using NStar.ExtraHS;
 
 namespace NStar.BigCollections;
 
@@ -1032,7 +1031,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var iDestination = destinationIndexes.Start.IntIndex;
 		var startRestIndexDiff = (sourceIndexes.Start.RestIndex - destinationIndexes.Start.RestIndex).Abs();
 		startRestIndexDiff = RedStarLinqMath.Max(startRestIndexDiff, fragment - startRestIndexDiff);
-		NListHashSet<int> hs = [];
+		using ListHashSet<int> hs = [];
 		MpzT step = 0;
 		var leftLength = context.Length;
 		while (leftLength > 0)
@@ -1100,7 +1099,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var iDestination = destinationIndexes.Start.IntIndex;
 		var startRestIndexDiff = (sourceIndexes.Start.RestIndex - destinationIndexes.Start.RestIndex).Abs();
 		startRestIndexDiff = RedStarLinqMath.Max(startRestIndexDiff, fragment - startRestIndexDiff);
-		using NListHashSet<int> hs = [];
+		using ListHashSet<int> hs = [];
 		MpzT step = 0;
 		TCertain currentSource, currentDestination;
 		var leftLength = context.Length;
@@ -1177,7 +1176,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var startRestIndexDiff = (sourceIndexes.Start.RestIndex - destinationIndexes.Start.RestIndex).Abs();
 		startRestIndexDiff = RedStarLinqMath.Max(startRestIndexDiff, fragment - startRestIndexDiff);
 		MpzT step = 0, newSize, oldSize;
-		NListHashSet<int> hs = [];
+		using ListHashSet<int> hs = [];
 		for (var i = destinationIndexes.Start.IntIndex; i < destinationIndexes.End.IntIndex; i++)
 		{
 			newSize = i >= destinationHighLengthOld - 1 ? fragment : 0;

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.2.32630.192
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Service\Benchmark\Benchmark.csproj", "{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}"
 EndProject
@@ -31,8 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.Dictionaries", "Sources\NStar.Dictionaries\NStar.Dictionaries.csproj", "{F6C2AD27-484D-B376-42EB-73B78EF2E499}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.EasyEval", "Sources\NStar.EasyEval\NStar.EasyEval.csproj", "{9D995FBA-3E94-5D95-4AFD-8F1BF9B72359}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.ExtraHS", "Sources\NStar.ExtraHS\NStar.ExtraHS.csproj", "{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.ExtraLibs.Tests", "Tests\NStar.ExtraLibs.Tests\NStar.ExtraLibs.Tests.csproj", "{270A8C9F-3D79-FC81-E5A0-A4B3DE065196}"
 EndProject
@@ -210,18 +208,6 @@ Global
 		{9D995FBA-3E94-5D95-4AFD-8F1BF9B72359}.Release|x64.Build.0 = Release|Any CPU
 		{9D995FBA-3E94-5D95-4AFD-8F1BF9B72359}.Release|x86.ActiveCfg = Release|Any CPU
 		{9D995FBA-3E94-5D95-4AFD-8F1BF9B72359}.Release|x86.Build.0 = Release|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Debug|x64.Build.0 = Debug|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Debug|x86.Build.0 = Debug|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Release|x64.ActiveCfg = Release|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Release|x64.Build.0 = Release|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Release|x86.ActiveCfg = Release|Any CPU
-		{A9E71688-3FC4-95FB-D4AA-7E64D4AE4C31}.Release|x86.Build.0 = Release|Any CPU
 		{270A8C9F-3D79-FC81-E5A0-A4B3DE065196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{270A8C9F-3D79-FC81-E5A0-A4B3DE065196}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{270A8C9F-3D79-FC81-E5A0-A4B3DE065196}.Debug|x64.ActiveCfg = Debug|Any CPU

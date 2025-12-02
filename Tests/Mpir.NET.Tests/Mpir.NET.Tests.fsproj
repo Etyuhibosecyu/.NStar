@@ -1,27 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-	<TargetFramework>net9.0</TargetFramework>
-	<IsPackable>false</IsPackable>
-	<GenerateProgramFile>false</GenerateProgramFile>
-	<IsTestProject>true</IsTestProject>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<GenerateProgramFile>false</GenerateProgramFile>
+		<IsTestProject>true</IsTestProject>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Compile Include="MpirTests.fs" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-	<PackageReference Include="NUnit" Version="4.4.0" />
-	<PackageReference Include="NUnit3TestAdapter" Version="5.1.0" />
-	<PackageReference Include="NUnit.Analyzers" Version="4.10.0">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
-	<PackageReference Include="coverlet.collector" Version="6.0.4">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
-	<PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
-	<ProjectReference Include="..\..\Sources\Mpir.NET\Mpir.NET.csproj" />
+		<PackageReference Include="NUnit" Version="4.4.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="5.1.0" />
+		<PackageReference Include="NUnit.Analyzers" Version="4.10.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="6.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<ProjectReference Include="..\..\Sources\Mpir.NET\Mpir.NET.csproj" />
 	</ItemGroup>
 
 </Project>
