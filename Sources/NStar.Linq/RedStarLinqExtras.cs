@@ -697,6 +697,8 @@ public static class RedStarLinqExtras
 			_size = source.Count + 1;
 		}
 
+		public override Memory<T> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<T> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
@@ -1529,6 +1531,8 @@ public static class RedStarLinqExtras
 			_size = Min(source.Count, source2.Count);
 		}
 
+		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
@@ -1587,6 +1591,8 @@ public static class RedStarLinqExtras
 			_size = Min(source.Count, source2.Count);
 		}
 
+		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
@@ -1640,6 +1646,8 @@ public static class RedStarLinqExtras
 			this.source2 = source2;
 			_size = Min(source.Count, source2.Count);
 		}
+
+		public override Memory<(T, T2)> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
 
 		public override Span<(T, T2)> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
@@ -1703,6 +1711,8 @@ public static class RedStarLinqExtras
 			_size = RedStarLinqMath.Min([source.Count, source2.Count, source3.Count]);
 		}
 
+		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
@@ -1765,6 +1775,8 @@ public static class RedStarLinqExtras
 			_size = RedStarLinqMath.Min([source.Count, source2.Count, source3.Count]);
 		}
 
+		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
@@ -1822,6 +1834,8 @@ public static class RedStarLinqExtras
 			this.source3 = source3;
 			_size = RedStarLinqMath.Min([source.Count, source2.Count, source3.Count]);
 		}
+
+		public override Memory<(T, T2, T3)> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
 
 		public override Span<(T, T2, T3)> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
@@ -7642,6 +7656,8 @@ public static class RedStarLinqExtras
 			_size = source.Count + 1;
 		}
 
+		public override Memory<T> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<T> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
@@ -8058,6 +8074,8 @@ public static class RedStarLinqExtras
 			this.source = source;
 			_size = source.Count;
 		}
+
+		public override Memory<T> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
 
 		public override Span<T> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
@@ -8851,8 +8869,10 @@ public static class RedStarLinqExtras
 		{
 			if (!source.Any())
 				return [];
-			List<List<T>> result = new(64);
-			result.Add(new(fragmentLength));
+			List<List<T>> result = new(64)
+			{
+				new(fragmentLength)
+			};
 			foreach (var item in source)
 			{
 				if (result[^1].Length >= fragmentLength)

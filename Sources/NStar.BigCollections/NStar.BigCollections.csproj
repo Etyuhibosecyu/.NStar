@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\NStar.BufferLib\NStar.BufferLib.csproj" />
 		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
 		<ProjectReference Include="..\NStar.SumCollections\NStar.SumCollections.csproj" />
 	</ItemGroup>

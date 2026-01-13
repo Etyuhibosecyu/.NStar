@@ -1543,11 +1543,11 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
 	};
 
-	public readonly int CompareTo(MpzT other) => Mpir.MpzCmp(this, other);
+	public readonly int CompareTo(MpzT other) => Mpir.MpzCmp(val == 0 ? 0 : this, other.val == 0 ? 0 : other);
 
-	public readonly int CompareTo(int other) => Mpir.MpzCmpSi(this, other);
+	public readonly int CompareTo(int other) => Mpir.MpzCmpSi(val == 0 ? 0 : this, other);
 
-	public readonly int CompareTo(uint other) => Mpir.MpzCmpUi(this, other);
+	public readonly int CompareTo(uint other) => Mpir.MpzCmpUi(val == 0 ? 0 : this, other);
 
 	// TODO: Optimize by accessing the memory directly
 	public readonly int CompareTo(long other)
@@ -1565,9 +1565,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		return ret;
 	}
 
-	public readonly int CompareTo(float other) => Mpir.MpzCmpD(this, (double)other);
+	public readonly int CompareTo(float other) => Mpir.MpzCmpD(val == 0 ? 0 : this, (double)other);
 
-	public readonly int CompareTo(double other) => Mpir.MpzCmpD(this, other);
+	public readonly int CompareTo(double other) => Mpir.MpzCmpD(val == 0 ? 0 : this, other);
 
 	//public int CompareTo(decimal other)
 	//{

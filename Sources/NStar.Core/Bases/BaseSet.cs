@@ -21,6 +21,8 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 			Add(item);
 	}
 
+	public override Memory<T> AsMemory(int index, int length) => List<T>.ReturnOrConstruct(this).AsMemory(index, length);
+
 	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
 	protected override void ClearInternal(int index, int length)

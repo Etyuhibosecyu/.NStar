@@ -1193,8 +1193,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 			successor.Left = match.Left;
 		}
-		if (successor != null)
-			successor.Color = match.Color;
+		successor?.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
 		lock (globalLockObj)
 			nodePool.Enqueue(match);
@@ -1595,8 +1594,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				LeavesCount += (value?.LeavesCount ?? 0) - (_left?.LeavesCount ?? 0);
 				ValuesSum += (value?.ValuesSum ?? 0) - (_left?.ValuesSum ?? 0);
 				_left = value;
-				if (_left != null)
-					_left.Parent = this;
+				_left?.Parent = this;
 #if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
@@ -1616,8 +1614,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				LeavesCount += (value?.LeavesCount ?? 0) - (_right?.LeavesCount ?? 0);
 				ValuesSum += (value?.ValuesSum ?? 0) - (_right?.ValuesSum ?? 0);
 				_right = value;
-				if (_right != null)
-					_right.Parent = this;
+				_right?.Parent = this;
 #if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
@@ -1714,10 +1711,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 		internal void FixUp()
 		{
-			if (Left != null)
-				Left.Parent = this;
-			if (Right != null)
-				Right.Parent = this;
+			Left?.Parent = this;
+			Right?.Parent = this;
 		}
 
 		internal static Node GetNew((T Key, int Value) item, NodeColor color)

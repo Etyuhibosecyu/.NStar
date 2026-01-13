@@ -1082,8 +1082,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			}
 			successor.Left = match.Left;
 		}
-		if (successor != null)
-			successor.Color = match.Color;
+		successor?.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
 #if VERIFY
 		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
@@ -1431,29 +1430,25 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	[DebuggerDisplay("{Item.ToString()}, Left = {Left?.Item.ToString()}, Right = {Right?.Item.ToString()}, Parent = {Parent?.Item.ToString()}")]
 	internal sealed class Node(T item, NodeColor color)
 	{
-		private Node? _left;
-		private Node? _right;
 		internal Node? Parent { get; private set; }
-		private int _leavesCount = 1;
 
 		public T Item { get; set; } = item;
 
 		internal Node? Left
 		{
-			get => _left;
+			get;
 			set
 			{
-				if (_left == value)
+				if (field == value)
 					return;
-				if (_left != null && _left.Parent != value)
-					_left.Parent = null;
-				LeavesCount += (value?.LeavesCount ?? 0) - (_left?.LeavesCount ?? 0);
-				_left = value;
-				if (_left != null)
-					_left.Parent = this;
+				if (field != null && field.Parent != value)
+					field.Parent = null;
+				LeavesCount += (value?.LeavesCount ?? 0) - (field?.LeavesCount ?? 0);
+				field = value;
+				field?.Parent = this;
 #if VERIFY
 				Verify();
-				foreach (var x in new[] { _left, _right, Parent })
+				foreach (var x in new[] { field, Right, Parent })
 					x?.Verify();
 #endif
 			}
@@ -1461,20 +1456,19 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		internal Node? Right
 		{
-			get => _right;
+			get;
 			set
 			{
-				if (_right == value)
+				if (field == value)
 					return;
-				if (_right != null && _right.Parent != value)
-					_right.Parent = null;
-				LeavesCount += (value?.LeavesCount ?? 0) - (_right?.LeavesCount ?? 0);
-				_right = value;
-				if (_right != null)
-					_right.Parent = this;
+				if (field != null && field.Parent != value)
+					field.Parent = null;
+				LeavesCount += (value?.LeavesCount ?? 0) - (field?.LeavesCount ?? 0);
+				field = value;
+				field?.Parent = this;
 #if VERIFY
 				Verify();
-				foreach (var x in new[] { _left, _right, Parent })
+				foreach (var x in new[] { Left, field, Parent })
 					x?.Verify();
 #endif
 			}
@@ -1482,18 +1476,18 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		internal int LeavesCount
 		{
-			get => _leavesCount;
+			get;
 			set
 			{
 				if (Parent != null)
-					Parent.LeavesCount += value - _leavesCount;
-				_leavesCount = value;
-				if (Parent == null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+					Parent.LeavesCount += value - field;
+				field = value;
+				if (Parent == null || Parent.LeavesCount == (Parent.Left?.LeavesCount ?? 0) + (Parent.Right?.LeavesCount ?? 0) + 1)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			}
-		}
+		} = 1;
 
 		public NodeColor Color { get; set; } = color;
 
@@ -1540,10 +1534,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		public void FixUp()
 		{
-			if (Left != null)
-				Left.Parent = this;
-			if (Right != null)
-				Right.Parent = this;
+			Left?.Parent = this;
+			Right?.Parent = this;
 		}
 
 		/// <summary>

@@ -442,6 +442,17 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 
 	public override int Length => _size;
 
+	public override Memory<T> AsMemory(int index, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
+		return ((IEnumerable<T>?)_base ?? _base2
+			?? throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст."))
+			.AsMemory(_start + index, length);
+	}
+
 	public override Span<T> AsSpan(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);

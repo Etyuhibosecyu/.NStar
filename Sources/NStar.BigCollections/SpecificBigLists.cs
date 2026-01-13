@@ -1,4 +1,6 @@
-﻿namespace NStar.BigCollections;
+﻿#pragma warning disable CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
+
+namespace NStar.BigCollections;
 
 /// <summary>
 /// Представляет компактный список бит в виде логических значений (true или false), упорядоченных по индексу.
@@ -10,7 +12,7 @@
 /// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
 /// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigBitList : BigList<bool, BigBitList, BitList>
+public class BigBitList : OldBigList<bool, BigBitList, BitList>
 {
 	// XPerY=n means that n Xs can be stored in 1 Y. 
 	private protected const int BitsPerInt = sizeof(int) * BitsPerByte;
@@ -541,8 +543,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 /// коллекции). Методы для поиска, сортировки и других манипуляций со списком находятся в разработке, на текущий момент
 /// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
 /// </summary>
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigList<T> : BigList<T, BigList<T>, List<T>>
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Experimental("CS9216"), Serializable]
+public class BigList<T> : BigList<T, BigList<T>, LimitedBuffer<T>>
 {
 	public BigList() : this(-1) { }
 
@@ -566,7 +568,7 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 
 	protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	protected override Func<int, List<T>> CapacityLowCreator => x => new(x, true);
+	protected override Func<int, LimitedBuffer<T>> CapacityLowCreator => x => new(x);
 
-	protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator { get; } = x => new(x);
+	protected override Func<G.IEnumerable<T>, LimitedBuffer<T>> CollectionLowCreator { get; } = x => new(x);
 }

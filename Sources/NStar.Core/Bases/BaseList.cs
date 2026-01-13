@@ -862,7 +862,7 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 			if (index + length < _size)
 				CopyToInternal(index + length, this2, index + list._size, _size - index - length);
 			list.CopyToInternal(0, this2, index, list._size);
-			_size += index + length < _size ? 0 : list._size - length;
+			_size -= Max(length - list._size, 0);
 		}
 		return this2;
 	}

@@ -1,5 +1,6 @@
 ﻿global using BenchmarkDotNet.Attributes;
 global using BenchmarkDotNet.Running;
+global using Mpir.NET;
 global using NStar.Core;
 global using NStar.Linq;
 global using NStar.MathLib;

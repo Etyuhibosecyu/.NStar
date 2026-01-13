@@ -26,6 +26,16 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	protected static bool IsCompatibleObject(object? value) => value is T || value == null && default(T) == null;
 
+	public virtual Memory<T> AsMemory() => AsMemory(0, _size);
+
+	public virtual Memory<T> AsMemory(Index index) => AsMemory(index.GetOffset(_size));
+
+	public virtual Memory<T> AsMemory(int index) => AsMemory(index, _size - index);
+
+	public abstract Memory<T> AsMemory(int index, int length);
+
+	public virtual Memory<T> AsMemory(Range range) => AsMemory()[range];
+
 	public virtual Span<T> AsSpan() => AsSpan(0, _size);
 
 	public virtual Span<T> AsSpan(Index index) => AsSpan(index.GetOffset(_size));

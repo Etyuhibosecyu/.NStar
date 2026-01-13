@@ -4,7 +4,7 @@
 public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
 {
 	private protected readonly TreeSet<int> deleted = [];
-	private protected byte fixes = 0;
+	private protected byte fixes;
 
 	public TreeHashSet() : this(0, (G.IEqualityComparer<T>?)null) { }
 

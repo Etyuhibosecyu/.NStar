@@ -8,7 +8,7 @@ public class GmpRandstateT : IDisposable
 	#region Data
 
 	public nint val;
-	private bool disposed = false;
+	private bool disposed;
 
 	#endregion
 

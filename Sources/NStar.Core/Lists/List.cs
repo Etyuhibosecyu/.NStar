@@ -154,6 +154,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
+	public override Memory<T> AsMemory(int index, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
+		if (length == 0)
+			return new();
+		return MemoryExtensions.AsMemory(_items, index, length);
+	}
+
 	public override Span<T> AsSpan(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);

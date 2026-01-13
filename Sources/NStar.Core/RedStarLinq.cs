@@ -8,6 +8,11 @@ public static class RedStarLinq
 	public static bool Any<T>(this IEnumerable<T> source) => Enumerable.Any(source);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
 	public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<T> source) => source;
+	public static Memory<T> AsMemory<T>(this IEnumerable<T> source) => source is BaseIndexable<T> collection ? collection.AsMemory() : source is T[] array ? MemoryExtensions.AsMemory(array) : List<T>.ReturnOrConstruct(source).AsMemory();
+	public static Memory<T> AsMemory<T>(this IEnumerable<T> source, Index index) => source is BaseIndexable<T> collection ? collection.AsMemory(index) : source is T[] array ? MemoryExtensions.AsMemory(array, index) : List<T>.ReturnOrConstruct(source).AsMemory(index);
+	public static Memory<T> AsMemory<T>(this IEnumerable<T> source, int index) => source is BaseIndexable<T> collection ? collection.AsMemory(index) : source is T[] array ? MemoryExtensions.AsMemory(array, index) : List<T>.ReturnOrConstruct(source).AsMemory(index);
+	public static Memory<T> AsMemory<T>(this IEnumerable<T> source, int index, int length) => source is BaseIndexable<T> collection ? collection.AsMemory(index, length) : source is T[] array ? MemoryExtensions.AsMemory(array, index, length) : List<T>.ReturnOrConstruct(source).AsMemory(index, length);
+	public static Memory<T> AsMemory<T>(this IEnumerable<T> source, Range range) => AsMemory(source)[range];
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source) => source is BaseIndexable<T> collection ? collection.AsSpan() : source is T[] array ? MemoryExtensions.AsSpan(array) : List<T>.ReturnOrConstruct(source).AsSpan();
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source, Index index) => source is BaseIndexable<T> collection ? collection.AsSpan(index) : source is T[] array ? MemoryExtensions.AsSpan(array, index) : List<T>.ReturnOrConstruct(source).AsSpan(index);
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source, int index) => source is BaseIndexable<T> collection ? collection.AsSpan(index) : source is T[] array ? MemoryExtensions.AsSpan(array, index) : List<T>.ReturnOrConstruct(source).AsSpan(index);
@@ -153,6 +158,8 @@ public static class RedStarLinq
 			_size = source.Count;
 		}
 
+		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 		protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
@@ -207,7 +214,9 @@ public static class RedStarLinq
 			_size = source.Count;
 		}
 
-		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
+		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
+
+		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray();
 
 		protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
 		{

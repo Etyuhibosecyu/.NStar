@@ -10,8 +10,10 @@ public class BufferTests
 	public void ComplexTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
+		var counter = 0;
 		var toInsert = Array.Empty<int>();
+	l1:
+		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
 		Buffer<int> buf = new(16, arr);
 		G.List<int> gl = [.. arr[^16..]];
 		var collectionActions = new[] { () =>
@@ -100,6 +102,8 @@ public class BufferTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
 		arr = RedStarLinq.FillArray(14, _ => random.Next(16));
 		var n = 1;
 		toInsert = RedStarLinq.FillArray(5, _ => random.Next(16));
@@ -108,6 +112,126 @@ public class BufferTests
 		buf.Insert(n, toInsert);
 		gl.InsertRange(n, toInsert);
 		gl.RemoveRange(0, Max(gl.Count - 16, 0));
+		Assert.IsTrue(buf.Equals(gl));
+		Assert.IsTrue(E.SequenceEqual(gl, buf));
+	}
+}
+
+[TestClass]
+public class LimitedBufferTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var counter = 0;
+		var toInsert = Array.Empty<int>();
+	l1:
+		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
+		var capacity = random.Next(2, 257);
+		LimitedBuffer<int> buf = new(capacity, arr.TakeLast(capacity));
+		G.List<int> gl = [.. arr.TakeLast(capacity)];
+		var collectionActions = new[] { () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			if (buf.Length + toInsert.Length > buf.Capacity)
+				return;
+			buf.AddRange(toInsert);
+			gl.AddRange(toInsert);
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			var n = random.Next(buf.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			if (buf.Length + toInsert.Length > buf.Capacity)
+				return;
+			buf.Insert(n, toInsert);
+			gl.InsertRange(n, toInsert);
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			var length = Min(random.Next(9), buf.Length);
+			if (buf.Length < length)
+				return;
+			var start = random.Next(buf.Length - length + 1);
+			buf.Remove(start, length);
+			gl.RemoveRange(start, length);
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		} };
+		var actions = new[] { () =>
+		{
+			var n = random.Next(16);
+			if (buf.Length == buf.Capacity)
+				return;
+			if (random.Next(2) == 0)
+			{
+				var index = random.Next(buf.Length);
+				buf.Insert(index, n);
+				gl.Insert(index, n);
+			}
+			else
+			{
+				buf.Add(n);
+				gl.Add(n);
+			}
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			if (buf.Length == 0)
+				return;
+			if (random.Next(2) == 0)
+			{
+				var n = random.Next(buf.Length);
+				buf.RemoveAt(n);
+				gl.RemoveAt(n);
+			}
+			else
+			{
+				var n = random.Next(16);
+				buf.RemoveValue(n);
+				gl.Remove(n);
+			}
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			collectionActions.Random(random)();
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			if (buf.Length == 0)
+				return;
+			var index = random.Next(buf.Length);
+			var n = random.Next(16);
+			buf[index] = n;
+			gl[index] = n;
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			if (buf.Length == 0) return;
+			var n = random.Next(buf.Length);
+			Assert.AreEqual(buf[buf.IndexOf(buf[n])], buf[n]);
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
+		arr = RedStarLinq.FillArray(14, _ => random.Next(16));
+		var n = 1;
+		toInsert = RedStarLinq.FillArray(5, _ => random.Next(16));
+		buf = new(16, arr.AsEnumerable());
+		buf = new(16, arr.AsSpan());
+		buf = new(16, arr);
+		gl = [.. arr];
+		Assert.ThrowsExactly<FullBufferException>(() => buf.Insert(n, toInsert.AsEnumerable()));
+		Assert.ThrowsExactly<FullBufferException>(() => buf.Insert(n, toInsert.AsSpan()));
+		Assert.ThrowsExactly<FullBufferException>(() => buf.Insert(n, toInsert));
 		Assert.IsTrue(buf.Equals(gl));
 		Assert.IsTrue(E.SequenceEqual(gl, buf));
 	}

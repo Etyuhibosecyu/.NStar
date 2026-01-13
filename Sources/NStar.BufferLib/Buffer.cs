@@ -139,6 +139,8 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return (TCertain)this;
 	}
 
+	public override Memory<T> AsMemory(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsMemory();
+
 	public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
 
 	protected override void ClearInternal(int index, int length)

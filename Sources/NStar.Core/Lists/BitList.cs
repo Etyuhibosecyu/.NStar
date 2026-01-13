@@ -367,6 +367,10 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		return this;
 	}
 
+	public override Memory<bool> AsMemory(int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+		+ " Используйте GetSlice() вместо него.");
+
 	public override Span<bool> AsSpan(int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 		+ " Используйте GetSlice() вместо него.");

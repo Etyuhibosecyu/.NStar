@@ -1,21 +1,22 @@
 ﻿global using Mpir.NET;
+global using NStar.BufferLib;
 global using NStar.Core;
 global using NStar.Core.Tests;
 global using NStar.Linq;
 global using System;
 global using System.Collections;
 global using System.Threading;
-global using E = System.Linq.Enumerable;
-global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static NStar.Core.Tests.Global;
 global using static System.Math;
+global using E = System.Linq.Enumerable;
+global using G = System.Collections.Generic;
 
 namespace NStar.BigCollections.Tests;
 
-public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
+public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
-	public static void ComplexTest(Func<(BigList<T, TCertain, TLow>, G.List<T>, byte[])> create, Func<T> newValueFunc, int multiplier, int repeats)
+	public static void ComplexTest(Func<(BaseBigList<T, TCertain, TLow>, G.List<T>, byte[])> create, Func<T> newValueFunc, int multiplier, int repeats)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
@@ -495,6 +496,7 @@ public class BigBitListTests
 	}
 }
 
+#pragma warning disable CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
 [TestClass]
 public class BigListTests
 {
@@ -505,7 +507,7 @@ public class BigListTests
 	public void ComplexTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
+		BaseBigListTests<int, BigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
 		{
 			var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
 			bl = new(arr, 2, 2);
@@ -519,7 +521,7 @@ public class BigListTests
 	public void ComplexTestPro()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
+		BaseBigListTests<int, BigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
 		{
 			var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
 			bl = new(arr, random.Next(2, 5), random.Next(2, 7));

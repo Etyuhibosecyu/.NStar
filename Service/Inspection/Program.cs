@@ -1,4 +1,5 @@
-﻿global using NStar.Core;
+﻿#pragma warning disable CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
+global using NStar.Core;
 global using NStar.Linq;
 global using NStar.MathLib;
 global using System;

@@ -9,8 +9,6 @@ namespace NStar.ExtraReplacing;
 
 public static class ReplaceExtents
 {
-#pragma warning restore CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
-
 	public static TCertain Replace<T, TCertain>(this BaseList<T, TCertain> source, Dictionary<(T, T), G.IEnumerable<T>>? dic) where TCertain : BaseList<T, TCertain>, new()
 	{
 		ArgumentNullException.ThrowIfNull(dic);
@@ -62,7 +60,6 @@ public static class ReplaceExtents
 	}
 
 	public static TCertain Replace<T, TCertain>(this BaseList<T, TCertain> source, Dictionary<(T, T, T), TCertain>? dic) where TCertain : BaseList<T, TCertain>, new() => Replace(source, dic?.ToDictionary(x => x.Key, x => (G.IEnumerable<T>)x.Value)!);
-#pragma warning disable CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
 
 	public static TCertain ReplaceInPlace<T, TCertain>(this BaseList<T, TCertain> source, Dictionary<(T, T), G.IEnumerable<T>>? dic) where TCertain : BaseList<T, TCertain>, new() => source.Replace(Replace(source, dic));
 

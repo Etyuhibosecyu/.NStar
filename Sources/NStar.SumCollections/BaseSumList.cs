@@ -42,6 +42,10 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain Add(T value) => Insert(_size, value);
 
+	public override Memory<T> AsMemory(int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+		+ " Используйте GetSlice() вместо него.");
+
 	public override Span<T> AsSpan(int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 		+ " Используйте GetSlice() вместо него.");
@@ -579,13 +583,26 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			}
 			successor.Left = match.Left;
 		}
-		if (successor != null)
-			successor.Color = match.Color;
+		successor?.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
 #if VERIFY
 		foreach (var x in new[] { parentOfMatch, successor, parentOfSuccessor })
 			x?.Verify();
 #endif
+	}
+
+	public override TCertain Resize(int newSize)
+	{
+		if (newSize == _size)
+			return (TCertain)this;
+		if (newSize > _size)
+		{
+			AddRange(RedStarLinq.FillArray(T.One, newSize - _size));
+			Changed();
+			return (TCertain)this;
+		}
+		else
+			return RemoveEnd(newSize);
 	}
 
 	protected override void ReverseInternal(int index, int length)
@@ -706,8 +723,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 				LeavesCount += (value?.LeavesCount ?? 0) - (_left?.LeavesCount ?? 0);
 				UpdateValuesSum(value, _left);
 				_left = value;
-				if (_left != null)
-					_left.Parent = this;
+				_left?.Parent = this;
 #if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
@@ -727,8 +743,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 				LeavesCount += (value?.LeavesCount ?? 0) - (_right?.LeavesCount ?? 0);
 				UpdateValuesSum(value, _right);
 				_right = value;
-				if (_right != null)
-					_right.Parent = this;
+				_right?.Parent = this;
 #if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
@@ -783,10 +798,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 		internal virtual void FixUp()
 		{
-			if (Left != null)
-				Left.Parent = this;
-			if (Right != null)
-				Right.Parent = this;
+			Left?.Parent = this;
+			Right?.Parent = this;
 		}
 
 		internal static Node GetNew(T value, NodeColor color)
