@@ -205,13 +205,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		+ " а не увеличивает емкость. Если вам нужно изменить емкость, такие извращения не нужны,"
 		+ " достаточно Capacity = value.");
 
-	protected override T GetInternal(int index, bool invoke = true)
-	{
-		var item = _items[(_start + index) % Capacity];
-		if (invoke)
-			Changed();
-		return item;
-	}
+	protected override T GetInternal(int index) => _items[(_start + index) % Capacity];
 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{

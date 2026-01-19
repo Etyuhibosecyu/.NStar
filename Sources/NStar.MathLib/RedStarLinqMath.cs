@@ -9134,7 +9134,7 @@ public static class RedStarLinqMath
 	public static double Mean(params int[] source) => Mean(source.AsSpan());
 	public static double Mean(params uint[] source) => Mean(source.AsSpan());
 	public static double Mean(params long[] source) => Mean(source.AsSpan());
-	public static MpzT Mean(params MpzT[] source) => Mean(source.AsSpan());
+	public static double Mean(params MpzT[] source) => Mean(source.AsSpan());
 	public static decimal Median(params decimal[] source) => Median(source.AsSpan());
 	public static double Median(params double[] source) => Median(source.AsSpan());
 	public static int Median(params int[] source) => Median(source.AsSpan());

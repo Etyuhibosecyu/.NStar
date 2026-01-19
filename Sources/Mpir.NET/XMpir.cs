@@ -39,43 +39,37 @@ public static partial class Mpir
 	//
 	public static mpz_intptr MpzInit()
 	{
-		int __retval;
-		__retval = xmpir_mpz_init(out var result);
+		var __retval = xmpir_mpz_init(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpz_intptr MpzInit2(ulong n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_init2(out var result, n);
+		var __retval = xmpir_mpz_init2(out var result, n);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpz_intptr MpzInitSet(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_init_set(out var result, op.val);
+		var __retval = xmpir_mpz_init_set(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpz_intptr MpzInitSetUi(uint op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_init_set_ui(out var result, op);
+		var __retval = xmpir_mpz_init_set_ui(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpz_intptr MpzInitSetSi(int op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_init_set_si(out var result, op);
+		var __retval = xmpir_mpz_init_set_si(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpz_intptr MpzInitSetD(double op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_init_set_d(out var result, op);
+		var __retval = xmpir_mpz_init_set_d(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
@@ -94,43 +88,37 @@ public static partial class Mpir
 	}
 	public static mpq_intptr MpqInit()
 	{
-		int __retval;
-		__retval = xmpir_mpq_init(out var result);
+		var __retval = xmpir_mpq_init(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpf_intptr MpfInit2(uint prec)
 	{
-		int __retval;
-		__retval = xmpir_mpf_init2(out var result, prec);
+		var __retval = xmpir_mpf_init2(out var result, prec);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpf_intptr MpfInitSet(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_init_set(out var result, op.val);
+		var __retval = xmpir_mpf_init_set(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpf_intptr MpfInitSetUi(uint op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_init_set_ui(out var result, op);
+		var __retval = xmpir_mpf_init_set_ui(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpf_intptr MpfInitSetSi(int op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_init_set_si(out var result, op);
+		var __retval = xmpir_mpf_init_set_si(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static mpf_intptr MpfInitSetD(double op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_init_set_d(out var result, op);
+		var __retval = xmpir_mpf_init_set_d(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
@@ -149,155 +137,131 @@ public static partial class Mpir
 	}
 	public static void MpzClear(MpzT v)
 	{
-		int __retval;
-		__retval = xmpir_mpz_clear(v.val);
+		var __retval = xmpir_mpz_clear(v.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqClear(MpqT v)
 	{
-		int __retval;
-		__retval = xmpir_mpq_clear(v.val);
+		var __retval = xmpir_mpq_clear(v.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfClear(MpfT v)
 	{
-		int __retval;
-		__retval = xmpir_mpf_clear(v.val);
+		var __retval = xmpir_mpf_clear(v.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void XMpirDummy()
 	{
-		int __retval;
-		__retval = xmpir_xmpir_dummy();
+		var __retval = xmpir_xmpir_dummy();
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int XMpirDummyAdd(int a, int b)
 	{
-		int __retval;
-		__retval = xmpir_xmpir_dummy_add(out var result, a, b);
+		var __retval = xmpir_xmpir_dummy_add(out var result, a, b);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int XMpirDummy3mpz(MpzT op0, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_xmpir_dummy_3mpz(out var result, op0.val, op1.val, op2.val);
+		var __retval = xmpir_xmpir_dummy_3mpz(out var result, op0.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static gmp_randstate_intptr GmpRandinitDefault()
 	{
-		int __retval;
-		__retval = xmpir_gmp_randinit_default(out var result);
+		var __retval = xmpir_gmp_randinit_default(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static gmp_randstate_intptr GmpRandinitMt()
 	{
-		int __retval;
-		__retval = xmpir_gmp_randinit_mt(out var result);
+		var __retval = xmpir_gmp_randinit_mt(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static gmp_randstate_intptr GmpRandinitLc2exp(MpzT a, uint c, ulong m2exp)
 	{
-		int __retval;
-		__retval = xmpir_gmp_randinit_lc_2exp(out var result, a.val, c, m2exp);
+		var __retval = xmpir_gmp_randinit_lc_2exp(out var result, a.val, c, m2exp);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static gmp_randstate_intptr GmpRandinitSet(GmpRandstateT op)
 	{
-		int __retval;
-		__retval = xmpir_gmp_randinit_set(out var result, op.val);
+		var __retval = xmpir_gmp_randinit_set(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void GmpRandclear(GmpRandstateT v)
 	{
-		int __retval;
-		__retval = xmpir_gmp_randclear(v.val);
+		var __retval = xmpir_gmp_randclear(v.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void GmpRandseed(GmpRandstateT state, MpzT seed)
 	{
-		int __retval;
-		__retval = xmpir_gmp_randseed(state.val, seed.val);
+		var __retval = xmpir_gmp_randseed(state.val, seed.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void GmpRandseedUi(GmpRandstateT state, uint seed)
 	{
-		int __retval;
-		__retval = xmpir_gmp_randseed_ui(state.val, seed);
+		var __retval = xmpir_gmp_randseed_ui(state.val, seed);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint GmpUrandombUi(GmpRandstateT state, uint n)
 	{
-		int __retval;
-		__retval = xmpir_gmp_urandomb_ui(out var result, state.val, n);
+		var __retval = xmpir_gmp_urandomb_ui(out var result, state.val, n);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint GmpUrandommUi(GmpRandstateT state, uint n)
 	{
-		int __retval;
-		__retval = xmpir_gmp_urandomm_ui(out var result, state.val, n);
+		var __retval = xmpir_gmp_urandomm_ui(out var result, state.val, n);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzRealloc2(MpzT x, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_realloc2(x.val, n);
+		var __retval = xmpir_mpz_realloc2(x.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSetDefaultPrec(ulong prec)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_default_prec(prec);
+		var __retval = xmpir_mpf_set_default_prec(prec);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static ulong MpfGetDefaultPrec()
 	{
-		int __retval;
-		__retval = xmpir_mpf_get_default_prec(out var result);
+		var __retval = xmpir_mpf_get_default_prec(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzSet(MpzT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_set(rop.val, op.val);
+		var __retval = xmpir_mpz_set(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSetUi(MpzT rop, uint op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_set_ui(rop.val, op);
+		var __retval = xmpir_mpz_set_ui(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSetSi(MpzT rop, int op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_set_si(rop.val, op);
+		var __retval = xmpir_mpz_set_si(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSetD(MpzT rop, double op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_set_d(rop.val, op);
+		var __retval = xmpir_mpz_set_d(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSetQ(MpzT rop, MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_set_q(rop.val, op.val);
+		var __retval = xmpir_mpz_set_q(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSetF(MpzT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_set_f(rop.val, op.val);
+		var __retval = xmpir_mpz_set_f(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzSetStr(MpzT rop, string str, uint Base)
@@ -315,28 +279,24 @@ public static partial class Mpir
 	}
 	public static void MpzSwap(MpzT rop1, MpzT rop2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_swap(rop1.val, rop2.val);
+		var __retval = xmpir_mpz_swap(rop1.val, rop2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint MpzGetUi(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_get_ui(out var result, op.val);
+		var __retval = xmpir_mpz_get_ui(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzGetSi(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_get_si(out var result, op.val);
+		var __retval = xmpir_mpz_get_si(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static double MpzGetD(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_get_d(out var result, op.val);
+		var __retval = xmpir_mpz_get_d(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
@@ -353,761 +313,643 @@ public static partial class Mpir
 	}
 	public static void MpzAdd(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_add(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_add(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzAddUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_add_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_add_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSub(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_sub(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_sub(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSubUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_sub_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_sub_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzUiSub(MpzT rop, uint op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_ui_sub(rop.val, op1, op2.val);
+		var __retval = xmpir_mpz_ui_sub(rop.val, op1, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzMul(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_mul(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_mul(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzMulSi(MpzT rop, MpzT op1, int op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_mul_si(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_mul_si(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzMulUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_mul_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_mul_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzAddmul(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_addmul(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_addmul(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzAddmulUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_addmul_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_addmul_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSubmul(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_submul(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_submul(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSubmulUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_submul_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_submul_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzMul2exp(MpzT rop, MpzT op1, ulong op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_mul_2exp(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_mul_2exp(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzNeg(MpzT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_neg(rop.val, op.val);
+		var __retval = xmpir_mpz_neg(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzAbs(MpzT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_abs(rop.val, op.val);
+		var __retval = xmpir_mpz_abs(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzCdivQ(MpzT q, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_q(q.val, n.val, d.val);
+		var __retval = xmpir_mpz_cdiv_q(q.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzCdivR(MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_r(r.val, n.val, d.val);
+		var __retval = xmpir_mpz_cdiv_r(r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzCdivQr(MpzT q, MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_qr(q.val, r.val, n.val, d.val);
+		var __retval = xmpir_mpz_cdiv_qr(q.val, r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint MpzCdivQUi(MpzT q, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_q_ui(out var result, q.val, n.val, d);
+		var __retval = xmpir_mpz_cdiv_q_ui(out var result, q.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzCdivRUi(MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_r_ui(out var result, r.val, n.val, d);
+		var __retval = xmpir_mpz_cdiv_r_ui(out var result, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzCdivQrUi(MpzT q, MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_qr_ui(out var result, q.val, r.val, n.val, d);
+		var __retval = xmpir_mpz_cdiv_qr_ui(out var result, q.val, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzCdivUi(MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_ui(out var result, n.val, d);
+		var __retval = xmpir_mpz_cdiv_ui(out var result, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzCdivQ2exp(MpzT q, MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_q_2exp(q.val, n.val, b);
+		var __retval = xmpir_mpz_cdiv_q_2exp(q.val, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzCdivR2exp(MpzT r, MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cdiv_r_2exp(r.val, n.val, b);
+		var __retval = xmpir_mpz_cdiv_r_2exp(r.val, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzFdivQ(MpzT q, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_q(q.val, n.val, d.val);
+		var __retval = xmpir_mpz_fdiv_q(q.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzFdivR(MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_r(r.val, n.val, d.val);
+		var __retval = xmpir_mpz_fdiv_r(r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzFdivQr(MpzT q, MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_qr(q.val, r.val, n.val, d.val);
+		var __retval = xmpir_mpz_fdiv_qr(q.val, r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint MpzFdivQUi(MpzT q, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_q_ui(out var result, q.val, n.val, d);
+		var __retval = xmpir_mpz_fdiv_q_ui(out var result, q.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzFdivRUi(MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_r_ui(out var result, r.val, n.val, d);
+		var __retval = xmpir_mpz_fdiv_r_ui(out var result, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzFdivQrUi(MpzT q, MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_qr_ui(out var result, q.val, r.val, n.val, d);
+		var __retval = xmpir_mpz_fdiv_qr_ui(out var result, q.val, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzFdivUi(MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_ui(out var result, n.val, d);
+		var __retval = xmpir_mpz_fdiv_ui(out var result, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzFdivQ2exp(MpzT q, MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_q_2exp(q.val, n.val, b);
+		var __retval = xmpir_mpz_fdiv_q_2exp(q.val, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzFdivR2exp(MpzT r, MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fdiv_r_2exp(r.val, n.val, b);
+		var __retval = xmpir_mpz_fdiv_r_2exp(r.val, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzTdivQ(MpzT q, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_q(q.val, n.val, d.val);
+		var __retval = xmpir_mpz_tdiv_q(q.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzTdivR(MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_r(r.val, n.val, d.val);
+		var __retval = xmpir_mpz_tdiv_r(r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzTdivQr(MpzT q, MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_qr(q.val, r.val, n.val, d.val);
+		var __retval = xmpir_mpz_tdiv_qr(q.val, r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint MpzTdivQUi(MpzT q, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_q_ui(out var result, q.val, n.val, d);
+		var __retval = xmpir_mpz_tdiv_q_ui(out var result, q.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzTdivRUi(MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_r_ui(out var result, r.val, n.val, d);
+		var __retval = xmpir_mpz_tdiv_r_ui(out var result, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzTdivQrUi(MpzT q, MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_qr_ui(out var result, q.val, r.val, n.val, d);
+		var __retval = xmpir_mpz_tdiv_qr_ui(out var result, q.val, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzTdivUi(MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_ui(out var result, n.val, d);
+		var __retval = xmpir_mpz_tdiv_ui(out var result, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzTdivQ2exp(MpzT q, MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_q_2exp(q.val, n.val, b);
+		var __retval = xmpir_mpz_tdiv_q_2exp(q.val, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzTdivR2exp(MpzT r, MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tdiv_r_2exp(r.val, n.val, b);
+		var __retval = xmpir_mpz_tdiv_r_2exp(r.val, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzMod(MpzT r, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_mod(r.val, n.val, d.val);
+		var __retval = xmpir_mpz_mod(r.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint MpzModUi(MpzT r, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_mod_ui(out var result, r.val, n.val, d);
+		var __retval = xmpir_mpz_mod_ui(out var result, r.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzDivexact(MpzT q, MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_divexact(q.val, n.val, d.val);
+		var __retval = xmpir_mpz_divexact(q.val, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzDivexactUi(MpzT q, MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_divexact_ui(q.val, n.val, d);
+		var __retval = xmpir_mpz_divexact_ui(q.val, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzDivisibleP(MpzT n, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_divisible_p(out var result, n.val, d.val);
+		var __retval = xmpir_mpz_divisible_p(out var result, n.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzDivisibleUiP(MpzT n, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_divisible_ui_p(out var result, n.val, d);
+		var __retval = xmpir_mpz_divisible_ui_p(out var result, n.val, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzDivisible2expP(MpzT n, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_divisible_2exp_p(out var result, n.val, b);
+		var __retval = xmpir_mpz_divisible_2exp_p(out var result, n.val, b);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCongruentP(MpzT n, MpzT c, MpzT d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_congruent_p(out var result, n.val, c.val, d.val);
+		var __retval = xmpir_mpz_congruent_p(out var result, n.val, c.val, d.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCongruentUiP(MpzT n, uint c, uint d)
 	{
-		int __retval;
-		__retval = xmpir_mpz_congruent_ui_p(out var result, n.val, c, d);
+		var __retval = xmpir_mpz_congruent_ui_p(out var result, n.val, c, d);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCongruent2expP(MpzT n, MpzT c, ulong b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_congruent_2exp_p(out var result, n.val, c.val, b);
+		var __retval = xmpir_mpz_congruent_2exp_p(out var result, n.val, c.val, b);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzPowm(MpzT rop, MpzT Base, MpzT Exp, MpzT Mod)
 	{
-		int __retval;
-		__retval = xmpir_mpz_powm(rop.val, Base.val, Exp.val, Mod.val);
+		var __retval = xmpir_mpz_powm(rop.val, Base.val, Exp.val, Mod.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzPowmUi(MpzT rop, MpzT Base, uint Exp, MpzT Mod)
 	{
-		int __retval;
-		__retval = xmpir_mpz_powm_ui(rop.val, Base.val, Exp, Mod.val);
+		var __retval = xmpir_mpz_powm_ui(rop.val, Base.val, Exp, Mod.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzPowUi(MpzT rop, MpzT Base, uint Exp)
 	{
-		int __retval;
-		__retval = xmpir_mpz_pow_ui(rop.val, Base.val, Exp);
+		var __retval = xmpir_mpz_pow_ui(rop.val, Base.val, Exp);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzUiPowUi(MpzT rop, uint Base, uint Exp)
 	{
-		int __retval;
-		__retval = xmpir_mpz_ui_pow_ui(rop.val, Base, Exp);
+		var __retval = xmpir_mpz_ui_pow_ui(rop.val, Base, Exp);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzRoot(MpzT rop, MpzT op, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_root(out var result, rop.val, op.val, n);
+		var __retval = xmpir_mpz_root(out var result, rop.val, op.val, n);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzRootrem(MpzT root, MpzT rem, MpzT u, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_rootrem(root.val, rem.val, u.val, n);
+		var __retval = xmpir_mpz_rootrem(root.val, rem.val, u.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSqrt(MpzT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_sqrt(rop.val, op.val);
+		var __retval = xmpir_mpz_sqrt(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzSqrtrem(MpzT rop1, MpzT rop2, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_sqrtrem(rop1.val, rop2.val, op.val);
+		var __retval = xmpir_mpz_sqrtrem(rop1.val, rop2.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzPerfectPowerP(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_perfect_power_p(out var result, op.val);
+		var __retval = xmpir_mpz_perfect_power_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzPerfectSquareP(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_perfect_square_p(out var result, op.val);
+		var __retval = xmpir_mpz_perfect_square_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzProbabPrimeP(MpzT n, uint reps)
 	{
-		int __retval;
-		__retval = xmpir_mpz_probab_prime_p(out var result, n.val, reps);
+		var __retval = xmpir_mpz_probab_prime_p(out var result, n.val, reps);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzNextprime(MpzT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_nextprime(rop.val, op.val);
+		var __retval = xmpir_mpz_nextprime(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzGcd(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_gcd(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_gcd(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static uint MpzGcdUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_gcd_ui(out var result, rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_gcd_ui(out var result, rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzGcdext(MpzT g, MpzT s, MpzT t, MpzT a, MpzT b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_gcdext(g.val, s.val, t.val, a.val, b.val);
+		var __retval = xmpir_mpz_gcdext(g.val, s.val, t.val, a.val, b.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzLcm(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_lcm(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_lcm(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzLcmUi(MpzT rop, MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_lcm_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpz_lcm_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzInvert(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_invert(out var result, rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_invert(out var result, rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzJacobi(MpzT a, MpzT b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_jacobi(out var result, a.val, b.val);
+		var __retval = xmpir_mpz_jacobi(out var result, a.val, b.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzLegendre(MpzT a, MpzT p)
 	{
-		int __retval;
-		__retval = xmpir_mpz_legendre(out var result, a.val, p.val);
+		var __retval = xmpir_mpz_legendre(out var result, a.val, p.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzKronecker(MpzT a, MpzT b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_kronecker(out var result, a.val, b.val);
+		var __retval = xmpir_mpz_kronecker(out var result, a.val, b.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzKroneckerSi(MpzT a, int b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_kronecker_si(out var result, a.val, b);
+		var __retval = xmpir_mpz_kronecker_si(out var result, a.val, b);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzKroneckerUi(MpzT a, uint b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_kronecker_ui(out var result, a.val, b);
+		var __retval = xmpir_mpz_kronecker_ui(out var result, a.val, b);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzSiKronecker(int a, MpzT b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_si_kronecker(out var result, a, b.val);
+		var __retval = xmpir_mpz_si_kronecker(out var result, a, b.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzUiKronecker(uint a, MpzT b)
 	{
-		int __retval;
-		__retval = xmpir_mpz_ui_kronecker(out var result, a, b.val);
+		var __retval = xmpir_mpz_ui_kronecker(out var result, a, b.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static ulong MpzRemove(MpzT rop, MpzT op, MpzT f)
 	{
-		int __retval;
-		__retval = xmpir_mpz_remove(out var result, rop.val, op.val, f.val);
+		var __retval = xmpir_mpz_remove(out var result, rop.val, op.val, f.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzFacUi(MpzT rop, uint op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fac_ui(rop.val, op);
+		var __retval = xmpir_mpz_fac_ui(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzBinUi(MpzT rop, MpzT n, uint k)
 	{
-		int __retval;
-		__retval = xmpir_mpz_bin_ui(rop.val, n.val, k);
+		var __retval = xmpir_mpz_bin_ui(rop.val, n.val, k);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzBinUiui(MpzT rop, uint n, uint k)
 	{
-		int __retval;
-		__retval = xmpir_mpz_bin_uiui(rop.val, n, k);
+		var __retval = xmpir_mpz_bin_uiui(rop.val, n, k);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzFibUi(MpzT fn, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fib_ui(fn.val, n);
+		var __retval = xmpir_mpz_fib_ui(fn.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzFib2Ui(MpzT fn, MpzT fnsub1, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fib2_ui(fn.val, fnsub1.val, n);
+		var __retval = xmpir_mpz_fib2_ui(fn.val, fnsub1.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzLucnumUi(MpzT ln, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_lucnum_ui(ln.val, n);
+		var __retval = xmpir_mpz_lucnum_ui(ln.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzLucnum2Ui(MpzT ln, MpzT lnsub1, uint n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_lucnum2_ui(ln.val, lnsub1.val, n);
+		var __retval = xmpir_mpz_lucnum2_ui(ln.val, lnsub1.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzCmp(MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmp(out var result, op1.val, op2.val);
+		var __retval = xmpir_mpz_cmp(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCmpD(MpzT op1, double op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmp_d(out var result, op1.val, op2);
+		var __retval = xmpir_mpz_cmp_d(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCmpSi(MpzT op1, int op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmp_si(out var result, op1.val, op2);
+		var __retval = xmpir_mpz_cmp_si(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCmpUi(MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmp_ui(out var result, op1.val, op2);
+		var __retval = xmpir_mpz_cmp_ui(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCmpabs(MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmpabs(out var result, op1.val, op2.val);
+		var __retval = xmpir_mpz_cmpabs(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCmpabsD(MpzT op1, double op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmpabs_d(out var result, op1.val, op2);
+		var __retval = xmpir_mpz_cmpabs_d(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzCmpabsUi(MpzT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_cmpabs_ui(out var result, op1.val, op2);
+		var __retval = xmpir_mpz_cmpabs_ui(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzSgn(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_sgn(out var result, op.val);
+		var __retval = xmpir_mpz_sgn(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzAnd(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_and(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_and(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzIor(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_ior(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_ior(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzXor(MpzT rop, MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_xor(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpz_xor(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzCom(MpzT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_com(rop.val, op.val);
+		var __retval = xmpir_mpz_com(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static ulong MpzPopcount(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_popcount(out var result, op.val);
+		var __retval = xmpir_mpz_popcount(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static ulong MpzHamdist(MpzT op1, MpzT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpz_hamdist(out var result, op1.val, op2.val);
+		var __retval = xmpir_mpz_hamdist(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static ulong MpzScan0(MpzT op, ulong startingBit)
 	{
-		int __retval;
-		__retval = xmpir_mpz_scan0(out var result, op.val, startingBit);
+		var __retval = xmpir_mpz_scan0(out var result, op.val, startingBit);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static ulong MpzScan1(MpzT op, ulong startingBit)
 	{
-		int __retval;
-		__retval = xmpir_mpz_scan1(out var result, op.val, startingBit);
+		var __retval = xmpir_mpz_scan1(out var result, op.val, startingBit);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzSetbit(MpzT rop, ulong bitIndex)
 	{
-		int __retval;
-		__retval = xmpir_mpz_setbit(rop.val, bitIndex);
+		var __retval = xmpir_mpz_setbit(rop.val, bitIndex);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzClrbit(MpzT rop, ulong bitIndex)
 	{
-		int __retval;
-		__retval = xmpir_mpz_clrbit(rop.val, bitIndex);
+		var __retval = xmpir_mpz_clrbit(rop.val, bitIndex);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzCombit(MpzT rop, ulong bitIndex)
 	{
-		int __retval;
-		__retval = xmpir_mpz_combit(rop.val, bitIndex);
+		var __retval = xmpir_mpz_combit(rop.val, bitIndex);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzTstbit(MpzT op, ulong bitIndex)
 	{
-		int __retval;
-		__retval = xmpir_mpz_tstbit(out var result, op.val, bitIndex);
+		var __retval = xmpir_mpz_tstbit(out var result, op.val, bitIndex);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpzUrandomb(MpzT rop, GmpRandstateT state, ulong n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_urandomb(rop.val, state.val, n);
+		var __retval = xmpir_mpz_urandomb(rop.val, state.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzUrandomm(MpzT rop, GmpRandstateT state, MpzT n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_urandomm(rop.val, state.val, n.val);
+		var __retval = xmpir_mpz_urandomm(rop.val, state.val, n.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpzRrandomb(MpzT rop, GmpRandstateT state, ulong n)
 	{
-		int __retval;
-		__retval = xmpir_mpz_rrandomb(rop.val, state.val, n);
+		var __retval = xmpir_mpz_rrandomb(rop.val, state.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzFitsUintP(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fits_uint_p(out var result, op.val);
+		var __retval = xmpir_mpz_fits_uint_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzFitsSintP(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_fits_sint_p(out var result, op.val);
+		var __retval = xmpir_mpz_fits_sint_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzOddP(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_odd_p(out var result, op.val);
+		var __retval = xmpir_mpz_odd_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpzEvenP(MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpz_even_p(out var result, op.val);
+		var __retval = xmpir_mpz_even_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpzSizeinbase(MpzT op, uint Base)
 	{
-		int __retval;
-		__retval = xmpir_mpz_sizeinbase(out var result, op.val, Base);
+		var __retval = xmpir_mpz_sizeinbase(out var result, op.val, Base);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpqCanonicalize(MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_canonicalize(op.val);
+		var __retval = xmpir_mpq_canonicalize(op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSet(MpqT rop, MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set(rop.val, op.val);
+		var __retval = xmpir_mpq_set(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSetZ(MpqT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_z(rop.val, op.val);
+		var __retval = xmpir_mpq_set_z(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSetUi(MpqT rop, uint op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_ui(rop.val, op1, op2);
+		var __retval = xmpir_mpq_set_ui(rop.val, op1, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSetSi(MpqT rop, int op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_si(rop.val, op1, op2);
+		var __retval = xmpir_mpq_set_si(rop.val, op1, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpqSetStr(MpqT rop, string str, uint Base)
@@ -1125,27 +967,23 @@ public static partial class Mpir
 	}
 	public static void MpqSwap(MpqT rop1, MpqT rop2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_swap(rop1.val, rop2.val);
+		var __retval = xmpir_mpq_swap(rop1.val, rop2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static double MpqGetD(MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_get_d(out var result, op.val);
+		var __retval = xmpir_mpq_get_d(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpqSetD(MpqT rop, double op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_d(rop.val, op);
+		var __retval = xmpir_mpq_set_d(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSetF(MpqT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_f(rop.val, op.val);
+		var __retval = xmpir_mpq_set_f(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static string? MpqGetString(uint Base, MpqT op)
@@ -1161,164 +999,138 @@ public static partial class Mpir
 	}
 	public static void MpqAdd(MpqT sum, MpqT addend1, MpqT addend2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_add(sum.val, addend1.val, addend2.val);
+		var __retval = xmpir_mpq_add(sum.val, addend1.val, addend2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSub(MpqT difference, MpqT minuend, MpqT subtrahend)
 	{
-		int __retval;
-		__retval = xmpir_mpq_sub(difference.val, minuend.val, subtrahend.val);
+		var __retval = xmpir_mpq_sub(difference.val, minuend.val, subtrahend.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqMul(MpqT product, MpqT multiplier, MpqT multiplicand)
 	{
-		int __retval;
-		__retval = xmpir_mpq_mul(product.val, multiplier.val, multiplicand.val);
+		var __retval = xmpir_mpq_mul(product.val, multiplier.val, multiplicand.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqMul2exp(MpqT rop, MpqT op1, ulong op2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_mul_2exp(rop.val, op1.val, op2);
+		var __retval = xmpir_mpq_mul_2exp(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqDiv(MpqT quotient, MpqT dividend, MpqT divisor)
 	{
-		int __retval;
-		__retval = xmpir_mpq_div(quotient.val, dividend.val, divisor.val);
+		var __retval = xmpir_mpq_div(quotient.val, dividend.val, divisor.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqDiv2exp(MpqT rop, MpqT op1, ulong op2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_div_2exp(rop.val, op1.val, op2);
+		var __retval = xmpir_mpq_div_2exp(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqNeg(MpqT negatedOperand, MpqT operand)
 	{
-		int __retval;
-		__retval = xmpir_mpq_neg(negatedOperand.val, operand.val);
+		var __retval = xmpir_mpq_neg(negatedOperand.val, operand.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqAbs(MpqT rop, MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_abs(rop.val, op.val);
+		var __retval = xmpir_mpq_abs(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqInv(MpqT invertedNumber, MpqT number)
 	{
-		int __retval;
-		__retval = xmpir_mpq_inv(invertedNumber.val, number.val);
+		var __retval = xmpir_mpq_inv(invertedNumber.val, number.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpqCmp(MpqT op1, MpqT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_cmp(out var result, op1.val, op2.val);
+		var __retval = xmpir_mpq_cmp(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpqCmpUi(MpqT op1, uint num2, uint den2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_cmp_ui(out var result, op1.val, num2, den2);
+		var __retval = xmpir_mpq_cmp_ui(out var result, op1.val, num2, den2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpqCmpSi(MpqT op1, int num2, uint den2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_cmp_si(out var result, op1.val, num2, den2);
+		var __retval = xmpir_mpq_cmp_si(out var result, op1.val, num2, den2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpqSgn(MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpq_sgn(out var result, op.val);
+		var __retval = xmpir_mpq_sgn(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpqEqual(MpqT op1, MpqT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpq_equal(out var result, op1.val, op2.val);
+		var __retval = xmpir_mpq_equal(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpqGetNum(MpzT numerator, MpqT rational)
 	{
-		int __retval;
-		__retval = xmpir_mpq_get_num(numerator.val, rational.val);
+		var __retval = xmpir_mpq_get_num(numerator.val, rational.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqGetDen(MpzT denominator, MpqT rational)
 	{
-		int __retval;
-		__retval = xmpir_mpq_get_den(denominator.val, rational.val);
+		var __retval = xmpir_mpq_get_den(denominator.val, rational.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSetNum(MpqT rational, MpzT numerator)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_num(rational.val, numerator.val);
+		var __retval = xmpir_mpq_set_num(rational.val, numerator.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpqSetDen(MpqT rational, MpzT denominator)
 	{
-		int __retval;
-		__retval = xmpir_mpq_set_den(rational.val, denominator.val);
+		var __retval = xmpir_mpq_set_den(rational.val, denominator.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static ulong MpfGetPrec(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_get_prec(out var result, op.val);
+		var __retval = xmpir_mpf_get_prec(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpfSetPrec(MpfT rop, ulong prec)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_prec(rop.val, prec);
+		var __retval = xmpir_mpf_set_prec(rop.val, prec);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSet(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set(rop.val, op.val);
+		var __retval = xmpir_mpf_set(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSetUi(MpfT rop, uint op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_ui(rop.val, op);
+		var __retval = xmpir_mpf_set_ui(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSetSi(MpfT rop, int op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_si(rop.val, op);
+		var __retval = xmpir_mpf_set_si(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSetD(MpfT rop, double op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_d(rop.val, op);
+		var __retval = xmpir_mpf_set_d(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSetZ(MpfT rop, MpzT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_z(rop.val, op.val);
+		var __retval = xmpir_mpf_set_z(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSetQ(MpfT rop, MpqT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_set_q(rop.val, op.val);
+		var __retval = xmpir_mpf_set_q(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpfSetStr(MpfT rop, string str, uint Base)
@@ -1336,35 +1148,30 @@ public static partial class Mpir
 	}
 	public static void MpfSwap(MpfT rop1, MpfT rop2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_swap(rop1.val, rop2.val);
+		var __retval = xmpir_mpf_swap(rop1.val, rop2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static double MpfGetD(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_get_d(out var result, op.val);
+		var __retval = xmpir_mpf_get_d(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static double MpfGetD2exp(out long expptr, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_get_d_2exp(out var result, out expptr, op.val);
+		var __retval = xmpir_mpf_get_d_2exp(out var result, out expptr, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfGetSi(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_get_si(out var result, op.val);
+		var __retval = xmpir_mpf_get_si(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static uint MpfGetUi(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_get_ui(out var result, op.val);
+		var __retval = xmpir_mpf_get_ui(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
@@ -1381,197 +1188,166 @@ public static partial class Mpir
 	}
 	public static void MpfAdd(MpfT rop, MpfT op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_add(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpf_add(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfAddUi(MpfT rop, MpfT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_add_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_add_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSub(MpfT rop, MpfT op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_sub(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpf_sub(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfUiSub(MpfT rop, uint op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_ui_sub(rop.val, op1, op2.val);
+		var __retval = xmpir_mpf_ui_sub(rop.val, op1, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSubUi(MpfT rop, MpfT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_sub_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_sub_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfMul(MpfT rop, MpfT op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_mul(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpf_mul(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfMulUi(MpfT rop, MpfT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_mul_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_mul_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfDiv(MpfT rop, MpfT op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_div(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpf_div(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfUiDiv(MpfT rop, uint op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_ui_div(rop.val, op1, op2.val);
+		var __retval = xmpir_mpf_ui_div(rop.val, op1, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfDivUi(MpfT rop, MpfT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_div_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_div_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSqrt(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_sqrt(rop.val, op.val);
+		var __retval = xmpir_mpf_sqrt(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfSqrtUi(MpfT rop, uint op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_sqrt_ui(rop.val, op);
+		var __retval = xmpir_mpf_sqrt_ui(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfPowUi(MpfT rop, MpfT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_pow_ui(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_pow_ui(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfNeg(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_neg(rop.val, op.val);
+		var __retval = xmpir_mpf_neg(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfAbs(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_abs(rop.val, op.val);
+		var __retval = xmpir_mpf_abs(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfMul2exp(MpfT rop, MpfT op1, ulong op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_mul_2exp(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_mul_2exp(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfDiv2exp(MpfT rop, MpfT op1, ulong op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_div_2exp(rop.val, op1.val, op2);
+		var __retval = xmpir_mpf_div_2exp(rop.val, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpfCmp(MpfT op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_cmp(out var result, op1.val, op2.val);
+		var __retval = xmpir_mpf_cmp(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfCmpD(MpfT op1, double op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_cmp_d(out var result, op1.val, op2);
+		var __retval = xmpir_mpf_cmp_d(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfCmpUi(MpfT op1, uint op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_cmp_ui(out var result, op1.val, op2);
+		var __retval = xmpir_mpf_cmp_ui(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfCmpSi(MpfT op1, int op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_cmp_si(out var result, op1.val, op2);
+		var __retval = xmpir_mpf_cmp_si(out var result, op1.val, op2);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfEq(MpfT op1, MpfT op2, ulong op3)
 	{
-		int __retval;
-		__retval = xmpir_mpf_eq(out var result, op1.val, op2.val, op3);
+		var __retval = xmpir_mpf_eq(out var result, op1.val, op2.val, op3);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpfReldiff(MpfT rop, MpfT op1, MpfT op2)
 	{
-		int __retval;
-		__retval = xmpir_mpf_reldiff(rop.val, op1.val, op2.val);
+		var __retval = xmpir_mpf_reldiff(rop.val, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpfSgn(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_sgn(out var result, op.val);
+		var __retval = xmpir_mpf_sgn(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpfCeil(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_ceil(rop.val, op.val);
+		var __retval = xmpir_mpf_ceil(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfFloor(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_floor(rop.val, op.val);
+		var __retval = xmpir_mpf_floor(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void MpfTrunc(MpfT rop, MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_trunc(rop.val, op.val);
+		var __retval = xmpir_mpf_trunc(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpfIntegerP(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_integer_p(out var result, op.val);
+		var __retval = xmpir_mpf_integer_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfFitsUintP(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_fits_uint_p(out var result, op.val);
+		var __retval = xmpir_mpf_fits_uint_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static int MpfFitsSintP(MpfT op)
 	{
-		int __retval;
-		__retval = xmpir_mpf_fits_sint_p(out var result, op.val);
+		var __retval = xmpir_mpf_fits_sint_p(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
 	public static void MpfUrandomb(MpfT rop, GmpRandstateT state, ulong nbits)
 	{
-		int __retval;
-		__retval = xmpir_mpf_urandomb(rop.val, state.val, nbits);
+		var __retval = xmpir_mpf_urandomb(rop.val, state.val, nbits);
 		if (__retval != 0) HandleError(__retval);
 	}
 }

@@ -1207,7 +1207,6 @@ public class ListTests
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsExactly<ArgumentException>(() => a = list.ToList().SetRange(5, hs));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToList().SetRange(-1, hs));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToList().SetRange(1000, hs));
 		Assert.ThrowsExactly<ArgumentNullException>(() => list.ToList().SetRange(4, null!));

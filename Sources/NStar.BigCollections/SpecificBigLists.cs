@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
-
+﻿
 namespace NStar.BigCollections;
 
 /// <summary>
@@ -21,11 +20,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 
 	public BigBitList() : this(-1) { }
 
-	public BigBitList(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
+	public BigBitList(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, subbranchesBitLength, leafSizeBitLength) { }
+	public BigBitList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(capacity, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(MpzT length, bool defaultValue, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(MpzT length, bool defaultValue, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(subbranchesBitLength, leafSizeBitLength)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length <= LeafSize)
@@ -38,7 +40,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1)
+				* SubbranchesBitLength + LeafSizeBitLength;
 			high = new((int)GetArrayLength(length, fragment), true);
 			highLength = [];
 			for (MpzT i = 0; i < high.Capacity - 1; i++)
@@ -63,7 +66,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(BitArray bitArray, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(BitArray bitArray, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (bitArray == null)
 			throw new ArgumentNullException(nameof(bitArray));
@@ -79,7 +83,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(G.IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(G.IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (bytes == null)
 			throw new ArgumentNullException(nameof(bytes));
@@ -115,7 +120,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(G.IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(G.IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (bools == null)
 			throw new ArgumentNullException(nameof(bools));
@@ -149,7 +155,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(G.IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(G.IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (ints == null)
 			throw new ArgumentNullException(nameof(ints));
@@ -170,7 +177,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(G.IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(G.IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (uints == null)
 			throw new ArgumentNullException(nameof(uints));
@@ -194,9 +202,11 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(uint[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
+	public BigBitList(uint[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(ReadOnlySpan<uint> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.Length * BitsPerInt, subbranchesBitLength, leafSizeBitLength)
+	public BigBitList(ReadOnlySpan<uint> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(values.Length * BitsPerInt, subbranchesBitLength, leafSizeBitLength)
 	{
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
@@ -232,7 +242,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 
 	protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator { get; } = x => new(x);
 
-	protected override Func<G.IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	protected override Func<G.IEnumerable<bool>, BigBitList> CollectionCreator => x =>
+		new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	protected override int DefaultCapacity => 256;
 
@@ -264,7 +275,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.",
+				nameof(value));
 		if (low != null && value.low != null)
 			low.And(value.low);
 		else if (high != null && value.high != null)
@@ -311,7 +323,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromBitListFromScratch(BitList bitList)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
+		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null
+			&& fragment == 1 && _capacity == 0);
 		if (bitList.Length <= LeafSize && high == null && highLength == null && fragment == 1)
 		{
 			if (low == null)
@@ -327,7 +340,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
+			fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength)
+				/ SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var fragment2 = (int)fragment;
 			high = new(GetArrayLength(bitList.Length, fragment2), true);
 			highLength = [];
@@ -359,7 +373,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		}
 		ArgumentOutOfRangeException.ThrowIfNegative(overrideLength);
 		var length = bigUIntList.Length;
-		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt : (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
+		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt
+			: (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
 		Debug.Assert(bitLength <= _capacity);
 		if (length <= LeafSize / BitsPerInt && low != null && high == null && highLength == null && fragment == 1)
 		{
@@ -392,10 +407,12 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromUIntListFromScratch(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
+		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null
+			&& fragment == 1 && _capacity == 0);
 		ArgumentOutOfRangeException.ThrowIfNegative(overrideLength);
 		var length = bigUIntList.Length;
-		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt : (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
+		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt
+			: (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
 		if (bitLength <= LeafSize && high == null && highLength == null && fragment == 1)
 		{
 			if (low == null)
@@ -412,7 +429,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
+			fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1
+				- LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var uintsFragment = fragment / BitsPerInt;
 			high = new((int)GetArrayLength(length, uintsFragment), true);
 			highLength = [];
@@ -447,7 +465,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		if (length == 0)
 			return 0;
 		if (length > BitsPerInt)
-			throw new ArgumentException($"Метод GetSmallRange() возвращает одно число типа uint, поэтому необходим диапазон длиной не более {BitsPerInt} бит.", nameof(length));
+			throw new ArgumentException($"Метод GetSmallRange() возвращает одно число типа uint,"
+				+ " поэтому необходим диапазон длиной не более {BitsPerInt} бит.", nameof(length));
 		if (low != null)
 			return low.GetSmallRange((int)index, length);
 		else if (high != null)
@@ -485,7 +504,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.",
+				nameof(value));
 		if (low != null && value.low != null)
 			low.Or(value.low);
 		else if (high != null && value.high != null)
@@ -495,6 +515,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
+
+	protected override void ResizeLeftInternal(MpzT newSize) => throw new NotImplementedException();
 
 	public virtual void SetAll(bool value)
 	{
@@ -522,7 +544,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.",
+				nameof(value));
 		if (low != null && value.low != null)
 			low.Xor(value.low);
 		else if (high != null && value.high != null)
@@ -543,26 +566,34 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 /// коллекции). Методы для поиска, сортировки и других манипуляций со списком находятся в разработке, на текущий момент
 /// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
 /// </summary>
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Experimental("CS9216"), Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigList<T> : BigList<T, BigList<T>, LimitedBuffer<T>>
 {
 	public BigList() : this(-1) { }
 
-	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(capacity, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, collection, subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(capacity, collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(values, subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(values, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(capacity, values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(MpzT capacity, T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(capacity, values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, values, subbranchesBitLength, leafSizeBitLength) { }
+	public BigList(MpzT capacity, ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: base(capacity, values, subbranchesBitLength, leafSizeBitLength) { }
 
 	protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 

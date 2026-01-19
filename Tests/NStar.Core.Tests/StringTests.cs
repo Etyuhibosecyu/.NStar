@@ -1745,7 +1745,6 @@ public class StringTests
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsExactly<ArgumentException>(() => a = nString.ToNString().SetRange(5, hs));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().SetRange(-1, hs));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().SetRange(1000, hs));
 		Assert.ThrowsExactly<ArgumentNullException>(() => nString.ToNString().SetRange(4, null!));

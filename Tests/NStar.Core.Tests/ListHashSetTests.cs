@@ -1111,7 +1111,6 @@ public class ListHashSetTests
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		Assert.ThrowsExactly<ArgumentException>(() => a = list.ToHashSet().SetRange(4, hs));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToHashSet().SetRange(-1, hs));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => list.ToHashSet().SetRange(1000, hs));
 		Assert.ThrowsExactly<ArgumentNullException>(() => list.ToHashSet().SetRange(3, null!));

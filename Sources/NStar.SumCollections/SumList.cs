@@ -98,18 +98,13 @@ public class SumList : BaseSumList<int, SumList>
 
 	public override G.IEnumerator<int> GetEnumerator() => new Enumerator(this);
 
-	protected override int GetInternal(int index, bool invoke = true)
+	protected override int GetInternal(int index)
 	{
 		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
-			{
-				var value = current.Value;
-				if (invoke)
-					Changed();
-				return value;
-			}
+				return current.Value;
 			else if (current.Left == null)
 			{
 				index--;
@@ -573,7 +568,7 @@ public class SumList : BaseSumList<int, SumList>
 			return base.FindNode(index) as Node;
 		}
 
-		protected override int GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
+		protected override int GetInternal(int index) => _underlying.GetInternal(_min + index);
 
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base

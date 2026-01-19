@@ -589,18 +589,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public override G.IEnumerator<(T Key, int Value)> GetEnumerator() => new Enumerator(this);
 
-	protected override (T Key, int Value) GetInternal(int index, bool invoke = true)
+	protected override (T Key, int Value) GetInternal(int index)
 	{
 		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
-			{
-				var item = current.Item;
-				if (invoke)
-					Changed();
-				return item;
-			}
+				return current.Item;
 			else if (current.Left == null)
 			{
 				index--;

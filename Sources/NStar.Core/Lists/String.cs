@@ -151,7 +151,7 @@ public unsafe class String : List<char, String>, IComparable, IComparable<char[]
 	/// WARNING!!! This methods works wrong with StringComparison.Ordinal!
 	/// (But probably works right with StringComparison.OrdinalIgnoreCase.)
 	/// </summary>
-	/// <param name="comparisonType">NOchar StringComparison.Ordinal!!!</param>
+	/// <param name="comparisonType">NOT StringComparison.Ordinal!!!</param>
 	public virtual int CompareTo(String? other, StringComparison comparisonType) => comparisonType switch
 	{
 		StringComparison.CurrentCulture => CurrentCompareInfo.Compare(AsSpan(), (other ?? []).AsSpan()),

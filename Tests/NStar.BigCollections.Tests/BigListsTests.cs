@@ -496,7 +496,6 @@ public class BigBitListTests
 	}
 }
 
-#pragma warning disable CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
 [TestClass]
 public class BigListTests
 {

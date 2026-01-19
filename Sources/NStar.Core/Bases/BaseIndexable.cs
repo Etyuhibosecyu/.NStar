@@ -7,14 +7,14 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	[NonSerialized]
 	private protected object _syncRoot = new();
 
-	public virtual T this[Index index, bool invoke = true]
+	public virtual T this[Index index, bool invoke = false]
 	{
 		get
 		{
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			return GetInternal(index2, invoke);
+			return GetInternal(index2);
 		}
 		set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
 			+ " Если оно нужно вам, используйте один из видов коллекций, наследующихся от BaseList.");
@@ -385,7 +385,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return hash;
 	}
 
-	protected abstract T GetInternal(int index, bool invoke = true);
+	protected abstract T GetInternal(int index);
 
 	public virtual Slice<T> GetSlice() => GetSlice(0, _size);
 
@@ -920,9 +920,18 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCertain> where TCertain : BaseMutableIndexable<T, TCertain>, new()
 {
-	public override T this[Index index, bool invoke = true]
+	public override T this[Index index, bool invoke = false]
 	{
-		get => base[index, invoke];
+		get
+		{
+			var index2 = index.GetOffset(_size);
+			if ((uint)index2 >= (uint)_size)
+				throw new IndexOutOfRangeException();
+			var item = GetInternal(index2);
+			if (invoke)
+				Changed();
+			return item;
+		}
 		set
 		{
 			var index2 = index.GetOffset(_size);
@@ -931,6 +940,12 @@ public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCert
 			SetInternal(index2, value);
 		}
 	}
+
+	public delegate void ListChangedHandler(TCertain newList);
+
+	public event ListChangedHandler? ListChanged;
+
+	protected virtual void Changed() => ListChanged?.Invoke((TCertain)this);
 
 	public virtual TCertain SetAll(T value) => SetAll(value, 0, _size);
 

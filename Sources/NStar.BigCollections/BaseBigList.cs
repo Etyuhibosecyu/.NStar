@@ -22,7 +22,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public abstract MpzT Capacity { get; set; }
 
-	public virtual MpzT Length { get; private protected set; }
+	public virtual MpzT Length { get; private protected set; } = 0;
 
 	protected abstract Func<MpzT, TCertain> CapacityCreator { get; }
 
@@ -514,14 +514,27 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
-		if (collection is not TCertain bigList)
-			bigList = CollectionCreator(collection);
 #if VERIFY
 		MpzT oldLength = new(Length);
+		MpzT oldBigListLength;
 #endif
-		InsertInternal(index, bigList);
+		if (collection is TCertain bigList)
+		{
 #if VERIFY
-		Debug.Assert(Length == oldLength + bigList.Length);
+			oldBigListLength = bigList.Length;
+#endif
+			InsertInternal(index, bigList, true);
+		}
+		else
+		{
+			bigList = CollectionCreator(collection);
+#if VERIFY
+			oldBigListLength = new(bigList.Length);
+#endif
+			InsertInternal(index, bigList, false);
+		}
+#if VERIFY
+		Debug.Assert(Length == oldLength + oldBigListLength);
 		Verify();
 #endif
 		return (TCertain)this;
@@ -529,7 +542,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	protected abstract void InsertInternal(MpzT index, T item);
 
-	protected abstract void InsertInternal(MpzT index, TCertain bigList);
+	protected abstract void InsertInternal(MpzT index, TCertain bigList, bool saveOriginal);
 
 	public virtual MpzT LastIndexOf(T item) => LastIndexOf(item, Length - 1, Length);
 
@@ -671,6 +684,17 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	}
 
 	protected abstract void ResizeInternal(MpzT newSize);
+
+	public virtual TCertain ResizeLeft(MpzT newSize)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(newSize);
+		if (newSize == Length)
+			return (TCertain)this;
+		ResizeLeftInternal(newSize);
+		return (TCertain)this;
+	}
+
+	protected abstract void ResizeLeftInternal(MpzT newSize);
 
 	public abstract TCertain Reverse();
 

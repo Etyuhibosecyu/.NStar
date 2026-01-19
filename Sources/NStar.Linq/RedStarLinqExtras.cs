@@ -709,7 +709,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override T GetInternal(int index, bool invoke = true) => index == source.Count ? element : source[index];
+		protected override T GetInternal(int index) => index == source.Count ? element : source[index];
 
 		protected override AppendList<T> GetRangeInternal(int index, int length) => index == _size - length ? new(source.GetROLSlice(index, length - 1), element) : new(source.GetROLSlice(index, length - 1), source[index + length - 1]);
 
@@ -1543,7 +1543,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index]);
+		protected override TResult GetInternal(int index) => function(source[index], source2[index]);
 
 		protected override CombineList<T, T2, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), function);
 
@@ -1603,7 +1603,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index], index);
+		protected override TResult GetInternal(int index) => function(source[index], source2[index], index);
 
 		protected override CombineListInt<T, T2, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), function);
 
@@ -1659,7 +1659,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override (T, T2) GetInternal(int index, bool invoke = true) => (source[index], source2[index]);
+		protected override (T, T2) GetInternal(int index) => (source[index], source2[index]);
 
 		protected override CombineListPure<T, T2> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length));
 
@@ -1723,7 +1723,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index], source3[index]);
+		protected override TResult GetInternal(int index) => function(source[index], source2[index], source3[index]);
 
 		protected override CombineList<T, T2, T3, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), source3.GetROLSlice(index, length), function);
 
@@ -1787,7 +1787,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index], source3[index], index);
+		protected override TResult GetInternal(int index) => function(source[index], source2[index], source3[index], index);
 
 		protected override CombineListInt<T, T2, T3, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), source3.GetROLSlice(index, length), function);
 
@@ -1847,7 +1847,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override (T, T2, T3) GetInternal(int index, bool invoke = true) => (source[index], source2[index], source3[index]);
+		protected override (T, T2, T3) GetInternal(int index) => (source[index], source2[index], source3[index]);
 
 		protected override CombineListPure<T, T2, T3> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), source3.GetROLSlice(index, length));
 
@@ -7668,7 +7668,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override T GetInternal(int index, bool invoke = true) => index == 0 ? element : source[index - 1];
+		protected override T GetInternal(int index) => index == 0 ? element : source[index - 1];
 
 		protected override PrependList<T> GetRangeInternal(int index, int length) => index == 0 ? new(source.GetROLSlice(0, length - 1), element) : new(source.GetROLSlice(index, length - 1), source[index - 1]);
 
@@ -8087,7 +8087,7 @@ public static class RedStarLinqExtras
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override T GetInternal(int index, bool invoke = true) => source[_size - 1 - index];
+		protected override T GetInternal(int index) => source[_size - 1 - index];
 
 		protected override ReverseList<T> GetRangeInternal(int index, int length) => new(source.GetROLSlice(_size - index - length, length));
 
@@ -11061,7 +11061,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target)
 	{
 		var length = source.Count;
@@ -11078,9 +11077,9 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
+		ArgumentNullException.ThrowIfNull(comparer);
 		var length = source.Count;
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
@@ -11095,9 +11094,9 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
 		var length = source.Count;
 		var result = false;
@@ -11115,6 +11114,8 @@ public static class RedStarLinqExtras
 
 	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
+		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
 		var length = source.Count;
 		var result = false;
@@ -11700,97 +11701,6 @@ public static class RedStarLinqExtras
 		String result = new('0', length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], i);
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = Min(source.Count, source2.Count);
-		var result = RedStarLinq.EmptyList<TResult>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			var item2 = source2[i];
-			result[i] = function(item, item2);
-		});
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = Min(source.Count, source2.Count);
-		var result = RedStarLinq.EmptyList<TResult>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			var item2 = source2[i];
-			result[i] = function(item, item2, i);
-		});
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static List<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged
-	{
-		var length = Min(source.Count, source2.Count);
-		var result = RedStarLinq.EmptyList<(T, T2)>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			var item2 = source2[i];
-			result[i] = (item, item2);
-		});
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		var result = RedStarLinq.EmptyList<TResult>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			var item2 = source2[i];
-			var item3 = source3[i];
-			result[i] = function(item, item2, item3);
-		});
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		var result = RedStarLinq.EmptyList<TResult>(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			var item2 = source2[i];
-			var item3 = source3[i];
-			result[i] = function(item, item2, item3, i);
-		});
-		return result;
-	}
-
-	[Experimental("CS9216")]
-	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
-	{
-		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
-		List<(T, T2, T3)> result = new(length);
-		Parallel.For(0, length, i =>
-		{
-			var item = source[i];
-			var item2 = source2[i];
-			var item3 = source3[i];
-			result[i] = (item, item2, item3);
-		});
 		return result;
 	}
 
