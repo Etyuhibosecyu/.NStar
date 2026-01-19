@@ -42,10 +42,6 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
-	public delegate void ListChangedHandler(TCertain newList);
-
-	public event ListChangedHandler? ListChanged;
-
 	public virtual TCertain Add(T item)
 	{
 		if (_size == Capacity)
@@ -185,8 +181,6 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 		_size = targetIndex;
 		return (TCertain)this;
 	}
-
-	protected virtual void Changed() => ListChanged?.Invoke((TCertain)this);
 
 	public virtual void Clear() => Clear(true);
 
@@ -932,8 +926,6 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 		if (collection is not TCertain list)
 			list = CollectionCreator(collection);
 		var length = list._size;
-		if (index + length > _size)
-			throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
 		return SetRangeInternal(index, length, list);
 	}
 

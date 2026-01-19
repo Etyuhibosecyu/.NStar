@@ -568,18 +568,13 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public override G.IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
-	protected override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index)
 	{
 		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
-			{
-				var item = current.Item;
-				if (invoke)
-					Changed();
-				return item;
-			}
+				return current.Item;
 			else if (current.Left == null)
 			{
 				index--;

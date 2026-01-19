@@ -962,6 +962,50 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestFillArray()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var @char = (char)random.Next('A', 'Z' + 1);
+			string @string = new(@char, 3);
+			var length = random.Next(1001);
+			var a = RedStarLinq.FillArray(@string, length);
+			var b = E.ToArray(E.Repeat(@string, length));
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinq.FillArray(@string, -5));
+			a = RedStarLinq.FillArray(index => @string.ToString(x => (char)(x + index)), length);
+			b = E.ToArray(E.Select(E.Range(0, length), index => @string.ToString(x => (char)(x + index))));
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinq.FillArray(index => @string.ToString(x => (char)(x + index)), -5));
+			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinq.FillArray((Func<int, string>)null!, length));
+			a = RedStarLinq.FillArray(length, index => @string.ToString(x => (char)(x + index)));
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinq.FillArray(-5, index => @string.ToString(x => (char)(x + index))));
+			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinq.FillArray(length, (Func<int, string>)null!));
+			var b2 = RedStarLinq.FillArray(@string, length);
+			var c2 = E.ToArray(E.Repeat(@string, length));
+			Assert.IsTrue(RedStarLinq.Equals(b2, c2));
+			Assert.IsTrue(E.SequenceEqual(c2, b2));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinq.FillArray(@string, -5));
+			b2 = RedStarLinq.FillArray(index => @string.ToString(x => (char)(x + index)), length);
+			c2 = E.ToArray(E.Select(E.Range(0, length), index => @string.ToString(x => (char)(x + index))));
+			Assert.IsTrue(RedStarLinq.Equals(b2, c2));
+			Assert.IsTrue(E.SequenceEqual(c2, b2));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinq.FillArray(index => @string.ToString(x => (char)(x + index)), -5));
+			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinq.FillArray((Func<int, string>)null!, length));
+			b2 = RedStarLinq.FillArray(length, index => @string.ToString(x => (char)(x + index)));
+			Assert.IsTrue(RedStarLinq.Equals(b2, c2));
+			Assert.IsTrue(E.SequenceEqual(c2, b2));
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => RedStarLinq.FillArray(-5, index => @string.ToString(x => (char)(x + index))));
+			Assert.ThrowsExactly<ArgumentNullException>(() => RedStarLinq.FillArray(length, (Func<int, string>)null!));
+		}
+	}
+
+	[TestMethod]
 	public void TestFilter() => Test(a =>
 	{
 		var c = a.Filter(x => x.Length > 0);
@@ -2806,6 +2850,48 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.SequenceEqual(d2, c2));
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.PCombine(b, b2, (Func<string, string, string, string>)null!).ToList());
 			Assert.ThrowsExactly<ArgumentNullException>(() => a.PCombine(b, b2, (Func<string, string, string, int, string>)null!).ToList());
+		}
+	});
+
+	[TestMethod]
+	public void TestPContains() => TestROL(a =>
+	{
+		ProcessString(a, "MMM");
+		ProcessString(a, "#");
+		ProcessString(a, null!);
+		static void ProcessString(G.IReadOnlyList<string> a, string s)
+		{
+			var c = a.PContains(s);
+			var d = E.Contains(a, s);
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, new EComparer<string>((x, y) => x == y));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, (x, y) => x == y);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, new EComparer<string>((x, y) => x == y, x => 42));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y, x => 42));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, (x, y) => x == y, x => 42);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y, x => 42));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, new EComparer<string>((x, y) => false));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, (x, y) => false);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, new EComparer<string>((x, y) => false, x => 42));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false, x => 42));
+			Assert.AreEqual(d, c);
+			c = a.PContains(s, (x, y) => false, x => 42);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false, x => 42));
+			Assert.AreEqual(d, c);
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PContains(s, (G.IEqualityComparer<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PContains(s, (Func<string, string, bool>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PContains(s, (x, y) => x == y, null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.PContains(s, null!, null!));
 		}
 	});
 

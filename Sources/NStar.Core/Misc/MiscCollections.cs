@@ -492,7 +492,7 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 
 	public override void Dispose() => GC.SuppressFinalize(this);
 
-	protected override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index)
 	{
 		if (_base is BaseIndexable<T> collection)
 			return collection[_start + index];

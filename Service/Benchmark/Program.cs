@@ -15,11 +15,14 @@ using NStar.BigCollections.Tests;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
-#pragma warning disable CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
-BigList<byte> bigList = new(RedStarLinq.FillArray(1000, _ => (byte)random.Next(256)), 5, 5);
-#pragma warning restore CS9216 // Тип предназначен только для оценки и может быть изменен или удален в будущих обновлениях. Чтобы продолжить, скройте эту диагностику.
-for (var i = 0; i < 1000000; i++)
+
+var sw = Stopwatch.StartNew();
+BigList<byte> bigList = new(GC.AllocateUninitializedArray<byte>(1000000000), 5, 10);
+for (var i = 1; i < 32; i++)
 {
-	bigList.Insert(random.Next((int)bigList.Length + 1), (byte)random.Next(256));
+	Console.WriteLine(i);
+	bigList.AddRange(GC.AllocateUninitializedArray<byte>(1000000000));
 }
+sw.Stop();
+Console.WriteLine(sw.Elapsed);
 ;

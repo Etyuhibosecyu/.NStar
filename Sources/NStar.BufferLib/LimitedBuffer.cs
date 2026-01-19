@@ -1,18 +1,24 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Reflection;
 
 namespace NStar.BufferLib;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain> where TCertain : LimitedBuffer<T, TCertain>, new()
 {
+	private const BindingFlags BindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
 	private protected T[] _items;
 	private protected int _start;
+
+	private protected static readonly G.SortedDictionary<int, G.List<T[]>> arrayPool = [];
+	private protected static readonly object globalLockObj = new();
+	private static readonly FieldInfo? sliceStartField = typeof(Slice<T>).GetField("_start", BindingAttr);
+	private static readonly FieldInfo? sliceBaseField = typeof(Slice<T>).GetField("_base", BindingAttr);
+	private static readonly FieldInfo? sliceBase2Field = typeof(Slice<T>).GetField("_base2", BindingAttr);
 
 	public LimitedBuffer(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
-		_items = new T[capacity];
+		_items = arrayPool.GetAndRemove(capacity);
 		_start = 0;
 	}
 
@@ -22,19 +28,44 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
-			_items = new T[length];
+			lock (globalLockObj)
+				_items = arrayPool.GetAndRemove(length);
 			c.CopyTo(_items, 0);
+			_size = length;
+		}
+		else if (collection is Slice<T> slice)
+		{
+			var length = slice.Length;
+			lock (globalLockObj)
+				_items = arrayPool.GetAndRemove(length);
+			if (sliceStartField?.GetValue(slice) is not int start)
+				start = 0;
+			if (sliceBaseField?.GetValue(slice) is G.IList<T> list)
+				for (var i = 0; i < length; i++)
+					_items[i] = list[start + i];
+			else if (sliceBase2Field?.GetValue(slice) is G.IReadOnlyList<T> list2)
+				for (var i = 0; i < length; i++)
+					_items[i] = list2[start + i];
+			_size = length;
+		}
+		else if (collection is G.IReadOnlyList<T> rol)
+		{
+			var length = rol.Count;
+			lock (globalLockObj)
+				_items = arrayPool.GetAndRemove(length);
+			for (var i = 0; i < length; i++)
+				_items[i] = rol[i];
 			_size = length;
 		}
 		else
 		{
 			_size = 0;
-			_items = new T[collection.Length()];
+			lock (globalLockObj)
+				_items = arrayPool.GetAndRemove(collection.Length());
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
-		_start = 0;
 	}
 
 	public LimitedBuffer(int capacity, G.IEnumerable<T> collection) : this(capacity)
@@ -65,7 +96,6 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
 		_items = [.. array];
-		_start = 0;
 	}
 
 	public LimitedBuffer(int capacity, params T[] array)
@@ -74,16 +104,15 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		if (array.Length > capacity)
 			throw new FullBufferException();
 		_size = Min(capacity, array.Length);
-		_items = new T[capacity];
+		lock (globalLockObj)
+			_items = arrayPool.GetAndRemove(capacity);
 		Array.Copy(array, array.Length - _size, _items, 0, _size);
-		_start = 0;
 	}
 
 	public LimitedBuffer(ReadOnlySpan<T> span)
 	{
 		_size = span.Length;
 		_items = span.ToArray();
-		_start = 0;
 	}
 
 	public LimitedBuffer(int capacity, ReadOnlySpan<T> span)
@@ -91,9 +120,9 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		if (span.Length > capacity)
 			throw new FullBufferException();
 		_size = Min(capacity, span.Length);
-		_items = new T[capacity];
+		lock (globalLockObj)
+			_items = arrayPool.GetAndRemove(capacity);
 		span.Slice(span.Length - _size, _size).CopyTo(_items);
-		_start = 0;
 	}
 
 	public override int Capacity
@@ -105,7 +134,9 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			if (value == _items.Length)
 				return;
 			ArgumentOutOfRangeException.ThrowIfZero(value);
-			var newItems = new T[value];
+			T[] newItems;
+			lock (globalLockObj)
+				newItems = arrayPool.GetAndRemove(value);
 			if (_size > 0)
 			{
 				if (_start + _size < Capacity)
@@ -203,13 +234,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		+ " а не увеличивает емкость. Если вам нужно изменить емкость, такие извращения не нужны,"
 		+ " достаточно Capacity = value.");
 
-	protected override T GetInternal(int index, bool invoke = true)
-	{
-		var item = _items[(_start + index) % Capacity];
-		if (invoke)
-			Changed();
-		return item;
-	}
+	protected override T GetInternal(int index) => _items[(_start + index) % Capacity];
 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{

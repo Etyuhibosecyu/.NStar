@@ -1464,7 +1464,6 @@ public class BitListTests
 			b[i + 4] = newList4[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsExactly<ArgumentException>(() => a = new BitList(bitList).SetRange(60, newList));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(-1, newList));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(1000, newList));
 		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).SetRange(4, (BitArray)null!));

@@ -11,7 +11,7 @@ namespace NStar.SortedSets;
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseSortedSet<T, TCertain>, new()
 {
-	public override T this[Index index, bool invoke = true]
+	public override T this[Index index, bool invoke = false]
 	{
 		get => base[index, invoke];
 		set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
@@ -169,16 +169,11 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 		GC.SuppressFinalize(this);
 	}
 
-	protected override T GetInternal(int index, bool invoke = true)
-	{
-		var item = (T?)items.GetType().GetMethod("GetInternal", System.Reflection.BindingFlags.Instance
-			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, invoke])
-			?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
-				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
-		if (invoke)
-			Changed();
-		return item;
-	}
+	protected override T GetInternal(int index) =>
+		(T?)items.GetType().GetMethod("GetInternal", System.Reflection.BindingFlags.Instance
+		| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index])
+		?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+		" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 
 	protected override void InsertInternal(int index, T item) => items.Insert(index, item);
 

@@ -51,14 +51,17 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
-	public override T this[Index index, bool invoke = true]
+	public override T this[Index index, bool invoke = false]
 	{
 		get
 		{
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			return GetInternal(index2, invoke);
+			var item = GetInternal(index2);
+			if (invoke)
+				Changed();
+			return item;
 		}
 		set
 		{
@@ -154,7 +157,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	protected override T GetInternal(int index, bool invoke = true) => GetDirect(IndexGetDirect(index));
+	protected override T GetInternal(int index) => GetDirect(IndexGetDirect(index));
 
 	protected virtual T GetDirect(int index) => base.GetInternal(index);
 

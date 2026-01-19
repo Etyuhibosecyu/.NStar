@@ -170,7 +170,7 @@ public static class RedStarLinq
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override TResult GetInternal(int index, bool invoke = true) => function(source[index]);
+		protected override TResult GetInternal(int index) => function(source[index]);
 
 		protected override ConvertList<T, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), function);
 
@@ -226,7 +226,7 @@ public static class RedStarLinq
 
 		public override void Dispose() => GC.SuppressFinalize(this);
 
-		protected override TResult GetInternal(int index, bool invoke = true) => function(source[index], index);
+		protected override TResult GetInternal(int index) => function(source[index], index);
 
 		protected override ConvertListInt<T, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), function);
 

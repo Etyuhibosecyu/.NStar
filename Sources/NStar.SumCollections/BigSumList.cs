@@ -33,7 +33,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public BigSumList(ReadOnlySpan<MpzT> span) : this((G.IEnumerable<MpzT>)span.ToArray()) { }
 
-	public override MpzT this[Index index, bool invoke = true]
+	public override MpzT this[Index index, bool invoke = false]
 	{
 		get => base[index, invoke];
 		set
@@ -125,18 +125,13 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public override G.IEnumerator<MpzT> GetEnumerator() => new Enumerator(this);
 
-	protected override MpzT GetInternal(int index, bool invoke = true)
+	protected override MpzT GetInternal(int index)
 	{
 		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
-			{
-				MpzT value = new(current.Value);
-				if (invoke)
-					Changed();
-				return value;
-			}
+				return new(current.Value);
 			else if (current.Left == null)
 			{
 				index--;
@@ -621,7 +616,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return base.FindNode(index) as Node;
 		}
 
-		protected override MpzT GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
+		protected override MpzT GetInternal(int index) => _underlying.GetInternal(_min + index);
 
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base

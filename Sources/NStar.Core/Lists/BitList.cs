@@ -680,13 +680,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public override int GetHashCode() => _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[_capacity - 1].GetHashCode();
 
-	protected override bool GetInternal(int index, bool invoke = true)
-	{
-		var item = (_items[index / BitsPerInt] & (1 << index % BitsPerInt)) != 0;
-		if (invoke)
-			Changed();
-		return item;
-	}
+	protected override bool GetInternal(int index) => (_items[index / BitsPerInt] & (1 << index % BitsPerInt)) != 0;
 
 	public virtual uint GetSmallRange(int index, int length)
 	{

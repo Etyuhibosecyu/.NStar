@@ -1767,7 +1767,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 #endif
 	}
 
-	protected override void InsertInternal(MpzT index, TCertain bigList)
+	protected override void InsertInternal(MpzT index, TCertain bigList, bool saveOriginal)
 	{
 		var this2 = (TCertain)this;
 		var length = bigList.Length;
@@ -1838,7 +1838,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 		//}
 		if (intIndex == endIntIndex && high[intIndex].Length + length <= fragment)
 		{
-			high[intIndex].InsertInternal(restIndex, bigList);
+			high[intIndex].InsertInternal(restIndex, bigList, saveOriginal);
 			if (highLength.Length == intIndex)
 				highLength.Add(length);
 			else
@@ -2305,7 +2305,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 			{
 				if (less.Length + difference > less.Capacity)
 					less.Capacity = fragment;
-				less.InsertInternal(insertIndex, greater.GetRangeInternal(takeIndex, difference).Reverse());
+				less.InsertInternal(insertIndex, greater.GetRangeInternal(takeIndex, difference).Reverse(), false);
 				greater.RemoveInternal(takeIndex, difference);
 				highLength[greaterIndex] -= difference;
 				highLength[lessIndex] += difference;
@@ -2321,7 +2321,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 #if VERIFY
 			Verify();
 #endif
-			InsertInternal(highLength.GetLeftValuesSum(lessIndex, out _) + insertIndex, tempRange);
+			InsertInternal(highLength.GetLeftValuesSum(lessIndex, out _) + insertIndex, tempRange, false);
 		}
 		finally
 		{

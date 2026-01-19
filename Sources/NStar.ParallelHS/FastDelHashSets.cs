@@ -72,9 +72,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
-	public override T this[Index index, bool invoke = true] { get => this[index, invoke, false]; set => this[index, invoke, false] = value; }
+	public override T this[Index index, bool invoke = false]
+	{
+		get => this[index, invoke, false];
+		set => this[index, invoke, false] = value;
+	}
 
-	public virtual T this[Index index, bool invoke = true, bool suppressException = false]
+	public virtual T this[Index index, bool invoke = false, bool suppressException = false]
 	{
 		get
 		{
@@ -89,7 +93,10 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			return GetInternal(index2, invoke);
+			var item = GetInternal(index2);
+			if (invoke)
+				Changed();
+			return item;
 		}
 		set
 		{
@@ -483,7 +490,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public ParallelHashSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
-	public override T this[Index index, bool invoke = true, bool suppressException = false]
+	public override T this[Index index, bool invoke = false, bool suppressException = false]
 	{
 		get => base[index, invoke, suppressException];
 		set

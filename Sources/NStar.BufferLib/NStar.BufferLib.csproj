@@ -13,7 +13,7 @@
 		<DebugType>pdbonly</DebugType>
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\NStar.Core\NStar.Core.csproj" />
 		<None Update="xmpir64.dll">

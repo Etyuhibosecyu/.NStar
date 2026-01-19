@@ -98,13 +98,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		GC.SuppressFinalize(this);
 	}
 
-	protected override T GetInternal(int index, bool invoke = true)
-	{
-		var item = entries[index].item;
-		if (invoke)
-			Changed();
-		return item;
-	}
+	protected override T GetInternal(int index) => entries[index].item;
 
 	protected override int IndexOfInternal(T item, int index, int length) => item != null ? IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
 
@@ -363,7 +357,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public ListHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
-	public override T this[Index index, bool invoke = true]
+	public override T this[Index index, bool invoke = false]
 	{
 		get => base[index, invoke];
 		set

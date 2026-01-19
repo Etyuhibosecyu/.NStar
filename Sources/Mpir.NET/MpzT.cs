@@ -1286,15 +1286,15 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	public static bool IsInfinity(MpzT value) => false;
 	public static bool IsInteger(MpzT value) => true;
 	public static bool IsNaN(MpzT value) => false;
-	public static bool IsNegative(MpzT value) => value < 0;
+	public static bool IsNegative(MpzT value) => Mpir.MpzCmpSi(value, 0) < 0;
 	public static bool IsNegativeInfinity(MpzT value) => false;
 	public static bool IsNormal(MpzT value) => true;
 	public static bool IsOddInteger(MpzT value) => !IsEvenInteger(value);
-	public static bool IsPositive(MpzT value) => value > 0;
+	public static bool IsPositive(MpzT value) => Mpir.MpzCmpSi(value, 0) > 0;
 	public static bool IsPositiveInfinity(MpzT value) => false;
 	public static bool IsRealNumber(MpzT value) => true;
 	public static bool IsSubnormal(MpzT value) => true;
-	public static bool IsZero(MpzT value) => value == 0;
+	public static bool IsZero(MpzT value) => Mpir.MpzCmpSi(value, 0) == 0;
 	public static MpzT Max(MpzT x, MpzT y) => x > y ? x : y;
 	public static MpzT MaxMagnitude(MpzT x, MpzT y) => Max(x, y);
 	public static MpzT MaxMagnitudeNumber(MpzT x, MpzT y) => Max(x, y);
@@ -1322,8 +1322,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 				uint ui => ui,
 				long li => li,
 				ulong uli => uli,
-				float f => f,
-				double d => d,
+				float f => (MpzT)f,
+				double d => (MpzT)d,
 				string s => new(s),
 				_ => throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, string."),
@@ -1543,11 +1543,11 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
 	};
 
-	public readonly int CompareTo(MpzT other) => Mpir.MpzCmp(val == 0 ? 0 : this, other.val == 0 ? 0 : other);
+	public readonly int CompareTo(MpzT other) => Mpir.MpzCmp(this, other);
 
-	public readonly int CompareTo(int other) => Mpir.MpzCmpSi(val == 0 ? 0 : this, other);
+	public readonly int CompareTo(int other) => Mpir.MpzCmpSi(this, other);
 
-	public readonly int CompareTo(uint other) => Mpir.MpzCmpUi(val == 0 ? 0 : this, other);
+	public readonly int CompareTo(uint other) => Mpir.MpzCmpUi(this, other);
 
 	// TODO: Optimize by accessing the memory directly
 	public readonly int CompareTo(long other)
@@ -1565,9 +1565,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		return ret;
 	}
 
-	public readonly int CompareTo(float other) => Mpir.MpzCmpD(val == 0 ? 0 : this, (double)other);
+	public readonly int CompareTo(float other) => Mpir.MpzCmpD(this, (double)other);
 
-	public readonly int CompareTo(double other) => Mpir.MpzCmpD(val == 0 ? 0 : this, other);
+	public readonly int CompareTo(double other) => Mpir.MpzCmpD(this, other);
 
 	//public int CompareTo(decimal other)
 	//{
@@ -1718,9 +1718,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static implicit operator MpzT(ulong value) => new(value);
 
-	public static implicit operator MpzT(float value) => new((double)value);
+	public static explicit operator MpzT(float value) => new((double)value);
 
-	public static implicit operator MpzT(double value) => new(value);
+	public static explicit operator MpzT(double value) => new(value);
 
 	//public static implicit operator MpzT(decimal value)
 	//{
@@ -1904,8 +1904,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 				uint ui => ui,
 				long li => li,
 				ulong uli => uli,
-				float f => MathF.Ceiling(MathF.Abs(f)) * MathF.Sign(f),
-				double d => Math.Ceiling(Math.Abs(d)) * Math.Sign(d),
+				float f => (MpzT)MathF.Ceiling(MathF.Abs(f)) * MathF.Sign(f),
+				double d => (MpzT)Math.Ceiling(Math.Abs(d)) * Math.Sign(d),
 				string s => new(s),
 				_ => throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, string."),
