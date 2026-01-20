@@ -1,16 +1,16 @@
 ﻿namespace NStar.SumCollections;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigSumList : BaseSumList<MpzT, BigSumList>
+public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 {
-	public BigSumList() { }
+	public ListOfBigSums() { }
 
-	public BigSumList(G.IEnumerable<MpzT> collection) : this()
+	public ListOfBigSums(G.IEnumerable<MpzT> collection) : this()
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		// These are explicit type checks in the mold of HashSet. It would have worked better with
 		// something like an ISorted interface. (We could make this work for SortedList.Keys, etc.)
-		if (collection is BigSumList sumList && sumList is not TreeSubSet)
+		if (collection is ListOfBigSums sumList && sumList is not TreeSubSet)
 		{
 			if (sumList.Length > 0)
 			{
@@ -29,9 +29,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 	}
 
-	public BigSumList(params MpzT[] array) : this((G.IEnumerable<MpzT>)array) { }
+	public ListOfBigSums(params MpzT[] array) : this((G.IEnumerable<MpzT>)array) { }
 
-	public BigSumList(ReadOnlySpan<MpzT> span) : this((G.IEnumerable<MpzT>)span.ToArray()) { }
+	public ListOfBigSums(ReadOnlySpan<MpzT> span) : this((G.IEnumerable<MpzT>)span.ToArray()) { }
 
 	public override MpzT this[Index index, bool invoke = false]
 	{
@@ -43,11 +43,11 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 	}
 
-	protected override Func<int, BigSumList> CapacityCreator => x => [];
+	protected override Func<int, ListOfBigSums> CapacityCreator => x => [];
 
-	protected override Func<G.IEnumerable<MpzT>, BigSumList> CollectionCreator { get; } = x => new(x);
+	protected override Func<G.IEnumerable<MpzT>, ListOfBigSums> CollectionCreator { get; } = x => new(x);
 
-	protected override Func<ReadOnlySpan<MpzT>, BigSumList> SpanCreator { get; } = x => new(x);
+	protected override Func<ReadOnlySpan<MpzT>, ListOfBigSums> SpanCreator { get; } = x => new(x);
 
 	public override int Length
 	{
@@ -68,7 +68,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		Changed();
 	}
 
-	protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, ListOfBigSums destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -78,7 +78,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return;
 		}
 		using TreeSubSet subset = new(this, sourceIndex, sourceIndex + length - 1, true, true);
-		using BigSumList list = new(subset);
+		using ListOfBigSums list = new(subset);
 		using var en = list.GetEnumerator();
 		if (destinationIndex < destination._size)
 		{
@@ -173,7 +173,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		return sum;
 	}
 
-	public virtual BigSumList GetViewBetween(int lowerValue, int upperValue)
+	public virtual ListOfBigSums GetViewBetween(int lowerValue, int upperValue)
 	{
 		if (Comparer.Compare(lowerValue, upperValue) > 0)
 			throw new ArgumentException("Максимум не может быть меньше минимума!");
@@ -254,7 +254,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 	}
 
 	[DebuggerDisplay("{Value.ToString()}, Left = {Left?.Value.ToString()}, Right = {Right?.Value.ToString()}, Parent = {Parent?.Value.ToString()}")]
-	internal new sealed class Node : BaseSumList<MpzT, BigSumList>.Node
+	internal new sealed class Node : BaseSumList<MpzT, ListOfBigSums>.Node
 	{
 		private new Node? Parent { get => base.Parent as Node; set => base.Parent = value; }
 		private MpzT _valuesSum;
@@ -340,7 +340,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
 
-		private protected override BaseSumList<MpzT, BigSumList>.Node Reconstruct(MpzT value, NodeColor color)
+		private protected override BaseSumList<MpzT, ListOfBigSums>.Node Reconstruct(MpzT value, NodeColor color)
 		{
 			var node = base.Reconstruct(new(value), color) as Node
 				?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
@@ -357,7 +357,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			Value = new(value);
 		}
 
-		internal override void UpdateValuesSum(BaseSumList<MpzT, BigSumList>.Node? newNode, BaseSumList<MpzT, BigSumList>.Node? oldNode) => ValuesSum += ((newNode as Node)?.ValuesSum ?? 0) - ((oldNode as Node)?.ValuesSum ?? 0);
+		internal override void UpdateValuesSum(BaseSumList<MpzT, ListOfBigSums>.Node? newNode, BaseSumList<MpzT, ListOfBigSums>.Node? oldNode) => ValuesSum += ((newNode as Node)?.ValuesSum ?? 0) - ((oldNode as Node)?.ValuesSum ?? 0);
 
 #if VERIFY
 
@@ -373,7 +373,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public new struct Enumerator : G.IEnumerator<MpzT>
 	{
-		private readonly BigSumList _list;
+		private readonly ListOfBigSums _list;
 		private readonly int _version;
 
 		private readonly Stack<Node> _stack;
@@ -381,11 +381,11 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 		private readonly bool _reverse;
 
-		internal Enumerator(BigSumList list) : this(list, reverse: false)
+		internal Enumerator(ListOfBigSums list) : this(list, reverse: false)
 		{
 		}
 
-		internal Enumerator(BigSumList list, bool reverse)
+		internal Enumerator(ListOfBigSums list, bool reverse)
 		{
 			_list = list;
 			list.VersionCheck();
@@ -487,9 +487,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		void IEnumerator.Reset() => Reset();
 	}
 
-	internal sealed class TreeSubSet : BigSumList
+	internal sealed class TreeSubSet : ListOfBigSums
 	{
-		private readonly BigSumList _underlying;
+		private readonly ListOfBigSums _underlying;
 		private readonly int _min;
 		private readonly int _max;
 		// keeps track of whether the length variable is up to date
@@ -503,7 +503,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		private readonly bool _lBoundActive, _uBoundActive;
 		// used to see if the length is out of date
 
-		public TreeSubSet(BigSumList Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
+		public TreeSubSet(ListOfBigSums Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
 		{
 			_underlying = Underlying;
 			version = Underlying.version;
@@ -564,7 +564,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			}
 		}
 
-		internal override bool BreadthFirstTreeWalk(BaseSumWalkPredicate<MpzT, BigSumList> action)
+		internal override bool BreadthFirstTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action)
 		{
 			VersionCheck();
 			if (root == null)
@@ -621,7 +621,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base
 		// Cannot increase the bounds of the subset, can only decrease it
-		public override BigSumList GetViewBetween(int lowerValue, int upperValue)
+		public override ListOfBigSums GetViewBetween(int lowerValue, int upperValue)
 		{
 			if (_lBoundActive && Comparer.Compare(_min, lowerValue) > 0)
 				throw new ArgumentOutOfRangeException(nameof(lowerValue));
@@ -630,7 +630,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
 		}
 
-		internal override bool InOrderTreeWalk(BaseSumWalkPredicate<MpzT, BigSumList> action)
+		internal override bool InOrderTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action)
 		{
 			VersionCheck();
 			if (root == null)
@@ -712,7 +712,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return true;
 		}
 
-		public override BigSumList Insert(int index, MpzT value)
+		public override ListOfBigSums Insert(int index, MpzT value)
 		{
 			if (!IsWithinRange(index))
 				throw new ArgumentOutOfRangeException(nameof(value));
@@ -773,4 +773,4 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 	}
 }
 
-internal delegate bool BigSumWalkPredicate(BigSumList.Node node);
+internal delegate bool BigSumWalkPredicate(ListOfBigSums.Node node);

@@ -25,7 +25,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 {
 	private protected TLow? low;
 	private protected LimitedBuffer<TCertain>? high;
-	private protected BigSumList? highLength;
+	private protected ListOfBigSums? highLength;
 	private protected TCertain? parent;
 	private protected MpzT _capacity = 0;
 	private protected MpzT fragment = 1;

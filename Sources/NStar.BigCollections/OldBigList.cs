@@ -6,7 +6,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 {
 	private protected TLow? low;
 	private protected List<TCertain>? high;
-	private protected BigSumList? highLength;
+	private protected ListOfBigSums? highLength;
 	private protected TCertain? parent;
 	private protected MpzT _capacity = 0;
 	private protected MpzT fragment = 1;
@@ -2428,7 +2428,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 		public MpzT RestIndex { get; }
 		public int IntIndex { get; }
 
-		public CopyRangeIndex(BigSumList highLength, MpzT index)
+		public CopyRangeIndex(ListOfBigSums highLength, MpzT index)
 		{
 			Index = index;
 			IntIndex = highLength.IndexOfNotGreaterSum(index, out var restIndex);

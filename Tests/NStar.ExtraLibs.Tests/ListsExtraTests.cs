@@ -848,9 +848,9 @@ public class SumListTests
 }
 
 [TestClass]
-public class BigSumListTests
+public class ListOfBigSumsTests
 {
-	private BigSumList sl = default!;
+	private ListOfBigSums sl = default!;
 	private G.List<MpzT> gl = default!;
 	private readonly byte[] bytes = new byte[20], bytes2 = new byte[48];
 
@@ -858,7 +858,7 @@ public class BigSumListTests
 	public void ComplexTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseSumListTests<MpzT, BigSumList>.ComplexTest(() =>
+		BaseSumListTests<MpzT, ListOfBigSums>.ComplexTest(() =>
 	{
 		var arr = RedStarLinq.FillArray(16, _ =>
 		{

@@ -3,18 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{99585F93-044B-49EB-B05A-29D091CDD452}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Service\Benchmark\Benchmark.csproj", "{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generation", "Service\Generation\Generation.csproj", "{491F0C4B-63F7-445B-91C7-6D8160DEF958}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inspection", "Service\Inspection\Inspection.csproj", "{BE535E58-94EF-F3D6-D38A-FDEBEF5F4DE2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NStar.Core", "Sources\NStar.Core\NStar.Core.csproj", "{0E932ED1-672B-4CD2-9B07-2FBCC816A2BF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{99585F93-044B-49EB-B05A-29D091CDD452}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mpir.NET", "Sources\Mpir.NET\Mpir.NET.csproj", "{46445AD7-52C5-4A52-854D-56BD3D15D926}"
 EndProject
@@ -25,6 +23,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.BigCollections.Tests", "Tests\NStar.BigCollections.Tests\NStar.BigCollections.Tests.csproj", "{2A94E257-F764-4D05-8EAB-378AC668FC29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.BufferLib", "Sources\NStar.BufferLib\NStar.BufferLib.csproj", "{BC912F31-E373-BAA2-623A-AB6508955706}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NStar.Core", "Sources\NStar.Core\NStar.Core.csproj", "{0E932ED1-672B-4CD2-9B07-2FBCC816A2BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.Core.Tests", "Tests\NStar.Core.Tests\NStar.Core.Tests.csproj", "{4ADC51D2-5654-20E0-9968-E28F7B16C648}"
 EndProject
