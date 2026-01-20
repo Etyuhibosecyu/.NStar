@@ -139,7 +139,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					low = new();
 					high?.ForEach(x => x?.Dispose());
 					high?.Dispose();
+					high = null;
 					highLength?.Dispose();
+					highLength = null;
 				}
 				high = null;
 				highLength = null;
@@ -153,10 +155,15 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				var first = this;
 				var reverse = false;
 				// Ищем первый лист и разрушаем "лишние" ветки
-				for (; first.high != null; first = first.high[0], first.parent?.high?.Dispose(), reverse ^= first.bReversed)
+				for (; first.high != null; )
 				{
 					first.high.Skip(1).ForEach(x => x.Dispose());
 					first.highLength?.Dispose();
+					first.highLength = null;
+					first = first.high[0];
+					first.parent?.high?.Dispose();
+					first.parent?.high = null;
+					reverse ^= first.bReversed;
 				}
 				Debug.Assert(first.low != null);
 				low = first.low;
@@ -1069,7 +1076,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (source == destination && sourceIndex + 1 == destinationIndex
 			&& sourceIndex + length == source.Length - 1 && sourceIntIndex == sourceEnd.IntIndex
 			&& destinationIndex + length == source.Length)
-			destination.RemoveEnd(sourceIndex + length);
+			destination.RemoveEndInternal(sourceIndex + length);
 		if (length == 1
 			&& (destinationIndex == 0 || destinationIndex != destination.Length))
 		{
@@ -1490,9 +1497,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	public override void Dispose()
 	{
 		low?.Dispose();
+		low = null;
 		high?.ForEach(x => x.Dispose());
 		high?.Dispose();
+		high = null;
 		highLength?.Dispose();
+		highLength = null;
 		parent = null;
 		_capacity = 0;
 		fragment = 1;
@@ -2148,7 +2158,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[intIndex + 1] = high[intIndex];
 			highLength?.Insert(intIndex + 1, high[intIndex].Length);
 			high[intIndex] = temp;
-			temp.Clear();
+			temp.ClearInternal(false);
 		}
 		else
 		{
@@ -2278,7 +2288,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high.Insert(intIndex, CapacityCreator(fragment));
 			high[intIndex].parent = this2;
 			AddCapacity(fragment);
-			high[intIndex].Resize(fragment);
+			high[intIndex].ResizeInternal(fragment);
 			highLength?.Insert(intIndex, fragment);
 			shiftedIntIndex++;
 			targetLength -= fragment;
@@ -2290,7 +2300,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			buffer.IncreaseCapacity(fragment, high[0].fragment);
 			high.CopyRangeTo(intIndex, high, intIndex + 1, effectiveHighLength - intIndex);
 			high[intIndex] = buffer;
-			high[intIndex].Resize(fragment);
+			high[intIndex].ResizeInternal(fragment);
 			high[intIndex].bReversed = false;
 			highLength?.Insert(intIndex, fragment);
 			shiftedIntIndex++;
@@ -2303,7 +2313,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high.Insert(intIndex, CapacityCreator(fragment));
 				high[intIndex].parent = this2;
 				AddCapacity(fragment);
-				high[intIndex].Resize(targetLength);
+				high[intIndex].ResizeInternal(targetLength);
 				highLength?.Insert(intIndex, targetLength);
 				shiftedIntIndex++;
 				targetLength = 0;
@@ -2315,7 +2325,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				buffer.IncreaseCapacity(fragment, high[0].fragment);
 				high.CopyRangeTo(intIndex, high, intIndex + 1, effectiveHighLength - intIndex);
 				high[intIndex] = buffer;
-				high[intIndex].Resize(targetLength);
+				high[intIndex].ResizeInternal(targetLength);
 				high[intIndex].bReversed = false;
 				highLength?.Insert(intIndex, targetLength);
 				shiftedIntIndex++;
@@ -2713,36 +2723,42 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeToLeaf(List<MoveRangeContext> stack, MoveRangeContext context,
 		int stackIndex, MpzT fragment)
 	{
-		Debug.Assert(context.Source.high != null);
-		var endIndex = context.SourceIndex + context.Length - 1;
-		var (start, end) = new CopyRangeSide(context.Source, context.SourceIndex, endIndex);
+		var (source, sourceIndex, destination, destinationIndex, length, _) = context;
+		Debug.Assert(source.high != null);
+		var endIndex = sourceIndex + length - 1;
+		var (start, end) = new CopyRangeSide(source, sourceIndex, endIndex);
 		// Диапазон дописывается после конца списка
-		if (start.IntIndex != 0 && !context.Source.HasSufficientLength(start.IntIndex)
-			&& start.RestIndex == 0 && context.Source.LastEffectiveLength() != fragment)
-			start = (start.Index, start.IntIndex - 1, context.Source.LastEffectiveLength());
+		if (start.IntIndex != 0 && !source.HasSufficientLength(start.IntIndex)
+			&& start.RestIndex == 0 && source.LastEffectiveLength() != fragment)
+			start = (start.Index, start.IntIndex - 1, source.LastEffectiveLength());
 		// Диапазон частично расположен за концом списка
-		if (start.IntIndex != 0 && !context.Source.HasSufficientLength(start.IntIndex))
+		if (start.IntIndex != 0 && !source.HasSufficientLength(start.IntIndex))
 		{
-			if (end.RestIndex >= fragment - context.Source.LastEffectiveLength())
-				end = (end.Index, end.IntIndex, end.RestIndex - (fragment - context.Source.LastEffectiveLength()));
+			if (end.RestIndex >= fragment - source.LastEffectiveLength())
+				end = (end.Index, end.IntIndex, end.RestIndex - (fragment - source.LastEffectiveLength()));
 			else
-				end = (end.Index, end.IntIndex - 1, end.RestIndex + context.Source.LastEffectiveLength());
+				end = (end.Index, end.IntIndex - 1, end.RestIndex + source.LastEffectiveLength());
 		}
 		// Весь диапазон помещается в одну ветку
 		if (start.IntIndex == end.IntIndex)
-			stack.Insert(stackIndex, (context.Source.high[start.IntIndex],
-				ProcessReverse(context.Source.high[start.IntIndex], start.RestIndex, context.Length),
-				context.Destination, context.DestinationIndex, context.Length, false));
-		else if (context.Source.IsReversed != context.Destination.IsReversed)
+			stack.Insert(stackIndex, (source.high[start.IntIndex],
+				ProcessReverse(source.high[start.IntIndex], start.RestIndex, length),
+				destination, destinationIndex, length, false));
+		else if (source.IsReversed != destination.IsReversed)
 			MoveRangeToLeafDiagonal(stack, context, stackIndex, fragment, (start, end));
 		else
 			MoveRangeToLeafDirect(stack, context, stackIndex, fragment, (start, end));
-		context.Destination.highLength?.SetOrAdd(start.IntIndex, context.Destination.highLength.Length
-			> start.IntIndex ? (context.Destination.high?[start.IntIndex].Length ?? 0)
-			: context.DestinationIndex + context.Length);
+		if (start.IntIndex == end.IntIndex)
+			source.highLength?[start.IntIndex] -= end.RestIndex + 1 - start.RestIndex;
+		else
+		{
+			source.highLength?.Remove((start.IntIndex + 1)..end.IntIndex);
+			source.highLength?[start.IntIndex + 1] -= end.RestIndex + 1;
+			source.highLength?[start.IntIndex] = start.RestIndex;
+		}
 #if VERIFY
-		context.Source.Verify();
-		context.Destination.Verify();
+		source.Verify();
+		destination.Verify();
 #endif
 	}
 
@@ -3182,7 +3198,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			AddCapacity(oldHigh[0].Capacity - _capacity);
 			reverse ^= oldHigh[0].bReversed;
 			oldHigh.Dispose();
+			oldHigh = null;
 			oldHighLength?.Dispose();
+			oldHighLength = null;
 			if (high == null)
 			{
 				Debug.Assert(low != null);

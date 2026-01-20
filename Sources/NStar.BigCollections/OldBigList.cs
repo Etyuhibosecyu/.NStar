@@ -1878,7 +1878,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 			high.Insert(intIndex, CapacityCreator(fragment));
 			high[intIndex].parent = this2;
 			AddCapacity(fragment);
-			high[intIndex].Resize(fragment);
+			high[intIndex].ResizeInternal(fragment);
 			highLength.Insert(intIndex, fragment);
 			shiftedIntIndex++;
 			targetLength -= fragment;
@@ -1889,7 +1889,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 			buffer.Capacity = fragment;
 			high.CopyRangeTo(intIndex, high, intIndex + 1, highLength.Length - intIndex);
 			high[intIndex] = buffer;
-			high[intIndex].Resize(fragment);
+			high[intIndex].ResizeInternal(fragment);
 			high[intIndex].bReversed = false;
 			highLength.Insert(intIndex, fragment);
 			shiftedIntIndex++;
@@ -1902,7 +1902,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 				high.Insert(intIndex, CapacityCreator(fragment));
 				high[intIndex].parent = this2;
 				AddCapacity(fragment);
-				high[intIndex].Resize(targetLength);
+				high[intIndex].ResizeInternal(targetLength);
 				highLength.Insert(intIndex, targetLength);
 				shiftedIntIndex++;
 				targetLength = 0;
@@ -1913,7 +1913,7 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 				buffer.Capacity = fragment;
 				high.CopyRangeTo(intIndex, high, intIndex + 1, highLength.Length - intIndex);
 				high[intIndex] = buffer;
-				high[intIndex].Resize(targetLength);
+				high[intIndex].ResizeInternal(targetLength);
 				high[intIndex].bReversed = false;
 				highLength.Insert(intIndex, targetLength);
 				shiftedIntIndex++;

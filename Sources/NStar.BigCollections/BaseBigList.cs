@@ -414,8 +414,6 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	protected abstract T GetInternal(MpzT index, bool invoke = true);
 
-	protected virtual MpzT GetProperCapacity(MpzT min) => min;
-
 	public virtual TCertain GetRange(MpzT index, bool alwaysCopy = false) => GetRange(index, Length - index, alwaysCopy);
 
 	public virtual TCertain GetRange(MpzT index, MpzT length, bool alwaysCopy = false)
@@ -738,8 +736,6 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is not TCertain bigList)
 			bigList = CollectionCreator(collection);
-		if (index + bigList.Length > Length)
-			throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
 		return SetRangeInternal(index, bigList);
 	}
 
