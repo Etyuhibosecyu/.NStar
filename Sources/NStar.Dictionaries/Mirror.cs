@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace NStar.Dictionaries;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TValue : notnull
+public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TValue : notnull
 {
 	protected struct Entry
 	{
@@ -447,8 +447,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			current = mirrored ? entries[current].next : entries[current].nextM;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - неизвестно, емкость - {entries?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 		return last;
 	}
@@ -511,8 +516,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			goto ConcurrentOperation;
 		}
 	ConcurrentOperation:
-		throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
+			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+			+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+			+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	ReturnFound:
 		ref var key = ref entry.key;
 	Return:
@@ -580,8 +590,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			goto ConcurrentOperation;
 		}
 	ConcurrentOperation:
-		throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
+			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+			+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+			+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	ReturnFound:
 		ref var value = ref entry.value;
 	Return:
@@ -723,8 +738,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 		return false;
 	}
@@ -778,8 +798,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 		value = default;
 		return false;
@@ -830,8 +855,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 		return false;
 	}
@@ -867,9 +897,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 				ProcessLast(entries, entry, ref bucket, last);
 				ProcessLast(entries, entry, ref bucketM, lastM, true);
 				key = entry.key;
-				Debug.Assert(StartOfFreeList - _freeList < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeList < 0,
+					"shouldn't underflow because max hashtable length is"
+					+ " MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
 				entry.next = StartOfFreeList - _freeList;
-				Debug.Assert(StartOfFreeList - _freeListM < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeListM < 0,
+					"shouldn't underflow because max hashtable length is"
+					+ " MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
 				entry.nextM = StartOfFreeList - _freeListM;
 				if (RuntimeHelpers.IsReferenceOrContainsReferences<TValue>())
 					entry.value = default!;
@@ -885,8 +919,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 		key = default;
 		return false;
@@ -1145,59 +1184,72 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 		return true;
 	}
 
-	private protected int TryInsertInternal(TKey key, TValue value, InsertionBehavior behavior, Entry[] entries, G.IEqualityComparer<TKey> comparer, G.IEqualityComparer<TValue> comparerM, uint hashCode, ref uint collisionCount, ref int current, bool mirrored = false)
+	private protected int TryInsertInternal(TKey key, TValue value, InsertionBehavior behavior, Entry[] entries,
+		G.IEqualityComparer<TKey> comparer, G.IEqualityComparer<TValue> comparerM,
+		uint hashCode, ref uint collisionCount, ref int current, bool mirrored = false)
 	{
 		if ((uint)current >= (uint)entries.Length)
 			return 0;
-		if ((mirrored ? entries[current].hashCodeM : entries[current].hashCode) == hashCode && (mirrored ? comparerM.Equals(entries[current].value, value) : comparer.Equals(entries[current].key, key)))
+		if ((mirrored ? entries[current].hashCodeM : entries[current].hashCode) != hashCode
+			|| !(mirrored ? comparerM.Equals(entries[current].value, value) : comparer.Equals(entries[current].key, key)))
 		{
-			if (mirrored ? comparer.Equals(entries[current].key, key) : comparerM.Equals(entries[current].value, value))
-				return behavior switch
-				{
-					InsertionBehavior.None => 2,
-					InsertionBehavior.OverwriteExisting => 1,
-					InsertionBehavior.ThrowOnExisting => throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка."),
-				};
-			if (behavior == InsertionBehavior.OverwriteExisting)
-			{
-				if (mirrored)
-				{
-					RemoveKey(key);
-					ref var entry = ref entries[current];
-					ref var bucket = ref GetBucket(entry.hashCode);
-					var last = Find(entries, current, bucket, true);
-					ProcessLast(entries, entry, ref bucket, last);
-					entry.hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
-					bucket = ref GetBucket(entry.hashCode);
-					entry.next = bucket - 1; // Value in _buckets is 1-based
-					entries[current].key = key;
-					bucket = current + 1; // Value in _buckets is 1-based
-				}
-				else
-				{
-					RemoveValue(value);
-					ref var entry = ref entries[current];
-					ref var bucketM = ref GetBucketM(entry.hashCodeM);
-					var lastM = Find(entries, current, bucketM);
-					ProcessLast(entries, entry, ref bucketM, lastM, true);
-					entry.hashCodeM = (uint)(typeof(TValue).IsValueType && comparer == null ? value.GetHashCode() : comparerM.GetHashCode(value));
-					bucketM = ref GetBucketM(entry.hashCodeM);
-					entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
-					entries[current].value = value;
-					bucketM = current + 1; // Value in _bucketsM is 1-based
-				}
-				return 1;
-			}
-			return behavior == InsertionBehavior.ThrowOnExisting ? throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)) : 2;
+			current = mirrored ? entries[current].nextM : entries[current].next;
+			collisionCount++;
+			if (collisionCount > (uint)entries.Length)
+				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+			return 3;
 		}
-		current = mirrored ? entries[current].nextM : entries[current].next;
-		collisionCount++;
-		if (collisionCount > (uint)entries.Length)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
-		return 3;
+		if (mirrored ? comparer.Equals(entries[current].key, key) : comparerM.Equals(entries[current].value, value))
+			return behavior switch
+			{
+				InsertionBehavior.None => 2,
+				InsertionBehavior.OverwriteExisting => 1,
+				InsertionBehavior.ThrowOnExisting => throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
+				_ => throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),
+				};
+		if (behavior == InsertionBehavior.OverwriteExisting)
+		{
+			if (mirrored)
+			{
+				RemoveKey(key);
+				ref var entry = ref entries[current];
+				ref var bucket = ref GetBucket(entry.hashCode);
+				var last = Find(entries, current, bucket, true);
+				ProcessLast(entries, entry, ref bucket, last);
+				entry.hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
+				bucket = ref GetBucket(entry.hashCode);
+				entry.next = bucket - 1; // Value in _buckets is 1-based
+				entries[current].key = key;
+				bucket = current + 1; // Value in _buckets is 1-based
+			}
+			else
+			{
+				RemoveValue(value);
+				ref var entry = ref entries[current];
+				ref var bucketM = ref GetBucketM(entry.hashCodeM);
+				var lastM = Find(entries, current, bucketM);
+				ProcessLast(entries, entry, ref bucketM, lastM, true);
+				entry.hashCodeM = (uint)(typeof(TValue).IsValueType && comparer == null ? value.GetHashCode() : comparerM.GetHashCode(value));
+				bucketM = ref GetBucketM(entry.hashCodeM);
+				entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
+				entries[current].value = value;
+				bucketM = current + 1; // Value in _bucketsM is 1-based
+			}
+			return 1;
+		}
+		return behavior == InsertionBehavior.ThrowOnExisting ? throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)) : 2;
 	}
 
 	public struct Enumerator : G.IEnumerator<G.KeyValuePair<TKey, TValue>>, IDictionaryEnumerator
@@ -1295,7 +1347,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
-	public sealed class KeyCollection(Mirror<TKey, TValue> dictionary) : ICollection<TKey>, NStar.Core.ICollection, IReadOnlyCollection<TKey>
+	public sealed class KeyCollection(Mirror<TKey, TValue> dictionary) : ICollection<TKey>, Core.ICollection, IReadOnlyCollection<TKey>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
@@ -1422,7 +1474,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, NStar.Core.IDicti
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
-	public sealed class ValueCollection(Mirror<TKey, TValue> dictionary) : ICollection<TValue>, NStar.Core.ICollection, IReadOnlyCollection<TValue>
+	public sealed class ValueCollection(Mirror<TKey, TValue> dictionary) : ICollection<TValue>, Core.ICollection, IReadOnlyCollection<TValue>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 

@@ -28,15 +28,7 @@ public class AppendTests
 		ProcessA(a);
 		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.IsTrue(b);
-			b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
-			Assert.IsTrue(b);
-			b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.IsFalse(b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContainsAny();
 	}
 
 	[TestMethod]
@@ -50,15 +42,7 @@ public class AppendTests
 		ProcessA(a);
 		a = list.ToList().Append<string>("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-			Assert.IsTrue(b);
-			b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.IsTrue(b);
-			b = a.ContainsAnyExcluding(a);
-			Assert.IsFalse(b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContainsAnyExcluding();
 	}
 
 	[TestMethod]

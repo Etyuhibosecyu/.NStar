@@ -163,6 +163,7 @@ public class SumList : BaseSumList<int, SumList>
 			sumExceedsBy = (int)Min(sum - ValuesSum, int.MaxValue);
 			return _size;
 		}
+		var oldSum = sum;
 		var current = root as Node;
 		sumExceedsBy = 0;
 		var index = 0;
@@ -184,8 +185,14 @@ public class SumList : BaseSumList<int, SumList>
 			}
 		}
 		sumExceedsBy += (-sum >> 32 == 0) ? (int)sum
-			: throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			: throw new InvalidOperationException("Невозможно сопоставить какой-либо индекс сумме " + oldSum
+			+ ". Возможные причины:\r\n"
+			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+			+ "2. Нарушение целостности структуры исходной коллекции (ошибка в логике - наши коллекции"
+			+ " все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			+ $"Текущее состояние: тип коллекции - {typeof(SumList)}, длина - {Length},"
+			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		return index - 1;
 	}
 

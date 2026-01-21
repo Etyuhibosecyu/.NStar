@@ -206,24 +206,14 @@ public class ListTests
 	public void TestContainsAny()
 	{
 		var a = list.ToList();
-		var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsFalse(b);
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestContainsAny();
 	}
 
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
 		var a = list.ToList();
-		var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(a);
-		Assert.IsFalse(b);
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestContainsAnyExcluding();
 	}
 
 	[TestMethod]

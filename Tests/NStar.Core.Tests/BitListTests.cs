@@ -61,19 +61,19 @@ public class BitListTests
 			random => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next())),
 			random => new((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())),
 			random => new(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))),
-			random => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)),
+			random => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x)),
-			random => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), x => x)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1)),
-			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), _ => random.Next(10) == -1)),
 			random => new(new BitArray(1600)), random => new(new BitArray(1600, false)),
 			random => new(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
 			random => new(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))),
-			random => new(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))),
+			random => new(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0))),
 			random => new(new BitList()), random => new(new BitList(1600)), random => new(new BitList(1600, false)),
 			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
 			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
@@ -84,19 +84,19 @@ public class BitListTests
 			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
 			random => new(new BitList((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
 			random => new(new BitList(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))),
-			random => new(new BitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x))),
-			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x))),
+			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), x => x))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1))),
-			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), _ => random.Next(10) == -1))),
+			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), _ => random.Next(10) == -1))),
 			random => new(new BitList(new BitArray(1600))), random => new(new BitList(new BitArray(1600, false))),
 			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next())))),
 			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))))),
-			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)))),
+			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0)))),
 		};
 		var array = new BitList[3200];
 		for (var i = 0; i < array.Length; i++)
@@ -113,14 +113,14 @@ public class BitListTests
 			var length = array[i].Length;
 			for (var j = 0; j < 3200; j++)
 			{
-				array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 1));
+				array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 0));
 				Assert.IsTrue(array[i].Capacity >= array[i].Length);
 				Assert.AreEqual(array[i].Length, length + j + 1);
 			}
 		}
 		Thread.Sleep(50);
 		for (var i = 0; i < array.Length; i++)
-			array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 1));
+			array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 0));
 	}
 
 	[TestMethod]
@@ -256,30 +256,30 @@ public class BitListTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var a = new BitList(E.Select(E.Range(0, random.Next(3, 3000)), _ => random.Next(2) == 1));
+			var a = new BitList(E.Select(E.Range(0, random.Next(3, 3000)), _ => random.Next(2) == 0));
 			var b = new BitList(a);
 			var n = random.Next(0, a.Length);
 			do
-				b[n] = random.Next(2) == 1;
+				b[n] = random.Next(2) == 0;
 			while (b[n] == a[n]);
 			Assert.AreEqual(n, a.Compare(b));
-			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 1));
+			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 0));
 			b = new(a);
 			n = random.Next(2, a.Length);
 			do
-				b[n] = random.Next(2) == 1;
+				b[n] = random.Next(2) == 0;
 			while (b[n] == a[n]);
 			Assert.AreEqual(n - 1, a.Compare(b, n - 1));
-			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 1));
+			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 0));
 			b = new(a);
 			var length = a.Length;
 			n = random.Next(2, a.Length);
 			do
-				b[n] = random.Next(2) == 1;
+				b[n] = random.Next(2) == 0;
 			while (b[n] == a[n]);
 			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
-			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(2) == 1));
-			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(2) == 1));
+			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(2) == 0));
+			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(2) == 0));
 			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
 			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
@@ -357,7 +357,7 @@ public class BitListTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new BitList(bitList);
-		var b = RedStarLinq.FillArray(128, x => random.Next(2) == 1);
+		var b = RedStarLinq.FillArray(128, x => random.Next(2) == 0);
 		var c = (bool[])b.Clone();
 		var d = (bool[])b.Clone();
 		var e = (bool[])b.Clone();
@@ -1403,7 +1403,7 @@ public class BitListTests
 			random.NextBytes(bytes);
 			count = random.Next(97);
 			index = random.Next(bytes.Length * BitsPerByte - count + 1);
-			value = random.Next(2) == 1;
+			value = random.Next(2) == 0;
 			bitList = new(bytes);
 			boolList = new(bitList);
 			bitList.SetAll(value, index, count);
@@ -1424,7 +1424,7 @@ public class BitListTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var index = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			a.SetOrAdd(index, n);
 			if (index < b.Count)
 				b[index] = n;
@@ -1668,14 +1668,14 @@ public class BitListTests
 	public void TestToArray()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseListTests<bool, BitList>.TestToArray(() => random.Next(2) == 1);
+		BaseListTests<bool, BitList>.TestToArray(() => random.Next(2) == 0);
 	}
 
 	[TestMethod]
 	public void TestTrimExcess()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseListTests<bool, BitList>.TestTrimExcess(() => random.Next(2) == 1);
+		BaseListTests<bool, BitList>.TestTrimExcess(() => random.Next(2) == 0);
 	}
 
 	[TestMethod]

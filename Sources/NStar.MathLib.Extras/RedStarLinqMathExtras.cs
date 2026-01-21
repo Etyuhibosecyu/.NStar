@@ -3242,7 +3242,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3264,7 +3264,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3286,7 +3286,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3308,7 +3308,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3337,7 +3337,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3359,7 +3359,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3381,7 +3381,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3403,7 +3403,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3432,7 +3432,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3454,7 +3454,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3476,7 +3476,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3498,7 +3498,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3527,7 +3527,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3549,7 +3549,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3571,7 +3571,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3593,7 +3593,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3622,7 +3622,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3644,7 +3644,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3666,7 +3666,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3688,7 +3688,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3717,7 +3717,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3739,7 +3739,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3761,7 +3761,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3783,7 +3783,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3812,7 +3812,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3834,7 +3834,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3856,7 +3856,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3878,7 +3878,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -3907,7 +3907,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3929,7 +3929,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3951,7 +3951,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -3973,7 +3973,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4002,7 +4002,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4024,7 +4024,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4046,7 +4046,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4068,7 +4068,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4097,7 +4097,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4119,7 +4119,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4141,7 +4141,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4163,7 +4163,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4192,7 +4192,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4214,7 +4214,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4236,7 +4236,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4258,7 +4258,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4287,7 +4287,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4309,7 +4309,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4331,7 +4331,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4353,7 +4353,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4382,7 +4382,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4404,7 +4404,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4426,7 +4426,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4448,7 +4448,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4477,7 +4477,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4499,7 +4499,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4521,7 +4521,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4543,7 +4543,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4572,7 +4572,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4594,7 +4594,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4616,7 +4616,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4638,7 +4638,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4667,7 +4667,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4689,7 +4689,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4711,7 +4711,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4733,7 +4733,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4762,7 +4762,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4784,7 +4784,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4806,7 +4806,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4828,7 +4828,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4857,7 +4857,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4879,7 +4879,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4901,7 +4901,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4923,7 +4923,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -4952,7 +4952,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4974,7 +4974,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -4996,7 +4996,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5018,7 +5018,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5047,7 +5047,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5069,7 +5069,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5091,7 +5091,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5113,7 +5113,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5142,7 +5142,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5164,7 +5164,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5186,7 +5186,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5208,7 +5208,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5237,7 +5237,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5259,7 +5259,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5281,7 +5281,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5303,7 +5303,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5332,7 +5332,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5354,7 +5354,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5376,7 +5376,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5398,7 +5398,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = item;
@@ -5427,7 +5427,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5449,7 +5449,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5471,7 +5471,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5493,7 +5493,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -5522,7 +5522,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5544,7 +5544,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5566,7 +5566,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5588,7 +5588,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5617,7 +5617,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5639,7 +5639,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5661,7 +5661,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5683,7 +5683,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5712,7 +5712,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5734,7 +5734,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5756,7 +5756,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5778,7 +5778,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5807,7 +5807,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5829,7 +5829,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5851,7 +5851,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5873,7 +5873,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -5902,7 +5902,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5924,7 +5924,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5946,7 +5946,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5968,7 +5968,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -5997,7 +5997,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6019,7 +6019,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6041,7 +6041,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6063,7 +6063,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6092,7 +6092,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6114,7 +6114,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6136,7 +6136,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6158,7 +6158,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6187,7 +6187,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6209,7 +6209,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6231,7 +6231,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6253,7 +6253,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6282,7 +6282,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6304,7 +6304,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6326,7 +6326,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6348,7 +6348,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6377,7 +6377,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6399,7 +6399,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6421,7 +6421,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6443,7 +6443,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6472,7 +6472,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6494,7 +6494,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6516,7 +6516,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6538,7 +6538,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6567,7 +6567,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6589,7 +6589,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6611,7 +6611,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6633,7 +6633,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6662,7 +6662,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6684,7 +6684,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6706,7 +6706,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6728,7 +6728,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6757,7 +6757,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6779,7 +6779,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6801,7 +6801,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6823,7 +6823,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6852,7 +6852,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6874,7 +6874,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6896,7 +6896,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6918,7 +6918,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -6947,7 +6947,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6969,7 +6969,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -6991,7 +6991,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7013,7 +7013,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7042,7 +7042,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7064,7 +7064,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7086,7 +7086,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7108,7 +7108,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7137,7 +7137,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7159,7 +7159,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7181,7 +7181,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7203,7 +7203,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7232,7 +7232,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7254,7 +7254,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7276,7 +7276,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7298,7 +7298,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7327,7 +7327,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7349,7 +7349,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7371,7 +7371,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7393,7 +7393,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7422,7 +7422,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7444,7 +7444,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7466,7 +7466,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7488,7 +7488,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7517,7 +7517,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7539,7 +7539,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7561,7 +7561,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7583,7 +7583,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7612,7 +7612,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7634,7 +7634,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7656,7 +7656,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7678,7 +7678,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -7707,7 +7707,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7729,7 +7729,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7751,7 +7751,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -7773,7 +7773,7 @@ public static class RedStarLinqMathExtras
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -23149,7 +23149,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23173,7 +23173,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23197,7 +23197,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23221,7 +23221,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23245,7 +23245,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23269,7 +23269,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23293,7 +23293,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23317,7 +23317,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23341,7 +23341,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23365,7 +23365,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23389,7 +23389,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23413,7 +23413,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23437,7 +23437,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23461,7 +23461,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23485,7 +23485,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23509,7 +23509,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23533,7 +23533,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23557,7 +23557,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23581,7 +23581,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23605,7 +23605,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23629,7 +23629,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23653,7 +23653,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23677,7 +23677,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = item;
@@ -23701,7 +23701,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -23725,7 +23725,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -23749,7 +23749,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -23773,7 +23773,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -23797,7 +23797,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -23821,7 +23821,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -23845,7 +23845,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -23869,7 +23869,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -23893,7 +23893,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -23917,7 +23917,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -23941,7 +23941,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -23965,7 +23965,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -23989,7 +23989,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -24013,7 +24013,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -24037,7 +24037,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -24061,7 +24061,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -24085,7 +24085,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -24109,7 +24109,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -24133,7 +24133,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -24157,7 +24157,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -24181,7 +24181,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -24205,7 +24205,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -24229,7 +24229,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -24253,7 +24253,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -24277,7 +24277,7 @@ public static class RedStarLinqMathExtras
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -27696,7 +27696,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			decimal f;
@@ -27838,7 +27838,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			decimal f;
@@ -27980,7 +27980,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			double f;
@@ -28122,7 +28122,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			double f;
@@ -28264,7 +28264,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			int f;
@@ -28406,7 +28406,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			int f;
@@ -28548,7 +28548,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			uint f;
@@ -28690,7 +28690,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			uint f;
@@ -28832,7 +28832,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			long f;
@@ -28974,7 +28974,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			long f;
@@ -29116,7 +29116,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			MpzT f;
@@ -29258,7 +29258,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			MpzT f;
@@ -29400,7 +29400,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			decimal f;
@@ -29542,7 +29542,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			decimal f;
@@ -29684,7 +29684,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			double f;
@@ -29826,7 +29826,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			double f;
@@ -29968,7 +29968,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			int f;
@@ -30110,7 +30110,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			int f;
@@ -30252,7 +30252,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			uint f;
@@ -30394,7 +30394,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			uint f;
@@ -30536,7 +30536,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			long f;
@@ -30678,7 +30678,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			long f;
@@ -30820,7 +30820,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			MpzT f;
@@ -30962,7 +30962,7 @@ public static class RedStarLinqMathExtras
 		}
 		else if (source is T[] array)
 		{
-			List<int> result = new(array.Length);
+			var result = RedStarLinq.EmptyList<int>(array.Length);
 			indicator = 0;
 			var j = 0;
 			MpzT f;
@@ -37044,12 +37044,12 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function, out decimal indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		decimal indicator = 0;
+		indicator = 0;
 		var j = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -37074,12 +37074,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		decimal indicator = 0;
+		indicator = 0;
 		var j = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -37104,12 +37104,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function, out double indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		double indicator = 0;
+		indicator = 0;
 		var j = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -37134,12 +37134,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function, out double indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		double indicator = 0;
+		indicator = 0;
 		var j = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -37164,12 +37164,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function, out int indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		var indicator = 0;
+		indicator = 0;
 		var j = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -37194,12 +37194,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function, out int indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		var indicator = 0;
+		indicator = 0;
 		var j = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -37224,12 +37224,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function, out uint indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		uint indicator = 0;
+		indicator = 0;
 		var j = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -37254,12 +37254,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function, out uint indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		uint indicator = 0;
+		indicator = 0;
 		var j = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -37284,12 +37284,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function, out long indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		long indicator = 0;
+		indicator = 0;
 		var j = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -37314,12 +37314,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function, out long indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		long indicator = 0;
+		indicator = 0;
 		var j = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -37344,12 +37344,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		indicator = 0;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -37374,12 +37374,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		indicator = 0;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -37404,12 +37404,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function, out decimal indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		decimal indicator = 0;
+		indicator = 0;
 		var j = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -37434,12 +37434,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		decimal indicator = 0;
+		indicator = 0;
 		var j = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -37464,12 +37464,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function, out double indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		double indicator = 0;
+		indicator = 0;
 		var j = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -37494,12 +37494,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function, out double indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		double indicator = 0;
+		indicator = 0;
 		var j = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -37524,12 +37524,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function, out int indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		var indicator = 0;
+		indicator = 0;
 		var j = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -37554,12 +37554,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function, out int indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		var indicator = 0;
+		indicator = 0;
 		var j = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -37584,12 +37584,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function, out uint indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		uint indicator = 0;
+		indicator = 0;
 		var j = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -37614,12 +37614,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function, out uint indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		uint indicator = 0;
+		indicator = 0;
 		var j = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -37644,12 +37644,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function, out long indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		long indicator = 0;
+		indicator = 0;
 		var j = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -37674,12 +37674,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function, out long indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		long indicator = 0;
+		indicator = 0;
 		var j = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -37704,12 +37704,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		indicator = 0;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -37734,12 +37734,12 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		indicator = 0;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)

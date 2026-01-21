@@ -10,40 +10,40 @@ public class BitListTests
 		var toInsert = Array.Empty<bool>();
 		var counter = 0;
 	l1:
-		var arr = RedStarLinq.FillArray(129, _ => random.Next(2) == 1);
+		var arr = RedStarLinq.FillArray(129, _ => random.Next(2) == 0);
 		BitList bl = new(arr);
 		G.List<bool> gl = new(arr);
 		var secondaryActions = new[] { () =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.AddRange(toInsert);
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.AddRange(toInsert.AsSpan());
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.AddRange(toInsert.ToList());
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.AddRange(E.Select(toInsert, x => x));
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.AddRange(E.SkipWhile(toInsert, _ => random.Next(10) == -1));
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -51,7 +51,7 @@ public class BitListTests
 		}, () =>
 		{
 			var n = random.Next(bl.Length);
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.Insert(n, toInsert);
 			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -59,7 +59,7 @@ public class BitListTests
 		}, () =>
 		{
 			var n = random.Next(bl.Length);
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.Insert(n, toInsert.AsSpan());
 			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -67,7 +67,7 @@ public class BitListTests
 		}, () =>
 		{
 			var n = random.Next(bl.Length);
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.Insert(n, toInsert.ToList());
 			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -75,7 +75,7 @@ public class BitListTests
 		}, () =>
 		{
 			var n = random.Next(bl.Length);
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.Insert(n, E.Select(toInsert, x => x));
 			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -83,7 +83,7 @@ public class BitListTests
 		}, () =>
 		{
 			var n = random.Next(bl.Length);
-			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 0);
 			bl.Insert(n, E.SkipWhile(toInsert, _ => random.Next(10) == -1));
 			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -100,7 +100,7 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			Assert.AreEqual(gl.Contains(n), bl.Contains(n));
 			Assert.AreEqual(gl.IndexOf(n), bl.IndexOf(n));
 			Assert.AreEqual(gl.LastIndexOf(n), bl.LastIndexOf(n));
@@ -109,13 +109,13 @@ public class BitListTests
 			if (bl.Length == 0)
 				return;
 			var index = random.Next(bl.Length);
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			Assert.AreEqual(gl.IndexOf(n, index) >= 0, bl.Contains(n, index));
 			Assert.AreEqual(gl.IndexOf(n, index), bl.IndexOf(n, index));
 			Assert.AreEqual(gl.LastIndexOf(n, index), bl.LastIndexOf(n, index));
 		}, () =>
 		{
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			var length = Min(random.Next(65), bl.Length);
 			if (length == 0)
 				return;
@@ -126,7 +126,7 @@ public class BitListTests
 		} };
 		var actions = new[] { () =>
 		{
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			bl.Add(n);
 			gl.Add(n);
 			Assert.IsTrue(bl.Equals(gl));
@@ -134,7 +134,7 @@ public class BitListTests
 		}, () =>
 		{
 			var index = random.Next(bl.Length);
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			bl.Insert(index, n);
 			gl.Insert(index, n);
 			Assert.IsTrue(bl.Equals(gl));
@@ -150,7 +150,7 @@ public class BitListTests
 		}, () =>
 		{
 			if (bl.Length == 0) return;
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			bl.RemoveValue(n);
 			gl.Remove(n);
 			Assert.IsTrue(bl.Equals(gl));
@@ -175,7 +175,7 @@ public class BitListTests
 			if (bl.Length == 0)
 				return;
 			var index = random.Next(bl.Length);
-			var n = random.Next(2) == 1;
+			var n = random.Next(2) == 0;
 			if (bl[index] == n)
 				return;
 			bl[index] = n;

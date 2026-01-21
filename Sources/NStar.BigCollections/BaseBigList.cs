@@ -1,4 +1,6 @@
-﻿namespace NStar.BigCollections;
+﻿using System;
+
+namespace NStar.BigCollections;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, IDisposable
@@ -8,13 +10,13 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		get
 		{
-			if (index >= Length)
+			if (index < 0 || index >= Length)
 				throw new IndexOutOfRangeException();
 			return GetInternal(index);
 		}
 		set
 		{
-			if (index >= Length)
+			if (index < 0 || index >= Length)
 				throw new IndexOutOfRangeException();
 			SetInternal(index, value);
 		}
@@ -220,6 +222,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	public virtual void CopyTo(Array array, int arrayIndex)
 	{
 		ArgumentNullException.ThrowIfNull(array);
+		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length);
 		if (array.Rank != 1)
 			throw new RankException("Массив должен иметь одно измерение.");
 		try
@@ -548,10 +552,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual MpzT LastIndexOf(T item, MpzT index, MpzT length)
 	{
-		if (Length != 0 && index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (Length != 0 && length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		if (Length != 0)
+		{
+			ArgumentOutOfRangeException.ThrowIfNegative(index);
+			ArgumentOutOfRangeException.ThrowIfNegative(length);
+		}
 		if (Length == 0)
 			return -1;
 		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Length);
@@ -588,8 +593,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual TCertain RemoveAt(MpzT index)
 	{
-		if ((uint)index >= (uint)Length)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Length);
 		RemoveAtInternal(index);
 		return (TCertain)this;
 	}
@@ -617,8 +622,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	public virtual TCertain RemoveEnd(MpzT index)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		if (index > Length)
-			throw new ArgumentException("Удаляемый диапазон выходит за текущий размер коллекции.");
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
 		RemoveEndInternal(index);
 		return (TCertain)this;
 	}
@@ -712,9 +716,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual TCertain SetOrAdd(MpzT index, T value)
 	{
-		if ((uint)index > (uint)Length)
-			throw new ArgumentOutOfRangeException(nameof(index));
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
 		SetOrAddInternal(index, value);
 		return (TCertain)this;
 	}
@@ -731,9 +734,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	/// <exception cref="ArgumentException"></exception>
 	public virtual TCertain SetRange(MpzT index, G.IEnumerable<T> collection)
 	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
 		ArgumentNullException.ThrowIfNull(collection);
-		if (index < 0 || index > Length)
-			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is not TCertain bigList)
 			bigList = CollectionCreator(collection);
 		return SetRangeInternal(index, bigList);

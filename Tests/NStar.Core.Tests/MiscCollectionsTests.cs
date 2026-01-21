@@ -71,15 +71,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.IsTrue(b);
-			b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
-			Assert.IsTrue(b);
-			b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.IsFalse(b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContainsAny();
 	}
 
 	[TestMethod]
@@ -97,15 +89,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").Convert(x => x), 1);
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-			Assert.IsTrue(b);
-			b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.IsTrue(b);
-			b = a.ContainsAnyExcluding(a);
-			Assert.IsFalse(b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContainsAnyExcluding();
 	}
 
 	[TestMethod]

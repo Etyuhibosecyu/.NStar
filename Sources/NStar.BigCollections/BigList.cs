@@ -77,6 +77,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			LeafSizeBitLength = leafSizeBitLength;
 		else if (subbranchesBitLength is >= 2 and <= 30)
 			LeafSizeBitLength = subbranchesBitLength;
+		ArgumentNullException.ThrowIfNull(collection);
 		low = new();
 		ConstructFromEnumerable(collection);
 #if VERIFY
@@ -86,8 +87,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1,
-		int leafSizeBitLength = -1) : this(capacity, subbranchesBitLength, leafSizeBitLength)
+	public BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+		: this(capacity, subbranchesBitLength, leafSizeBitLength)
 	{
 		ConstructFromEnumerable(collection);
 #if VERIFY
@@ -155,7 +156,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				var first = this;
 				var reverse = false;
 				// Ищем первый лист и разрушаем "лишние" ветки
-				for (; first.high != null; )
+				for (; first.high != null;)
 				{
 					first.high.Skip(1).ForEach(x => x.Dispose());
 					first.highLength?.Dispose();
@@ -263,8 +264,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return this2;
 		}
 		else if (high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		var bReversedOld = bReversed;
 		if (bReversedOld)
 		{
@@ -637,7 +644,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected static void CheckParams(MoveRangeContext context)
 	{
-		if (context.NoCopy)
+		if (context.SpecialMode)
 			return;
 		if (context.Source == null && context.SourceIndex < 0 && context.DestinationIndex < 0)
 			return;
@@ -723,8 +730,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (source.high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {source.Length}, подветок - {source.high?.Length ?? 0},"
+				+ $" реверс - {source.bReversed}, емкость - {source.Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (source.bReversed ^ inverted && increment <= source.Length)
 		{
 			stack.Insert(stackIndex, (source, 0, source, increment, source.Length));
@@ -1019,8 +1032,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var (source, sourceIndex, destination, destinationIndex, length) = context;
 		if (!(source.high != null && destination.high != null))
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина источника - {source.Length}, подветок источника - {source.high?.Length ?? 0},"
+				+ $" реверс источника - {source.bReversed}, емкость источника - {source.Capacity},"
+				+ $" длина назначения - {destination.Length}, подветок назначения - {destination.high?.Length ?? 0},"
+				+ $" реверс назначения - {destination.bReversed}, емкость назначения - {destination.Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (sourceIndex < 0)
 			throw new ArgumentOutOfRangeException(nameof(context), "Индекс не может быть отрицательным.");
 		if (destinationIndex < 0)
@@ -1167,8 +1188,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			return;
 		}
-		throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-			+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+		throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n"
+			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+			+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+			+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			+ $"Текущее состояние: длина источника - {source.Length}, подветок источника - {source.high?.Length ?? 0},"
+			+ $" реверс источника - {source.bReversed}, емкость источника - {source.Capacity},"
+			+ $" длина назначения - {destination.Length}, подветок назначения - {destination.high?.Length ?? 0},"
+			+ $" реверс назначения - {destination.bReversed}, емкость назначения - {destination.Capacity},"
+			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	protected static void CopyRangeToSimilarDiagonal(List<CopyRangeContext> stack, CopyRangeContext context,
@@ -1484,8 +1513,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[endIntIndex].CopyToInternal(0, list, destIndex, endRestIndex + 1);
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length)
@@ -1538,8 +1573,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (GetProcessAccessCache(Root, index, invoke, out var result))
 			return result;
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	protected virtual MpzT GetLeftValuesSum(int index, out MpzT actualValue)
@@ -1783,8 +1824,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (low != null)
 			return IndexOfTrivial(item, index, length, fromEnd);
 		else if (high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		var endIndex = index + length - 1;
 		var bReversedOld = bReversed;
 		if (bReversedOld)
@@ -2072,8 +2119,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		Root.accessCache?.Clear();
 		if (high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (bReversed)
 		{
 			Reverse();
@@ -2199,8 +2252,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно вставить диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (Length <= 1)
 			bReversed = false;
 		var bReversedOld = bReversed;
@@ -2395,7 +2454,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var context = stack.GetAndRemove(^1);
 		CheckParams(context);
-		if (!context.NoCopy && context.Length == 0)
+		if (!context.SpecialMode && context.Length == 0)
 			return;
 		var stackIndex = stack.Length;
 		if (context.Source == null)
@@ -2409,7 +2468,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert(context.Source != context.Destination);
 		var fragment = context.Source.fragment;
 		// Если копирование не нужно
-		if (context.NoCopy)
+		if (context.SpecialMode)
 		{
 			if (context.SourceIndex == -1 && context.DestinationIndex == -1 && context.Length < 0)
 				MoveRangeIterationNoCopy2(stack, context, stackIndex);
@@ -2572,8 +2631,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (source.high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {source.Length}, подветок - {source.high?.Length ?? 0},"
+				+ $" реверс - {source.bReversed}, емкость - {source.Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		source.Root.moveStack = null;
 		CopyRange((null!, -1, source, -1, -increment));
 		source.Root.moveStack = stack;
@@ -2823,8 +2888,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var (source, sourceIndex, destination, destinationIndex, length, _) = context;
 		if (!(source.high != null && destination.high != null))
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина источника - {source.Length}, подветок источника - {source.high?.Length ?? 0},"
+				+ $" реверс источника - {source.bReversed}, емкость источника - {source.Capacity},"
+				+ $" длина назначения - {destination.Length}, подветок назначения - {destination.high?.Length ?? 0},"
+				+ $" реверс назначения - {destination.bReversed}, емкость назначения - {destination.Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (sourceIndex < 0)
 			throw new ArgumentOutOfRangeException(nameof(context), "Индекс не может быть отрицательным.");
 		if (destinationIndex < 0)
@@ -3175,7 +3248,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		(context.Source, processSource ? ProcessReverse(context.Source, context.SourceIndex,
 		context.Length, context.Source.Length) : context.SourceIndex, context.Destination, processDestination
 		? ProcessReverse(context.Destination, context.DestinationIndex, context.Length,
-		destinationBound) : context.DestinationIndex, context.Length, context.NoCopy);
+		destinationBound) : context.DestinationIndex, context.Length, context.SpecialMode);
 
 	protected virtual void ReduceCapacityExponential(MpzT newFragment)
 	{
@@ -3273,8 +3346,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
 		if (high != null)
 			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
@@ -3312,8 +3391,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
 		if (high != null)
 			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
@@ -3340,8 +3425,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null)
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		Root.accessCache?.Clear();
 		var endIndex = index + length - 1;
 		if (bReversed)
@@ -3583,8 +3674,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[intIndex].SetInternal(restIndex, value);
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
 		if (high != null)
 			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
@@ -3658,8 +3755,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert((high.Length - 1) * fragment + high[^1].Capacity == Capacity);
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Обнаружен недействительный список. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 #endif
 
@@ -3672,11 +3775,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	}
 
 	protected record struct MoveRangeContext(TCertain Source, MpzT SourceIndex,
-		TCertain Destination, MpzT DestinationIndex, MpzT Length, bool NoCopy)
+		TCertain Destination, MpzT DestinationIndex, MpzT Length, bool SpecialMode)
 	{
 		public static implicit operator MoveRangeContext((TCertain Source, MpzT SourceIndex,
-			TCertain Destination, MpzT DestinationIndex, MpzT Length, bool NoCopy) x) =>
-			new(x.Source, x.SourceIndex, x.Destination, x.DestinationIndex, x.Length, x.NoCopy);
+			TCertain Destination, MpzT DestinationIndex, MpzT Length, bool SpecialMode) x) =>
+			new(x.Source, x.SourceIndex, x.Destination, x.DestinationIndex, x.Length, x.SpecialMode);
 	}
 
 	protected readonly struct CopyRangeIndex

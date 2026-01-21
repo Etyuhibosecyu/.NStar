@@ -282,8 +282,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.And(y))];
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно вычислить побитовый AND. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		return this;
 	}
 
@@ -484,8 +490,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			return result;
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить диапазон. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public virtual BigBitList Not()
@@ -495,8 +507,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else if (high != null)
 			high.ForEach(x => x.Not());
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно вычислить побитовый NOT. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		return this;
 	}
 
@@ -511,8 +529,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.Or(y))];
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно вычислить побитовый OR. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		return this;
 	}
 
@@ -525,8 +549,15 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else if (high != null)
 			high.ForEach(x => x.SetAll(value));
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно заполнить диапазон одинаковыми элементами."
+				+ " Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public virtual BigList<uint> ToUIntBigList()
@@ -536,8 +567,15 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else if (high != null)
 			return new(E.SelectMany(high, x => x.ToUIntBigList()));
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно преобразовать в BigList<uint>."
+				+ " Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public virtual BigBitList Xor(BigBitList value)
@@ -551,8 +589,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.Xor(y))];
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно вычислить побитовый XOR. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
+				+ $" реверс - {bReversed}, емкость - {Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		return this;
 	}
 }

@@ -162,8 +162,13 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 			return removed;
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить элемент из очереди. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public virtual T Peek()
@@ -175,8 +180,13 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else if (high != null)
 			return high.Peek().Peek();
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	private protected Queue<T> PeekQueue()
@@ -211,8 +221,13 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else if (high != null)
 			return E.ElementAt(high, (int)(i / fragment)).GetElement(i % fragment);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public virtual T[] ToArray()

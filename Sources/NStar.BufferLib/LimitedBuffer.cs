@@ -6,7 +6,7 @@ namespace NStar.BufferLib;
 public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain> where TCertain : LimitedBuffer<T, TCertain>, new()
 {
 	private const BindingFlags BindingAttr = BindingFlags.Instance | BindingFlags.NonPublic;
-	private protected T[] _items;
+	private protected T[]? _items;
 	private protected int _start;
 
 	private protected static readonly G.SortedDictionary<int, G.List<T[]>> arrayPool = [];
@@ -81,7 +81,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			_size = Min(capacity, length);
 			var start = length - _size;
 			for (var i = start; i < length; i++)
-				_items[i - start] = list[i];
+				_items?[i - start] = list[i];
 		}
 		else
 		{
@@ -127,12 +127,18 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	public override int Capacity
 	{
-		get => _items.Length;
+		get => _items?.Length ?? 0;
 		set
 		{
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
-			if (value == _items.Length)
+			if (value == (_items?.Length ?? 0))
 				return;
+			if (value == 0)
+			{
+				_items = null;
+				return;
+			}
+			Debug.Assert(_items != null);
 			ArgumentOutOfRangeException.ThrowIfZero(value);
 			T[] newItems;
 			lock (globalLockObj)
@@ -170,6 +176,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void ClearInternal(int index, int length)
 	{
+		Debug.Assert(_items != null);
 		if (_start + index + length < Capacity)
 			Array.Clear(_items, _start + index, length);
 		else if (_start + index < Capacity)
@@ -199,6 +206,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void CopyToInternal(Array array, int arrayIndex)
 	{
+		Debug.Assert(_items != null);
 		if (_start + _size < Capacity)
 			Array.Copy(_items, _start, array, arrayIndex, _size);
 		else
@@ -210,6 +218,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
+		Debug.Assert(_items != null);
 		if (_start + index + length < Capacity)
 			Array.Copy(_items, _start + index, array, arrayIndex, length);
 		else if (_start + index < Capacity)
@@ -234,7 +243,11 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		+ " а не увеличивает емкость. Если вам нужно изменить емкость, такие извращения не нужны,"
 		+ " достаточно Capacity = value.");
 
-	protected override T GetInternal(int index) => _items[(_start + index) % Capacity];
+	protected override T GetInternal(int index)
+	{
+		Debug.Assert(_items != null);
+		return _items[(_start + index) % Capacity];
+	}
 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{
@@ -397,6 +410,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void SetInternal(int index, T value)
 	{
+		Debug.Assert(_items != null);
 		_items[(_start + index) % Capacity] = value;
 		Changed();
 	}

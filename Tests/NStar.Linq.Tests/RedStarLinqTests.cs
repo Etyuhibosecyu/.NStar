@@ -776,11 +776,11 @@ public class RedStarLinqTests
 		var c = a.ConvertAndJoin(x => x[1..]);
 		var d = E.SelectMany(a, x => x[1..]);
 		Assert.IsTrue(E.SequenceEqual(c, d));
-		Assert.ThrowsExactly<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.ConvertAndJoin((Func<string, string>)null!));
 		c = a.ConvertAndJoin((x, index) => x[1..] + index.ToString("D2"));
 		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
 		Assert.IsTrue(E.SequenceEqual(c, d));
-		Assert.ThrowsExactly<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.ConvertAndJoin((Func<string, int, string>)null!));
 	});
 
 	[TestMethod]
@@ -1954,6 +1954,49 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
 		}
 	}
+
+	[TestMethod]
+	public void TestJoinIntoSingle() => Test(a =>
+	{
+		var c = a.Convert(x => x[1..]).JoinIntoSingle();
+		var d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert((x, index) => x[1..] + index.ToString("D2")).JoinIntoSingle();
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert(x => x[1..].ToList()).JoinIntoSingle();
+		d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert((x, index) => (x[1..] + index.ToString("D2")).ToList()).JoinIntoSingle();
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert(x => x[1..].ToArray()).JoinIntoSingle();
+		d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert((x, index) => (x[1..] + index.ToString("D2")).ToArray()).JoinIntoSingle();
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert(x => E.ToList(x[1..])).JoinIntoSingle();
+		d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert((x, index) => E.ToList(x[1..] + index.ToString("D2"))).JoinIntoSingle();
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert(x => x[1..].ToList().GetSlice()).JoinIntoSingle();
+		d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert((x, index) => (x[1..] + index.ToString("D2")).ToList().GetSlice()).JoinIntoSingle();
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		c = a.Convert(x => E.Select(x[1..], x => x)).JoinIntoSingle();
+		d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		c = a.Convert((x, index) => E.Select(x[1..] + index.ToString("D2"), x => x)).JoinIntoSingle();
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.Convert((Func<string, string>)null!).JoinIntoSingle());
+		Assert.ThrowsExactly<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!).JoinIntoSingle());
+	});
 
 	[TestMethod]
 	public void TestPairs() => Test(a =>

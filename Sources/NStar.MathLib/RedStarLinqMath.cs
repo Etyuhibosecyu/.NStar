@@ -30,8 +30,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Max(function(list[0]), function(list[1])),
 					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -56,8 +55,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Max(function(array[0]), function(array[1])),
 					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -83,8 +81,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Max(function(list2[0]), function(list2[1])),
 					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -110,8 +107,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Max(function(list3[0]), function(list3[1])),
 					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -157,8 +153,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -183,8 +178,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -210,8 +204,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Max(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Max(Math.Max(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -237,8 +230,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Max(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Max(Math.Max(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -284,8 +276,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Max(function(list[0]), function(list[1])),
 					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -310,8 +301,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Max(function(array[0]), function(array[1])),
 					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -337,8 +327,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Max(function(list2[0]), function(list2[1])),
 					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -364,8 +353,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Max(function(list3[0]), function(list3[1])),
 					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -411,8 +399,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -437,8 +424,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -464,8 +450,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Max(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Max(Math.Max(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -491,8 +476,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Max(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Max(Math.Max(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -538,8 +522,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Max(function(list[0]), function(list[1])),
 					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -564,8 +547,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Max(function(array[0]), function(array[1])),
 					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -591,8 +573,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Max(function(list2[0]), function(list2[1])),
 					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -618,8 +599,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Max(function(list3[0]), function(list3[1])),
 					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -665,8 +645,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -692,8 +671,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			int f;
@@ -718,8 +696,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Max(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Max(Math.Max(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -745,8 +722,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Max(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Max(Math.Max(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -788,12 +764,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list[0]),
 					2 => Math.Max(function(list[0]), function(list[1])),
 					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -814,12 +789,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(array[0]),
 					2 => Math.Max(function(array[0]), function(array[1])),
 					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -841,12 +815,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list2[0]),
 					2 => Math.Max(function(list2[0]), function(list2[1])),
 					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -868,12 +841,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list3[0]),
 					2 => Math.Max(function(list3[0]), function(list3[1])),
 					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -915,12 +887,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list[0], 0),
 					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -941,12 +912,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(array[0], 0),
 					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -968,12 +938,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list2[0], 0),
 					2 => Math.Max(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Max(Math.Max(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -995,12 +964,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list3[0], 0),
 					2 => Math.Max(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Max(Math.Max(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -1046,8 +1014,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Max(function(list[0]), function(list[1])),
 					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1072,8 +1039,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Max(function(array[0]), function(array[1])),
 					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1099,8 +1065,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Max(function(list2[0]), function(list2[1])),
 					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1126,8 +1091,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Max(function(list3[0]), function(list3[1])),
 					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1173,8 +1137,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1199,8 +1162,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1226,8 +1188,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Max(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Max(Math.Max(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1253,8 +1214,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Max(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Max(Math.Max(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1300,8 +1260,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => MpzT.Max(function(list[0]), function(list[1])),
 					3 => MpzT.Max(MpzT.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1326,8 +1285,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => MpzT.Max(function(array[0]), function(array[1])),
 					3 => MpzT.Max(MpzT.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1353,8 +1311,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => MpzT.Max(function(list2[0]), function(list2[1])),
 					3 => MpzT.Max(MpzT.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1380,8 +1337,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => MpzT.Max(function(list3[0]), function(list3[1])),
 					3 => MpzT.Max(MpzT.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1427,8 +1383,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => MpzT.Max(function(list[0], 0), function(list[1], 1)),
 					3 => MpzT.Max(MpzT.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1453,8 +1408,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => MpzT.Max(function(array[0], 0), function(array[1], 1)),
 					3 => MpzT.Max(MpzT.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1480,8 +1434,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => MpzT.Max(function(list2[0], 0), function(list2[1], 1)),
 					3 => MpzT.Max(MpzT.Max(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1507,8 +1460,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => MpzT.Max(function(list3[0], 0), function(list3[1], 1)),
 					3 => MpzT.Max(MpzT.Max(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -1553,7 +1505,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Max(list[0], list[1]),
 					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -1578,7 +1530,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Max(array[0], array[1]),
 					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -1604,7 +1556,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Max(list2[0], list2[1]),
 					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			decimal indicator = 0;
@@ -1649,7 +1601,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Max(list[0], list[1]),
 					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -1674,7 +1626,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Max(array[0], array[1]),
 					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -1700,7 +1652,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Max(list2[0], list2[1]),
 					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			double indicator = 0;
@@ -1745,7 +1697,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Max(list[0], list[1]),
 					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -1770,7 +1722,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Max(array[0], array[1]),
 					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -1796,7 +1748,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Max(list2[0], list2[1]),
 					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			var indicator = 0;
@@ -1837,11 +1789,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => list[0],
 					2 => Math.Max(list[0], list[1]),
 					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -1862,11 +1814,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => array[0],
 					2 => Math.Max(array[0], array[1]),
 					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -1888,11 +1840,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => list2[0],
 					2 => Math.Max(list2[0], list2[1]),
 					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			uint indicator = 0;
@@ -1937,7 +1889,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Max(list[0], list[1]),
 					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1962,7 +1914,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Max(array[0], array[1]),
 					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -1988,7 +1940,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Max(list2[0], list2[1]),
 					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			long indicator = 0;
@@ -2033,7 +1985,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => MpzT.Max(list[0], list[1]),
 					3 => MpzT.Max(MpzT.Max(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -2058,7 +2010,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => MpzT.Max(array[0], array[1]),
 					3 => MpzT.Max(MpzT.Max(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -2084,7 +2036,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => MpzT.Max(list2[0], list2[1]),
 					3 => MpzT.Max(MpzT.Max(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -2693,8 +2645,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Min(function(list[0]), function(list[1])),
 					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2719,8 +2670,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Min(function(array[0]), function(array[1])),
 					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2746,8 +2696,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Min(function(list2[0]), function(list2[1])),
 					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2773,8 +2722,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Min(function(list3[0]), function(list3[1])),
 					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2820,8 +2768,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2846,8 +2793,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2873,8 +2819,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Min(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Min(Math.Min(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2900,8 +2845,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Min(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Min(Math.Min(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -2947,8 +2891,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Min(function(list[0]), function(list[1])),
 					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -2973,8 +2916,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Min(function(array[0]), function(array[1])),
 					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3000,8 +2942,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Min(function(list2[0]), function(list2[1])),
 					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3027,8 +2968,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Min(function(list3[0]), function(list3[1])),
 					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3074,8 +3014,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3100,8 +3039,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3127,8 +3065,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Min(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Min(Math.Min(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3154,8 +3091,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Min(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Min(Math.Min(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -3201,8 +3137,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Min(function(list[0]), function(list[1])),
 					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3227,8 +3162,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Min(function(array[0]), function(array[1])),
 					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3254,8 +3188,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Min(function(list2[0]), function(list2[1])),
 					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3281,8 +3214,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Min(function(list3[0]), function(list3[1])),
 					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3328,8 +3260,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3354,8 +3285,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3381,8 +3311,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Min(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Min(Math.Min(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3408,8 +3337,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Min(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Min(Math.Min(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -3451,12 +3379,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list[0]),
 					2 => Math.Min(function(list[0]), function(list[1])),
 					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3477,12 +3404,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(array[0]),
 					2 => Math.Min(function(array[0]), function(array[1])),
 					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3504,12 +3430,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list2[0]),
 					2 => Math.Min(function(list2[0]), function(list2[1])),
 					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3531,12 +3456,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list3[0]),
 					2 => Math.Min(function(list3[0]), function(list3[1])),
 					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3578,12 +3502,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list[0], 0),
 					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3604,12 +3527,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(array[0], 0),
 					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3631,12 +3553,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list2[0], 0),
 					2 => Math.Min(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Min(Math.Min(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3658,12 +3579,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => function(list3[0], 0),
 					2 => Math.Min(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Min(Math.Min(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -3709,8 +3629,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => Math.Min(function(list[0]), function(list[1])),
 					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3735,8 +3654,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => Math.Min(function(array[0]), function(array[1])),
 					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3762,8 +3680,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => Math.Min(function(list2[0]), function(list2[1])),
 					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3789,8 +3706,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => Math.Min(function(list3[0]), function(list3[1])),
 					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3836,8 +3752,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
 					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3862,8 +3777,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
 					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3889,8 +3803,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => Math.Min(function(list2[0], 0), function(list2[1], 1)),
 					3 => Math.Min(Math.Min(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3916,8 +3829,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => Math.Min(function(list3[0], 0), function(list3[1], 1)),
 					3 => Math.Min(Math.Min(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -3963,8 +3875,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => MpzT.Min(function(list[0]), function(list[1])),
 					3 => MpzT.Min(MpzT.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -3989,8 +3900,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => MpzT.Min(function(array[0]), function(array[1])),
 					3 => MpzT.Min(MpzT.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4016,8 +3926,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => MpzT.Min(function(list2[0]), function(list2[1])),
 					3 => MpzT.Min(MpzT.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4043,8 +3952,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => MpzT.Min(function(list3[0]), function(list3[1])),
 					3 => MpzT.Min(MpzT.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4090,8 +3998,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => MpzT.Min(function(list[0], 0), function(list[1], 1)),
 					3 => MpzT.Min(MpzT.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4116,8 +4023,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => MpzT.Min(function(array[0], 0), function(array[1], 1)),
 					3 => MpzT.Min(MpzT.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4143,8 +4049,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => MpzT.Min(function(list2[0], 0), function(list2[1], 1)),
 					3 => MpzT.Min(MpzT.Min(function(list2[0], 0), function(list2[1], 1)), function(list2[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4170,8 +4075,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => MpzT.Min(function(list3[0], 0), function(list3[1], 1)),
 					3 => MpzT.Min(MpzT.Min(function(list3[0], 0), function(list3[1], 1)), function(list3[2], 2)),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4216,7 +4120,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Min(list[0], list[1]),
 					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -4241,7 +4145,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Min(array[0], array[1]),
 					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -4267,7 +4171,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Min(list2[0], list2[1]),
 					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			decimal indicator = 0;
@@ -4312,7 +4216,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Min(list[0], list[1]),
 					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -4337,7 +4241,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Min(array[0], array[1]),
 					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -4363,7 +4267,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Min(list2[0], list2[1]),
 					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			double indicator = 0;
@@ -4408,7 +4312,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Min(list[0], list[1]),
 					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -4433,7 +4337,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Min(array[0], array[1]),
 					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -4459,7 +4363,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Min(list2[0], list2[1]),
 					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			var indicator = 0;
@@ -4500,11 +4404,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => list[0],
 					2 => Math.Min(list[0], list[1]),
 					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -4525,11 +4429,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => array[0],
 					2 => Math.Min(array[0], array[1]),
 					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -4551,11 +4455,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => list2[0],
 					2 => Math.Min(list2[0], list2[1]),
 					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			uint indicator = 0;
@@ -4600,7 +4504,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => Math.Min(list[0], list[1]),
 					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -4625,7 +4529,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => Math.Min(array[0], array[1]),
 					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -4651,7 +4555,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => Math.Min(list2[0], list2[1]),
 					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			long indicator = 0;
@@ -4696,7 +4600,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => MpzT.Min(list[0], list[1]),
 					3 => MpzT.Min(MpzT.Min(list[0], list[1]), list[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4721,7 +4625,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => MpzT.Min(array[0], array[1]),
 					3 => MpzT.Min(MpzT.Min(array[0], array[1]), array[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4747,7 +4651,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => MpzT.Min(list2[0], list2[1]),
 					3 => MpzT.Min(MpzT.Min(list2[0], list2[1]), list2[2]),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
 			MpzT indicator = 0;
@@ -4793,8 +4697,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => function(list[0]) * function(list[1]),
 					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4812,8 +4715,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => function(array[0]) * function(array[1]),
 					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4832,8 +4734,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => function(list2[0]) * function(list2[1]),
 					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4852,8 +4753,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => function(list3[0]) * function(list3[1]),
 					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4888,8 +4788,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => function(list[0], 0) * function(list[1], 1),
 					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4910,8 +4809,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => function(array[0], 0) * function(array[1], 1),
 					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4933,8 +4831,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => function(list2[0], 0) * function(list2[1], 1),
 					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4956,8 +4853,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => function(list3[0], 0) * function(list3[1], 1),
 					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -4995,8 +4891,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => function(list[0]) * function(list[1]),
 					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5014,8 +4909,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => function(array[0]) * function(array[1]),
 					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5034,8 +4928,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => function(list2[0]) * function(list2[1]),
 					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5054,8 +4947,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => function(list3[0]) * function(list3[1]),
 					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5090,8 +4982,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => function(list[0], 0) * function(list[1], 1),
 					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5112,8 +5003,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => function(array[0], 0) * function(array[1], 1),
 					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5135,8 +5025,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => function(list2[0], 0) * function(list2[1], 1),
 					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5158,8 +5047,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => function(list3[0], 0) * function(list3[1], 1),
 					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -5197,8 +5085,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => function(list[0]) * function(list[1]),
 					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5216,8 +5103,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => function(array[0]) * function(array[1]),
 					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5236,8 +5122,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => function(list2[0]) * function(list2[1]),
 					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5256,8 +5141,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => function(list3[0]) * function(list3[1]),
 					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5292,8 +5176,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => function(list[0], 0) * function(list[1], 1),
 					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5314,8 +5197,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => function(array[0], 0) * function(array[1], 1),
 					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5337,8 +5219,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => function(list2[0], 0) * function(list2[1], 1),
 					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5360,8 +5241,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => function(list3[0], 0) * function(list3[1], 1),
 					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -5395,12 +5275,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(list[0]),
 					2 => function(list[0]) * function(list[1]),
 					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5414,12 +5293,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(array[0]),
 					2 => function(array[0]) * function(array[1]),
 					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5434,12 +5312,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(list2[0]),
 					2 => function(list2[0]) * function(list2[1]),
 					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5454,12 +5331,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(list3[0]),
 					2 => function(list3[0]) * function(list3[1]),
 					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5490,12 +5366,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(list[0], 0),
 					2 => function(list[0], 0) * function(list[1], 1),
 					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5512,12 +5387,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(array[0], 0),
 					2 => function(array[0], 0) * function(array[1], 1),
 					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5535,12 +5409,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(list2[0], 0),
 					2 => function(list2[0], 0) * function(list2[1], 1),
 					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5558,12 +5431,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => function(list3[0], 0),
 					2 => function(list3[0], 0) * function(list3[1], 1),
 					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -5601,8 +5473,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => function(list[0]) * function(list[1]),
 					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5620,8 +5491,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => function(array[0]) * function(array[1]),
 					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5640,8 +5510,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => function(list2[0]) * function(list2[1]),
 					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5660,8 +5529,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => function(list3[0]) * function(list3[1]),
 					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5696,8 +5564,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => function(list[0], 0) * function(list[1], 1),
 					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5718,8 +5585,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => function(array[0], 0) * function(array[1], 1),
 					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5741,8 +5607,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => function(list2[0], 0) * function(list2[1], 1),
 					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5764,8 +5629,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => function(list3[0], 0) * function(list3[1], 1),
 					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -5803,8 +5667,7 @@ public static class RedStarLinqMath
 					1 => function(list[0]),
 					2 => function(list[0]) * function(list[1]),
 					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5822,8 +5685,7 @@ public static class RedStarLinqMath
 					1 => function(array[0]),
 					2 => function(array[0]) * function(array[1]),
 					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5842,8 +5704,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0]),
 					2 => function(list2[0]) * function(list2[1]),
 					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5862,8 +5723,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0]),
 					2 => function(list3[0]) * function(list3[1]),
 					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5898,8 +5758,7 @@ public static class RedStarLinqMath
 					1 => function(list[0], 0),
 					2 => function(list[0], 0) * function(list[1], 1),
 					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5920,8 +5779,7 @@ public static class RedStarLinqMath
 					1 => function(array[0], 0),
 					2 => function(array[0], 0) * function(array[1], 1),
 					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5943,8 +5801,7 @@ public static class RedStarLinqMath
 					1 => function(list2[0], 0),
 					2 => function(list2[0], 0) * function(list2[1], 1),
 					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -5966,20 +5823,7 @@ public static class RedStarLinqMath
 					1 => function(list3[0], 0),
 					2 => function(list3[0], 0) * function(list3[1], 1),
 					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
-				};
-			}
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list3[0], 0),
-					2 => function(list3[0], 0) * function(list3[1], 1),
-					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -6079,8 +5923,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		decimal indicator = 0;
@@ -6108,8 +5951,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		decimal indicator = 0;
@@ -6137,8 +5979,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		double indicator = 0;
@@ -6166,8 +6007,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		double indicator = 0;
@@ -6195,8 +6035,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = 0;
@@ -6224,8 +6063,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = 0;
@@ -6249,12 +6087,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		uint indicator = 0;
@@ -6278,12 +6115,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		uint indicator = 0;
@@ -6311,8 +6147,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		long indicator = 0;
@@ -6340,8 +6175,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		long indicator = 0;
@@ -6402,8 +6236,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Max(source[0], source[1]),
 				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		decimal indicator = 0;
@@ -6430,8 +6263,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Max(source[0], source[1]),
 				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		double indicator = 0;
@@ -6458,8 +6290,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Max(source[0], source[1]),
 				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = 0;
@@ -6482,12 +6313,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => source[0],
 				2 => Math.Max(source[0], source[1]),
 				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		uint indicator = 0;
@@ -6514,8 +6344,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Max(source[0], source[1]),
 				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		long indicator = 0;
@@ -6542,8 +6371,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => MpzT.Max(source[0], source[1]),
 				3 => MpzT.Max(MpzT.Max(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		MpzT indicator = 0;
@@ -6716,8 +6544,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		decimal indicator = 0;
@@ -6745,8 +6572,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		decimal indicator = 0;
@@ -6774,8 +6600,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		double indicator = 0;
@@ -6803,8 +6628,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		double indicator = 0;
@@ -6832,8 +6656,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		var indicator = 0;
@@ -6861,8 +6684,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		var indicator = 0;
@@ -6886,12 +6708,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		uint indicator = 0;
@@ -6915,12 +6736,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		uint indicator = 0;
@@ -6948,8 +6768,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		long indicator = 0;
@@ -6977,8 +6796,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		long indicator = 0;
@@ -7039,8 +6857,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Min(source[0], source[1]),
 				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		decimal indicator = 0;
@@ -7067,8 +6884,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Min(source[0], source[1]),
 				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		double indicator = 0;
@@ -7095,8 +6911,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Min(source[0], source[1]),
 				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		var indicator = 0;
@@ -7119,12 +6934,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => source[0],
 				2 => Math.Min(source[0], source[1]),
 				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		uint indicator = 0;
@@ -7151,8 +6965,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => Math.Min(source[0], source[1]),
 				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		long indicator = 0;
@@ -7179,8 +6992,7 @@ public static class RedStarLinqMath
 				1 => source[0],
 				2 => MpzT.Min(source[0], source[1]),
 				3 => MpzT.Min(MpzT.Min(source[0], source[1]), source[2]),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
 		MpzT indicator = 0;
@@ -7209,8 +7021,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] * list[1],
 					3 => list[0] * list[1] * list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -7232,8 +7043,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] * array[1],
 					3 => array[0] * array[1] * array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7254,8 +7064,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] * list2[1],
 					3 => list2[0] * list2[1] * list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			decimal result = 1;
@@ -7292,8 +7101,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] * list[1],
 					3 => list[0] * list[1] * list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -7315,8 +7123,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] * array[1],
 					3 => array[0] * array[1] * array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7337,8 +7144,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] * list2[1],
 					3 => list2[0] * list2[1] * list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			double result = 1;
@@ -7375,8 +7181,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] * list[1],
 					3 => list[0] * list[1] * list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -7398,8 +7203,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] * array[1],
 					3 => array[0] * array[1] * array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7420,8 +7224,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] * list2[1],
 					3 => list2[0] * list2[1] * list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			var result = 1;
@@ -7454,12 +7257,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => list[0],
 					2 => list[0] * list[1],
 					3 => list[0] * list[1] * list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -7477,12 +7279,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => array[0],
 					2 => array[0] * array[1],
 					3 => array[0] * array[1] * array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7499,12 +7300,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 1,
+					0 => 1u,
 					1 => list2[0],
 					2 => list2[0] * list2[1],
 					3 => list2[0] * list2[1] * list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			uint result = 1;
@@ -7541,8 +7341,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] * list[1],
 					3 => list[0] * list[1] * list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -7564,8 +7363,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] * array[1],
 					3 => array[0] * array[1] * array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7586,8 +7384,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] * list2[1],
 					3 => list2[0] * list2[1] * list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			long result = 1;
@@ -7635,8 +7432,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] * array[1],
 					3 => array[0] * array[1] * array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "произведение")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7657,8 +7453,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] * list2[1],
 					3 => list2[0] * list2[1] * list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "произведение")
 				};
 			}
 			MpzT result = 1;
@@ -7695,8 +7490,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] + list[1],
 					3 => list[0] + list[1] + list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			decimal result = 0;
@@ -7718,8 +7512,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] + array[1],
 					3 => array[0] + array[1] + array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "сумму")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7740,8 +7533,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] + list2[1],
 					3 => list2[0] + list2[1] + list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			decimal result = 0;
@@ -7778,8 +7570,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] + list[1],
 					3 => list[0] + list[1] + list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			double result = 0;
@@ -7801,8 +7592,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] + array[1],
 					3 => array[0] + array[1] + array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "сумму")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7823,8 +7613,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] + list2[1],
 					3 => list2[0] + list2[1] + list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			double result = 0;
@@ -7861,8 +7650,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] + list[1],
 					3 => list[0] + list[1] + list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			var result = 0;
@@ -7884,8 +7672,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] + array[1],
 					3 => array[0] + array[1] + array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "сумму")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7906,8 +7693,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] + list2[1],
 					3 => list2[0] + list2[1] + list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			var result = 0;
@@ -7940,12 +7726,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => list[0],
 					2 => list[0] + list[1],
 					3 => list[0] + list[1] + list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			uint result = 0;
@@ -7963,12 +7748,11 @@ public static class RedStarLinqMath
 			{
 				return array.Length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => array[0],
 					2 => array[0] + array[1],
 					3 => array[0] + array[1] + array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "сумму")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -7985,12 +7769,11 @@ public static class RedStarLinqMath
 			{
 				return length switch
 				{
-					0 => 0,
+					0 => 0u,
 					1 => list2[0],
 					2 => list2[0] + list2[1],
 					3 => list2[0] + list2[1] + list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			uint result = 0;
@@ -8027,8 +7810,7 @@ public static class RedStarLinqMath
 					1 => list[0],
 					2 => list[0] + list[1],
 					3 => list[0] + list[1] + list[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			long result = 0;
@@ -8050,8 +7832,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] + array[1],
 					3 => array[0] + array[1] + array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "сумму")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -8072,8 +7853,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] + list2[1],
 					3 => list2[0] + list2[1] + list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			long result = 0;
@@ -8121,8 +7901,7 @@ public static class RedStarLinqMath
 					1 => array[0],
 					2 => array[0] + array[1],
 					3 => array[0] + array[1] + array[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, array.Length, "сумму")
 				};
 			}
 			for (var i = 0; i < array.Length; i++)
@@ -8143,8 +7922,7 @@ public static class RedStarLinqMath
 					1 => list2[0],
 					2 => list2[0] + list2[1],
 					3 => list2[0] + list2[1] + list2[2],
-					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
 			MpzT result = 0;
@@ -8372,8 +8150,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8403,8 +8180,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8434,8 +8210,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8465,8 +8240,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8496,8 +8270,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8527,8 +8300,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8554,12 +8326,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8585,12 +8356,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8620,8 +8390,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Max(function(source[0]), function(source[1])),
 				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8651,8 +8420,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8682,8 +8450,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => MpzT.Max(function(source[0]), function(source[1])),
 				3 => MpzT.Max(MpzT.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8713,8 +8480,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => MpzT.Max(function(source[0], 0), function(source[1], 1)),
 				3 => MpzT.Max(MpzT.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8744,8 +8510,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8775,8 +8540,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8806,8 +8570,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8837,8 +8600,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8868,8 +8630,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8899,8 +8660,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8926,12 +8686,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8957,12 +8716,11 @@ public static class RedStarLinqMath
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => 0u,
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8992,8 +8750,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => Math.Min(function(source[0]), function(source[1])),
 				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -9023,8 +8780,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
 				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -9054,8 +8810,7 @@ public static class RedStarLinqMath
 				1 => function(source[0]),
 				2 => MpzT.Min(function(source[0]), function(source[1])),
 				3 => MpzT.Min(MpzT.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -9085,8 +8840,7 @@ public static class RedStarLinqMath
 				1 => function(source[0], 0),
 				2 => MpzT.Min(function(source[0], 0), function(source[1], 1)),
 				3 => MpzT.Min(MpzT.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")
+				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -9103,6 +8857,24 @@ public static class RedStarLinqMath
 		});
 		return indicator;
 	}
+
+	private static dynamic ZZZInvalidOperation<T>(G.IEnumerable<T> source, int length, string operationName) =>
+		throw new InvalidOperationException("Невозможно вычислить " + operationName + ". Возможные причины:\r\n"
+		+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры исходной коллекции (ошибка в логике - наши коллекции"
+		+ " все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+		+ $"Текущее состояние: тип коллекции - {source.GetType()}, длина - {length},"
+		+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+
+	private static dynamic ZZZInvalidOperation<T>(ReadOnlySpan<T> source, int length, string operationName) =>
+		throw new InvalidOperationException("Невозможно вычислить " + operationName + ". Возможные причины:\r\n"
+		+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры исходной коллекции (ошибка в логике - наши коллекции"
+		+ " все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+		+ $"Текущее состояние: тип коллекции - {typeof(ReadOnlySpan<T>)}, длина - {length},"
+		+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 
 	public static TResult? Max<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function)
 	{

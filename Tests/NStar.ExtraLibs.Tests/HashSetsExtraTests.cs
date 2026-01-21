@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NStar.ExtraLibs.Tests;
 
@@ -304,8 +306,7 @@ public class ParallelHashSetTests
 	{
 		var random = RedStarLinq.FillArray(Environment.ProcessorCount, _ =>
 			Lock(Global.lockObj, () => new Random(Global.random.Next())));
-		var counter = 0;
-	l1:
+		var sw = Stopwatch.StartNew();
 		var lockObj = RedStarLinq.FillArray(random.Length, _ => new object());
 		var arr = RedStarLinq.FillArray(16, _ => random[0].Next(16));
 		var toInsert = Array.Empty<int>();
@@ -374,14 +375,23 @@ public class ParallelHashSetTests
 			var arr = RedStarLinq.FillArray(5, _ => random[tn].Next(16));
 			collectionActions.Random(random[tn])(arr);
 		}, tn => collectionActions2.Random(random[tn])(tn) };
-		Parallel.For(0, 1000, i =>
+		Task.Factory.StartNew(() =>
 		{
-			var tn = i % random.Length;
-			actions.Random(random[tn])(tn);
-		});
-		if (counter++ < 1000)
-			goto l1;
+			var counter = 0;
+		l1:
+			Parallel.For(0, 1000, i =>
+					{
+						var tn = i % random.Length;
+						actions.Random(random[tn])(tn);
+					});
+			if (counter++ < 1000)
+				goto l1;
+		}, TestContext.CancellationTokenSource.Token);
+		Thread.Sleep(60000);
+		return;
 	}
+
+	public TestContext TestContext { get; set; }
 }
 
 [TestClass]

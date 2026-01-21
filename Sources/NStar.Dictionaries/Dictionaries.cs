@@ -31,7 +31,7 @@ internal enum InsertionBehavior : byte
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, NStar.Core.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
+public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, Core.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
 {
 	[NonSerialized]
 	private protected object? _syncRoot;
@@ -404,8 +404,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high[key];
 			else
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 		set
 		{
@@ -414,8 +419,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				high[key] = value;
 			else
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 			if (!isHigh && low != null && Length >= _hashThreshold)
 			{
 				high = new(low, comparer);
@@ -436,8 +446,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Count;
 			else
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				return 0;
 		}
 	}
 
@@ -450,8 +459,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Keys;
 			else
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 	}
 
@@ -464,8 +478,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Values;
 			else
-				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+				throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
+					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ $"Текущее состояние: длина - {Length},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
 	}
 
@@ -476,8 +495,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.Add(key, value);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (!isHigh && low != null && Length >= _hashThreshold)
 		{
 			high = new(low, comparer);
@@ -493,8 +517,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.Clear();
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно очистить словарь. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override bool ContainsKey(TKey key)
@@ -504,19 +533,29 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.ContainsKey(key);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	protected override void CopyToHelper(Array array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
-			((NStar.Core.ICollection)low).CopyTo(array, arrayIndex);
+			((Core.ICollection)low).CopyTo(array, arrayIndex);
 		else if (high != null)
-			((NStar.Core.ICollection)high).CopyTo(array, arrayIndex);
+			((Core.ICollection)high).CopyTo(array, arrayIndex);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	protected override void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -526,8 +565,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void ExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
@@ -538,8 +582,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			foreach (var x in other)
 				RemoveValue(x);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void ExceptWith(G.IEnumerable<TKey> other)
@@ -550,8 +599,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			foreach (var x in other)
 				Remove(x);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other)
@@ -562,8 +616,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			foreach (var x in other)
 				RemoveValue(x);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -573,8 +632,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.GetEnumerator();
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	protected override IDictionaryEnumerator GetEnumeratorHelper()
@@ -584,8 +648,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.GetEnumerator();
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	internal override System.Collections.ICollection GetKeyListHelper()
@@ -595,8 +664,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Keys;
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	internal override System.Collections.ICollection GetValueListHelper()
@@ -606,8 +680,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Values;
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
@@ -622,8 +701,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void IntersectWith(G.IEnumerable<TKey> other)
@@ -638,8 +722,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other)
@@ -654,8 +743,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override bool Remove(TKey key)
@@ -665,8 +759,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Remove(key);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
@@ -676,8 +775,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Remove(key, out value);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override bool RemoveValue(G.KeyValuePair<TKey, TValue> keyValuePair)
@@ -687,8 +791,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return ((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override void TrimExcess()
@@ -698,8 +807,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.TrimExcess();
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public override bool TryGetValue(TKey key, out TValue value)
@@ -709,8 +823,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.TryGetValue(key, out value!);
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
 	public static implicit operator Dictionary<TKey, TValue>((TKey, TValue) x) => new() { x };
@@ -754,8 +873,13 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (x.high != null)
 			return x.high;
 		else
-			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
-				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
+				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
+				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ $"Текущее состояние: длина - {x.Length},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 }
 

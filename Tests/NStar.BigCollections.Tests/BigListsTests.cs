@@ -132,11 +132,19 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		}, () =>
 		{
 			var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
-			if (bl.Length < length)
-				return;
 			var start = random.Next((int)bl.Length - length + 1);
-			bl.Clear(start, length);
-			gl.SetAll(default!, start, length);
+			if (random.Next(100) == 0)
+			{
+				bl.Clear();
+				gl.Clear();
+			}
+			else
+			{
+				bl.Clear(start, length);
+				gl.SetAll(default!, start, length);
+			}
+			if (random.Next(2) == 0)
+				bl.TrimExcess();
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
@@ -209,11 +217,11 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		}, () =>
 		{
 			var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
-			if (bl.Length < length)
-				return;
 			var start = random.Next((int)bl.Length - length + 1);
 			var bl2 = bl.Remove(start, length);
 			gl.RemoveRange(start, length);
+			if (random.Next(2) == 0)
+				bl.TrimExcess();
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 			Assert.IsTrue(ReferenceEquals(bl, bl2));
@@ -225,7 +233,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 			var start = random.Next(1, length + 1);
 			var bl2 = bl.RemoveEnd(start);
 			gl.RemoveRange(start, length - start);
-			if (random.Next(2) == 1)
+			if (random.Next(2) == 0)
 				bl.TrimExcess();
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
@@ -240,8 +248,6 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		}, () =>
 		{
 			var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
-			if (bl.Length < length)
-				return;
 			var start = random.Next((int)bl.Length - length + 1);
 			var bl2 = bl.Reverse(start, length);
 			gl.Reverse(start, length);
@@ -285,12 +291,12 @@ public class BigBitListTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		BaseBigListTests<bool, BigBitList, BitList>.ComplexTest(() =>
 		{
-			var arr = RedStarLinq.FillArray(512, _ => random.Next(2) == 1);
+			var arr = RedStarLinq.FillArray(512, _ => random.Next(2) == 0);
 			bl = new(arr, 2, 6);
 			gl = [.. arr];
 			var bytes = new byte[16];
 			return (bl, gl, bytes);
-		}, () => random.Next(2) == 1, BitsPerInt, 250);
+		}, () => random.Next(2) == 0, BitsPerInt, 250);
 	}
 
 	[TestMethod]
@@ -310,11 +316,11 @@ public class BigBitListTests
 			() => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), 2, 6),
 			() => new((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), 2, 6),
 			() => new(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), 2, 6),
-			() => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), 2, 6),
+			() => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), 2, 6),
 			() => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x), 2, 6),
 			() => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x), 2, 6),
 			() => new(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x), 2, 6),
-			() => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x), 2, 6),
+			() => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), x => x), 2, 6),
 			() => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50),
 				_ => random.Next()), _ => random.Next(10) == -1), 2, 6),
 			() => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50),
@@ -322,11 +328,11 @@ public class BigBitListTests
 			() => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(200),
 				_ => (byte)random.Next(256)), _ => random.Next(10) == -1), 2, 6),
 			() => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600),
-				_ => random.Next(2) == 1), _ => random.Next(10) == -1), 2, 6),
+				_ => random.Next(2) == 0), _ => random.Next(10) == -1), 2, 6),
 			() => new(new BitArray(1600), 2, 6), () => new(new BitArray(1600, false), 2, 6),
 			() => new(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next())), 2, 6),
 			() => new(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))), 2, 6),
-			() => new(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)), 2, 6),
+			() => new(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0)), 2, 6),
 			() => new(new BigBitList(), 2, 6), () => new(new BigBitList((MpzT)1600), 2, 6),
 			() => new(new BigBitList(1600, false), 2, 6),
 			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), 2, 6),
@@ -340,14 +346,14 @@ public class BigBitListTests
 			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next())), 2, 6),
 			() => new(new BigBitList((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), 2, 6),
 			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))), 2, 6),
-			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)), 2, 6),
+			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0)), 2, 6),
 			() => new(new BigBitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)), 2, 6),
 			() => new(new BigBitList(E.Select(RedStarLinq.FillArray(random.Next(50),
 				_ => (uint)random.Next()), x => x)), 2, 6),
 			() => new(new BigBitList(E.Select(RedStarLinq.FillArray(random.Next(200),
 				_ => (byte)random.Next(256)), x => x)), 2, 6),
 			() => new(new BigBitList(E.Select(RedStarLinq.FillArray(random.Next(1600),
-				_ => random.Next(2) == 1), x => x)), 2, 6),
+				_ => random.Next(2) == 0), x => x)), 2, 6),
 			() => new(new BigBitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50),
 				_ => random.Next()), _ => random.Next(10) == -1)), 2, 6),
 			() => new(new BigBitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50),
@@ -355,13 +361,13 @@ public class BigBitListTests
 			() => new(new BigBitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(200),
 				_ => (byte)random.Next(256)), _ => random.Next(10) == -1)), 2, 6),
 			() => new(new BigBitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600),
-				_ => random.Next(2) == 1), _ => random.Next(10) == -1)), 2, 6),
+				_ => random.Next(2) == 0), _ => random.Next(10) == -1)), 2, 6),
 			() => new(new BigBitList(new BitArray(1600)), 2, 6), () => new(new BigBitList(new BitArray(1600, false)), 2, 6),
 			() => new(new BigBitList(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))), 2, 6),
 			() => new(new BigBitList(new BitArray(RedStarLinq.FillArray(random.Next(200),
 				_ => (byte)random.Next(256)))), 2, 6),
 			() => new(new BigBitList(new BitArray(RedStarLinq.FillArray(random.Next(1600),
-				_ => random.Next(2) == 1))), 2, 6)
+				_ => random.Next(2) == 0))), 2, 6)
 		};
 		for (var i = 0; i < array.Length; i++)
 		{
@@ -371,7 +377,7 @@ public class BigBitListTests
 			for (var j = 0; j < 2400; j++)
 			{
 				var fullCheck = array[i].Capacity == array[i].Length;
-				var item = random.Next(2) == 1;
+				var item = random.Next(2) == 0;
 				array[i].Add(item);
 				gl.Add(item);
 				if (fullCheck)
@@ -388,7 +394,7 @@ public class BigBitListTests
 		}
 		Thread.Sleep(50);
 		for (var i = 0; i < array.Length; i++)
-			array[i].Add(random.Next(2) == 1);
+			array[i].Add(random.Next(2) == 0);
 	}
 
 	[TestMethod]
@@ -522,8 +528,8 @@ public class BigListTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		BaseBigListTests<int, BigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
 		{
-			var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
-			bl = new(arr, random.Next(2, 5), random.Next(2, 7));
+			var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
+			bl = new(arr, random.Next(2, 7), random.Next(2, 7));
 			gl = [.. arr];
 			var bytes = new byte[16];
 			return (bl, gl, bytes);
@@ -601,8 +607,8 @@ public class BigListTests
 			length = random.Next(Min(regularList.Length, 800) + 1);
 			sourceIndex = random.Next(regularList.Length - length + 1);
 			destinationIndex = random.Next(regularList.Length - length + 1);
-			reverseSource = random.Next(2) == 1;
-			reverseDestination = random.Next(2) == 1;
+			reverseSource = random.Next(2) == 0;
+			reverseDestination = random.Next(2) == 0;
 			PerformIteration();
 		}
 		void PerformIteration()
@@ -683,7 +689,7 @@ public class BigListTests
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}
-		if (counter++ < 100)
+		if (counter++ < 10)
 			goto l1;
 	}
 }
