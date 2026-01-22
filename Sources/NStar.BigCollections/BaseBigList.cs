@@ -223,7 +223,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
-		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(arrayIndex + Length, array.Length);
 		if (array.Rank != 1)
 			throw new RankException("Массив должен иметь одно измерение.");
 		try

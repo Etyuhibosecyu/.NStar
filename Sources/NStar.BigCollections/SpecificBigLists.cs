@@ -280,7 +280,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		if (low != null && value.low != null)
 			low.And(value.low);
 		else if (high != null && value.high != null)
-			high = [.. high.Combine(value.high, (x, y) => x.And(y))];
+			foreach (var (x, y) in high.Combine(value.high))
+				x.And(y);
 		else
 			throw new InvalidOperationException("Невозможно вычислить побитовый AND. Возможные причины:\r\n"
 				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
@@ -505,7 +506,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		if (low != null)
 			low.Not();
 		else if (high != null)
-			high.ForEach(x => x.Not());
+			foreach (var x in high)
+				x.Not();
 		else
 			throw new InvalidOperationException("Невозможно вычислить побитовый NOT. Возможные причины:\r\n"
 				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
@@ -527,7 +529,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		if (low != null && value.low != null)
 			low.Or(value.low);
 		else if (high != null && value.high != null)
-			high = [.. high.Combine(value.high, (x, y) => x.Or(y))];
+			foreach (var (x, y) in high.Combine(value.high))
+				x.Or(y);
 		else
 			throw new InvalidOperationException("Невозможно вычислить побитовый OR. Возможные причины:\r\n"
 				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
@@ -547,7 +550,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		if (low != null)
 			low.SetAll(value);
 		else if (high != null)
-			high.ForEach(x => x.SetAll(value));
+			foreach (var x in high)
+				x.SetAll(value);
 		else
 			throw new InvalidOperationException("Невозможно заполнить диапазон одинаковыми элементами."
 				+ " Возможные причины:\r\n"
@@ -587,7 +591,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		if (low != null && value.low != null)
 			low.Xor(value.low);
 		else if (high != null && value.high != null)
-			high = [.. high.Combine(value.high, (x, y) => x.Xor(y))];
+			foreach (var (x, y) in high.Combine(value.high))
+				x.Xor(y);
 		else
 			throw new InvalidOperationException("Невозможно вычислить побитовый XOR. Возможные причины:\r\n"
 				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"

@@ -292,11 +292,15 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 			low.Clear(false);
 			Length = 0;
 		}
-		else
+		else if (high != null)
 		{
-			high?.ForEach(x => x?.ClearInternal(false));
+			foreach (var x in high)
+				x?.ClearInternal(false);
 			highLength?.Clear();
 		}
+		else
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (verify)
 			Verify();
@@ -1335,8 +1339,12 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 	public override void Dispose()
 	{
 		low?.Dispose();
-		high?.ForEach(x => x.Dispose());
-		high?.Dispose();
+		if (high != null)
+		{
+			foreach (var x in high)
+				x.Dispose();
+			high.Dispose();
+		}
 		highLength?.Dispose();
 		parent = null;
 		_capacity = 0;
@@ -1473,7 +1481,8 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 			Debug.Assert(first.high != null && first.highLength != null);
 			first.parent = this2;
 			highLength = [Length];
-			oldHigh.ForEach(x => x.parent = first);
+			foreach (var x in oldHigh)
+				x.parent = first;
 			for (var i = 1; i < high.Capacity - 1; i++)
 			{
 				high.Add(CapacityCreator(fragment));
@@ -1976,7 +1985,8 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 			fragment >>= SubbranchesBitLength;
 			var oldHigh = high;
 			var oldHighLength = highLength;
-			oldHigh.Skip(1).ForEach(x => x.Dispose());
+			for (var i = 1; i < oldHigh.Length; i++)
+				oldHigh[i].Dispose();
 			highLength.Dispose();
 			low = oldHigh[0].low;
 			high = oldHigh[0].high;
@@ -1990,7 +2000,8 @@ public abstract class OldBigList<T, TCertain, TLow> : BaseBigList<T, TCertain, T
 				Debug.Assert(low != null);
 				break;
 			}
-			high.ForEach(x => x.parent = this2);
+			foreach (var x in high)
+				x.parent = this2;
 		} while (fragment > newFragment);
 		if (reverse)
 			Reverse();

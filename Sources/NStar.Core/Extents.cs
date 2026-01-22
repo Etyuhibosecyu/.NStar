@@ -227,30 +227,9 @@ public static unsafe class Extents
 
 	public static int CompareMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => CompareMemory(left + leftIndex, right + rightIndex, length);
 
-	public static int CompareMemory<T>(T[] left, T[] right, int length) where T : unmanaged
-	{
-		fixed (T* left2 = left)
-		fixed (T* right2 = right)
-			return CompareMemory(left2, right2, length);
-	}
-
-	public static int CompareMemory<T>(T[] left, int leftIndex, T[] right, int rightIndex, int length) where T : unmanaged
-	{
-		fixed (T* left2 = left)
-		fixed (T* right2 = right)
-			return CompareMemory(left2 + leftIndex, right2 + rightIndex, length);
-	}
-
 	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => new Span<T>(source, length).CopyTo(new Span<T>(destination, length));
 
 	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
-
-	public static void CopyMemory<T>(T[] source, T[] destination, int length) where T : unmanaged
-	{
-		fixed (T* source2 = source)
-		fixed (T* destination2 = destination)
-			CopyMemory(source2, destination2, length);
-	}
 
 	public static void CopyMemory<T>(T[] source, int sourceIndex, T[] destination, int destinationIndex, int length) where T : unmanaged
 	{
@@ -261,35 +240,9 @@ public static unsafe class Extents
 
 	public static T CreateVar<T>(T value, out T @out) => @out = value;
 
-	public static (MpzT Quotient, int Remainder) DivRem(MpzT left, int right)
-	{
-		var quotient = left.Divide(right, out int remainder);
-		return (quotient, remainder);
-	}
-
-	public static (MpzT Quotient, MpzT Remainder) DivRem(MpzT left, MpzT right)
-	{
-		var quotient = left.Divide(right, out var remainder);
-		return (quotient, remainder);
-	}
-
 	public static bool EqualMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length)) == length;
 
 	public static bool EqualMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => EqualMemory(left + leftIndex, right + rightIndex, length);
-
-	public static bool EqualMemory<T>(T[] left, T[] right, int length) where T : unmanaged
-	{
-		fixed (T* left2 = left)
-		fixed (T* right2 = right)
-			return EqualMemory(left2, right2, length);
-	}
-
-	public static bool EqualMemory<T>(T[] left, int leftIndex, T[] right, int rightIndex, int length) where T : unmanaged
-	{
-		fixed (T* left2 = left)
-		fixed (T* right2 = right)
-			return EqualMemory(left2 + leftIndex, right2 + rightIndex, length);
-	}
 
 	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => new Span<byte>((byte*)source, sizeof(T) * length).Fill(fill);
 
@@ -367,202 +320,10 @@ public static unsafe class Extents
 			function();
 	}
 
-	public static void Lock<T>(object lockObj, Action<T> function, T arg)
-	{
-		lock (lockObj)
-			function(arg);
-	}
-
-	public static void Lock<T1, T2>(object lockObj, Action<T1, T2> function, T1 arg1, T2 arg2)
-	{
-		lock (lockObj)
-			function(arg1, arg2);
-	}
-
-	public static void Lock<T1, T2, T3>(object lockObj, Action<T1, T2, T3> function, T1 arg1, T2 arg2, T3 arg3)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3);
-	}
-
-	public static void Lock<T1, T2, T3, T4>(object lockObj, Action<T1, T2, T3, T4> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5>(object lockObj, Action<T1, T2, T3, T4, T5> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6>(object lockObj, Action<T1, T2, T3, T4, T5, T6> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
-	}
-
-	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
-	{
-		lock (lockObj)
-			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
-	}
-
 	public static TResult Lock<TResult>(object lockObj, Func<TResult> function)
 	{
 		lock (lockObj)
 			return function();
-	}
-
-	public static TResult Lock<T, TResult>(object lockObj, Func<T, TResult> function, T arg)
-	{
-		lock (lockObj)
-			return function(arg);
-	}
-
-	public static TResult Lock<T1, T2, TResult>(object lockObj, Func<T1, T2, TResult> function, T1 arg1, T2 arg2)
-	{
-		lock (lockObj)
-			return function(arg1, arg2);
-	}
-
-	public static TResult Lock<T1, T2, T3, TResult>(object lockObj, Func<T1, T2, T3, TResult> function, T1 arg1, T2 arg2, T3 arg3)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, TResult>(object lockObj, Func<T1, T2, T3, T4, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
-	}
-
-	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
-	{
-		lock (lockObj)
-			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
 	}
 
 	public static T[] NSort<T>(this T[] array) where T : unmanaged => NSort(array, 0, array.Length);
@@ -804,38 +565,4 @@ public static unsafe class Extents
 		Array.Sort(source, index, length, comparer);
 		return source;
 	}
-
-	public static PrimitiveType GetPrimitiveType<T>() where T : unmanaged =>
-		typeof(T).Equals(typeof(byte)) ? PrimitiveType.ByteType
-		: typeof(T).Equals(typeof(short)) ? PrimitiveType.ShortType
-		: typeof(T).Equals(typeof(ushort)) ? PrimitiveType.UShortType
-		: typeof(T).Equals(typeof(int)) ? PrimitiveType.IntType
-		: typeof(T).Equals(typeof(uint)) ? PrimitiveType.UIntType
-		: typeof(T).Equals(typeof(long)) ? PrimitiveType.LongType
-		: typeof(T).Equals(typeof(ulong)) ? PrimitiveType.ULongType
-		: throw new InvalidOperationException("Поддерживаются только типы byte, short, ushort, int, uint, long, ulong.");
-
-	public static int ToInt<T>(T item, PrimitiveType type) where T : unmanaged => type switch
-	{
-		PrimitiveType.ByteType => (byte)(object)item,
-		PrimitiveType.ShortType => (short)(object)item,
-		PrimitiveType.UShortType => (ushort)(object)item,
-		PrimitiveType.IntType => (int)(object)item,
-		PrimitiveType.UIntType => (int)(uint)(object)item,
-		PrimitiveType.LongType => (int)(long)(object)item,
-		PrimitiveType.ULongType => (int)(ulong)(object)item,
-		_ => default,
-	};
-
-	public static uint ToUInt<T>(T item, PrimitiveType type) where T : unmanaged => type switch
-	{
-		PrimitiveType.ByteType => (byte)(object)item,
-		PrimitiveType.ShortType => (uint)(short)(object)item,
-		PrimitiveType.UShortType => (ushort)(object)item,
-		PrimitiveType.IntType => (uint)(int)(object)item,
-		PrimitiveType.UIntType => (uint)(object)item,
-		PrimitiveType.LongType => (uint)(long)(object)item,
-		PrimitiveType.ULongType => (uint)(ulong)(object)item,
-		_ => default,
-	};
 }

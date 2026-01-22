@@ -332,11 +332,15 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			low.Clear(false);
 			Length = 0;
 		}
-		else
+		else if (high != null)
 		{
-			high?.ForEach(x => x?.ClearInternal(false));
+			foreach (var x in high)
+				x?.ClearInternal(false);
 			highLength?.Clear();
 		}
+		else
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (verify)
 			Verify();
@@ -1533,14 +1537,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		low?.Dispose();
 		low = null;
-		high?.ForEach(x => x.Dispose());
-		high?.Dispose();
+		if (high != null)
+		{
+			foreach (var x in high)
+				x.Dispose();
+			high.Dispose();
+		}
 		high = null;
 		highLength?.Dispose();
 		highLength = null;
 		parent = null;
 		_capacity = 0;
 		fragment = 1;
+		Length = 0;
 		Root.accessCache?.Clear();
 		bReversed = false;
 		GC.SuppressFinalize(this);
@@ -1730,7 +1739,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert(first.high != null);
 			first.parent = this2;
 			highLength = SubbranchesBitLength >= 6 ? [Length] : null;
-			oldHigh.ForEach(x => x.parent = first);
+			foreach (var x in oldHigh)
+				x.parent = first;
 			for (var i = 1; i < high.Capacity - 1; i++)
 			{
 				high.Add(CapacityCreator(fragment));
@@ -2554,7 +2564,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			destination.high[^1].IncreaseCapacity(destination.fragment,
 				destination.fragment >> destination.SubbranchesBitLength < destination.LeafSize
 				? 1 : destination.fragment >> destination.SubbranchesBitLength);
-			if (currentSource.Length != 1)
+			if (currentSource.Length == 1)
+				currentSource.bReversed = false;
+			else
 			{
 				if (source.IsReversed != destination.IsReversed)
 					currentSource.Reverse();
@@ -2568,8 +2580,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					currentSource.bReversed = false;
 				}
 			}
-			else
-				currentSource.bReversed = false;
 			if (currentDestination.Length == 0)
 				destination.Length += currentSource.Length;
 			currentDestination.Dispose();
@@ -3263,7 +3273,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			fragment >>= SubbranchesBitLength;
 			var oldHigh = high;
 			var oldHighLength = highLength;
-			oldHigh.Skip(1).ForEach(x => x.Dispose());
+			for (var i = 1; i < oldHigh.Length; i++)
+				oldHigh[i].Dispose();
 			highLength?.Dispose();
 			low = oldHigh[0].low;
 			high = oldHigh[0].high;
@@ -3279,7 +3290,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				Debug.Assert(low != null);
 				break;
 			}
-			high.ForEach(x => x.parent = this2);
+			foreach (var x in high)
+				x.parent = this2;
 		} while (fragment > newFragment);
 		if (reverse)
 			Reverse();
@@ -3766,7 +3778,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	}
 #endif
 
-	protected record struct CopyRangeContext(TCertain Source, MpzT SourceIndex,
+	protected readonly record struct CopyRangeContext(TCertain Source, MpzT SourceIndex,
 		TCertain Destination, MpzT DestinationIndex, MpzT Length)
 	{
 		public static implicit operator CopyRangeContext((TCertain Source, MpzT SourceIndex,
@@ -3774,7 +3786,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			new(x.Source, x.SourceIndex, x.Destination, x.DestinationIndex, x.Length);
 	}
 
-	protected record struct MoveRangeContext(TCertain Source, MpzT SourceIndex,
+	protected readonly record struct MoveRangeContext(TCertain Source, MpzT SourceIndex,
 		TCertain Destination, MpzT DestinationIndex, MpzT Length, bool SpecialMode)
 	{
 		public static implicit operator MoveRangeContext((TCertain Source, MpzT SourceIndex,
@@ -3782,19 +3794,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			new(x.Source, x.SourceIndex, x.Destination, x.DestinationIndex, x.Length, x.SpecialMode);
 	}
 
-	protected readonly struct CopyRangeIndex
+	protected readonly record struct CopyRangeIndex
 	{
 		public MpzT Index { get; }
 		public MpzT RestIndex { get; }
 		public int IntIndex { get; }
-
-		public CopyRangeIndex(TCertain source, MpzT index)
-		{
-			Index = index;
-			Debug.Assert(source.high != null);
-			IntIndex = source.IndexOfNotGreaterSum(index, out var restIndex);
-			RestIndex = restIndex;
-		}
 
 		public CopyRangeIndex(MpzT index, int intIndex, MpzT restIndex)
 		{

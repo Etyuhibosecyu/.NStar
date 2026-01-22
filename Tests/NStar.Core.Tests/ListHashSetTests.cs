@@ -1,4 +1,6 @@
-﻿namespace NStar.Core.Tests;
+﻿using System.Threading;
+
+namespace NStar.Core.Tests;
 
 [TestClass]
 public class ListHashSetTests
@@ -89,6 +91,46 @@ public class ListHashSetTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+	}
+
+	[TestMethod]
+	public void ConstructionTest()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var array = new ListHashSet<string>[1000];
+		for (var i = 0; i < array.Length; i++)
+		{
+			array[i] = new[]
+			{
+				() => new ListHashSet<string>(), () => new(500), () => new(10000000),
+				() => new(RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3")).AsSpan()),
+				() => new((G.IEnumerable<string>)RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3")), x => x)),
+				() => new(E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3")), _ => random.Next(10) == -1)),
+				() => new(500, RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(500, RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3")).AsSpan()),
+				() => new(500, (G.IEnumerable<string>)RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(500, RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(500, E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3")), x => x)),
+				() => new(500, E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3")), _ => random.Next(10) == -1)),
+				() => new(10000000, RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(10000000, RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3")).AsSpan()),
+				() => new(10000000, (G.IEnumerable<string>)RedStarLinq.FillArray(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(10000000, RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3"))),
+				() => new(10000000, E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3")), x => x)),
+				() => new(10000000, E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next(1000).ToString("D3")), _ => random.Next(10) == -1)),
+			}.Random(random)();
+			for (var j = 0; j < 1000; j++)
+			{
+				array[i].Add(random.Next(1000).ToString("D3"));
+				Assert.IsGreaterThanOrEqualTo(array[i].Length, array[i].Capacity);
+			}
+		}
+		Thread.Sleep(50);
+		for (var i = 0; i < array.Length; i++)
+			array[i].Add(random.Next(1000).ToString("D3"));
 	}
 
 	[TestMethod]

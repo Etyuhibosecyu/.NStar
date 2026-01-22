@@ -59,15 +59,25 @@ public class BitListTests
 			random => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan()),
 			random => new(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan()),
 			random => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next())),
+			random => new(1600, RedStarLinq.FillArray(random.Next(50), _ => random.Next())),
+			random => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => random.Next())),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next()).AsSpan()),
+			random => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => random.Next()).AsSpan()),
+			random => new(1600, RedStarLinq.FillArray(random.Next(50), _ => random.Next()).AsSpan()),
 			random => new((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())),
+			random => new((G.IEnumerable<int>)RedStarLinq.FillArray(random.Next(50), _ => random.Next())),
 			random => new(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))),
 			random => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0)),
+			random => new(100, RedStarLinq.FillArray(random.Next(160, 1600), _ => random.Next(2) == 0)),
+			random => new(1600, RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x)),
 			random => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), x => x)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1)),
 			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), _ => random.Next(10) == -1)),
 			random => new(new BitArray(1600)), random => new(new BitArray(1600, false)),
@@ -82,15 +92,26 @@ public class BitListTests
 			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan())),
 			random => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan())),
 			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
+			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
+			random => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => random.Next()))),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next()).AsSpan())),
+			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => random.Next()).AsSpan())),
+			random => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => random.Next()).AsSpan())),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
 			random => new(new BitList((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
+			random => new(new BitList((G.IEnumerable<int>)RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
 			random => new(new BitList(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))),
 			random => new(new BitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0))),
+			random => new(new BitList(100, RedStarLinq.FillArray(random.Next(160, 1600), _ => random.Next(2) == 0))),
+			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x))),
+			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x))),
 			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), x => x))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1))),
+			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1))),
 			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 0), _ => random.Next(10) == -1))),
 			random => new(new BitList(new BitArray(1600))), random => new(new BitList(new BitArray(1600, false))),
@@ -114,7 +135,7 @@ public class BitListTests
 			for (var j = 0; j < 3200; j++)
 			{
 				array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 0));
-				Assert.IsTrue(array[i].Capacity >= array[i].Length);
+				Assert.IsGreaterThanOrEqualTo(array[i].Length, array[i].Capacity);
 				Assert.AreEqual(array[i].Length, length + j + 1);
 			}
 		}
@@ -179,6 +200,26 @@ public class BitListTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1) % 2 == 1));
+	}
+
+	[TestMethod]
+	public void TestAnd()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 10000; i++)
+		{
+			BitArray leftArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			BitArray rightArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			rightArray.Length = leftArray.Length;
+			BitList leftList = new(leftArray);
+			BitList rightList = new(rightArray);
+			leftArray.And(rightArray);
+			leftList.And(rightList);
+			Assert.IsTrue(RedStarLinq.Equals(leftList, E.OfType<bool>(leftArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(leftArray), leftList));
+			Assert.IsTrue(RedStarLinq.Equals(rightList, E.OfType<bool>(rightArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(rightArray), rightList));
+		}
 	}
 
 	[TestMethod]
@@ -300,10 +341,12 @@ public class BitListTests
 	[TestMethod]
 	public void TestContains()
 	{
-		var a = new BitList(bitList);
+		var a = new BitList(bitList2);
 		var b = a.Contains(true);
 		Assert.IsTrue(b);
 		b = a.Contains(false, 65);
+		Assert.IsTrue(b);
+		b = a.Contains(false, 65, 32);
 		Assert.IsFalse(b);
 		b = a.Contains(new G.List<bool>() { false, true, true });
 		Assert.IsTrue(b);
@@ -857,10 +900,12 @@ public class BitListTests
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		var a = new BitList(bitList);
+		var a = new BitList(bitList2);
 		var b = a.IndexOf(false);
 		Assert.AreEqual(0, b);
 		b = a.IndexOf(false, 65);
+		Assert.AreEqual(134, b);
+		b = a.IndexOf(false, 65, 32);
 		Assert.AreEqual(-1, b);
 		b = a.IndexOf(a[1], 1, 2);
 		Assert.AreEqual(1, b);
@@ -963,6 +1008,41 @@ public class BitListTests
 		b = a.LastIndexOfAnyExcluding(a);
 		Assert.AreEqual(-1, b);
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<bool>)null!));
+	}
+
+	[TestMethod]
+	public void TestNot()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 10000; i++)
+		{
+			BitArray leftArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			BitList leftList = new(leftArray);
+			leftArray.Not();
+			leftList.Not();
+			Assert.IsTrue(RedStarLinq.Equals(leftList, E.OfType<bool>(leftArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(leftArray), leftList));
+		}
+	}
+
+	[TestMethod]
+	public void TestOr()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 10000; i++)
+		{
+			BitArray leftArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			BitArray rightArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			rightArray.Length = leftArray.Length;
+			BitList leftList = new(leftArray);
+			BitList rightList = new(rightArray);
+			leftArray.Or(rightArray);
+			leftList.Or(rightList);
+			Assert.IsTrue(RedStarLinq.Equals(leftList, E.OfType<bool>(leftArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(leftArray), leftList));
+			Assert.IsTrue(RedStarLinq.Equals(rightList, E.OfType<bool>(rightArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(rightArray), rightList));
+		}
 	}
 
 	[TestMethod]
@@ -1699,5 +1779,25 @@ public class BitListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
+	}
+
+	[TestMethod]
+	public void TestXor()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 10000; i++)
+		{
+			BitArray leftArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			BitArray rightArray = new(RedStarLinq.FillArray(random.Next(0, 200), _ => (byte)random.Next(256)));
+			rightArray.Length = leftArray.Length;
+			BitList leftList = new(leftArray);
+			BitList rightList = new(rightArray);
+			leftArray.Xor(rightArray);
+			leftList.Xor(rightList);
+			Assert.IsTrue(RedStarLinq.Equals(leftList, E.OfType<bool>(leftArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(leftArray), leftList));
+			Assert.IsTrue(RedStarLinq.Equals(rightList, E.OfType<bool>(rightArray)));
+			Assert.IsTrue(E.SequenceEqual(E.OfType<bool>(rightArray), rightList));
+		}
 	}
 }

@@ -345,7 +345,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			start = random.Next(a.Length + 1);
-			Assert.IsTrue(start <= b.Count);
+			Assert.IsLessThanOrEqualTo(b.Count, start);
 		}
 	}
 
@@ -373,7 +373,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			start = random.Next(a.Length + 1);
-			Assert.IsTrue(start <= b.Count);
+			Assert.IsLessThanOrEqualTo(b.Count, start);
 		}
 	}
 
@@ -401,7 +401,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			start = random.Next(a.Length + 1);
-			Assert.IsTrue(start <= b.Count);
+			Assert.IsLessThanOrEqualTo(b.Count, start);
 		}
 	}
 
@@ -429,7 +429,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			start = random.Next(a.Length + 1);
-			Assert.IsTrue(start <= b.Count);
+			Assert.IsLessThanOrEqualTo(b.Count, start);
 		}
 	}
 
@@ -457,7 +457,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			start = random.Next(a.Length + 1);
-			Assert.IsTrue(start <= b.Count);
+			Assert.IsLessThanOrEqualTo(b.Count, start);
 		}
 	}
 

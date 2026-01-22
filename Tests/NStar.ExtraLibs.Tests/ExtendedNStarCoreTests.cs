@@ -287,6 +287,206 @@ public class BitListTests
 		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultBitCollection.ToArray());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, defaultBitCollection.ToArray());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultBitCollection.ToArray().Take(2..5));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, defaultBitCollection.ToArray().Skip(2).Take(3));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultByteCollection.ToArray());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultByteCollection.ToArray(), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultByteCollection.ToArray().Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultByteCollection.ToArray().Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultIntCollection.ToArray());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultIntCollection.ToArray(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultIntCollection.ToArray().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultIntCollection.ToArray().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultUIntCollection.ToArray());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultUIntCollection.ToArray(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultUIntCollection.ToArray().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.ToArray().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultBitCollection.ToList());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, defaultBitCollection.ToList());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultBitCollection.ToList().Take(2..5));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, defaultBitCollection.ToList().Skip(2).Take(3));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultByteCollection.ToList());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultByteCollection.ToList(), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultByteCollection.ToList().Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultByteCollection.ToList().Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultIntCollection.ToList());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultIntCollection.ToList(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultIntCollection.ToList().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultIntCollection.ToList().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultUIntCollection.ToList());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultUIntCollection.ToList(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultUIntCollection.ToList().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.ToList().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultBitCollection.ToArray().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, defaultBitCollection.ToArray().AsEnumerable());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultBitCollection.ToArray().AsEnumerable().Take(2..5));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, defaultBitCollection.ToArray().AsEnumerable().Skip(2).Take(3));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultByteCollection.ToArray().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultByteCollection.ToArray().AsEnumerable(), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultByteCollection.ToArray().AsEnumerable().Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultByteCollection.ToArray().AsEnumerable().Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultIntCollection.ToArray().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultIntCollection.ToArray().AsEnumerable(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultIntCollection.ToArray().AsEnumerable().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultIntCollection.ToArray().AsEnumerable().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultUIntCollection.ToArray().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultUIntCollection.ToArray().AsEnumerable(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultUIntCollection.ToArray().AsEnumerable().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.ToArray().AsEnumerable().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, E.Select(defaultBitCollection, x => x));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.Select(defaultBitCollection, x => x));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, E.Select(defaultBitCollection, x => x).Take(2..5));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.Select(defaultBitCollection, x => x).Skip(2).Take(3));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, E.Select(defaultByteCollection, x => x));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(E.Select(defaultByteCollection, x => x), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, E.Select(defaultByteCollection, x => x).Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(E.Select(defaultByteCollection, x => x).Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, E.Select(defaultIntCollection, x => x));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(E.Select(defaultIntCollection, x => x), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, E.Select(defaultIntCollection, x => x).Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(E.Select(defaultIntCollection, x => x).Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, E.Select(defaultUIntCollection, x => x));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(E.Select(defaultUIntCollection, x => x), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, E.Select(defaultUIntCollection, x => x).Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(E.Select(defaultUIntCollection, x => x).Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultBitCollection.ToList().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, defaultBitCollection.ToList().AsEnumerable());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultBitCollection.ToList().AsEnumerable().Take(2..5));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, defaultBitCollection.ToList().AsEnumerable().Skip(2).Take(3));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultByteCollection.ToList().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultByteCollection.ToList().AsEnumerable(), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultByteCollection.ToList().AsEnumerable().Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultByteCollection.ToList().AsEnumerable().Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultIntCollection.ToList().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultIntCollection.ToList().AsEnumerable(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultIntCollection.ToList().AsEnumerable().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultIntCollection.ToList().AsEnumerable().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultUIntCollection.ToList().AsEnumerable());
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultUIntCollection.ToList().AsEnumerable(), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultUIntCollection.ToList().AsEnumerable().Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.ToList().AsEnumerable().Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a = new BitList(bitList).Insert(1000, defaultBit));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new BitList(bitList).Insert(-1, defaultBitCollection));
 		Assert.ThrowsExactly<ArgumentNullException>(() => new BitList(bitList).Insert(1, (BitArray)null!));
@@ -389,84 +589,90 @@ public class StringTests
 	public void TestInsert()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		String a;
+		char[] array = default!;
+		String a = default!;
+		G.List<char> b = default!;
+		var index = 0;
+		Action[] actions = [() =>
+		{
+			a.Insert(index, a);
+			b.InsertRange(index, array);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () => 
+		{
+			a.Insert(index, new string(RedStarLinq.ToArray(a)));
+			b.InsertRange(index, array);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () => 
+		{
+			int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
+			a.Insert(index, a.GetRange(index2, length));
+			b.InsertRange(index, array.Skip(index2).Take(length));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () => 
+		{
+			var array2 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			a.Insert(index, array2);
+			b.InsertRange(index, array2);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () =>
+		{
+			var array3 = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			a.Insert(index, array3);
+			b.InsertRange(index, array3);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () =>
+		{
+			var array4 = new Chain(random.Next(1001)).ToNString(_ => (char)random.Next('A', 'Z' + 1));
+			a.Insert(index, array4);
+			b.InsertRange(index, array4);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () =>
+		{
+			var array5 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).ToList().Insert(0, 'X').GetSlice(1);
+			a.Insert(index, array5);
+			b.InsertRange(index, array5);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () =>
+		{
+			var array6 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).Prepend('X');
+			a.Insert(index, array6);
+			b.InsertRange(index, array6);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () =>
+		{
+			var seed = random.Next();
+			Random random2 = new(seed), random3 = new(seed);
+			var array7 = E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X');
+			a.Insert(index, array7);
+			b.InsertRange(index, E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}, () =>
+		{
+			var seed = random.Next();
+			Random random2 = new(seed), random3 = new(seed);
+			var array8 = E.SkipWhile(E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0');
+			a.Insert(index, array8);
+			b.InsertRange(index, E.SkipWhile(E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0'));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}];
 		for (var i = 0; i < 10000; i++)
 		{
-			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
 			a = array.ToNString();
-			var b = E.ToList(array);
-			var @case = random.Next(50);
-			var index = random.Next(a.Length);
-			switch (@case)
-			{
-				case 0:
-				a.Insert(index, a);
-				b.InsertRange(index, array);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 1:
-				int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
-				a.Insert(index, a.GetRange(index2, length));
-				b.InsertRange(index, array.Skip(index2).Take(length));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 2:
-				var array2 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
-				a.Insert(index, array2);
-				b.InsertRange(index, array2);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 3:
-				var array3 = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
-				a.Insert(index, array3);
-				b.InsertRange(index, array3);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 4:
-				var array4 = new Chain(random.Next(1001)).ToNString(_ => (char)random.Next('A', 'Z' + 1));
-				a.Insert(index, array4);
-				b.InsertRange(index, array4);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 5:
-				var array5 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).ToList().Insert(0, 'X').GetSlice(1);
-				a.Insert(index, array5);
-				b.InsertRange(index, array5);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 6:
-				var array6 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).Prepend('X');
-				a.Insert(index, array6);
-				b.InsertRange(index, array6);
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 7:
-				var seed = random.Next();
-				Random random2 = new(seed), random3 = new(seed);
-				var array7 = E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X');
-				a.Insert(index, array7);
-				b.InsertRange(index, E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-				case 8:
-				seed = random.Next();
-				random2 = new(seed);
-				random3 = new(seed);
-				var array8 = E.SkipWhile(E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0');
-				a.Insert(index, array8);
-				b.InsertRange(index, E.SkipWhile(E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0'));
-				Assert.IsTrue(a.Equals(b));
-				Assert.IsTrue(E.SequenceEqual(b, a));
-				break;
-			}
+			b = E.ToList(array);
+			index = random.Next(a.Length);
+			actions.Random(random)();
 		}
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a = nString.ToNString().Insert(1000, 'X'));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => nString.ToNString().Insert(-1, defaultNString));

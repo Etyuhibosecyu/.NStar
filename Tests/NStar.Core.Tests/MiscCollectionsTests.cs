@@ -895,6 +895,24 @@ public class QueueTests
 		var actions = new[] { () =>
 		{
 			var n = random.Next(16);
+			if (random.Next(25) == 0)
+			{
+				q.Clear();
+				gq.Clear();
+				if (random.Next(2) == 0)
+					q.TrimExcess();
+			}
+			else
+			{
+				var clone = (Queue<int>)q.Clone();
+				Assert.IsTrue(RedStarLinq.Equals(clone, gq));
+				Assert.IsTrue(E.SequenceEqual(gq, clone));
+			}
+			Assert.IsTrue(RedStarLinq.Equals(q, gq));
+			Assert.IsTrue(E.SequenceEqual(gq, q));
+		}, () =>
+		{
+			var n = random.Next(16);
 			q.Enqueue(n);
 			gq.Enqueue(n);
 			Assert.IsTrue(RedStarLinq.Equals(q, gq));
@@ -917,7 +935,7 @@ public class QueueTests
 				else
 				{
 					Assert.AreEqual(0, q.Length);
-					Assert.AreEqual(0, gq.Count);
+					Assert.IsEmpty(gq);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(q, gq));
 				Assert.IsTrue(E.SequenceEqual(gq, q));
@@ -940,7 +958,7 @@ public class QueueTests
 				else
 				{
 					Assert.AreEqual(0, q.Length);
-					Assert.AreEqual(0, gq.Count);
+					Assert.IsEmpty(gq);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(q, gq));
 				Assert.IsTrue(E.SequenceEqual(gq, q));
@@ -990,7 +1008,7 @@ public class StackTests
 				else
 				{
 					Assert.AreEqual(0, st.Length);
-					Assert.AreEqual(0, gst.Count);
+					Assert.IsEmpty(gst);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
 				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
@@ -1013,7 +1031,7 @@ public class StackTests
 				else
 				{
 					Assert.AreEqual(0, st.Length);
-					Assert.AreEqual(0, gst.Count);
+					Assert.IsEmpty(gst);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
 				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));

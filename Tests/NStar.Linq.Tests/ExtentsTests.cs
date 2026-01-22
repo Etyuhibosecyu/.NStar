@@ -170,7 +170,7 @@ public class ExtentsTests
 		static void CheckSort<T>(G.IReadOnlyList<T> list) where T : IComparable<T>
 		{
 			for (var i = 1; i < list.Count; i++)
-				Assert.IsTrue(list[i].CompareTo(list[i - 1]) >= 0);
+				Assert.IsGreaterThanOrEqualTo(0, list[i].CompareTo(list[i - 1]));
 		}
 	}
 }

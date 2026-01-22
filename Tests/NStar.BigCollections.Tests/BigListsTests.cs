@@ -529,7 +529,7 @@ public class BigListTests
 		BaseBigListTests<int, BigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
 		{
 			var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
-			bl = new(arr, random.Next(2, 7), random.Next(2, 7));
+			bl = new(arr, random.Next(2, 7), random.Next(1, 7));
 			gl = [.. arr];
 			var bytes = new byte[16];
 			return (bl, gl, bytes);

@@ -634,8 +634,6 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 
 	public virtual int Length => _size;
 
-	int System.Collections.ICollection.Count => Length;
-
 	bool System.Collections.ICollection.IsSynchronized => false;
 
 	object System.Collections.ICollection.SyncRoot

@@ -528,13 +528,25 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		Changed();
 	}
 
-	public override bool Contains(T? item, int index, int length) => UnsafeContains(item, index, length) || Lock(lockObj, UnsafeContains, item, index, length);
+	public override bool Contains(T? item, int index, int length) => UnsafeContains(item, index, length) || Lock(lockObj, () => UnsafeContains(item, index, length));
 
-	public override bool Contains(G.IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
+	public override bool Contains(G.IEnumerable<T> collection, int index, int length)
+	{
+		lock (lockObj)
+			return base.Contains(collection, index, length);
+	}
 
-	protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
+	protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length)
+	{
+		lock (lockObj)
+			base.CopyToInternal(sourceIndex, destination, destinationIndex, length);
+	}
 
-	protected override bool EqualsInternal(G.IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
+	protected override bool EqualsInternal(G.IEnumerable<T>? collection, int index, bool toEnd = false)
+	{
+		lock (lockObj)
+			return base.EqualsInternal(collection, index, toEnd);
+	}
 
 	public override ParallelHashSet<T> ExceptWith(G.IEnumerable<T> other)
 	{
@@ -561,7 +573,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	protected override int IndexOfInternal(T item, int index, int length, int hashCode)
 	{
 		var foundIndex = UnsafeIndexOf(item, index, length);
-		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, length, hashCode);
+		if (foundIndex < 0)
+			return foundIndex;
+		lock (lockObj)
+			return UnsafeIndexOf(item, index, length, hashCode);
 	}
 
 	protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
@@ -596,7 +611,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	public override ParallelHashSet<T> Insert(int index, G.IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
+	public override ParallelHashSet<T> Insert(int index, G.IEnumerable<T> collection)
+	{
+		lock (lockObj)
+			return base.Insert(index, collection);
+	}
 
 	public override ParallelHashSet<T> Insert(int index, ReadOnlySpan<T> span)
 	{
@@ -731,7 +750,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return true;
 	}
 
-	protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
+	protected override void Resize(int newSize, bool forceNewHashCodes)
+	{
+		lock (lockObj)
+			base.Resize(newSize, forceNewHashCodes);
+	}
 
 	public override bool SetEquals(G.IEnumerable<T> other)
 	{
@@ -776,7 +799,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	protected override ParallelHashSet<T> SymmetricExceptInternal(G.IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
+	protected override ParallelHashSet<T> SymmetricExceptInternal(G.IEnumerable<T> other)
+	{
+		lock (lockObj)
+			return base.SymmetricExceptInternal(other);
+	}
 
 	public override bool TryAdd(T item, out int index)
 	{

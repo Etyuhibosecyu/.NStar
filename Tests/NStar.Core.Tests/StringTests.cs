@@ -33,7 +33,7 @@ public class StringTests
 			for (var j = 0; j < 1000; j++)
 			{
 				array[i].Add((char)random.Next(1, 1000));
-				Assert.IsTrue(array[i].Capacity >= array[i].Length);
+				Assert.IsGreaterThanOrEqualTo(array[i].Length, array[i].Capacity);
 			}
 		}
 		Thread.Sleep(50);
@@ -247,75 +247,109 @@ public class StringTests
 			}
 			{
 				var b = new List<char>(a);
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new List<char>(E.Append(a, Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new List<char>(E.Skip(a, 1));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new List<char>(E.Prepend(a, Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new List<char>(E.SkipLast(b, 1));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new List<char>(E.Append(E.SkipLast(b, 1), Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new List<char>(E.Prepend(E.Skip(a, 1), Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = CreateVar(new List<char>(), out _)!;
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 			}
 			{
 				var b = E.ToArray(a);
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = E.ToArray(E.Append(a, Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = E.ToArray(E.Skip(a, 1));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = E.ToArray(E.Prepend(a, Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = E.ToArray(E.SkipLast(b, 1));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = E.ToArray(E.Append(E.SkipLast(b, 1), Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = E.ToArray(E.Prepend(E.Skip(a, 1), Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = CreateVar(Array.Empty<char>(), out _)!;
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 			}
 			{
 				var b = new string(E.ToArray(a));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new string(E.ToArray(E.Append(a, Next())));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new string(E.ToArray(E.Skip(a, 1)));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new string(E.ToArray(E.Prepend(a, Next())));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new string(E.ToArray(E.SkipLast(b, 1)));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new string(E.ToArray(E.Append(E.SkipLast(b, 1), Next())));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = new string(E.ToArray(E.Prepend(E.Skip(a, 1), Next())));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 				b = CreateVar("", out _)!;
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+				Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo((object?)b));
 			}
 			{
 				Span<char> b = E.ToArray(a);
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = E.ToArray(E.Append(a, Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = E.ToArray(E.Skip(a, 1));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = E.ToArray(E.Prepend(a, Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = E.ToArray(E.SkipLast(a, 1));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = E.ToArray(E.Append(E.SkipLast(a, 1), Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = E.ToArray(E.Prepend(E.Skip(a, 1), Next()));
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
 				b = CreateVar(Array.Empty<char>(), out _)!;
-				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
+				Assert.AreEqual(-string.Compare(new string(b.ToArray()), new string(E.ToArray(a))), a.CompareTo(b));
+			}
+			{
+				object? b = null;
+				Assert.AreEqual(1, a.CompareTo(b));
+				b = 5;
+				Assert.ThrowsExactly<ArgumentException>(() => a.CompareTo(b));
+				b = 3.14159;
+				Assert.ThrowsExactly<ArgumentException>(() => a.CompareTo(b));
+				b = new[] { 5, 10, 15, 20, 25 };
+				Assert.ThrowsExactly<ArgumentException>(() => a.CompareTo(b));
 			}
 		}
 		char Next() => (char)random.Next(1000);
@@ -338,27 +372,27 @@ public class StringTests
 		}
 		static void FullCompare(String a, String b)
 		{
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			Assert.AreEqual(a.CompareTo(b, false), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false));
-			Assert.AreEqual(a.CompareTo(b, true), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true));
-			Assert.AreEqual(a.CompareTo(b, new CultureInfo("en-US")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("en-US")));
-			Assert.AreEqual(a.CompareTo(b, false, new("en-US")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("en-US")));
-			Assert.AreEqual(a.CompareTo(b, true, new("en-US")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, new("en-US")));
-			Assert.AreEqual(a.CompareTo(b, new CultureInfo("ru-RU")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("ru-RU")));
-			Assert.AreEqual(a.CompareTo(b, false, new("ru-RU")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("ru-RU")));
-			Assert.AreEqual(a.CompareTo(b, true, new("ru-RU")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, new("ru-RU")));
-			Assert.AreEqual(a.CompareTo(b, new CultureInfo("es-ES")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("es-ES")));
-			Assert.AreEqual(a.CompareTo(b, false, new("es-ES")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("es-ES")));
-			Assert.AreEqual(a.CompareTo(b, true, new("es-ES")), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, new("es-ES")));
-			Assert.AreEqual(a.CompareTo(b, CultureInfo.InvariantCulture), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, CultureInfo.InvariantCulture));
-			Assert.AreEqual(a.CompareTo(b, false, CultureInfo.InvariantCulture), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, CultureInfo.InvariantCulture));
-			Assert.AreEqual(a.CompareTo(b, true, CultureInfo.InvariantCulture), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, CultureInfo.InvariantCulture));
-			Assert.AreEqual(a.CompareTo(b, StringComparison.CurrentCulture), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.CurrentCulture));
-			Assert.AreEqual(a.CompareTo(b, StringComparison.CurrentCultureIgnoreCase), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.CurrentCultureIgnoreCase));
-			Assert.AreEqual(a.CompareTo(b, StringComparison.InvariantCulture), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.InvariantCulture));
-			Assert.AreEqual(a.CompareTo(b, StringComparison.InvariantCultureIgnoreCase), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.InvariantCultureIgnoreCase));
-			//Assert.AreEqual(a.CompareTo(b, StringComparison.Ordinal), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.Ordinal));
-			Assert.AreEqual(a.CompareTo(b, StringComparison.OrdinalIgnoreCase), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false), a.CompareTo(b, false));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true), a.CompareTo(b, true));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("en-US")), a.CompareTo(b, new CultureInfo("en-US")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("en-US")), a.CompareTo(b, false, new("en-US")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, new("en-US")), a.CompareTo(b, true, new("en-US")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("ru-RU")), a.CompareTo(b, new CultureInfo("ru-RU")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("ru-RU")), a.CompareTo(b, false, new("ru-RU")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, new("ru-RU")), a.CompareTo(b, true, new("ru-RU")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("es-ES")), a.CompareTo(b, new CultureInfo("es-ES")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, new("es-ES")), a.CompareTo(b, false, new("es-ES")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, new("es-ES")), a.CompareTo(b, true, new("es-ES")));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, CultureInfo.InvariantCulture), a.CompareTo(b, CultureInfo.InvariantCulture));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), false, CultureInfo.InvariantCulture), a.CompareTo(b, false, CultureInfo.InvariantCulture));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), true, CultureInfo.InvariantCulture), a.CompareTo(b, true, CultureInfo.InvariantCulture));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.CurrentCulture), a.CompareTo(b, StringComparison.CurrentCulture));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.CurrentCultureIgnoreCase), a.CompareTo(b, StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.InvariantCulture), a.CompareTo(b, StringComparison.InvariantCulture));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.InvariantCultureIgnoreCase), a.CompareTo(b, StringComparison.InvariantCultureIgnoreCase));
+			//Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.Ordinal), a.CompareTo(b, StringComparison.Ordinal));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a)), StringComparison.OrdinalIgnoreCase), a.CompareTo(b, StringComparison.OrdinalIgnoreCase));
 		}
 	}
 
@@ -1184,6 +1218,90 @@ public class StringTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = String.Join(", ", Array.Empty<string>());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable(array.ToArray(x => (String)x)));
+		b = string.Join(' ', array);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable(array));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable([(String)"AAA"]));
+		b = string.Join(' ', "AAA");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable(["AAA"]));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable(Array.Empty<String>()));
+		b = string.Join(' ', Array.Empty<string>());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable(Array.Empty<string>()));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.AsEnumerable(array.ToArray(x => (String)x)));
+		b = string.Join(", ", array);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.AsEnumerable(array));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.AsEnumerable([(String)"AAA"]));
+		b = string.Join(", ", "AAA");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.AsEnumerable(["AAA"]));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.AsEnumerable(Array.Empty<String>()));
+		b = string.Join(", ", Array.Empty<string>());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.AsEnumerable(Array.Empty<string>()));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select(array.ToArray(x => (String)x), x => x));
+		b = string.Join(' ', array);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select(array, x => x));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select([(String)"AAA"], x => x));
+		b = string.Join(' ', "AAA");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select(["AAA"], x => x));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select(Array.Empty<String>(), x => x));
+		b = string.Join(' ', Array.Empty<string>());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select(Array.Empty<string>(), x => x));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.Select(array.ToArray(x => (String)x), x => x));
+		b = string.Join(", ", array);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.Select(array, x => x));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.Select([(String)"AAA"], x => x));
+		b = string.Join(", ", "AAA");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(' ', E.Select(["AAA"], x => x));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.Select(Array.Empty<String>(), x => x));
+		b = string.Join(", ", Array.Empty<string>());
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = String.Join(", ", E.Select(Array.Empty<string>(), x => x));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
@@ -2367,7 +2485,7 @@ public class StringTests
 		b = new String('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P');
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		var fullNList = b.Copy();
+		var fullNList = b.Copy().Add('R');
 		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char))fullNList[..1]);
 		Assert.AreEqual(((char, char))fullNList[..2], ('A', 'B'));
 		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char))fullNList[..3]);
@@ -2412,6 +2530,6 @@ public class StringTests
 		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..16]);
 		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..15]);
 		Assert.AreEqual(((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..16], ('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'));
-		Assert.ThrowsExactly<ArgumentException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..17]);
+		Assert.ThrowsExactly<InvalidOperationException>(() => ((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char))fullNList[..17]);
 	}
 }
