@@ -2431,7 +2431,7 @@ internal class SumSetEqualityComparer<T> : G.IEqualityComparer<SumSet<T>>
 	// using comparer to keep equals properties in tact; don't want to choose one of the comparers
 	public virtual bool Equals(SumSet<T>? x, SumSet<T>? y) => SumSet<T>.SortedSetEquals(x, y, comparer);
 
-	// Equals method for the comparer itself. 
+	// Equals method for the comparer itself.
 	public override bool Equals(object? obj)
 	{
 		if (obj is not SumSetEqualityComparer<T> comparer)

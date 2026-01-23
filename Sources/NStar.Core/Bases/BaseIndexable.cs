@@ -50,26 +50,17 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool Contains(IEnumerable<T> collection, int index) => Contains(collection, index, _size - index);
 
-	public virtual bool Contains(IEnumerable<T> collection, int index, int length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > _size)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-		ArgumentNullException.ThrowIfNull(collection);
-		if (length == 0)
-			return false;
-		if (!collection.Any())
-			return true;
-		if (collection is not G.IReadOnlyList<T> list)
-		{
-			if (collection is G.IList<T> list2)
-				list = list2.GetSlice();
-			else
-				list = new List<T>(collection);
-		}
-		return ContainsInternal(list, index, length);
-	}
+	public virtual bool Contains(IEnumerable<T> collection, int index, int length) =>
+		Contains(collection, index, length, EqualityComparer<T>.Default);
+
+	public virtual bool Contains(IEnumerable<T> collection, IEqualityComparer<T> comparer) =>
+		Contains(collection, 0, _size, comparer);
+
+	public virtual bool Contains(IEnumerable<T> collection, int index, IEqualityComparer<T> comparer) =>
+		Contains(collection, index, _size - index, comparer);
+
+	public virtual bool Contains(IEnumerable<T> collection, int index, int length, IEqualityComparer<T> comparer) =>
+		IndexOf(collection, index, length, comparer) >= 0;
 
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);
 
@@ -418,9 +409,23 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual int IndexOf(IEnumerable<T> collection, int index) => IndexOf(collection, index, _size - index);
 
-	public virtual int IndexOf(IEnumerable<T> collection, int index, int length) => IndexOf(collection, index, length, out _);
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength) =>
+		IndexOf(collection, index, length, EqualityComparer<T>.Default, out collectionLength);
 
-	public virtual int IndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int length) =>
+		IndexOf(collection, index, length, EqualityComparer<T>.Default, out _);
+
+	public virtual int IndexOf(IEnumerable<T> collection, IEqualityComparer<T> comparer) =>
+		IndexOf(collection, 0, _size, comparer);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index, IEqualityComparer<T> comparer) =>
+		IndexOf(collection, index, _size - index, comparer);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int length, IEqualityComparer<T> comparer) =>
+		IndexOf(collection, index, length, comparer, out _);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int length,
+		IEqualityComparer<T> comparer, out int collectionLength)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -437,13 +442,43 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			collectionLength = 0;
 			return -1;
 		}
-
-		if (collection is not G.ICollection<T> c)
-			c = new List<T>(collection);
-		collectionLength = c.Count;
-		for (var i = index; i <= index + length - collectionLength; i++)
-			if (EqualsInternal(collection, i))
+		if (collection is G.IReadOnlyList<T> list) { }
+		else if (collection is G.IList<T> list2)
+			list = list2.GetSlice();
+		else
+			list = RedStarLinq.ToList(collection);
+		var m = collectionLength = list.Count;
+		var suffshift = RedStarLinq.FillArray(m, m + 1);
+		var z = RedStarLinq.FillArray(0, m);
+		for (int j = 1, maxZidx = 0, maxZ = 0; j < m; ++j)
+		{
+			if (j <= maxZ)
+				z[j] = Min(maxZ - j + 1, z[j - maxZidx]);
+			while (j + z[j] < m && comparer.Equals(list[m - 1 - z[j]], list[m - 1 - (j + z[j])]))
+				z[j]++;
+			if (j + z[j] - 1 > maxZ)
+			{
+				maxZidx = j;
+				maxZ = j + z[j] - 1;
+			}
+		}
+		for (var j = m - 1; j > 0; j--)
+			suffshift[m - z[j]] = j;
+		for (int j = 1, r = 0; j <= m - 1; j++)
+		{
+			if (j + z[j] != m)
+				continue;
+			for (; r <= j; r++)
+				if (suffshift[r] == m)
+					suffshift[r] = j;
+		}
+		for (int i = index, j = 0; i <= index + length - m && j >= 0; i += suffshift[j + 1])
+		{
+			for (j = m - 1; j >= 0 && comparer.Equals(list[j], GetInternal(i + j)); j--)
+				;
+			if (j < 0)
 				return i;
+		}
 		return -1;
 	}
 
@@ -881,6 +916,19 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual int IndexOf(TCertain collection, int index, int length) => IndexOf((IEnumerable<T>)collection, index, length);
 
 	public virtual int IndexOf(TCertain collection, int index, int length, out int collectionLength) => IndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
+
+	public virtual int IndexOf(TCertain collection, IEqualityComparer<T> comparer) =>
+		IndexOf((IEnumerable<T>)collection, 0, _size);
+
+	public virtual int IndexOf(TCertain collection, int index, IEqualityComparer<T> comparer) =>
+		IndexOf((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual int IndexOf(TCertain collection, int index, int length, IEqualityComparer<T> comparer) =>
+		IndexOf((IEnumerable<T>)collection, index, length);
+
+	public virtual int IndexOf(TCertain collection, int index, int length,
+		IEqualityComparer<T> comparer, out int collectionLength) =>
+		IndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
 
 	public virtual int IndexOfAny(TCertain collection) => IndexOfAny((IEnumerable<T>)collection, 0, _size);
 

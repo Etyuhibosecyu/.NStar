@@ -31,7 +31,7 @@ namespace Mpir.NET;
 
 public static partial class Mpir
 {
-	// <dummy> makes sure that <hxmpir> is initialized before it's used in the 
+	// <dummy> makes sure that <hxmpir> is initialized before it's used in the
 	// field assignments later in this file. hxmpir is declared in xmpir.cs,
 	// making sure it's initialized before it's used in that file.
 	// So, regardless of whether the CLR initializes the static fields of

@@ -13,7 +13,7 @@ namespace NStar.BigCollections;
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigBitList : OldBigList<bool, BigBitList, BitList>
 {
-	// XPerY=n means that n Xs can be stored in 1 Y. 
+	// XPerY=n means that n Xs can be stored in 1 Y.
 	private protected const int BitsPerInt = sizeof(int) * BitsPerByte;
 	private protected const int BytesPerInt = sizeof(int);
 	private protected const int BitsPerByte = 8;
@@ -646,7 +646,8 @@ public class BigList<T> : BigList<T, BigList<T>, LimitedBuffer<T>>
 
 	protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator =>
+		x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	protected override Func<int, LimitedBuffer<T>> CapacityLowCreator => x => new(x);
 

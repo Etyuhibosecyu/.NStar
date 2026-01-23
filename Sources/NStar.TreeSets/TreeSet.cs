@@ -2207,7 +2207,7 @@ internal class TreeSetEqualityComparer<T> : G.IEqualityComparer<TreeSet<T>>
 	// using comparer to keep equals properties in tact; don't want to choose one of the comparers
 	public virtual bool Equals(TreeSet<T>? x, TreeSet<T>? y) => TreeSet<T>.SortedSetEquals(x, y, comparer);
 
-	// Equals method for the comparer itself. 
+	// Equals method for the comparer itself.
 	public override bool Equals(object? obj)
 	{
 		if (obj is not TreeSetEqualityComparer<T> comparer)

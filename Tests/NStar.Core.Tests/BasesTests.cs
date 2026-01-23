@@ -175,10 +175,10 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 	{
 		Assert.AreEqual(OriginalCollection.Contains(DefaultString), TestCollection.Contains(DefaultString));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		int length, startIndex;
+		int index, length, startIndex;
 		G.List<string> b;
-		string elem, elem2;
-		for (var i = 0; i < 1000; i++)
+		string elem, elem2, elem3;
+		for (var i = 0; i < 1000000; i++)
 		{
 			length = random.Next(51);
 			var array = new string[length];
@@ -192,7 +192,17 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 			startIndex = random.Next(length);
 			Assert.AreEqual(b.GetRange(startIndex, length - startIndex).Contains(elem), a.Contains(elem, startIndex));
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
-			Assert.AreEqual(E.Contains(E.Zip(b, E.Skip(b, 1)), (elem, elem2)), a.Contains([elem, elem2]));
+			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
+			if (array.Length != 0)
+				elem3 = array.Random(random);
+			index = array.IndexOf(elem);
+			if (index >= 1 && random.Next(2) == 0)
+				elem2 = array[index - 1];
+			if (index >= 2 && random.Next(2) == 0)
+				elem = array[index - 2];
+			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1))).Contains((elem, elem2)), a.Contains([elem, elem2]));
+			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1), E.Skip(b, 2))).Contains((elem, elem2, elem3)),
+				a.Contains([elem, elem2, elem3]));
 		}
 		Assert.ThrowsExactly<ArgumentNullException>(() => TestCollection.Contains((G.IEnumerable<string>)null!));
 	}
@@ -467,8 +477,8 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int index, length, startIndex;
 		G.List<string> b;
-		string elem, elem2;
-		for (var i = 0; i < 1000; i++)
+		string elem, elem2, elem3;
+		for (var i = 0; i < 1000000; i++)
 		{
 			length = random.Next(51);
 			var array = new string[length];
@@ -485,7 +495,17 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 				index += startIndex;
 			Assert.AreEqual(index, a.IndexOf(elem, startIndex));
 			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
+			if (array.Length != 0)
+				elem3 = array.Random(random);
+			index = array.IndexOf(elem);
+			if (index >= 1 && random.Next(2) == 0)
+				elem2 = array[index - 1];
+			if (index >= 2 && random.Next(2) == 0)
+				elem = array[index - 2];
 			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1))).IndexOf((elem, elem2)), a.IndexOf([elem, elem2]));
+			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1), E.Skip(b, 2))).IndexOf((elem, elem2, elem3)),
+				a.IndexOf([elem, elem2, elem3]));
 		}
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1, 5));

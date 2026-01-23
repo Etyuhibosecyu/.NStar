@@ -1956,6 +1956,48 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestIndexOf() => Test(a =>
+	{
+		ProcessString(a, "MMM");
+		ProcessString(a, "#");
+		ProcessString(a, null!);
+		static void ProcessString(G.IEnumerable<string> a, string s)
+		{
+			var c = a.IndexOf(s);
+			var d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem == s, (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, new EComparer<string>((x, y) => x == y));
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, (x, y) => x == y);
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, new EComparer<string>((x, y) => x == y, x => 42));
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, (x, y) => x == y, x => 42);
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, new EComparer<string>((x, y) => false));
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, (x, y) => false);
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, new EComparer<string>((x, y) => false, x => 42));
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.IndexOf(s, (x, y) => false, x => 42);
+			d = E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOf(s, (G.IEqualityComparer<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOf(s, (Func<string, string, bool>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOf(s, (x, y) => x == y, null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.IndexOf(s, null!, null!));
+		}
+	});
+
+	[TestMethod]
 	public void TestJoinIntoSingle() => Test(a =>
 	{
 		var c = a.Convert(x => x[1..]).JoinIntoSingle();
@@ -1996,6 +2038,48 @@ public class RedStarLinqTests
 		Assert.IsTrue(E.SequenceEqual(c, d));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.Convert((Func<string, string>)null!).JoinIntoSingle());
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!).JoinIntoSingle());
+	});
+
+	[TestMethod]
+	public void TestLastIndexOf() => Test(a =>
+	{
+		ProcessString(a, "MMM");
+		ProcessString(a, "#");
+		ProcessString(a, null!);
+		static void ProcessString(G.IEnumerable<string> a, string s)
+		{
+			var c = a.LastIndexOf(s);
+			var d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => x.elem == s, (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, new EComparer<string>((x, y) => x == y));
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, (x, y) => x == y);
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, new EComparer<string>((x, y) => x == y, x => 42));
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, (x, y) => x == y, x => 42);
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => x == y, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, new EComparer<string>((x, y) => false));
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, (x, y) => false);
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, new EComparer<string>((x, y) => false, x => 42));
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			c = a.LastIndexOf(s, (x, y) => false, x => 42);
+			d = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), x => new EComparer<string>((x, y) => false, x => 42).Equals(x.elem, s), (null!, -1)).index;
+			Assert.AreEqual(d, c);
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOf(s, (G.IEqualityComparer<string>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOf(s, (Func<string, string, bool>)null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOf(s, (x, y) => x == y, null!));
+			Assert.ThrowsExactly<ArgumentNullException>(() => a.LastIndexOf(s, null!, null!));
+		}
 	});
 
 	[TestMethod]

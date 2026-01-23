@@ -2932,6 +2932,148 @@ public static class RedStarLinqExtras
 		}
 	}
 
+	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list.Length;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+				if (function(list[i]))
+					result[j++] = i;
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<int> result = new(array.Length);
+			var j = 0;
+			for (var i = 0; i < array.Length; i++)
+				if (function(array[i]))
+					result[j++] = i;
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+				if (function(list2[i]))
+					result[j++] = i;
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+				if (function(list3[i]))
+					result[j++] = i;
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (function(item))
+					result.Add(i);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list.Length;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				if (function(item, i))
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<int> result = new(array.Length);
+			var j = 0;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (function(item, i))
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (function(item, i))
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item, i))
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (function(item, i))
+					result.Add(i);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
 	public static T? FindLast<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(source);
@@ -3198,7 +3340,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -3284,7 +3427,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -3454,7 +3598,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -3540,7 +3685,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -3710,7 +3856,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -3796,7 +3943,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -3966,7 +4114,9 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+		where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4052,7 +4202,9 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+		where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4138,7 +4290,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source,
+		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -4222,7 +4375,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function)
+		where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4308,7 +4462,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function)
+		where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4394,7 +4549,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
+		G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4480,7 +4636,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function,
+		G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4650,7 +4807,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
+		Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4736,7 +4894,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function,
+		Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4906,7 +5065,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
+		Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -4992,7 +5152,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function,
+		Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5078,7 +5239,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source,
+		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -5162,7 +5324,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function)
+		where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5248,7 +5411,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5418,7 +5582,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
+		G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5504,7 +5669,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function, G.IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5674,7 +5840,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
+		Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5760,7 +5927,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -5930,7 +6098,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
+		Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -6016,7 +6185,9 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
+		Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+		where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -6102,7 +6273,8 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source,
+		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
@@ -6179,6 +6351,82 @@ public static class RedStarLinqExtras
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	public static List<int> IndexesOf<T>(this G.IEnumerable<T> source, T target)
+	{
+		if (source is List<T> list)
+		{
+			var length = list.Length;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				if (item?.Equals(target) ?? false)
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			var result = RedStarLinq.EmptyList<int>(array.Length);
+			var j = 0;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (item?.Equals(target) ?? false)
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (item?.Equals(target) ?? false)
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = RedStarLinq.EmptyList<int>(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (item?.Equals(target) ?? false)
+					result[j++] = i;
+			}
+			result.Resize(j);
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (item?.Equals(target) ?? false)
+					result.Add(i);
 				i++;
 			}
 			result.TrimExcess();
@@ -6633,6 +6881,7 @@ public static class RedStarLinqExtras
 
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
+		ArgumentNullException.ThrowIfNull(comparer);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
@@ -6682,6 +6931,7 @@ public static class RedStarLinqExtras
 
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
 		if (source is List<T> list)
 		{
@@ -6732,6 +6982,8 @@ public static class RedStarLinqExtras
 
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
+		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
 		if (source is List<T> list)
 		{
@@ -10641,237 +10893,6 @@ public static class RedStarLinqExtras
 			result = default;
 			return false;
 		}
-	}
-
-	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-				if (function(list[i]))
-					result[j++] = i;
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-				if (function(array[i]))
-					result[j++] = i;
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-				if (function(list2[i]))
-					result[j++] = i;
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-				if (function(list3[i]))
-					result[j++] = i;
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (function(item))
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (function(item, i))
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (function(item, i))
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (function(item, i))
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static List<int> IndexesOf<T>(this G.IEnumerable<T> source, T target)
-	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (item?.Equals(target) ?? false)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.EmptyList<int>(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (item?.Equals(target) ?? false)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (item?.Equals(target) ?? false)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (item?.Equals(target) ?? false)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<int> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (item?.Equals(target) ?? false)
-					result.Add(i);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	public static List<int> IndexesOf<T>(this List<T> source, T target) where T : unmanaged
-	{
-		var length = source.Length;
-		var result = RedStarLinq.EmptyList<int>(length);
-		var j = 0;
-		for (var i = 0; i < length; i++)
-			if (source[i].Equals(target))
-				result[j++] = i;
-		result.Resize(j);
-		result.TrimExcess();
-		return result;
 	}
 
 	public static String ToNString<T>(this G.IEnumerable<T> source, Func<T, char> function)

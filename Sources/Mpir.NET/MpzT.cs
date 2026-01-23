@@ -35,7 +35,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	/// Initializes a new MpzT to using MPIR MpzInit2. Only use if you need to
 	/// avoid reallocations.
-	// 
+	//
 	// Initialization with MpzInit2 should not be confused with MpzT construction
 	// from a ulong. Thus, so we use a static construction function instead, and add
 	// the dummy type init2Type to enable us to write a ctor with a unique signature.
@@ -60,7 +60,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	}
 
 	/// Initializes a new MpzT to the integer in the byte array bytes.
-	/// Endianess is specified by order, which is 1 for big endian or -1 
+	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
 	public MpzT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
 
@@ -69,7 +69,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	#region Import and export byte array
 
 	/// Import the integer in the byte array bytes.
-	/// Endianess is specified by order, which is 1 for big endian or -1 
+	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
 	public readonly void FromByteArray(ReadOnlySpan<byte> source, int order)
 	{
@@ -80,19 +80,19 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	/// Import the integer in the byte array bytes, starting at startOffset
 	/// and ending at endOffset.
-	/// Endianess is specified by order, which is 1 for big endian or -1 
+	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
 	public readonly void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpzImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
 
 	/// Export to the value to a byte array.
-	/// Endianess is specified by order, which is 1 for big endian or -1 
+	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
 	public readonly byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpzExport(order, sizeof(byte), 0, 0u, this);
 	#endregion
 
-	// Almost everything below is copied from Emil Stefanov's BigInt 
+	// Almost everything below is copied from Emil Stefanov's BigInt
 	// http://www.emilstefanov.net/Projects/GnuMpDotNet/
-	// with a few minor adjustments, e.g. datatype used 
+	// with a few minor adjustments, e.g. datatype used
 	// and ++ and -- operators which now do in-place inrements/decrements).
 	// All code handling Decimal is commented out, dute to some
 	// unexpected behaviour.
@@ -630,8 +630,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public readonly MpzT Divide(uint x, out uint remainder)
 	{
-		// Unsure about the below exception for negative numbers. It's in Stefanov's 
-		// original code, but that limitation isn't mentioned in 
+		// Unsure about the below exception for negative numbers. It's in Stefanov's
+		// original code, but that limitation isn't mentioned in
 		// http://Gmplib.org/manual/Integer-Division.html#Integer-Division.
 		//if(this.ChunkCount < 0)
 		//	throw new InvalidOperationException("This method may not be called when the instance represents a negative number.");

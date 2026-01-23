@@ -95,21 +95,24 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index) => Contains(collection, index, Length - index);
 
-	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index, MpzT length)
+	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index, MpzT length) =>
+		Contains(collection, index, length, G.EqualityComparer<T>.Default);
+
+	public virtual bool Contains(G.IEnumerable<T> collection, G.IEqualityComparer<T> comparer) =>
+		Contains(collection, 0, Length, comparer);
+
+	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index, G.IEqualityComparer<T> comparer) =>
+		Contains(collection, index, Length - index, comparer);
+
+	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index, MpzT length, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Length)
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
-		return ContainsInternal(collection, index, length);
+		return IndexOfInternal(collection, index, length, comparer) >= 0;
 	}
-
-	public virtual bool Contains(TCertain list) => Contains((G.IEnumerable<T>)list, 0, Length);
-
-	public virtual bool Contains(TCertain list, MpzT index) => Contains((G.IEnumerable<T>)list, index, Length - index);
-
-	public virtual bool Contains(TCertain list, MpzT index, MpzT length) => Contains((G.IEnumerable<T>)list, index, length);
 
 	public virtual bool ContainsAny(G.IEnumerable<T> collection) => ContainsAny(collection, 0, Length);
 
@@ -176,37 +179,6 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index, MpzT length) =>
 		ContainsAnyExcluding((G.IEnumerable<T>)list, index, length);
-
-	protected virtual bool ContainsInternal(G.IEnumerable<T> collection, MpzT index, MpzT length)
-	{
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-		if (length == 0 || !collection.Any())
-			return false;
-		if (collection is not IBigList<T> list)
-			list = CollectionCreator(collection);
-		MpzT j = 0;
-		for (MpzT i = 0; i - j <= length - list.Length; i++)
-		{
-			if (GetInternal(index + i)?.Equals(list[j]) ?? list[j] == null)
-			{
-				j++;
-				if (j >= list.Length)
-					return true;
-			}
-			else if (j != 0)
-			{
-				i -= j;
-				j = 0;
-			}
-		}
-		return false;
-	}
 
 	public virtual object Clone() => Copy();
 
@@ -467,6 +439,56 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		}
 #endif
 		return IndexOfInternal(item, index, length, false);
+	}
+
+	protected virtual MpzT IndexOfInternal(G.IEnumerable<T> collection, MpzT index, MpzT length,
+		G.IEqualityComparer<T> comparer)
+	{
+		try
+		{
+			throw new SlowOperationException();
+		}
+		catch
+		{
+		}
+		if (length == 0 || !collection.Any())
+			return -1;
+		if (collection is not G.IList<T> list)
+			list = RedStarLinq.ToList(collection);
+		var m = list.Count;
+		var suffshift = RedStarLinq.FillArray(m, m + 1);
+		var z = RedStarLinq.FillArray(0, m);
+		for (int j = 1, maxZidx = 0, maxZ = 0; j < m; ++j)
+		{
+			if (j <= maxZ)
+				z[j] = Min(maxZ - j + 1, z[j - maxZidx]);
+			while (j + z[j] < m && comparer.Equals(list[m - 1 - z[j]], list[m - 1 - (j + z[j])]))
+				z[j]++;
+			if (j + z[j] - 1 > maxZ)
+			{
+				maxZidx = j;
+				maxZ = j + z[j] - 1;
+			}
+		}
+		for (var j = m - 1; j > 0; j--)
+			suffshift[m - z[j]] = j;
+		for (int j = 1, r = 0; j <= m - 1; j++)
+		{
+			if (j + z[j] != m)
+				continue;
+			for (; r <= j; r++)
+				if (suffshift[r] == m)
+					suffshift[r] = j;
+		}
+		var i = index;
+		for (var j = 0; i <= index + length - m && j >= 0; i += suffshift[j + 1])
+		{
+			for (j = m - 1; j >= 0 && comparer.Equals(list[j], GetInternal(i + j)); j--)
+				;
+			if (j < 0)
+				return i;
+		}
+		return -1;
 	}
 
 	protected virtual MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)

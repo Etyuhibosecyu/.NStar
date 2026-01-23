@@ -1094,6 +1094,9 @@ public class StringTests
 			ProcessA(a, E.Prepend(E.Skip(a, 1), Next()));
 			ProcessA(a, []);
 		}
+		var b = ((String)"a").Repeat(2000000).AddRange(((String)"ba").Repeat(1000000));
+		var c = ((String)"ca").AddRange(((String)"ba").Repeat(999999));
+		Assert.AreEqual(-1, b.IndexOf(c));
 		char Next() => (char)random.Next(1000);
 		void ProcessA(String a, G.IEnumerable<char> enumerable)
 		{

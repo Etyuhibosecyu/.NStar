@@ -669,7 +669,7 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 		+ " Большие списки делают все то же самое и многое другое, и они уже работают.", true)]
 public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 {
-	// XPerY=n means that n Xs can be stored in 1 Y. 
+	// XPerY=n means that n Xs can be stored in 1 Y.
 	private protected const int BitsPerInt = sizeof(int) * BitsPerByte;
 	private protected const int BytesPerInt = sizeof(int);
 	private protected const int BitsPerByte = 8;

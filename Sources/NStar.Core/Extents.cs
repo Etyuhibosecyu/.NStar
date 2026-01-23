@@ -182,7 +182,7 @@ public interface IReadOnlyList<T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
 
 public static unsafe class Extents
 {
-	// XPerY=n means that n Xs can be stored in 1 Y. 
+	// XPerY=n means that n Xs can be stored in 1 Y.
 	public const int BitsPerInt = sizeof(int) * BitsPerByte;
 	public const int BytesPerInt = sizeof(int);
 	public const int BitsPerByte = 8;
@@ -286,14 +286,14 @@ public static unsafe class Extents
 	}
 
 	/// <summary>
-	/// Used for conversion between different representations of bit array. 
-	/// Returns (n+(div-1))/div, rearranged to avoid arithmetic overflow. 
-	/// For example, in the bit to int case, the straightforward calc would 
-	/// be (n+31)/BitsPerInt32, but that would cause overflow. So instead it's 
+	/// Used for conversion between different representations of bit array.
+	/// Returns (n+(div-1))/div, rearranged to avoid arithmetic overflow.
+	/// For example, in the bit to int case, the straightforward calc would
+	/// be (n+31)/BitsPerInt32, but that would cause overflow. So instead it's
 	/// rearranged to ((n-1)/BitsPerInt32) + 1, with special casing for 0.
-	/// 
+	///
 	/// Usage:
-	/// GetArrayLength(77, BitsPerInt32): returns how many ints must be 
+	/// GetArrayLength(77, BitsPerInt32): returns how many ints must be
 	/// allocated to store 77 bits.
 	/// </summary>
 	/// <param name="n"></param>

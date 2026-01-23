@@ -599,20 +599,20 @@ public class StringTests
 			b.InsertRange(index, array);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}, () => 
+		}, () =>
 		{
 			a.Insert(index, new string(RedStarLinq.ToArray(a)));
 			b.InsertRange(index, array);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}, () => 
+		}, () =>
 		{
 			int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
 			a.Insert(index, a.GetRange(index2, length));
 			b.InsertRange(index, array.Skip(index2).Take(length));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}, () => 
+		}, () =>
 		{
 			var array2 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
 			a.Insert(index, array2);

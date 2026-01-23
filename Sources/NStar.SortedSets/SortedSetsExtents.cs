@@ -16,7 +16,7 @@ public static unsafe class SortedSetsExtents
 		var comparer = G.Comparer<int>.Default;
 		while (lo <= hi)
 		{
-			// i might overflow if lo and hi are both large positive numbers. 
+			// i might overflow if lo and hi are both large positive numbers.
 			var i = lo + ((hi - lo) >> 1);
 			int c;
 			try
