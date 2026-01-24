@@ -289,7 +289,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		if (Capacity < min)
 		{
-			var newCapacity = Length == 0 ? DefaultCapacity : Length * 2;
+			var newCapacity = Length == 0 ? DefaultCapacity : Length << 1;
 			if (newCapacity < min)
 				newCapacity = min;
 			Capacity = newCapacity;

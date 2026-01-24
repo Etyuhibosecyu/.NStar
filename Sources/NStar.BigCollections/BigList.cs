@@ -1714,8 +1714,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		Debug.Assert(source.high != null);
 		sourceEffectiveHighLength = source.EffectiveHighLength();
-		source.EnsureCapacity((source.HasSufficientLength(0) ? (sourceEffectiveHighLength - 1)
-			* source.fragment + source.LastEffectiveLength() : 0) + increment);
+		var targetCapacity = (source.HasSufficientLength(0) ? (sourceEffectiveHighLength - 1)
+			* source.fragment + source.LastEffectiveLength() : 0) + increment;
+		if (source.Capacity < targetCapacity)
+			source.IncreaseCapacity(RedStarLinqMath.Min(RedStarLinqMath.Max(source.Length << 1, targetCapacity),
+				source.fragment << source.SubbranchesBitLength), source.fragment);
 		sourceEffectiveHighLength = source.EffectiveHighLength();
 		var leftIncrement = increment;
 		if (source.HasSufficientLength(0) && source.LastEffectiveLength() != source.fragment)
@@ -1738,7 +1741,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				source.high[^1].parent = source;
 				source.AddCapacity(source.fragment);
 			}
-			source.high[i].EnsureCapacity(source.fragment);
 			stack.Insert(stackIndex, (null!, -1, source.high[i], -1, -source.fragment, MoveRangeMode.Copy));
 			source.highLength?.Add(source.fragment);
 		}
@@ -1752,7 +1754,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				source.high[^1].parent = source;
 				source.AddCapacity(leftIncrement);
 			}
-			source.high[i].EnsureCapacity(leftIncrement);
 			stack.Insert(stackIndex, (null!, -1, source.high[i], -1, -leftIncrement, MoveRangeMode.Copy));
 			source.highLength?.Add(leftIncrement);
 		}
@@ -2734,7 +2735,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			leftCapacity = fragment;
 		if (high[^1].Length > leftCapacity)
 			MoveRange((null!, -2, (TCertain)this, -1, -fragment << SubbranchesBitLength, MoveRangeMode.None));
-		high[^1].Capacity = leftCapacity == 0 ? fragment : leftCapacity;
+		var targetLastCapacity = leftCapacity == 0 ? fragment : leftCapacity;
+		if (high[^1].Capacity > targetLastCapacity)
+		{
+			if (high[^1].low != null)
+			{
+				high[^1].low!.Capacity = (int)targetLastCapacity;
+				high[^1].AddCapacity(targetLastCapacity - high[^1].Capacity);
+			}
+			else
+				high[^1].ReduceCapacityLinear(targetLastCapacity);
+		}
 #if VERIFY
 		if (high != null)
 			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));

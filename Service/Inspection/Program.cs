@@ -14,7 +14,7 @@ var programType = E.FirstOrDefault(_assembly.MainModule.Types,
 var programType2 = E.FirstOrDefault(_assembly.MainModule.Types,
 	x => x.Name == "BaseBigList`3") ?? throw new InvalidOperationException();
 var methods = E.Concat(programType.Methods, programType2.Methods).ToHashSet();
-var recursiveMethods = methods.Filter(x => GetMethodsCalled(x).Contains(x));
+var recursiveMethods = methods.Filter(x => GetMethodsCalledFull(x).Contains(x));
 ListHashSet<(string, string)> hs = [];
 foreach (var x in recursiveMethods)
 	foreach (var y in methods)
