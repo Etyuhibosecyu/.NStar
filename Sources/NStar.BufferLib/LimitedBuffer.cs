@@ -138,13 +138,13 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 				_items = null;
 				return;
 			}
-			Debug.Assert(_items != null);
 			ArgumentOutOfRangeException.ThrowIfZero(value);
 			T[] newItems;
 			lock (globalLockObj)
 				newItems = arrayPool.GetAndRemove(value);
 			if (_size > 0)
 			{
+				Debug.Assert(_items != null);
 				if (_start + _size < Capacity)
 					Array.Copy(_items, _start, newItems, 0, _size);
 				else

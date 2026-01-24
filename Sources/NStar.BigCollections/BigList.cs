@@ -34,9 +34,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected List<MoveRangeContext>? moveStack;
 	private protected bool bReversed;
 
-	public BigList() : this(-1) { }
+	protected const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
 
-	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	protected BigList() : this(-1) { }
+
+	protected BigList(int subbranchesBitLength, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength is >= 2 and <= 30)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -50,7 +55,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	protected BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength is >= 2 and <= 30)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -69,7 +74,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	protected BigList(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength is >= 2 and <= 30)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -87,7 +92,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	protected BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(capacity, subbranchesBitLength, leafSizeBitLength)
 	{
 		ConstructFromEnumerable(collection);
@@ -98,7 +103,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	protected BigList(ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(collection.Length, subbranchesBitLength, leafSizeBitLength)
 	{
 		ConstructFromList(collection.ToArray());
@@ -109,7 +114,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	protected BigList(MpzT capacity, ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(RedStarLinqMath.Max(capacity, collection.Length), subbranchesBitLength, leafSizeBitLength)
 	{
 		ConstructFromList(collection.ToArray());
@@ -125,7 +130,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		get => _capacity;
 		set
 		{
-			var this2 = (TCertain)this;
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, Length);
 			if (value == _capacity)
 				return;
@@ -152,11 +156,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				if (high != null)
 					ReduceCapacityExponential(LeafSize);
 				if (high != null) // В этом случае в списке очень много пустоты
-					Compactify(_capacity);
+					MoveRange((null!, -2, (TCertain)this, -1, -_capacity, MoveRangeMode.None));
 				var first = this;
 				var reverse = false;
 				// Ищем первый лист и разрушаем "лишние" ветки
-				for (; first.high != null;)
+				while (first.high != null)
 				{
 					first.high.Skip(1).ForEach(x => x.Dispose());
 					first.highLength?.Dispose();
@@ -264,11 +268,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return this2;
 		}
 		else if (high == null)
-			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -278,7 +278,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			InsertInternal(Length, item);
 			return this2;
 		}
-		var intIndex = IndexOfNotGreaterSum(Length, out var restIndex);
+		var intIndex = IndexOfNotGreaterSum(Length, out _);
 		if (intIndex != 0 && high[intIndex - 1].Capacity != high[intIndex - 1].Length)
 			intIndex--;
 		if (high.Length == intIndex)
@@ -298,7 +298,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				Debug.Assert(!compactified);
-				Compactify(Length + 1);
+				MoveRange((null!, -2, (TCertain)this, -1, -Length - 1, MoveRangeMode.None));
 				compactified = true;
 				goto start;
 			}
@@ -358,7 +358,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (bReversed)
 				index = Length - length - index;
 			var endIndex = index + length - 1;
-			var ((_, intIndex, restIndex), (_, endIntIndex, endRestIndex)) = new CopyRangeSide((TCertain)this, index, endIndex);
+			var ((_, intIndex, restIndex), (_, endIntIndex, _)) = new CopyRangeSide((TCertain)this, index, endIndex);
 			if (intIndex == endIntIndex)
 			{
 				high[intIndex].ClearInternal(restIndex, length);
@@ -380,91 +380,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected virtual void Compactify(MpzT targetLength, bool force = false)
-	{
-		Root.accessCache?.Clear();
-		Debug.Assert(high != null);
-		MpzT oldTargetLength = new(targetLength);
-		var deepCompactify = targetLength >= fragment * (Subbranches - 1);
-		var mergeThreshold = fragment - (high[0].high != null ? high[0].fragment : 0);
-	start:
-		if (Length + (HasSufficientLength(0) ? fragment - LastEffectiveLength() : 0)
-			+ (high.Length - EffectiveHighLength() - 1) * fragment + high[^1].Capacity >= targetLength && !force)
-			return;
-		targetLength -= high[0].Length;
-		var effectiveHighLength = EffectiveHighLength();
-		var i = 1;
-		for (; i < effectiveHighLength; i++)
-		{
-			var highLengthAtI = high[i].Length;
-			var highLengthBeforeI = high[i - 1].Length;
-			if (highLengthBeforeI == fragment)
-			{
-				targetLength -= highLengthAtI;
-				continue;
-			}
-			if (Length + (HasSufficientLength(0) ? fragment - LastEffectiveLength() : 0)
-				+ (high.Length - effectiveHighLength - 1) * fragment + high[^1].Capacity >= oldTargetLength && !force)
-				break;
-			var amount = RedStarLinqMath.Min(fragment - highLengthBeforeI, targetLength);
-			if (amount <= 0)
-				break;
-			var highAtI = high[i];
-			var highBeforeI = high[i - 1];
-			if (highBeforeI.high != null && highBeforeI.Length
-				+ highBeforeI.fragment - highBeforeI.LastEffectiveLength() + amount > highBeforeI.Capacity)
-				highBeforeI.Compactify(fragment);
-			if (highLengthAtI > amount)
-			{
-				if (!deepCompactify)
-					continue;
-				if (highBeforeI.bReversed && highBeforeI.Length < highLengthBeforeI + amount)
-					MoveRange((null!, -1, highBeforeI, -1, highBeforeI.Length - highLengthBeforeI - amount, MoveRangeMode.Copy));
-				MoveRange(ProcessReverseContext((highAtI, 0, highBeforeI, highLengthBeforeI, amount, MoveRangeMode.None)));
-				highLength?[i - 1] += amount;
-				highLength?[i] -= amount;
-				targetLength -= amount;
-			}
-			else
-			{
-				if (!deepCompactify && highLengthBeforeI + highLengthAtI > mergeThreshold)
-					continue;
-				if (highBeforeI.bReversed && highBeforeI.Length < highLengthBeforeI + highLengthAtI)
-					MoveRange((null!, -1, highBeforeI, -1, highBeforeI.Length - highLengthBeforeI - highLengthAtI, MoveRangeMode.Copy));
-				MoveRange(ProcessReverseContext((highAtI, 0, highBeforeI, highLengthBeforeI, highLengthAtI,
-					MoveRangeMode.None)));
-				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
-				Index pasteIndex = i;
-				if (HasSufficientLength(i + 1))
-				{
-					high.CopyRangeTo(i + 1, high, i, high.Length - i - offsetFromEnd - 1);
-					high[pasteIndex = ^(offsetFromEnd + 1)] = highAtI;
-				}
-				var lastHigh = high[^1];
-				lastHigh.IncreaseCapacity(fragment, high[0].fragment);
-				(high[pasteIndex], high[^1]) = (lastHigh, highAtI);
-				highAtI.ClearInternal(false);
-				highLength?[i - 1] += highLengthAtI;
-				targetLength -= highLengthAtI;
-				highLength?.RemoveAt(i);
-				effectiveHighLength--;
-				i--;
-			}
-		}
-		if (targetLength > 0 && !deepCompactify)
-		{
-			targetLength = oldTargetLength;
-			deepCompactify = true;
-			goto start;
-		}
-#if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
-		Verify();
-#endif
-	}
-
-	protected virtual void ConstructFromCapacity(MpzT capacity)
+	protected void ConstructFromCapacity(MpzT capacity)
 	{
 		if (_capacity >= capacity)
 			return;
@@ -510,7 +426,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected virtual void ConstructFromEnumerable(G.IEnumerable<T> collection)
+	protected void ConstructFromEnumerable(G.IEnumerable<T> collection)
 	{
 		if (collection is G.IReadOnlyList<T> list)
 			ConstructFromList(list);
@@ -536,7 +452,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	protected virtual void ConstructFromList(G.IReadOnlyList<T> list)
+	protected void ConstructFromList(G.IReadOnlyList<T> list)
 	{
 		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
 		{
@@ -631,19 +547,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (source == null && sourceIndex < 0 && destinationIndex < 0)
 			return;
 		if (source == null)
-			throw new ArgumentNullException(nameof(source), "Исходный массив не может быть нулевым.");
+			throw new ArgumentNullException(nameof(context), "Исходный массив не может быть нулевым.");
 		if (source.Capacity == 0 && !(sourceIndex == 0 && length == 0))
-			throw new ArgumentException("Исходный массив не может быть пустым.");
+			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(context));
 		if (destination == null)
-			throw new ArgumentNullException(nameof(destination), "Целевой массив не может быть нулевым.");
+			throw new ArgumentNullException(nameof(context), "Целевой массив не может быть нулевым.");
 		if (destination.Capacity == 0)
-			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destination));
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(context));
 		if (sourceIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
+			throw new ArgumentOutOfRangeException(nameof(context), "Исходный индекс не может быть отрицательным.");
 		if (destinationIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
+			throw new ArgumentOutOfRangeException(nameof(context), "Целевой индекс не может быть отрицательным.");
 		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
+			throw new ArgumentOutOfRangeException(nameof(context), "Длина не может быть отрицательной.");
 		if (sourceIndex + length > source.Length)
 			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
 		if (destinationIndex + length > destination.Capacity)
@@ -667,7 +583,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			destination.Reverse();
 			if (destination.Length < destinationIndex + length)
-				destination.ResizeInternal(destinationIndex + length);
+				MoveRange((null!, -1, destination, -1, destination.Length - destinationIndex - length, MoveRangeMode.Copy));
 			destinationIndex = destination.Length - length - destinationIndex;
 		}
 		MoveRange(((TCertain)this, sourceIndex, destination, destinationIndex, length, MoveRangeMode.Copy));
@@ -703,11 +619,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[endIntIndex].CopyToInternal(0, list, destIndex, endRestIndex + 1);
 		}
 		else
-			throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -768,11 +680,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (GetProcessAccessCache(Root, index, invoke, out var result))
 			return result;
 		else
-			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -913,7 +821,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var highCount = (int)RedStarLinqMath.Min(GetArrayLength(value2, newFragment), Subbranches);
 			var oldHigh = high;
 			var oldHighLength = highLength;
-			var oldLength = Length;
 			high = new(highCount) { CapacityCreator(0) };
 			var first = high[0];
 			first.fragment = fragment;
@@ -1021,11 +928,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (low != null)
 			return IndexOfTrivial(item, index, length, fromEnd);
 		else if (high == null)
-			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -1313,11 +1216,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		Root.accessCache?.Clear();
 		if (high == null)
-			throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -1335,7 +1234,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (high.Length >= Subbranches)
 			{
 				Debug.Assert(!compactified);
-				Compactify(Length + 1);
+				MoveRange((null!, -2, (TCertain)this, -1, -Length - 1, MoveRangeMode.None));
 				compactified = true;
 				goto start;
 			}
@@ -1379,7 +1278,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			MoveRange((this2, index, this2, index + 1, Length - index, MoveRangeMode.Copy));
 			if (index == Length)
 			{
-				high[^1].Compactify(high[^1].Length + 1);
+				MoveRange((null!, -2, high[^1], -1, -high[^1].Length - 1, MoveRangeMode.None));
 				high[^1].InsertInternal(high[^1].Length, item);
 				highLength?[^1] += 1;
 			}
@@ -1446,11 +1345,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null)
-			throw new InvalidOperationException("Невозможно вставить диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно вставить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -1489,7 +1384,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				Debug.Assert(!compactified);
-				Compactify(Length + length);
+				MoveRange((null!, -2, (TCertain)this, -1, -Length - length, MoveRangeMode.None));
 				compactified = true;
 				goto start;
 			}
@@ -1510,7 +1405,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				MoveRange((bigList, 0, this2, Length, length, MoveRangeMode.None));
 		}
 		else
-			InsertInternal(bigList, ((index, intIndex, restIndex), (endIndex, endIntIndex, endRestIndex)), saveOriginal);
+			InsertInternal(bigList, (index, intIndex, restIndex), saveOriginal);
 		if (bReversedOld)
 		{
 			Reverse();
@@ -1524,24 +1419,23 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected virtual void InsertInternal(TCertain bigList, CopyRangeSide copyRange, bool saveOriginal)
+	protected virtual void InsertInternal(TCertain bigList, CopyRangeIndex copyRange, bool saveOriginal)
 	{
 		var this2 = (TCertain)this;
 		var length = bigList.Length;
-		var ((index, intIndex, restIndex), (_, endIntIndex, endRestIndex)) = copyRange;
+		var (index, intIndex, restIndex) = copyRange;
 		Debug.Assert(high != null);
 		var oldLength = Length;
 		var targetLength = length;
 		var shiftedIntIndex = intIndex;
 		var intIndexSum = GetLeftValuesSum(intIndex, out _);
-		var offset = !HasSufficientLength(endIntIndex) ? 1 : 0;
 		high.Capacity = Min(Min(high.Capacity + (int)GetArrayLength(length, fragment), high.Capacity << 1), Subbranches);
 		while (high.Length < Subbranches && targetLength >= fragment)
 		{
 			high.Insert(intIndex, CapacityCreator(fragment));
 			high[intIndex].parent = this2;
 			AddCapacity(fragment);
-			high[intIndex].ResizeInternal(fragment);
+			MoveRange((null!, -1, high[intIndex], -1, high[intIndex].Length - fragment, MoveRangeMode.Copy));
 			highLength?.Insert(intIndex, fragment);
 			shiftedIntIndex++;
 			targetLength -= fragment;
@@ -1566,7 +1460,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high.Insert(intIndex, CapacityCreator(fragment));
 				high[intIndex].parent = this2;
 				AddCapacity(fragment);
-				high[intIndex].ResizeInternal(targetLength);
+				MoveRange((null!, -1, high[intIndex], -1, high[intIndex].Length - targetLength, MoveRangeMode.Copy));
 				highLength?.Insert(intIndex, targetLength);
 				shiftedIntIndex++;
 				targetLength = 0;
@@ -1578,7 +1472,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				buffer.IncreaseCapacity(fragment, high[0].fragment);
 				high.CopyRangeTo(intIndex, high, intIndex + 1, effectiveHighLength - intIndex);
 				high[intIndex] = buffer;
-				high[intIndex].ResizeInternal(targetLength);
+				MoveRange((null!, -1, high[intIndex], -1, high[intIndex].Length - targetLength, MoveRangeMode.Copy));
 				high[intIndex].bReversed = false;
 				highLength?.Insert(intIndex, targetLength);
 				shiftedIntIndex++;
@@ -1648,20 +1542,22 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (source == null)
 		{
 			if (sourceIndex == -1 && destinationIndex <= -1 && destinationIndex >= -2 && length < 0)
-				MoveRangeIterationResize(stack, destination, -length, stackIndex, destinationIndex == -2);
+				MoveRangeIterationResize(stack, context, stackIndex);
+			else if (sourceIndex == -2 && destinationIndex < 0 && length < 0)
+				MoveRangeIterationCompactify(stack, context, stackIndex);
 			else
-				throw new ArgumentNullException(nameof(source), "Исходный массив не может быть нулевым.");
+				throw new ArgumentException("Исходный массив не может быть нулевым.");
 			return;
 		}
-		Debug.Assert(source != destination || (mode & MoveRangeMode.Copy) != 0);
+		Debug.Assert(source != destination || (mode & MoveRangeMode.Copy) != 0 || (mode & MoveRangeMode.SpecialMode) != 0);
 		var fragment = source.fragment;
 		// Если копирование не нужно
 		if ((mode & MoveRangeMode.SpecialMode) != 0)
 		{
 			if (sourceIndex == -1 && destinationIndex == -1 && length < 0)
-				MoveRangeIterationNoCopy2(stack, context, stackIndex);
+				MoveRangeIterationSpecial2(stack, context, stackIndex);
 			else
-				MoveRangeIterationNoCopy(stack, context, stackIndex);
+				MoveRangeIterationSpecial(stack, context, stackIndex);
 		}
 		// Тривиальный случай - оба списка являются листьями дерева
 		else if (source.low != null && destination.low != null)
@@ -1679,7 +1575,195 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			MoveRangeToSimilar(stack, context, stackIndex);
 	}
 
-	protected static void MoveRangeIterationNoCopy(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
+	protected static void MoveRangeIterationCompactify(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
+	{
+		var (_, _, source, sourceIndex, targetLength, mode) = context;
+		var startIndex = -(int)sourceIndex;
+		targetLength = -targetLength;
+		source.Root.accessCache?.Clear();
+		Debug.Assert(source.high != null);
+		MpzT oldTargetLength = new(targetLength);
+		LimitedBuffer<MpzT> estimatedLengths = new(source.high.Convert(x => x.Length).TakeWhile(x => x != 0));
+		var deepCompactify = targetLength >= source.fragment * (source.high.Length - 1);
+		var mergeThreshold = source.fragment - (source.high[0].high != null ? source.high[0].fragment : 0);
+	start:
+		if (source.Length + (estimatedLengths.Length > 0 ? source.fragment - estimatedLengths[^1] : 0)
+			+ (source.high.Length - estimatedLengths.Length - 1) * source.fragment + source.high[^1].Capacity
+			>= targetLength)
+			return;
+		targetLength -= source.high[0].Length;
+		var offset = 0;
+		var highOffset = 0;
+		var effectiveHighLength = estimatedLengths.Length;
+		for (var i = 1; i < effectiveHighLength + offset; i++)
+		{
+			var highLengthAtI = estimatedLengths[i - offset];
+			var highLengthBeforeI = estimatedLengths[i - offset - 1];
+			if (highLengthBeforeI == source.fragment)
+			{
+				targetLength -= highLengthAtI;
+				highOffset = 0;
+				continue;
+			}
+			if (source.Length + (estimatedLengths.Length > 0 ? source.fragment - estimatedLengths[^1] : 0)
+				+ (source.high.Length - effectiveHighLength - 1) * source.fragment + source.high[^1].Capacity >= oldTargetLength)
+				break;
+			var amount = RedStarLinqMath.Min(source.fragment - highLengthBeforeI, targetLength);
+			if (amount <= 0)
+				break;
+			var highAtI = source.high[i];
+			var highBeforeI = source.high[i - highOffset - 1];
+			if (i >= startIndex && highBeforeI.high != null && highBeforeI.Length
+				+ highBeforeI.fragment - highBeforeI.LastEffectiveLength() + amount > highBeforeI.Capacity)
+			{
+				stack.Insert(stackIndex, (null!, -2, highBeforeI, -1, -source.fragment, mode));
+				stack.Insert(stackIndex, (null!, -2, source, -i - 1, -oldTargetLength, mode));
+				return;
+			}
+			if (highLengthAtI > amount)
+			{
+				if (!deepCompactify)
+				{
+					highOffset = 0;
+					targetLength -= amount;
+					continue;
+				}
+				if (highBeforeI.bReversed && highLengthBeforeI < highLengthBeforeI + amount)
+					stack.Insert(stackIndex, (null!, -1, highBeforeI, -1, -amount, MoveRangeMode.Copy));
+				stack.Insert(stackIndex, (highAtI, highAtI.bReversed ? highLengthAtI - amount : 0, highBeforeI,
+					highBeforeI.bReversed ? 0 : highLengthBeforeI, amount, MoveRangeMode.None));
+				estimatedLengths[i - offset - 1] += amount;
+				estimatedLengths[i - offset] -= amount;
+				source.highLength?[i - offset - 1] += amount;
+				source.highLength?[i - offset] -= amount;
+				targetLength -= amount;
+				highOffset = 0;
+			}
+			else
+			{
+				if (!deepCompactify && highLengthBeforeI + highLengthAtI > mergeThreshold)
+				{
+					highOffset = 0;
+					targetLength -= highLengthAtI;
+					continue;
+				}
+				if (highBeforeI.bReversed)
+					stack.Insert(stackIndex, (null!, -1, highBeforeI, -1, -highLengthAtI, MoveRangeMode.Copy));
+				stack.Insert(stackIndex, (source, (i - offset) * (1L << 30) + (i - offset - 1), source, 0,
+					highBeforeI.bReversed ? 0 : highLengthBeforeI, MoveRangeMode.SpecialMode));
+				estimatedLengths[i - offset - 1] += highLengthAtI;
+				source.highLength?[i - offset - 1] += highLengthAtI;
+				targetLength -= highLengthAtI;
+				estimatedLengths.RemoveAt(i - offset);
+				source.highLength?.RemoveAt(i - offset);
+				effectiveHighLength--;
+				offset++;
+				highOffset++;
+			}
+		}
+		if (targetLength > 0 && !deepCompactify)
+		{
+			if (stackIndex == stack.Length)
+			{
+				targetLength = oldTargetLength;
+				deepCompactify = true;
+				goto start;
+			}
+			else
+				stack.Insert(stackIndex, (null!, -2, source, -1, -oldTargetLength, mode));
+		}
+#if VERIFY
+		if (source.high != null)
+			Debug.Assert((source.highLength == null || source.Length == source.highLength?.ValuesSum) && source.Length == source.high.Sum(x => x.Length));
+		source.Verify();
+#endif
+	}
+
+	protected static void MoveRangeIterationResize(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
+	{
+		var source = context.Destination;
+		var increment = -context.Length;
+		var inverted = context.DestinationIndex == -2;
+		if (source.low != null)
+		{
+			if (!source.bReversed || source.low.Length == 0)
+				source.low.Resize((int)(source.Length + increment));
+			else
+				source.low.ResizeLeft((int)(source.Length + increment));
+			source.Length = source.low.Length;
+			return;
+		}
+		else if (source.high == null)
+			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n" + InternalError
+				+ $"Текущее состояние: длина - {source.Length}, подветок - {source.high?.Length ?? 0},"
+				+ $" реверс - {source.bReversed}, емкость - {source.Capacity},"
+				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+		if (source.bReversed ^ inverted && increment <= source.Length)
+		{
+			stack.Insert(stackIndex, (source, 0, source, increment, source.Length, MoveRangeMode.Copy));
+			return;
+		}
+		var sourceEffectiveHighLength = source.EffectiveHighLength();
+		if (source.high != null && source.HasSufficientLength(0)
+			&& (sourceEffectiveHighLength - 1) * source.fragment + source.LastEffectiveLength() + increment
+			> source.fragment << source.SubbranchesBitLength)
+		{
+			stack.Insert(stackIndex, (null!, -2, source, -1, -source.Length - increment, MoveRangeMode.Copy));
+			stack.Insert(stackIndex, context);
+			return;
+		}
+		Debug.Assert(source.high != null);
+		sourceEffectiveHighLength = source.EffectiveHighLength();
+		source.EnsureCapacity((source.HasSufficientLength(0) ? (sourceEffectiveHighLength - 1)
+			* source.fragment + source.LastEffectiveLength() : 0) + increment);
+		sourceEffectiveHighLength = source.EffectiveHighLength();
+		var leftIncrement = increment;
+		if (source.HasSufficientLength(0) && source.LastEffectiveLength() != source.fragment)
+		{
+			var leftToFragment = RedStarLinqMath.Min(source.fragment
+				- source.high[sourceEffectiveHighLength - 1].Length, leftIncrement);
+			leftIncrement -= leftToFragment;
+			stack.Insert(stackIndex, (null!, -1, source.high[sourceEffectiveHighLength - 1], -1,
+				-leftToFragment, MoveRangeMode.Copy));
+			source.highLength?[^1] += leftToFragment;
+		}
+		var i = sourceEffectiveHighLength;
+		for (; leftIncrement >= source.fragment; leftIncrement -= source.fragment, i++)
+		{
+			if (i >= source.high.Capacity)
+				source.high.Capacity = source.Subbranches;
+			if (i >= source.high.Length)
+			{
+				source.high.Add(source.CapacityCreator(source.fragment));
+				source.high[^1].parent = source;
+				source.AddCapacity(source.fragment);
+			}
+			source.high[i].EnsureCapacity(source.fragment);
+			stack.Insert(stackIndex, (null!, -1, source.high[i], -1, -source.fragment, MoveRangeMode.Copy));
+			source.highLength?.Add(source.fragment);
+		}
+		if (leftIncrement != 0)
+		{
+			if (i >= source.high.Capacity)
+				source.high.Capacity = source.Subbranches;
+			if (i >= source.high.Length)
+			{
+				source.high.Add(source.CapacityCreator(leftIncrement));
+				source.high[^1].parent = source;
+				source.AddCapacity(leftIncrement);
+			}
+			source.high[i].EnsureCapacity(leftIncrement);
+			stack.Insert(stackIndex, (null!, -1, source.high[i], -1, -leftIncrement, MoveRangeMode.Copy));
+			source.highLength?.Add(leftIncrement);
+		}
+		if (source.bReversed ^ inverted)
+			stack.Insert(stackIndex, (source, 0, source, increment, source.Length, MoveRangeMode.Copy));
+#if VERIFY
+		source.Verify();
+#endif
+	}
+
+	protected static void MoveRangeIterationSpecial(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
 	{
 		var (source, indexes, destination, step, destinationCurrentRestIndex, mode) = context;
 		Debug.Assert(source.high != null && destination.high != null);
@@ -1782,115 +1866,24 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void MoveRangeIterationNoCopy2(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
+	protected static void MoveRangeIterationSpecial2(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
 	{
 		var (source, leftCheck, destination, rightCheck, sourceIndex, mode) = context;
 		Debug.Assert(source.high != null && destination.high != null && leftCheck == -1 && rightCheck == -1);
 		Debug.Assert((mode & MoveRangeMode.Copy) == 0);
 		var iSource = ~(int)sourceIndex;
 		var currentSource = source.high[iSource];
-		if (source.parent == null && source.high.Length != 1)
-			source.AddCapacity(-source.high[iSource].Capacity);
-		else
-			source.high[^1].IncreaseCapacity(source.fragment,
-				source.fragment >> source.SubbranchesBitLength < source.LeafSize
-				? 1 : source.fragment >> source.SubbranchesBitLength);
+		var temp = source.high[iSource];
+		source.high[^1].IncreaseCapacity(source.fragment,
+			source.fragment >> source.SubbranchesBitLength < source.LeafSize
+			? 1 : source.fragment >> source.SubbranchesBitLength);
 		source.high.RemoveAt(iSource);
 		source.Length -= currentSource.Length;
-		if (source.parent != null || source.high.Length == 0)
-		{
-			source.high.Add(source.CapacityCreator(source.fragment));
-			source.high[^1].parent = source;
-		}
+		temp.ClearInternal(false);
+		source.high.Add(temp);
 #if VERIFY
 		source.Verify();
 		destination.Verify();
-#endif
-	}
-
-	protected static void MoveRangeIterationResize(List<MoveRangeContext> stack,
-		TCertain source, MpzT increment, int stackIndex, bool inverted)
-	{
-		if (source.low != null)
-		{
-			if (!source.bReversed || source.low.Length == 0)
-				source.low.Resize((int)(source.Length + increment));
-			else
-				source.low.ResizeLeft((int)(source.Length + increment));
-			source.Length = source.low.Length;
-			return;
-		}
-		else if (source.high == null)
-			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {source.Length}, подветок - {source.high?.Length ?? 0},"
-				+ $" реверс - {source.bReversed}, емкость - {source.Capacity},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		if (source.bReversed ^ inverted && increment <= source.Length)
-		{
-			stack.Insert(stackIndex, (source, 0, source, increment, source.Length, MoveRangeMode.Copy));
-			return;
-		}
-		var sourceEffectiveHighLength = source.EffectiveHighLength();
-		if (source.high != null && source.HasSufficientLength(0)
-			&& (sourceEffectiveHighLength - 1) * source.fragment + source.LastEffectiveLength() + increment
-			> source.fragment << source.SubbranchesBitLength)
-		{
-			source.Root.moveStack = null;
-			source.Compactify(source.Length + increment);
-			source.Root.moveStack = stack;
-		}
-		Debug.Assert(source.high != null);
-		sourceEffectiveHighLength = source.EffectiveHighLength();
-		source.EnsureCapacity((source.HasSufficientLength(0) ? (sourceEffectiveHighLength - 1)
-			* source.fragment + source.LastEffectiveLength() : 0) + increment);
-		sourceEffectiveHighLength = source.EffectiveHighLength();
-		var leftIncrement = increment;
-		if (source.HasSufficientLength(0) && source.LastEffectiveLength() != source.fragment)
-		{
-			var leftToFragment = RedStarLinqMath.Min(source.fragment
-				- source.high[sourceEffectiveHighLength - 1].Length, leftIncrement);
-			leftIncrement -= leftToFragment;
-			stack.Insert(stackIndex, (null!, -1, source.high[sourceEffectiveHighLength - 1], -1,
-				-leftToFragment, MoveRangeMode.Copy));
-			source.highLength?[^1] += leftToFragment;
-		}
-		var i = sourceEffectiveHighLength;
-		for (; leftIncrement >= source.fragment; leftIncrement -= source.fragment, i++)
-		{
-			if (i >= source.high.Capacity)
-				source.high.Capacity = source.Subbranches;
-			if (i >= source.high.Length)
-			{
-				source.high.Add(source.CapacityCreator(source.fragment));
-				source.high[^1].parent = source;
-				source.AddCapacity(source.fragment);
-			}
-			source.high[i].EnsureCapacity(source.fragment);
-			stack.Insert(stackIndex, (null!, -1, source.high[i], -1, -source.fragment, MoveRangeMode.Copy));
-			source.highLength?.Add(source.fragment);
-		}
-		if (leftIncrement != 0)
-		{
-			if (i >= source.high.Capacity)
-				source.high.Capacity = source.Subbranches;
-			if (i >= source.high.Length)
-			{
-				source.high.Add(source.CapacityCreator(leftIncrement));
-				source.high[^1].parent = source;
-				source.AddCapacity(leftIncrement);
-			}
-			source.high[i].EnsureCapacity(leftIncrement);
-			stack.Insert(stackIndex, (null!, -1, source.high[i], -1, -leftIncrement, MoveRangeMode.Copy));
-			source.highLength?.Add(leftIncrement);
-		}
-		if (source.bReversed ^ inverted)
-			stack.Insert(stackIndex, (source, 0, source, increment, source.Length, MoveRangeMode.Copy));
-#if VERIFY
-		source.Verify();
 #endif
 	}
 
@@ -1900,7 +1893,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert((source.low != null || destination.fragment > source.fragment)
 			&& destination.high != null);
 		var fragment = destination.fragment;
-	destinationFragmentBigger:
 		var endIndex = destinationIndex + length - 1;
 		var (start, end) = new CopyRangeSide(destination, destinationIndex, endIndex);
 		// Диапазон дописывается после конца списка
@@ -1922,10 +1914,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			+ (destination.high.Length - destination.EffectiveHighLength() - 1) * fragment
 			+ destination.high[^1].Capacity < destinationIndex + length)
 		{
-			destination.Root.moveStack = null;
-			destination.Compactify(destinationIndex + length);
-			destination.Root.moveStack = stack;
-			goto destinationFragmentBigger;
+			stack.Insert(stackIndex, (null!, -2, destination, -1, -destinationIndex - length, MoveRangeMode.Copy));
+			stack.Insert(stackIndex, context);
+			return;
 		}
 		// Весь диапазон помещается в одну ветку
 		if (start.IntIndex == end.IntIndex)
@@ -2144,11 +2135,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
 		if (!(source.high != null && destination.high != null))
-			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина источника - {source.Length}, подветок источника - {source.high?.Length ?? 0},"
 				+ $" реверс источника - {source.bReversed}, емкость источника - {source.Capacity},"
 				+ $" длина назначения - {destination.Length}, подветок назначения - {destination.high?.Length ?? 0},"
@@ -2162,8 +2149,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ArgumentOutOfRangeException(nameof(context),
 				"Индекс не может быть больше длины содержимого цели.");
 		var fragment = destination.fragment;
-		var compactified = false;
-	start:
 		if (length == 0)
 			return;
 		var sourceEndIndex = sourceIndex + length - 1;
@@ -2191,12 +2176,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			+ (destination.high.Length - destination.EffectiveHighLength() - 1) * fragment
 			+ destination.high[^1].Capacity < destinationIndex + length)
 		{
-			Debug.Assert(!compactified);
-			destination.Root.moveStack = null;
-			destination.Compactify(destinationIndex + length);
-			destination.Root.moveStack = stack;
-			compactified = true;
-			goto start;
+			stack.Insert(stackIndex, (null!, -2, destination, -1, -destinationIndex - length, MoveRangeMode.Copy));
+			stack.Insert(stackIndex, context);
+			return;
 		}
 		var (_, sourceIntIndex, sourceRestIndex) = sourceStart;
 		(_, destinationIntIndex, destinationRestIndex) = destinationStart;
@@ -2207,7 +2189,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			&& sourceRestIndex >= 0 && sourceEnd.RestIndex >= 0
 			&& destinationRestIndex >= 0 && destinationEnd.RestIndex >= 0);
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
-		if (source == destination && sourceIndex + 1 == destinationIndex
+		if (source == destination && !source.bReversed && sourceIndex + 1 == destinationIndex
 		&& sourceIndex + length == source.Length - 1 && sourceIntIndex == sourceEnd.IntIndex
 		&& destinationIndex + length == source.Length)
 			destination.RemoveEndInternal(sourceIndex + length);
@@ -2306,11 +2288,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			return;
 		}
-		throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n"
-			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-			+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-			+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+		throw new InvalidOperationException("Невозможно скопировать диапазон. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина источника - {source.Length}, подветок источника - {source.high?.Length ?? 0},"
 			+ $" реверс источника - {source.bReversed}, емкость источника - {source.Capacity},"
 			+ $" длина назначения - {destination.Length}, подветок назначения - {destination.high?.Length ?? 0},"
@@ -2339,11 +2317,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var destinationMax = destination.HasSufficientLength(iDestination + 1)
 				? currentDestination.Length : fragment;
 			step = RedStarLinqMath.Min(sourceCurrentRestIndex, destinationMax - destinationCurrentRestIndex, leftLength);
-			if (step <= 0)
-			{
-				step = 0;
-				continue;
-			}
 			var sourceThresholdReached = (sourceCurrentRestIndex -= step) == 0;
 			var newSize = RedStarLinqMath.Min(destinationMax, destinationCurrentRestIndex + leftLength);
 			if (currentDestination.Length <= 1)
@@ -2426,7 +2399,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var iSourceOffset = 0;
 		var iDestination = destinationIndexes.Start.IntIndex;
 		using ListHashSet<int> hs = [];
-		MpzT step = 0;
+		MpzT step = 0, sourceEffectiveLength;
 		TCertain currentSource, currentDestination;
 		var leftLength = length;
 		while (leftLength > 0)
@@ -2434,9 +2407,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			currentSource = source.high[iSource];
 			currentDestination = destination.high[iDestination];
 			var destinationMax = destination.HasSufficientLength(iDestination + 1) ? currentDestination.Length : fragment;
-			var sourceEffectiveLength = source != destination ? source.high[iSource].Length
-				: RedStarLinqMath.Max(highLengthPool.TryGetValue(iSource, out var poolLength)
-				? poolLength : 0, source.high[iSource].Length);
+			if (source != destination)
+				sourceEffectiveLength = source.high[iSource].Length;
+			else
+				sourceEffectiveLength = RedStarLinqMath.Max(highLengthPool.TryGetValue(iSource, out var poolLength)
+					? poolLength : 0, source.high[iSource].Length);
 			step = RedStarLinqMath.Min(sourceEffectiveLength - sourceCurrentRestIndex,
 				destinationMax - destinationCurrentRestIndex, leftLength);
 			if ((mode & MoveRangeMode.Copy) == 0)
@@ -2457,11 +2432,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					&& sourceIndexes.End.IntIndex + Max(iDestination + 1 - iSource, 0)
 					+ (sourceIndexes.End.RestIndex + 1 == source.high[sourceIndexes.End.IntIndex].Length ? 1 : 0)
 					<= destination.high.Length;
-			}
-			if (step <= 0)
-			{
-				step = 0;
-				continue;
 			}
 			if (currentDestination.Length <= 1)
 				currentDestination.bReversed = false;
@@ -2504,7 +2474,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (sourceIndexes.End.RestIndex + 1 == source.high[sourceIndexes.End.IntIndex].Length)
 			{
-				stack.Insert(stackIndex, (source, (iSource - iSourceOffset++) * (1L << 30) + iDestination,
+				stack.Insert(stackIndex, (source, (iSource - iSourceOffset) * (1L << 30) + iDestination,
 					destination, 0, iSource - sourceIndexes.End.IntIndex - 1, mode | MoveRangeMode.SpecialMode));
 				leftLength = 0;
 				break;
@@ -2513,7 +2483,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			{
 				stack.Insert(stackIndex, (source, (iSource - iSourceOffset++) * (1L << 30) + iDestination,
 					destination, 0, iSource - sourceIndexes.End.IntIndex, mode | MoveRangeMode.SpecialMode));
-				step = 0;
 				leftLength = sourceIndexes.End.RestIndex + 1;
 				iDestination += sourceIndexes.End.IntIndex - iSource;
 				destination.highLength?.Resize(iDestination);
@@ -2522,7 +2491,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				continue;
 			}
 			var sourceThresholdReached = (sourceCurrentRestIndex += step) == sourceEffectiveLength;
-			Debug.Assert(!(sourceCurrentRestIndex > sourceEffectiveLength));
+			Debug.Assert(sourceCurrentRestIndex <= sourceEffectiveLength);
 			if (!currentSource.bReversed && (mode & MoveRangeMode.Copy) == 0)
 				sourceCurrentRestIndexOffset += step;
 			var destinationThresholdReached = (destinationCurrentRestIndex += step) == destinationMax;
@@ -2562,7 +2531,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeToSimilarRTL(List<MoveRangeContext> stack, MoveRangeContext context,
 		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
-		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
+		var (source, _, destination, _, length, mode) = context;
 		Debug.Assert(source == destination && source.high != null);
 		Debug.Assert((mode & MoveRangeMode.Copy) != 0);
 		var sourceEffectiveHighLength = source.EffectiveHighLength();
@@ -2601,11 +2570,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		while (leftLength > 0)
 		{
 			step = RedStarLinqMath.Min(sourceCurrentRestIndex, destinationCurrentRestIndex, leftLength);
-			if (step <= 0)
-			{
-				step = 0;
-				continue;
-			}
 			var sourceThresholdReached = (sourceCurrentRestIndex -= step) == 0;
 			var destinationThresholdReached = (destinationCurrentRestIndex -= step) == 0;
 			currentSource = source.high[iSource];
@@ -2632,10 +2596,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #if VERIFY
 		source.Verify();
 #endif
-		MpzT EffectiveLength(int index) =>
-			RedStarLinqMath.Max(index == destinationIndexes.End.IntIndex
-			? destinationIndexes.End.RestIndex + 1 : index < destinationHighLengthOld - 1
-			? source.high[index].Length : fragment, source.high[index].Length);
+		MpzT EffectiveLength(int index)
+		{
+			MpzT result;
+			if (index == destinationIndexes.End.IntIndex)
+				result = destinationIndexes.End.RestIndex + 1;
+			else if (index < destinationHighLengthOld - 1)
+				result = source.high[index].Length;
+			else
+				result = fragment;
+			if (source.high[index].Length > result)
+				result = source.high[index].Length;
+			return result;
+		}
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2713,7 +2686,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			Debug.Assert(high != null);
 			if (high.Length > 1 && high[1].Length != 0)
-				Compactify(fragment << SubbranchesBitLength);
+				MoveRange((null!, -2, (TCertain)this, -1, -fragment << SubbranchesBitLength, MoveRangeMode.None));
 			fragment >>= SubbranchesBitLength;
 			var oldHigh = high;
 			var oldHighLength = highLength;
@@ -2726,9 +2699,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			AddCapacity(oldHigh[0].Capacity - _capacity);
 			reverse ^= oldHigh[0].bReversed;
 			oldHigh.Dispose();
-			oldHigh = null;
 			oldHighLength?.Dispose();
-			oldHighLength = null;
 			if (high == null)
 			{
 				Debug.Assert(low != null);
@@ -2751,7 +2722,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert(high != null);
 		var highCount = (int)GetArrayLength(value, fragment);
 		if (highCount == high.Length || high[highCount].Length != 0)
-			Compactify(fragment << SubbranchesBitLength);
+			MoveRange((null!, -2, (TCertain)this, -1, -fragment << SubbranchesBitLength, MoveRangeMode.None));
 		for (var i = high.Length - 1; !HasSufficientLength(i); i--)
 		{
 			AddCapacity(-high[i].Capacity);
@@ -2762,7 +2733,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (leftCapacity == 0)
 			leftCapacity = fragment;
 		if (high[^1].Length > leftCapacity)
-			Compactify(fragment << SubbranchesBitLength);
+			MoveRange((null!, -2, (TCertain)this, -1, -fragment << SubbranchesBitLength, MoveRangeMode.None));
 		high[^1].Capacity = leftCapacity == 0 ? fragment : leftCapacity;
 #if VERIFY
 		if (high != null)
@@ -2784,11 +2755,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var intIndex = IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
 			if (HasSufficientLength(intIndex + 1) && high[intIndex].Length == 1)
 			{
-				Index pasteIndex = intIndex;
 				var temp = high[intIndex];
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
 				high.CopyRangeTo(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
-				high[pasteIndex = ^(offsetFromEnd + 1)] = temp;
+				var pasteIndex = ^(offsetFromEnd + 1);
+				high[pasteIndex] = temp;
 				var lastHigh = high[^1];
 				lastHigh.IncreaseCapacity(fragment, high[0].fragment);
 				(high[pasteIndex], high[^1]) = (lastHigh, temp);
@@ -2802,11 +2773,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -2847,11 +2814,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -2881,11 +2844,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null)
-			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -2899,10 +2858,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			if (HasSufficientLength(intIndex + 1) && restIndex == 0 && endRestIndex == high[intIndex].Length - 1)
 			{
-				Index pasteIndex = intIndex;
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
 				high.CopyRangeTo(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
-				high[pasteIndex = ^(offsetFromEnd + 1)] = highAtI;
+				Index pasteIndex = ^(offsetFromEnd + 1);
+				high[pasteIndex] = highAtI;
 				var lastHigh = high[^1];
 				if (lastHigh.Capacity != fragment)
 					lastHigh.IncreaseCapacity(fragment, high[0].fragment);
@@ -3133,11 +3092,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[intIndex].SetInternal(restIndex, value);
 		}
 		else
-			throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -3214,17 +3169,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert((high.Length - 1) * fragment + high[^1].Capacity == Capacity);
 		}
 		else
-			throw new InvalidOperationException("Обнаружен недействительный список. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Обнаружен недействительный список. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 #endif
 
+	[Flags]
 	protected enum MoveRangeMode : byte
 	{
 		None = 0,

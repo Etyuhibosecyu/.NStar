@@ -74,6 +74,23 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			Enqueue(en.Current);
 	}
 
+	protected virtual bool IsFull
+	{
+		get
+		{
+			var last = this;
+			while (last.high != null)
+			{
+				if (last.high.Length != Subbranches
+					|| last.fragment != (last.high[^1].low != null ? LeafSize : last.high[^1].fragment << SubbranchesBitLength))
+					return false;
+				last = last.high[^1];
+			}
+			Debug.Assert(last.low != null);
+			return last.low.Length == LeafSize;
+		}
+	}
+
 	protected virtual int LeafSizeBitLength { get; init; } = 16;
 
 	protected virtual int LeafSize => 1 << LeafSizeBitLength;
@@ -243,7 +260,10 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		{
 			var index = high.Length == 1 || high[1].Length == 0 || Length < high[0].Length
 				? 0 : (int)((Length - high[0].Length) / fragment) + 1;
-			if (index < high.Length && high[index].Length == fragment)
+			if (index < high.Length
+				&& (index == high.Length - 1
+				? fragment == (high[^1].low != null ? LeafSize : high[^1].fragment << SubbranchesBitLength)
+				&& high[index].IsFull : high[index].Length == fragment))
 				index++;
 			if (index == Subbranches)
 			{
@@ -356,11 +376,13 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 					high[i].Dispose();
 				if (index > 1)
 				{
+					high.RemoveEnd(index);
 #if VERIFY
 					Verify();
 #endif
 					return;
 				}
+				fragment = high[0].fragment;
 				var oldHigh = high;
 				low = high[0].low;
 				high = high[0].high;
@@ -454,11 +476,11 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		item.VerifySingle();
 		if (item.high == null)
 			return;
-		System.Threading.Tasks.Parallel.For(0, item.high.Length, i =>
+		for (var i = 0; i < item.high.Length; i++)
 		{
 			var x = item.high[i];
 			Verify(x);
-		});
+		}
 	}
 
 	protected virtual void VerifySingle()
@@ -475,6 +497,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			Debug.Assert(Length == 0 || high[0].Length != 0);
 			Debug.Assert(Length == high.Sum(x => x.Length));
 			Debug.Assert(Length <= fragment << SubbranchesBitLength);
+			for (var i = 0; i < high.Length - 1; i++)
+				Debug.Assert(fragment == (high[i].low != null ? LeafSize : high[i].fragment << SubbranchesBitLength));
 			Debug.Assert(high.Capacity <= Subbranches);
 		}
 		else

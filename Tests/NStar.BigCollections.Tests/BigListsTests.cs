@@ -155,6 +155,48 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 			Assert.AreEqual(gl.LastIndexOf(n), bl.LastIndexOf(n));
 		}, () =>
 		{
+			var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
+			var start = random.Next((int)bl.Length - length + 1);
+			var elem = newValueFunc();
+			var elem2 = newValueFunc();
+			var elem3 = newValueFunc();
+			if (gl.Count != 0)
+				elem3 = gl.Random(random);
+			var index = gl.IndexOf(elem);
+			if (index >= 1 && random.Next(2) == 0)
+				elem2 = gl[index - 1];
+			if (index >= 2 && random.Next(2) == 0)
+				elem = gl[index - 2];
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1))).Contains((elem, elem2)), bl.Contains([elem, elem2]));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1))).IndexOf((elem, elem2), Min(start, Max(gl.Count - 1, 0))) >= 0,
+				bl.Contains([elem, elem2], start));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1)))
+				.IndexOf((elem, elem2), Min(start, Max(gl.Count - 1, 0)), Max(length - 1, 0)) >= 0,
+				bl.Contains([elem, elem2], start, length));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1))).IndexOf((elem, elem2)), bl.IndexOf([elem, elem2]));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1))).IndexOf((elem, elem2), Min(start, Max(gl.Count - 1, 0))),
+				bl.IndexOf([elem, elem2], start));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1)))
+				.IndexOf((elem, elem2), Min(start, Max(gl.Count - 1, 0)), Max(length - 1, 0)),
+				bl.IndexOf([elem, elem2], start, length));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1), E.Skip(gl, 2))).Contains((elem, elem2, elem3)),
+				bl.Contains([elem, elem2, elem3]));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1), E.Skip(gl, 2)))
+				.IndexOf((elem, elem2, elem3), Min(start, Max(gl.Count - 2, 0))) >= 0,
+				bl.Contains([elem, elem2, elem3], start));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1), E.Skip(gl, 2)))
+				.IndexOf((elem, elem2, elem3), Min(start, Max(gl.Count - 2, 0)), Max(length - 2, 0)) >= 0,
+				bl.Contains([elem, elem2, elem3], start, length));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1), E.Skip(gl, 2))).IndexOf((elem, elem2, elem3)),
+				bl.IndexOf([elem, elem2, elem3]));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1), E.Skip(gl, 2)))
+				.IndexOf((elem, elem2, elem3), Min(start, Max(gl.Count - 2, 0))),
+				bl.IndexOf([elem, elem2, elem3], start));
+			Assert.AreEqual(E.ToList(E.Zip(gl, E.Skip(gl, 1), E.Skip(gl, 2)))
+				.IndexOf((elem, elem2, elem3), Min(start, Max(gl.Count - 2, 0)), Max(length - 2, 0)),
+				bl.IndexOf([elem, elem2, elem3], start, length));
+		}, () =>
+		{
 			if (bl.Length == 0)
 				return;
 			var index = random.Next((int)bl.Length);
@@ -667,6 +709,78 @@ public class BigListTests
 				Assert.AreEqual(destination.GetRange(destinationIndex, length + 1).Equals(regularList.GetRange(sourceIndex, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex, length + 1), E.Take(E.Skip(regularList, sourceIndex), length + 1)));
 			Assert.IsTrue(destination.GetRange(destinationIndex + length).Equals(regularList.GetRange(destinationIndex + length)));
 			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex + length), E.Skip(regularList, destinationIndex + length)));
+		}
+	}
+
+	[TestMethod]
+	public void TestEquals()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		EComparer<string> comparer = new((x, y) => x[0] == y[0]);
+		for (var i = 0; i < 10000; i++)
+		{
+			BigList<string> a = new(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			ProcessA(a);
+		}
+		void ProcessA(BigList<string> a)
+		{
+			G.IEnumerable<string> b = a;
+			ProcessB(a, b);
+			b = E.Append(b, random.Next(1000).ToString("D3"));
+			ProcessB(a, b);
+			b = E.Skip(b, 1);
+			ProcessB(a, b);
+			b = E.Prepend(b, random.Next(1000).ToString("D3"));
+			ProcessB(a, b);
+			b = E.SkipLast(b, 1);
+			ProcessB(a, b);
+			b = E.Append(E.SkipLast(b, 1), random.Next(1000).ToString("D3"));
+			ProcessB(a, b);
+			b = E.Prepend(E.Skip(b, 1), random.Next(1000).ToString("D3"));
+			ProcessB(a, b);
+#pragma warning disable IDE0028 // Упростите инициализацию коллекции
+#pragma warning disable IDE0301 // Упростите инициализацию коллекции
+			b = new List<string>();
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			b = Array.Empty<string>();
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			b = new G.List<string>();
+#pragma warning restore IDE0301 // Упростите инициализацию коллекции
+#pragma warning restore IDE0028 // Упростите инициализацию коллекции
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			b = new List<string>().Insert(0, "XXX").GetSlice(1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			b = E.Select(E.Take(a, 0), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			b = E.TakeWhile(a, _ => random.Next(10) == -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+		}
+		void ProcessB(BigList<string> a, G.IEnumerable<string> b)
+		{
+			G.IEnumerable<string> c = RedStarLinq.ToList(b);
+			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
+			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			c = E.ToArray(b);
+			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
+			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			c = E.ToList(b);
+			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
+			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			c = new List<string>(b).Insert(0, "XXX").GetSlice(1);
+			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
+			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			c = E.Select(b, x => x);
+			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
+			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			c = E.SkipWhile(b, _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
+			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
 		}
 	}
 

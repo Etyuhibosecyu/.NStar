@@ -467,32 +467,6 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			goto ReturnNotFound;
 		Debug.Assert(_entries != null, "expected entries to be != null");
 		var comparerM = _comparerM;
-		if (typeof(TValue).IsValueType && comparerM == null) // comparer can only be null for key types; enable JIT to eliminate entire if block for ref types
-		{
-			var hashCodeM = (uint)value.GetHashCode();
-			var currentM = GetBucketM(hashCodeM);
-			var entries = _entries;
-			uint collisionCountM = 0;
-			// KeyType: Devirtualize with G.EqualityComparer<TValue>.Default intrinsic
-			currentM--; // Key in _bucketsM is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
-			do
-			{
-				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
-				// Test in if to drop range check for following array access
-				if ((uint)currentM >= (uint)entries.Length)
-					goto ReturnNotFound;
-				entry = ref entries[currentM];
-				if (entry.hashCodeM == hashCodeM && G.EqualityComparer<TValue>.Default.Equals(entry.value, value))
-					goto ReturnFound;
-				currentM = entry.nextM;
-				collisionCountM++;
-			} while (collisionCountM <= (uint)entries.Length);
-			// The chain of entries forms a loop; which means a concurrent update has happened.
-			// Break out of the loop and throw, rather than looping forever.
-			goto ConcurrentOperation;
-		}
-		else
-		{
 			Debug.Assert(comparerM != null);
 			var hashCodeM = (uint)comparerM.GetHashCode(value);
 			var currentM = GetBucketM(hashCodeM);
@@ -513,9 +487,6 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			} while (collisionCountM <= (uint)entries.Length);
 			// The chain of entries forms a loop; which means a concurrent update has happened.
 			// Break out of the loop and throw, rather than looping forever.
-			goto ConcurrentOperation;
-		}
-	ConcurrentOperation:
 		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
 			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 			+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
@@ -541,32 +512,6 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			goto ReturnNotFound;
 		Debug.Assert(_entries != null, "expected entries to be != null");
 		var comparer = _comparer;
-		if (typeof(TKey).IsValueType && comparer == null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
-		{
-			var hashCode = (uint)key.GetHashCode();
-			var current = GetBucket(hashCode);
-			var entries = _entries;
-			uint collisionCount = 0;
-			// ValueType: Devirtualize with G.EqualityComparer<TKey>.Default intrinsic
-			current--; // Value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
-			do
-			{
-				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
-				// Test in if to drop range check for following array access
-				if ((uint)current >= (uint)entries.Length)
-					goto ReturnNotFound;
-				entry = ref entries[current];
-				if (entry.hashCode == hashCode && G.EqualityComparer<TKey>.Default.Equals(entry.key, key))
-					goto ReturnFound;
-				current = entry.next;
-				collisionCount++;
-			} while (collisionCount <= (uint)entries.Length);
-			// The chain of entries forms a loop; which means a concurrent update has happened.
-			// Break out of the loop and throw, rather than looping forever.
-			goto ConcurrentOperation;
-		}
-		else
-		{
 			Debug.Assert(comparer != null);
 			var hashCode = (uint)comparer.GetHashCode(key);
 			var current = GetBucket(hashCode);
@@ -587,9 +532,6 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			} while (collisionCount <= (uint)entries.Length);
 			// The chain of entries forms a loop; which means a concurrent update has happened.
 			// Break out of the loop and throw, rather than looping forever.
-			goto ConcurrentOperation;
-		}
-	ConcurrentOperation:
 		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
 			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 			+ "2. Нарушение целостности структуры словаря (ошибка в логике -"

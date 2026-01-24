@@ -343,8 +343,19 @@ public class MirrorTests
 		Mirror<int, int> mir = new(arr);
 		var dic = E.ToDictionary(arr, x => x.Item1, x => x.Item2);
 		var dic2 = E.ToDictionary(arr, x => x.Item2, x => x.Item1);
-		var bytes = new byte[16];
 		var actions = new[] { () =>
+		{
+			if (random.Next(25) == 0)
+			{
+				mir.Clear();
+				dic.Clear();
+				dic2.Clear();
+			}
+			Assert.AreEqual(mir.Length, dic.Count);
+			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
 		{
 			var index = random.Next(16);
 			var n = random.Next(16);
@@ -407,6 +418,33 @@ public class MirrorTests
 				var b = mir.TryGetKey(n, out var key);
 				if (!b) return;
 				mir.RemoveValue(n);
+				dic.Remove(key);
+				dic2.Remove(n);
+			}
+			Assert.AreEqual(mir.Length, dic.Count);
+			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
+		{
+			if (mir.Length == 0) return;
+			if (random.Next(2) == 0)
+			{
+				var n = random.Next(16);
+				var b = mir.TryGetValue(n, out var value);
+				if (!b) return;
+				mir.RemoveKey(n, out var value2);
+				Assert.AreEqual(value, value2);
+				dic.Remove(n);
+				dic2.Remove(value);
+			}
+			else
+			{
+				var n = random.Next(16);
+				var b = mir.TryGetKey(n, out var key);
+				if (!b) return;
+				mir.RemoveValue(n, out var key2);
+				Assert.AreEqual(key, key2);
 				dic.Remove(key);
 				dic2.Remove(n);
 			}

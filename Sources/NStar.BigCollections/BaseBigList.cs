@@ -69,28 +69,6 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	protected abstract void ClearInternal(MpzT index, MpzT length);
 
-	public virtual bool Contains(T item) => Contains(item, 0, Length);
-
-	public virtual bool Contains(T item, MpzT index) => Contains(item, index, Length - index);
-
-	public virtual bool Contains(T item, MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-#if !VERIFY
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-#endif
-		return IndexOfInternal(item, index, length, false) >= 0;
-	}
-
 	public virtual bool Contains(G.IEnumerable<T> collection) => Contains(collection, 0, Length);
 
 	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index) => Contains(collection, index, Length - index);
@@ -112,6 +90,28 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		return IndexOfInternal(collection, index, length, comparer) >= 0;
+	}
+
+	public virtual bool Contains(T item) => Contains(item, 0, Length);
+
+	public virtual bool Contains(T item, MpzT index) => Contains(item, index, Length - index);
+
+	public virtual bool Contains(T item, MpzT index, MpzT length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > Length)
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
+#if !VERIFY
+		try
+		{
+			throw new SlowOperationException();
+		}
+		catch
+		{
+		}
+#endif
+		return IndexOfInternal(item, index, length, false) >= 0;
 	}
 
 	public virtual bool ContainsAny(G.IEnumerable<T> collection) => ContainsAny(collection, 0, Length);
@@ -419,6 +419,29 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return list;
 	}
 
+	public virtual MpzT IndexOf(G.IEnumerable<T> collection) => IndexOf(collection, 0, Length);
+
+	public virtual MpzT IndexOf(G.IEnumerable<T> collection, MpzT index) => IndexOf(collection, index, Length - index);
+
+	public virtual MpzT IndexOf(G.IEnumerable<T> collection, MpzT index, MpzT length) =>
+		IndexOf(collection, index, length, G.EqualityComparer<T>.Default);
+
+	public virtual MpzT IndexOf(G.IEnumerable<T> collection, G.IEqualityComparer<T> comparer) =>
+		IndexOf(collection, 0, Length, comparer);
+
+	public virtual MpzT IndexOf(G.IEnumerable<T> collection, MpzT index, G.IEqualityComparer<T> comparer) =>
+		IndexOf(collection, index, Length - index, comparer);
+
+	public virtual MpzT IndexOf(G.IEnumerable<T> collection, MpzT index, MpzT length, G.IEqualityComparer<T> comparer)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > Length)
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
+		ArgumentNullException.ThrowIfNull(collection);
+		return IndexOfInternal(collection, index, length, comparer);
+	}
+
 	public virtual MpzT IndexOf(T item) => IndexOf(item, 0, Length);
 
 	public virtual MpzT IndexOf(T item, MpzT index) => IndexOf(item, index, Length - index);
@@ -444,12 +467,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	protected virtual MpzT IndexOfInternal(G.IEnumerable<T> collection, MpzT index, MpzT length,
 		G.IEqualityComparer<T> comparer)
 	{
-		try
+		if (Length > int.MaxValue)
 		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
+			try
+			{
+				throw new SlowOperationException();
+			}
+			catch
+			{
+			}
 		}
 		if (length == 0 || !collection.Any())
 			return -1;
