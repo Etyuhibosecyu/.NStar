@@ -1,17 +1,16 @@
-﻿global using Mpir.NET;
-global using NStar.Core;
+﻿global using NStar.Core;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
-global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
+global using G = System.Collections.Generic;
 global using String = NStar.Core.String;
 using NStar.MathLib;
-using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace NStar.Linq;
 
@@ -23,28 +22,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!function(item, i))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!function(item, i))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -83,36 +61,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			TResult prev = function(list[0]), item;
-			for (var i = 1; i < length; i++)
-			{
-				item = function(list[i]);
-				if (!(item?.Equals(prev) ?? prev == null))
-					return false;
-				prev = item;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			TResult prev = function(array[0]), item;
-			for (var i = 1; i < array.Length; i++)
-			{
-				item = function(array[i]);
-				if (!(item?.Equals(prev) ?? prev == null))
-					return false;
-				prev = item;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -163,36 +112,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			T prev = list[0], item;
-			for (var i = 1; i < length; i++)
-			{
-				item = list[i];
-				if (!function(item, prev))
-					return false;
-				prev = item;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			T prev = array[0], item;
-			for (var i = 1; i < array.Length; i++)
-			{
-				item = array[i];
-				if (!function(item, prev))
-					return false;
-				prev = item;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -243,36 +163,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			T prev = list[0], item;
-			for (var i = 1; i < length; i++)
-			{
-				item = list[i];
-				if (!function(item, prev, i - 1))
-					return false;
-				prev = item;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			T prev = array[0], item;
-			for (var i = 1; i < array.Length; i++)
-			{
-				item = array[i];
-				if (!function(item, prev, i - 1))
-					return false;
-				prev = item;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -323,34 +214,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllEqual<T>(this G.IEnumerable<T> source)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			T prev = list[0], item;
-			for (var i = 0; i < length; i++)
-			{
-				item = list[i];
-				if (!(item?.Equals(prev) ?? prev == null))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			T prev = array[0], item;
-			for (var i = 0; i < array.Length; i++)
-			{
-				item = array[i];
-				if (!(item?.Equals(prev) ?? prev == null))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -399,34 +263,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			ListHashSet<TResult> hs = new(length, function(list[0]));
-			for (var i = 1; i < length; i++)
-			{
-				var item = function(list[i]);
-				if (!hs.TryAdd(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			ListHashSet<TResult> hs = new(array.Length, function(array[0]));
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = function(array[i]);
-				if (!hs.TryAdd(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -474,34 +311,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			ListHashSet<TResult> hs = new(length, function(list[0], 0));
-			for (var i = 1; i < length; i++)
-			{
-				var item = function(list[i], i);
-				if (!hs.TryAdd(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			ListHashSet<TResult> hs = new(array.Length, function(array[0], 0));
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = function(array[i], i);
-				if (!hs.TryAdd(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -548,34 +358,7 @@ public static class RedStarLinqExtras
 
 	public static bool AllUnique<T>(this G.IEnumerable<T> source)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 1)
-				return true;
-			ListHashSet<T> hs = new(length, list[0]);
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 1)
-				return true;
-			ListHashSet<T> hs = new(array.Length, array[0]);
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(item))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 1)
@@ -623,28 +406,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					return true;
-			}
-			return false;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -744,33 +506,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -816,31 +552,7 @@ public static class RedStarLinqExtras
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, (TResult, TResult2)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				(result[i], result2[i]) = function(item);
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				(result[i], result2[i]) = function(item);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -885,31 +597,7 @@ public static class RedStarLinqExtras
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this G.IEnumerable<T> source, Func<T, int, (TResult, TResult2)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				(result[i], result2[i]) = function(item, i);
-			}
-			return (result, result2);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				(result[i], result2[i]) = function(item, i);
-			}
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -957,37 +645,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		ArgumentNullException.ThrowIfNull(function3);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -1043,37 +701,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		ArgumentNullException.ThrowIfNull(function3);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -1178,33 +806,7 @@ public static class RedStarLinqExtras
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, (TResult, TResult2, TResult3)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				(result[i], result2[i], result3[i]) = function(item);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				(result[i], result2[i], result3[i]) = function(item);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -1254,33 +856,7 @@ public static class RedStarLinqExtras
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this G.IEnumerable<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				(result[i], result2[i], result3[i]) = function(item, i);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			var result2 = RedStarLinq.EmptyList<TResult2>(length);
-			var result3 = RedStarLinq.EmptyList<TResult3>(length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				(result[i], result2[i], result3[i]) = function(item, i);
-			}
-			return (result, result2, result3);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -1331,40 +907,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<T> result = new(length / 2);
-			result2 = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item))
-					result.Add(item);
-				else
-					result2.Add(item);
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<T> result = new(array.Length / 2);
-			result2 = new(array.Length / 2);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item))
-					result.Add(item);
-				else
-					result2.Add(item);
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<T> result = new(length / 2);
@@ -1421,40 +964,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<T> result = new(length / 2);
-			result2 = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					result.Add(item);
-				else
-					result2.Add(item);
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<T> result = new(array.Length / 2);
-			result2 = new(array.Length / 2);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					result.Add(item);
-				else
-					result2.Add(item);
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<T> result = new(length / 2);
@@ -2088,28 +1598,7 @@ public static class RedStarLinqExtras
 
 	public static bool Contains<T>(this G.IEnumerable<T> source, T target)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (item?.Equals(target) ?? false)
-					return true;
-			}
-			return false;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (item?.Equals(target) ?? false)
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2147,28 +1636,7 @@ public static class RedStarLinqExtras
 	public static bool Contains<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2207,28 +1675,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2268,28 +1715,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2328,24 +1754,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var n = 0;
-			for (var i = 0; i < length; i++)
-				if (function(list[i]))
-					n++;
-			return n;
-		}
-		else if (source is T[] array)
-		{
-			var n = 0;
-			for (var i = 0; i < array.Length; i++)
-				if (function(array[i]))
-					n++;
-			return n;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var n = 0;
@@ -2377,24 +1786,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var n = 0;
-			for (var i = 0; i < length; i++)
-				if (function(list[i], i))
-					n++;
-			return n;
-		}
-		else if (source is T[] array)
-		{
-			var n = 0;
-			for (var i = 0; i < array.Length; i++)
-				if (function(array[i], i))
-					n++;
-			return n;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var n = 0;
@@ -2425,30 +1817,7 @@ public static class RedStarLinqExtras
 
 	public static int Count<T>(this G.IEnumerable<T> source, T target)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var n = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (item?.Equals(target) ?? false)
-					n++;
-			}
-			return n;
-		}
-		else if (source is T[] array)
-		{
-			var n = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (item?.Equals(target) ?? false)
-					n++;
-			}
-			return n;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var n = 0;
@@ -2568,28 +1937,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item))
-					return item;
-			}
-			return default;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item))
-					return item;
-			}
-			return default;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2628,28 +1976,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					return item;
-			}
-			return default;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					return item;
-			}
-			return default;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2688,32 +2015,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<T> result = new(1024);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<T> result = new(1024);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<T> result = new(1024);
@@ -2758,32 +2060,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<T> result = new(1024);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<T> result = new(1024);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<T> result = new(1024);
@@ -2828,22 +2105,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-				if (function(list[i]))
-					return i;
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-				if (function(array[i]))
-					return i;
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2876,28 +2138,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -2935,30 +2176,7 @@ public static class RedStarLinqExtras
 	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-				if (function(list[i]))
-					result[j++] = i;
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-				if (function(array[i]))
-					result[j++] = i;
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<int>(length);
@@ -3000,36 +2218,7 @@ public static class RedStarLinqExtras
 	public static List<int> FindIndexes<T>(this G.IEnumerable<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (function(item, i))
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<int>(length);
@@ -3078,29 +2267,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (function(item))
-					return item;
-			}
-			return default;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (function(item))
-					return item;
-			}
-			return default;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -3130,29 +2297,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (function(item, i))
-					return item;
-			}
-			return default;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (function(item, i))
-					return item;
-			}
-			return default;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -3182,23 +2327,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-				if (function(list[i]))
-					return i;
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			for (var i = length - 1; i >= 0; i--)
-				if (function(array[i]))
-					return i;
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -3222,29 +2351,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (function(item, i))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (function(item, i))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -3273,18 +2380,7 @@ public static class RedStarLinqExtras
 	public static void ForEach<T>(this G.IEnumerable<T> source, Action<T> action)
 	{
 		ArgumentNullException.ThrowIfNull(action);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-				action(list[i]);
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-				action(array[i]);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -3306,18 +2402,7 @@ public static class RedStarLinqExtras
 	public static void ForEach<T>(this G.IEnumerable<T> source, Action<T, int> action)
 	{
 		ArgumentNullException.ThrowIfNull(action);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-				action(list[i], i);
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-				action(array[i], i);
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -3346,85 +2431,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -3433,169 +2440,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source)
 	{
 		ListHashSet<T> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(T Key, int Count)> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(T Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -3604,85 +2455,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -3691,169 +2464,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
 		ListHashSet<T> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(T Key, int Count)> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(T Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -3862,85 +2479,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -3949,169 +2488,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(T Key, int Count)> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(T Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -4121,85 +2504,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(TResult Key, int Count)> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<(TResult Key, int Count)> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return FrequencyTableInternal(source, function, hs);
 	}
 
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this G.IEnumerable<T> source,
@@ -4209,15 +2514,28 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
+		return FrequencyTableInternal(source, function, hs);
+	}
+
+	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source,
+		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	{
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		return FrequencyTableInternal(source, hs);
+	}
+
+	private static List<(TResult Key, int Count)> FrequencyTableInternal<T, TResult>(G.IEnumerable<T> source,
+		Func<T, TResult> function, ListHashSet<TResult> hs) where TResult : notnull
+	{
+		if (source is G.IList<T> list2)
 		{
-			var length = list.Length;
+			var length = list2.Count;
 			List<(TResult Key, int Count)> result = new(length);
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				var item = list2[i];
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4225,14 +2543,15 @@ public static class RedStarLinqExtras
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is T[] array)
+		else if (source is G.IReadOnlyList<T> list3)
 		{
-			List<(TResult Key, int Count)> result = new(array.Length);
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
 			TResult f;
-			for (var i = 0; i < array.Length; i++)
+			for (var i = 0; i < length; i++)
 			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				var item = list3[i];
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -4240,7 +2559,28 @@ public static class RedStarLinqExtras
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is G.IList<T> list2)
+		else
+		{
+			List<(TResult Key, int Count)> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!hs.TryAdd(f = function(item), out var index))
+					result[index] = (f, result[index].Count + 1);
+				else
+					result.Add((f, 1));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	private static List<(TResult Key, int Count)> FrequencyTableInternal<T, TResult>(G.IEnumerable<T> source,
+		Func<T, int, TResult> function, ListHashSet<TResult> hs) where TResult : notnull
+	{
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<(TResult Key, int Count)> result = new(length);
@@ -4290,42 +2630,9 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<(T Key, int Count)> FrequencyTable<T>(this G.IEnumerable<T> source,
-		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	private static List<(T Key, int Count)> FrequencyTableInternal<T>(G.IEnumerable<T> source, ListHashSet<T> hs)
 	{
-		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<(T Key, int Count)> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<(T Key, int Count)> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index] = (f, result[index].Count + 1);
-				else
-					result.Add((f, 1));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<(T Key, int Count)> result = new(length);
@@ -4381,85 +2688,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function)
@@ -4468,85 +2697,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
@@ -4555,85 +2706,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function,
@@ -4642,169 +2715,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
 		ListHashSet<T> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, T>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
@@ -4813,85 +2730,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function,
@@ -4900,169 +2739,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, T>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
@@ -5071,85 +2754,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, TResult>> Group<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function,
@@ -5158,100 +2763,28 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupInternal(source, function, hs);
 	}
 
 	public static List<Group<T, T>> Group<T>(this G.IEnumerable<T> source,
 		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
+		return GroupInternal(source, hs);
+	}
+
+	private static List<Group<T, TResult>> GroupInternal<T, TResult>(G.IEnumerable<T> source, Func<T, TResult> function,
+		ListHashSet<TResult> hs) where TResult : notnull
+	{
+		if (source is G.IList<T> list2)
 		{
-			var length = list.Length;
-			List<Group<T, T>> result = new(length);
-			T f;
+			var length = list2.Count;
+			List<Group<T, TResult>> result = new(length);
+			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
+				var item = list2[i];
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5259,14 +2792,15 @@ public static class RedStarLinqExtras
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is T[] array)
+		else if (source is G.IReadOnlyList<T> list3)
 		{
-			List<Group<T, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
 			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
+				var item = list3[i];
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -5274,7 +2808,80 @@ public static class RedStarLinqExtras
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is G.IList<T> list2)
+		else
+		{
+			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!hs.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	private static List<Group<T, TResult>> GroupInternal<T, TResult>(G.IEnumerable<T> source, Func<T, int, TResult> function,
+		ListHashSet<TResult> hs) where TResult : notnull
+	{
+		if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<Group<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!hs.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!hs.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<T, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!hs.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	private static List<Group<T, T>> GroupInternal<T>(G.IEnumerable<T> source, ListHashSet<T> hs)
+	{
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<Group<T, T>> result = new(length);
@@ -5330,85 +2937,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
@@ -5417,169 +2946,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source)
 	{
 		ListHashSet<T> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, T>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
@@ -5588,85 +2961,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
@@ -5675,169 +2970,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
 		ListHashSet<T> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, T>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
@@ -5846,85 +2985,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
@@ -5933,169 +2994,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, T>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function,
@@ -6104,85 +3009,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, TResult>> result = new(array.Length);
-			TResult f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<int, TResult>> result = new(length);
-			TResult f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
-			TResult f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!hs.TryAdd(f = function(item), out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
+		return GroupIndexesInternal(source, function, hs);
 	}
 
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this G.IEnumerable<T> source,
@@ -6192,15 +3019,28 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
+		return GroupIndexesInternal(source, function, hs);
+	}
+
+	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source,
+		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	{
+		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		return GroupIndexesInternal(source, hs);
+	}
+
+	private static List<Group<int, TResult>> GroupIndexesInternal<T, TResult>(G.IEnumerable<T> source,
+		Func<T, TResult> function, ListHashSet<TResult> hs) where TResult : notnull
+	{
+		if (source is G.IList<T> list2)
 		{
-			var length = list.Length;
+			var length = list2.Count;
 			List<Group<int, TResult>> result = new(length);
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				var item = list2[i];
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6208,14 +3048,15 @@ public static class RedStarLinqExtras
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is T[] array)
+		else if (source is G.IReadOnlyList<T> list3)
 		{
-			List<Group<int, TResult>> result = new(array.Length);
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
 			TResult f;
-			for (var i = 0; i < array.Length; i++)
+			for (var i = 0; i < length; i++)
 			{
-				var item = array[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				var item = list3[i];
+				if (!hs.TryAdd(f = function(item), out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -6223,7 +3064,28 @@ public static class RedStarLinqExtras
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is G.IList<T> list2)
+		else
+		{
+			List<Group<int, TResult>> result = new(source.TryGetLengthEasily(out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!hs.TryAdd(f = function(item), out var index))
+					result[index].Add(i);
+				else
+					result.Add(new(32, i, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	private static List<Group<int, TResult>> GroupIndexesInternal<T, TResult>(G.IEnumerable<T> source,
+		Func<T, int, TResult> function, ListHashSet<TResult> hs) where TResult : notnull
+	{
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<Group<int, TResult>> result = new(length);
@@ -6273,42 +3135,9 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static List<Group<int, T>> GroupIndexes<T>(this G.IEnumerable<T> source,
-		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	private static List<Group<int, T>> GroupIndexesInternal<T>(G.IEnumerable<T> source, ListHashSet<T> hs)
 	{
-		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<Group<int, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<int, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!hs.TryAdd(f = item, out var index))
-					result[index].Add(i);
-				else
-					result.Add(new(32, i, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<Group<int, T>> result = new(length);
@@ -6360,36 +3189,7 @@ public static class RedStarLinqExtras
 
 	public static List<int> IndexesOf<T>(this G.IEnumerable<T> source, T target)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<int>(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (item?.Equals(target) ?? false)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.EmptyList<int>(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (item?.Equals(target) ?? false)
-					result[j++] = i;
-			}
-			result.Resize(j);
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<int>(length);
@@ -6436,28 +3236,7 @@ public static class RedStarLinqExtras
 
 	public static int IndexOf<T>(this G.IEnumerable<T> source, T target)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (item?.Equals(target) ?? false)
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (item?.Equals(target) ?? false)
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -6495,28 +3274,7 @@ public static class RedStarLinqExtras
 	public static int IndexOf<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -6555,28 +3313,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -6616,28 +3353,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
@@ -6831,29 +3547,7 @@ public static class RedStarLinqExtras
 
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (item?.Equals(target) ?? false)
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (item?.Equals(target) ?? false)
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -6882,28 +3576,7 @@ public static class RedStarLinqExtras
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = array.Length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -6933,28 +3606,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = array.Length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -6985,28 +3637,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = array.Length - 1; i >= 0; i--)
-			{
-				var item = array[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
@@ -7065,31 +3696,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		if (source is List<T> list)
-		{
-			var length = list.Length - offset;
-			if (length <= 0)
-				yield break;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list[i + offset];
-				yield return function(item, item2);
-			}
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length - offset;
-			if (length <= 0)
-				yield break;
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array[i + offset];
-				yield return function(item, item2);
-			}
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
@@ -7136,31 +3743,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		if (source is List<T> list)
-		{
-			var length = list.Length - offset;
-			if (length <= 0)
-				yield break;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list[i + offset];
-				yield return function(item, item2, i);
-			}
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length - offset;
-			if (length <= 0)
-				yield break;
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array[i + offset];
-				yield return function(item, item2, i);
-			}
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
@@ -7205,31 +3788,7 @@ public static class RedStarLinqExtras
 	public static G.IEnumerable<(T, T)> Pairs<T>(this G.IEnumerable<T> source, int offset = 1)
 	{
 		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
-		if (source is List<T> list)
-		{
-			var length = list.Length - offset;
-			if (length <= 0)
-				yield break;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list[i + offset];
-				yield return (item, item2);
-			}
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length - offset;
-			if (length <= 0)
-				yield break;
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array[i + offset];
-				yield return (item, item2);
-			}
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
@@ -7335,28 +3894,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			T? result = default;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result = result == null || i == 0 ? item : function(result, item);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			T? result = default;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result = result == null || i == 0 ? item : function(result, item);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			T? result = default;
@@ -7395,22 +3933,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = seed;
-			for (var i = 0; i < length; i++)
-				result = function(result, list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = seed;
-			for (var i = 0; i < array.Length; i++)
-				result = function(result, array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = seed;
@@ -7442,30 +3965,7 @@ public static class RedStarLinqExtras
 	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source)
 	{
 		ListHashSet<T> hs = [];
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<int> result = new(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
@@ -7506,30 +4006,7 @@ public static class RedStarLinqExtras
 	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, G.IEqualityComparer<T> comparer)
 	{
 		ListHashSet<T> hs = new(comparer);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<int> result = new(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
@@ -7570,30 +4047,7 @@ public static class RedStarLinqExtras
 	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<int> result = new(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
@@ -7634,30 +4088,7 @@ public static class RedStarLinqExtras
 	public static List<int> RepresentIntoNumbers<T>(this G.IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ListHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			List<int> result = new(length);
-			var j = 0;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<int> result = new(array.Length);
-			var j = 0;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.Add(!hs.TryAdd(item, out var index) ? index : j++);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
@@ -7924,50 +4355,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list[0]);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.EmptyList<TResult>(array.Length);
-			if (array.Length == 0)
-				return result;
-			result[0] = function(array[0]);
-			int blend;
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item);
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -8058,50 +4446,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<TResult>(length);
-			if (length == 0)
-				return result;
-			result[0] = function(list[0], 0);
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.EmptyList<TResult>(array.Length);
-			if (array.Length == 0)
-				return result;
-			result[0] = function(array[0], 0);
-			int blend;
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = function(item, i);
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = function(item, i);
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<TResult>(length);
@@ -8190,50 +4535,7 @@ public static class RedStarLinqExtras
 
 	public static List<T> Shuffle<T>(this G.IEnumerable<T> source, Random random)
 	{
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			var result = RedStarLinq.EmptyList<T>(length);
-			if (length == 0)
-				return result;
-			result[0] = list[0];
-			int blend;
-			for (var i = 1; i < length; i++)
-			{
-				var item = list[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var result = RedStarLinq.EmptyList<T>(array.Length);
-			if (array.Length == 0)
-				return result;
-			result[0] = array[0];
-			int blend;
-			for (var i = 1; i < array.Length; i++)
-			{
-				var item = array[i];
-				blend = random.Next(i + 1);
-				if (blend == i)
-					result[i] = item;
-				else
-				{
-					result[i] = result[blend];
-					result[blend] = item;
-				}
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = RedStarLinq.EmptyList<T>(length);
@@ -8414,49 +4716,7 @@ public static class RedStarLinqExtras
 	{
 		if (fragmentLength <= 0)
 			throw new ArgumentException("Длина фрагмента должна быть положительной.", nameof(fragmentLength));
-		if (source is List<T> list)
-		{
-			var length = GetArrayLength(list.Length, fragmentLength);
-			var result = RedStarLinq.EmptyList<List<T>>(length);
-			var length2 = list.Length / fragmentLength;
-			var index = 0;
-			for (var i = 0; i < length2; i++)
-			{
-				result[i] = RedStarLinq.EmptyList<T>(fragmentLength);
-				for (var j = 0; j < fragmentLength; j++)
-					result[i][j] = list[index++];
-			}
-			var rest = list.Length % fragmentLength;
-			if (rest != 0)
-			{
-				result[length2] = RedStarLinq.EmptyList<T>(rest);
-				for (var j = 0; j < rest; j++)
-					result[length2][j] = list[index++];
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			var length = GetArrayLength(array.Length, fragmentLength);
-			var result = RedStarLinq.EmptyList<List<T>>(length);
-			var length2 = array.Length / fragmentLength;
-			var index = 0;
-			for (var i = 0; i < length2; i++)
-			{
-				result[i] = RedStarLinq.EmptyList<T>(fragmentLength);
-				for (var j = 0; j < fragmentLength; j++)
-					result[i][j] = array[index++];
-			}
-			var rest = array.Length % fragmentLength;
-			if (rest != 0)
-			{
-				result[length2] = RedStarLinq.EmptyList<T>(rest);
-				for (var j = 0; j < rest; j++)
-					result[length2][j] = array[index++];
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = GetArrayLength(list2.Count, fragmentLength);
 			var result = RedStarLinq.EmptyList<List<T>>(length);
@@ -10898,22 +7158,7 @@ public static class RedStarLinqExtras
 	public static String ToNString<T>(this G.IEnumerable<T> source, Func<T, char> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			String result = new('0', length);
-			for (var i = 0; i < length; i++)
-				result[i] = function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			String result = new('0', array.Length);
-			for (var i = 0; i < array.Length; i++)
-				result[i] = function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			String result = new('0', length);
@@ -10946,28 +7191,7 @@ public static class RedStarLinqExtras
 	public static String ToNString<T>(this G.IEnumerable<T> source, Func<T, int, char> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			String result = new('0', length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result[i] = function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			String result = new('0', array.Length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result[i] = function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			String result = new('0', length);

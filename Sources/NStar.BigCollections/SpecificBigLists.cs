@@ -11,7 +11,7 @@ namespace NStar.BigCollections;
 /// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
 /// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigBitList : OldBigList<bool, BigBitList, BitList>
+public class BigBitList : BigList<bool, BigBitList, BitList>
 {
 	// XPerY=n means that n Xs can be stored in 1 Y.
 	private protected const int BitsPerInt = sizeof(int) * BitsPerByte;
@@ -20,7 +20,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 
 	public BigBitList() : this(-1) { }
 
-	public BigBitList(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigBitList(int subbranchesBitLength, int leafSizeBitLength = -1)
 		: base(subbranchesBitLength, leafSizeBitLength) { }
 
 	public BigBitList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
@@ -42,26 +42,26 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			low = null;
 			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1)
 				* SubbranchesBitLength + LeafSizeBitLength;
-			high = new((int)GetArrayLength(length, fragment), true);
-			highLength = [];
+			high = new((int)GetArrayLength(length, fragment));
+			highLength = SubbranchesBitLength >= 6 ? [] : null;
 			for (MpzT i = 0; i < high.Capacity - 1; i++)
 			{
 				high.Add(new(fragment, defaultValue, SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				AddCapacity(fragment);
-				highLength.Add(fragment);
+				highLength?.Add(fragment);
 			}
 			var rest = length % fragment == 0 ? fragment : length % fragment;
 			high.Add(new(rest, defaultValue, SubbranchesBitLength, LeafSizeBitLength));
 			high[^1].parent = this;
 			AddCapacity(rest);
-			highLength.Add(rest);
+			highLength?.Add(rest);
 		}
 		Length = length;
 		AddCapacity(Length - _capacity);
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -77,8 +77,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			ConstructFromBitList(bitList);
 		}
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -114,8 +114,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			ConstructFromUIntList(values, n % BytesPerInt * BitsPerByte);
 		}
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -130,7 +130,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			ConstructFromCapacity(bigBitList.Length);
 			if (bigBitList.low != null)
 				ConstructFromBitList(bigBitList.low);
-			else if (bigBitList.high != null && bigBitList.highLength != null)
+			else if (bigBitList.high != null)
 				bigBitList.CopyToInternal(0, this, 0, bigBitList.Length);
 		}
 		else if (bools is BitList bitList)
@@ -149,8 +149,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 				Add(en.Current);
 		}
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -171,8 +171,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			ConstructFromUIntList(list);
 		}
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -196,8 +196,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		}
 		}
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -211,8 +211,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -228,8 +228,8 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		if (high != null)
+			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -283,11 +283,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			foreach (var (x, y) in high.Combine(value.high))
 				x.And(y);
 		else
-			throw new InvalidOperationException("Невозможно вычислить побитовый AND. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно вычислить побитовый AND. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -296,43 +292,43 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromBitList(BitList bitList)
 	{
-		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
+		if ((low == null || low.Capacity == 0) && high == null && fragment == 1 && _capacity == 0)
 		{
 			ConstructFromBitListFromScratch(bitList);
 			return;
 		}
 		Debug.Assert(bitList.Length <= _capacity);
-		if (bitList.Length <= LeafSize && low != null && high == null && highLength == null && fragment == 1)
+		if (bitList.Length <= LeafSize && low != null && high == null && fragment == 1)
 		{
 			low.AddRange(bitList);
 			Length = bitList.Length;
 		}
 		else
 		{
-			Debug.Assert(low == null && high != null && highLength != null && fragment != 1);
+			Debug.Assert(low == null && high != null && fragment != 1);
 			var fragment2 = (int)fragment;
 			var i = 0;
 			var index = 0;
 			for (; index <= bitList.Length - fragment2; index += fragment2)
 			{
 				high[i++].ConstructFromBitList(bitList.GetRange(index, fragment2));
-				highLength.Add(fragment);
+				highLength?.Add(fragment);
 			}
 			var rest = bitList.Length - index;
 			Debug.Assert(rest < fragment);
 			if (rest != 0)
 			{
 				high[i].ConstructFromBitList(bitList.GetRange(index));
-				highLength.Add(rest);
+				highLength?.Add(rest);
 			}
 		}
 	}
 
 	protected virtual void ConstructFromBitListFromScratch(BitList bitList)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null
+		Debug.Assert((low == null || low.Capacity == 0) && high == null
 			&& fragment == 1 && _capacity == 0);
-		if (bitList.Length <= LeafSize && high == null && highLength == null && fragment == 1)
+		if (bitList.Length <= LeafSize && high == null && fragment == 1)
 		{
 			if (low == null)
 				low = new(bitList);
@@ -350,15 +346,15 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength)
 				/ SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var fragment2 = (int)fragment;
-			high = new(GetArrayLength(bitList.Length, fragment2), true);
-			highLength = [];
+			high = new(GetArrayLength(bitList.Length, fragment2));
+			highLength = SubbranchesBitLength >= 6 ? [] : null;
 			var index = 0;
 			for (; index <= bitList.Length - fragment2; index += fragment2)
 			{
 				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromBitListFromScratch(bitList.GetRange(index, fragment2));
-				highLength.Add(fragment);
+				highLength?.Add(fragment);
 			}
 			if (bitList.Length % fragment2 != 0)
 			{
@@ -366,14 +362,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromBitListFromScratch(bitList.GetRange(index));
-				highLength.Add(rest);
+				highLength?.Add(rest);
 			}
 		}
 	}
 
 	protected virtual void ConstructFromUIntList(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
-		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
+		if ((low == null || low.Capacity == 0) && high == null && high == null && _capacity == 0)
 		{
 			ConstructFromUIntListFromScratch(bigUIntList, overrideLength);
 			return;
@@ -383,7 +379,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt
 			: (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
 		Debug.Assert(bitLength <= _capacity);
-		if (length <= LeafSize / BitsPerInt && low != null && high == null && highLength == null && fragment == 1)
+		if (length <= LeafSize / BitsPerInt && low != null && high == null && fragment == 1)
 		{
 			low.AddRange(bigUIntList);
 			low.RemoveEnd((int)bitLength);
@@ -391,14 +387,14 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 		}
 		else
 		{
-			Debug.Assert(low == null && high != null && highLength != null && fragment != 1);
+			Debug.Assert(low == null && high != null && fragment != 1);
 			var uintsFragment = fragment / BitsPerInt;
 			var i = 0;
 			MpzT index = 0;
 			for (; index < length - uintsFragment; index += uintsFragment)
 			{
 				high[i++].ConstructFromUIntList(bigUIntList.GetRange(index, uintsFragment));
-				highLength.Add(fragment);
+				highLength?.Add(fragment);
 			}
 			if (index != length)
 			{
@@ -407,20 +403,20 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 					rest = fragment;
 				high[i].ConstructFromUIntList(bigUIntList.GetRange(index), overrideLength);
 				high[i].RemoveEndInternal(rest);
-				highLength.Add(rest);
+				highLength?.Add(rest);
 			}
 		}
 	}
 
 	protected virtual void ConstructFromUIntListFromScratch(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null
+		Debug.Assert((low == null || low.Capacity == 0) && high == null
 			&& fragment == 1 && _capacity == 0);
 		ArgumentOutOfRangeException.ThrowIfNegative(overrideLength);
 		var length = bigUIntList.Length;
 		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt
 			: (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
-		if (bitLength <= LeafSize && high == null && highLength == null && fragment == 1)
+		if (bitLength <= LeafSize && high == null && fragment == 1)
 		{
 			if (low == null)
 				low = new(bigUIntList);
@@ -439,15 +435,15 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1
 				- LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var uintsFragment = fragment / BitsPerInt;
-			high = new((int)GetArrayLength(length, uintsFragment), true);
-			highLength = [];
+			high = new((int)GetArrayLength(length, uintsFragment));
+			highLength = SubbranchesBitLength >= 6 ? [] : null;
 			MpzT index = 0;
 			for (; index < length - uintsFragment; index += uintsFragment)
 			{
 				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromUIntListFromScratch(bigUIntList.GetRange(index, uintsFragment));
-				highLength.Add(fragment);
+				highLength?.Add(fragment);
 			}
 			if (index != length)
 			{
@@ -458,7 +454,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 				high[^1].parent = this;
 				high[^1].ConstructFromUIntListFromScratch(bigUIntList.GetRange(index), overrideLength);
 				high[^1].RemoveEndInternal(rest);
-				highLength.Add(rest);
+				highLength?.Add(rest);
 			}
 		}
 	}
@@ -491,11 +487,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			return result;
 		}
 		else
-			throw new InvalidOperationException("Невозможно получить диапазон. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно получить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -509,11 +501,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			foreach (var x in high)
 				x.Not();
 		else
-			throw new InvalidOperationException("Невозможно вычислить побитовый NOT. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно вычислить побитовый NOT. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -532,11 +520,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			foreach (var (x, y) in high.Combine(value.high))
 				x.Or(y);
 		else
-			throw new InvalidOperationException("Невозможно вычислить побитовый OR. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно вычислить побитовый OR. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -554,11 +538,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 				x.SetAll(value);
 		else
 			throw new InvalidOperationException("Невозможно заполнить диапазон одинаковыми элементами."
-				+ " Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ " Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -572,11 +552,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			return new(E.SelectMany(high, x => x.ToUIntBigList()));
 		else
 			throw new InvalidOperationException("Невозможно преобразовать в BigList<uint>."
-				+ " Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ " Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -594,11 +570,7 @@ public class BigBitList : OldBigList<bool, BigBitList, BitList>
 			foreach (var (x, y) in high.Combine(value.high))
 				x.Xor(y);
 		else
-			throw new InvalidOperationException("Невозможно вычислить побитовый XOR. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-				+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			throw new InvalidOperationException("Невозможно вычислить побитовый XOR. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -620,7 +592,7 @@ public class BigList<T> : BigList<T, BigList<T>, LimitedBuffer<T>>
 {
 	public BigList() : this(-1) { }
 
-	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigList(int subbranchesBitLength, int leafSizeBitLength = -1)
 		: base(subbranchesBitLength, leafSizeBitLength) { }
 
 	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1)

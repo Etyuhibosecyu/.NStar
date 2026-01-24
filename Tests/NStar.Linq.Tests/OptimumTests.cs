@@ -98,6 +98,56 @@ public class OptimumTests
 		}
 	}
 
+	private static void ProcessIndexesOf<T>(G.IEnumerable<MpzT> a, ImmutableArray<BigInteger> list,
+		Func<MpzT, int, T> selector, Func<BigInteger, int, T> selector2,
+		Func<BigInteger, int, (T elem, int index)> selector3, Func<T, T, T> aggregator,
+		Func<G.IEnumerable<T>, List<int>> resultSelector) where T : INumber<T>
+	{
+		var b = resultSelector(a.ToArray(selector));
+		var optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		var c = E.ToArray(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index));
+		Assert.IsTrue(RedStarLinq.Equals(b, c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = resultSelector(a.ToList(selector));
+		optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		c = E.ToArray(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index));
+		Assert.IsTrue(RedStarLinq.Equals(b, c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = resultSelector(E.ToList(E.Select(a, selector)));
+		optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		c = E.ToArray(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index));
+		Assert.IsTrue(RedStarLinq.Equals(b, c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = resultSelector(E.Select(a, selector));
+		optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		c = E.ToArray(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index));
+		Assert.IsTrue(RedStarLinq.Equals(b, c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+	}
+
+	private static void ProcessIndexOf<T>(G.IEnumerable<MpzT> a, ImmutableArray<BigInteger> list,
+		Func<MpzT, int, T> selector, Func<BigInteger, int, T> selector2,
+		Func<BigInteger, int, (T elem, int index)> selector3, Func<T, T, T> aggregator,
+		Func<G.IEnumerable<T>, int> resultSelector, Func<G.IEnumerable<int>, int, int> resultSelector2) where T : INumber<T>
+	{
+		var b = resultSelector(a.ToArray(selector));
+		var optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		var c = resultSelector2(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index), -1);
+		Assert.AreEqual(c, b);
+		b = resultSelector(a.ToList(selector));
+		optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		c = resultSelector2(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index), -1);
+		Assert.AreEqual(c, b);
+		b = resultSelector(E.ToList(E.Select(a, selector)));
+		optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		c = resultSelector2(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index), -1);
+		Assert.AreEqual(c, b);
+		b = resultSelector(E.Select(a, selector));
+		optimum = list.Length == 0 ? T.Zero : E.Aggregate(E.Select(list, selector2), aggregator);
+		c = resultSelector2(E.Select(E.Where(E.Select(list, selector3), x => x.elem == optimum), x => x.index), -1);
+		Assert.AreEqual(c, b);
+	}
+
 	[TestMethod]
 	public void TestFindAllMax() => OptimumTest(1000, (a, list3) =>
 	{
@@ -1307,246 +1357,43 @@ public class OptimumTests
 		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
 		Assert.IsTrue(RedStarLinq.Equals(b, c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => x.PowerMod(new MpzT(power), new(mod))).AsEnumerable().IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).AsEnumerable().IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (decimal)((double)x / 1000000000000 / 1000000000000)).AsEnumerable().IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).AsEnumerable().IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (double)x / 1000000000000).AsEnumerable().IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (double)x / 1000000000000 * (index % 5)).AsEnumerable().IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (int)x).AsEnumerable().IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (int)(x * (index % 5))).AsEnumerable().IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (uint)x).AsEnumerable().IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (uint)(x * (index % 5))).AsEnumerable().IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (long)x).AsEnumerable().IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (long)(x * (index % 5))).AsEnumerable().IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => x.PowerMod(new MpzT(power), new(mod))).IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (double)x / 1000000000000).IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (double)x / 1000000000000 * (index % 5)).IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (int)x).IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (int)(x * (index % 5))).IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (uint)x).IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (uint)(x * (index % 5))).IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (long)x).IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (long)(x * (index % 5))).IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => x.PowerMod(new MpzT(power), new(mod)))).IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)))).IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000))).IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5))).IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (double)x / 1000000000000)).IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5))).IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (int)x)).IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (int)(x * (index % 5)))).IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (uint)x)).IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (uint)(x * (index % 5)))).IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (long)x)).IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (long)(x * (index % 5)))).IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => x.PowerMod(new MpzT(power), new(mod))).IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod))).IndexesOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).IndexesOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (double)x / 1000000000000).IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5)).IndexesOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (int)x).IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (int)(x * (index % 5))).IndexesOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (uint)x).IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (uint)(x * (index % 5))).IndexesOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (long)x).IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (long)(x * (index % 5))).IndexesOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessIndexesOf(a, list3, (x, index) => x.PowerMod(new MpzT(power), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power, mod)), index),
+			RedStarLinqMath.Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power * index, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power * index, mod)), index),
+			RedStarLinqMath.Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000), index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index),
+			Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (double)x / 1000000000000, (x, index) => (double)x / 1000000000000,
+			(elem, index) => ((double)elem / 1000000000000, index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (double)x / 1000000000000 * (index % 5),
+			(x, index) => (double)x / 1000000000000 * (index % 5),
+			(elem, index) => ((double)elem / 1000000000000 * (index % 5), index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (int)x, (x, index) => (int)(uint)(x % 4294967296),
+			(elem, index) => ((int)(uint)(elem % 4294967296), index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (int)(x * (index % 5)),
+			(x, index) => (int)(uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((int)(uint)(elem * (index % 5) % 4294967296), index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (uint)x, (x, index) => (uint)(x % 4294967296),
+			(elem, index) => ((uint)(elem % 4294967296), index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (uint)(x * (index % 5)), (x, index) => (uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((uint)(elem * (index % 5) % 4294967296), index), Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (long)x,
+			(x, index) => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296),
+			(elem, index) => ((long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index),
+			Max, x => x.IndexesOfMax());
+		ProcessIndexesOf(a, list3, (x, index) => (long)(x * (index % 5)),
+			(x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296),
+			(elem, index) => ((long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296
+			+ elem * (index % 5) % 4294967296), index), Max, x => x.IndexesOfMax());
 	});
 
 	[TestMethod]
@@ -2057,246 +1904,43 @@ public class OptimumTests
 		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
 		Assert.IsTrue(RedStarLinq.Equals(b, c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => x.PowerMod(new MpzT(power), new(mod))).AsEnumerable().IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => x.PowerMod(new MpzT(power * (index + 1)), new(mod))).AsEnumerable().IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * (index + 1), mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * (index + 1), mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (decimal)((double)x / 1000000000000 / 1000000000000)).AsEnumerable().IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)).AsEnumerable().IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * ((index + 1) % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (double)x / 1000000000000).AsEnumerable().IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (double)x / 1000000000000 * ((index + 1) % 5)).AsEnumerable().IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * ((index + 1) % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (int)x).AsEnumerable().IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (int)(x * ((index + 1) % 5))).AsEnumerable().IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (uint)x).AsEnumerable().IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (uint)(x * ((index + 1) % 5))).AsEnumerable().IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray(x => (long)x).AsEnumerable().IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToArray((x, index) => (long)(x * ((index + 1) % 5))).AsEnumerable().IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => x.PowerMod(new MpzT(power), new(mod))).IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => x.PowerMod(new MpzT(power * (index + 1)), new(mod))).IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * (index + 1), mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * (index + 1), mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)).IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * ((index + 1) % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (double)x / 1000000000000).IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (double)x / 1000000000000 * ((index + 1) % 5)).IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * ((index + 1) % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (int)x).IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (int)(x * ((index + 1) % 5))).IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (uint)x).IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (uint)(x * ((index + 1) % 5))).IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList(x => (long)x).IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.ToList((x, index) => (long)(x * ((index + 1) % 5))).IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => x.PowerMod(new MpzT(power), new(mod)))).IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => x.PowerMod(new MpzT(power * (index + 1)), new(mod)))).IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * (index + 1), mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * (index + 1), mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000))).IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5))).IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * ((index + 1) % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (double)x / 1000000000000)).IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (double)x / 1000000000000 * ((index + 1) % 5))).IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * ((index + 1) % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (int)x)).IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (int)(x * ((index + 1) % 5)))).IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (uint)x)).IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (uint)(x * ((index + 1) % 5)))).IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, x => (long)x)).IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.ToList(E.Select(a, (x, index) => (long)(x * ((index + 1) % 5)))).IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => x.PowerMod(new MpzT(power), new(mod))).IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => x.PowerMod(new MpzT(power * (index + 1)), new(mod))).IndexesOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * (index + 1), mod)), BigInteger.Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * (index + 1), mod), index)), x => x.elem == optimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)).IndexesOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * ((index + 1) % 5), index)), x => x.elem == decimalOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (double)x / 1000000000000).IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (double)x / 1000000000000 * ((index + 1) % 5)).IndexesOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * ((index + 1) % 5)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * ((index + 1) % 5), index)), x => x.elem == doubleOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (int)x).IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (int)(x * ((index + 1) % 5))).IndexesOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (uint)x).IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (uint)(x * ((index + 1) % 5))).IndexesOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, x => (long)x).IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = E.Select(a, (x, index) => (long)(x * ((index + 1) % 5))).IndexesOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + x * ((index + 1) % 5) % 4294967296)), Min);
-		c = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * ((index + 1) % 5) / 4294967296 % 4294967296 * 4294967296 + elem * ((index + 1) % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
-		Assert.IsTrue(RedStarLinq.Equals(b, c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessIndexesOf(a, list3, (x, index) => x.PowerMod(new MpzT(power), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power, mod)), index),
+			RedStarLinqMath.Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power * index, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power * index, mod)), index),
+			RedStarLinqMath.Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000), index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index),
+			Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (double)x / 1000000000000, (x, index) => (double)x / 1000000000000,
+			(elem, index) => ((double)elem / 1000000000000, index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (double)x / 1000000000000 * (index % 5),
+			(x, index) => (double)x / 1000000000000 * (index % 5),
+			(elem, index) => ((double)elem / 1000000000000 * (index % 5), index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (int)x, (x, index) => (int)(uint)(x % 4294967296),
+			(elem, index) => ((int)(uint)(elem % 4294967296), index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (int)(x * (index % 5)),
+			(x, index) => (int)(uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((int)(uint)(elem * (index % 5) % 4294967296), index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (uint)x, (x, index) => (uint)(x % 4294967296),
+			(elem, index) => ((uint)(elem % 4294967296), index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (uint)(x * (index % 5)), (x, index) => (uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((uint)(elem * (index % 5) % 4294967296), index), Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (long)x,
+			(x, index) => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296),
+			(elem, index) => ((long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index),
+			Min, x => x.IndexesOfMin());
+		ProcessIndexesOf(a, list3, (x, index) => (long)(x * (index % 5)),
+			(x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296),
+			(elem, index) => ((long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296
+			+ elem * (index % 5) % 4294967296), index), Min, x => x.IndexesOfMin());
 	});
 
 	[TestMethod]
@@ -2484,198 +2128,46 @@ public class OptimumTests
 		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
 		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
 		Assert.AreEqual(c, b);
-		b = a.ToArray(x => x.PowerMod(new MpzT(power), new(mod))).AsEnumerable().IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).AsEnumerable().IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (decimal)((double)x / 1000000000000 / 1000000000000)).AsEnumerable().IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).AsEnumerable().IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (double)x / 1000000000000).AsEnumerable().IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (double)x / 1000000000000 * (index % 5)).AsEnumerable().IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (int)x).AsEnumerable().IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (int)(x * (index % 5))).AsEnumerable().IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (uint)x).AsEnumerable().IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (uint)(x * (index % 5))).AsEnumerable().IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (long)x).AsEnumerable().IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (long)(x * (index % 5))).AsEnumerable().IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => x.PowerMod(new MpzT(power), new(mod))).IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (double)x / 1000000000000).IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (double)x / 1000000000000 * (index % 5)).IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (int)x).IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (int)(x * (index % 5))).IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (uint)x).IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (uint)(x * (index % 5))).IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (long)x).IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (long)(x * (index % 5))).IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => x.PowerMod(new MpzT(power), new(mod)))).IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)))).IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000))).IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5))).IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (double)x / 1000000000000)).IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5))).IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (int)x)).IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (int)(x * (index % 5)))).IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (uint)x)).IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (uint)(x * (index % 5)))).IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (long)x)).IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (long)(x * (index % 5)))).IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => x.PowerMod(new MpzT(power), new(mod))).IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod))).IndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).IndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (double)x / 1000000000000).IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5)).IndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (int)x).IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (int)(x * (index % 5))).IndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (uint)x).IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (uint)(x * (index % 5))).IndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (long)x).IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (long)(x * (index % 5))).IndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power, mod)), index),
+			RedStarLinqMath.Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power * index, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power * index, mod)), index),
+			RedStarLinqMath.Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000), index),
+			Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index),
+			Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000, (x, index) => (double)x / 1000000000000,
+			(elem, index) => ((double)elem / 1000000000000, index), Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000 * (index % 5),
+			(x, index) => (double)x / 1000000000000 * (index % 5),
+			(elem, index) => ((double)elem / 1000000000000 * (index % 5), index), Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)x, (x, index) => (int)(uint)(x % 4294967296),
+			(elem, index) => ((int)(uint)(elem % 4294967296), index), Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)(x * (index % 5)),
+			(x, index) => (int)(uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((int)(uint)(elem * (index % 5) % 4294967296), index), Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)x,
+			(x, index) => (uint)(x % 4294967296), (elem, index) => ((uint)(elem % 4294967296), index),
+			Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)(x * (index % 5)),
+			(x, index) => (uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((uint)(elem * (index % 5) % 4294967296), index), Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)x,
+			(x, index) => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296),
+			(elem, index) => ((long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index),
+			Max, x => x.IndexOfMax(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)(x * (index % 5)),
+			(x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296),
+			(elem, index) => ((long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296
+			+ elem * (index % 5) % 4294967296), index), Max, x => x.IndexOfMax(), E.FirstOrDefault);
 	});
 
 	[TestMethod]
@@ -2790,198 +2282,46 @@ public class OptimumTests
 		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
 		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
 		Assert.AreEqual(c, b);
-		b = a.ToArray(x => x.PowerMod(new MpzT(power), new(mod))).AsEnumerable().IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).AsEnumerable().IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (decimal)((double)x / 1000000000000 / 1000000000000)).AsEnumerable().IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).AsEnumerable().IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (double)x / 1000000000000).AsEnumerable().IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (double)x / 1000000000000 * (index % 5)).AsEnumerable().IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (int)x).AsEnumerable().IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (int)(x * (index % 5))).AsEnumerable().IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (uint)x).AsEnumerable().IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (uint)(x * (index % 5))).AsEnumerable().IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (long)x).AsEnumerable().IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (long)(x * (index % 5))).AsEnumerable().IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => x.PowerMod(new MpzT(power), new(mod))).IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (double)x / 1000000000000).IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (double)x / 1000000000000 * (index % 5)).IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (int)x).IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (int)(x * (index % 5))).IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (uint)x).IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (uint)(x * (index % 5))).IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (long)x).IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (long)(x * (index % 5))).IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => x.PowerMod(new MpzT(power), new(mod)))).IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)))).IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000))).IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5))).IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (double)x / 1000000000000)).IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5))).IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (int)x)).IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (int)(x * (index % 5)))).IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (uint)x)).IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (uint)(x * (index % 5)))).IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (long)x)).IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (long)(x * (index % 5)))).IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => x.PowerMod(new MpzT(power), new(mod))).IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod))).IndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000)).IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).IndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (double)x / 1000000000000).IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5)).IndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (int)x).IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (int)(x * (index % 5))).IndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (uint)x).IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (uint)(x * (index % 5))).IndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (long)x).IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (long)(x * (index % 5))).IndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power, mod)), index),
+			RedStarLinqMath.Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power * index, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power * index, mod)), index),
+			RedStarLinqMath.Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000), index),
+			Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index),
+			Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000, (x, index) => (double)x / 1000000000000,
+			(elem, index) => ((double)elem / 1000000000000, index), Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000 * (index % 5),
+			(x, index) => (double)x / 1000000000000 * (index % 5),
+			(elem, index) => ((double)elem / 1000000000000 * (index % 5), index), Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)x, (x, index) => (int)(uint)(x % 4294967296),
+			(elem, index) => ((int)(uint)(elem % 4294967296), index), Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)(x * (index % 5)),
+			(x, index) => (int)(uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((int)(uint)(elem * (index % 5) % 4294967296), index), Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)x,
+			(x, index) => (uint)(x % 4294967296), (elem, index) => ((uint)(elem % 4294967296), index),
+			Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)(x * (index % 5)),
+			(x, index) => (uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((uint)(elem * (index % 5) % 4294967296), index), Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)x,
+			(x, index) => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296),
+			(elem, index) => ((long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index),
+			Min, x => x.IndexOfMin(), E.FirstOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)(x * (index % 5)),
+			(x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296),
+			(elem, index) => ((long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296
+			+ elem * (index % 5) % 4294967296), index), Min, x => x.IndexOfMin(), E.FirstOrDefault);
 	});
 
 	[TestMethod]
@@ -3039,198 +2379,46 @@ public class OptimumTests
 		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
 		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
 		Assert.AreEqual(c, b);
-		b = a.ToArray(x => x.PowerMod(new MpzT(power), new(mod))).AsEnumerable().LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).AsEnumerable().LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (decimal)((double)x / 1000000000000 / 1000000000000)).AsEnumerable().LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).AsEnumerable().LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (double)x / 1000000000000).AsEnumerable().LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (double)x / 1000000000000 * (index % 5)).AsEnumerable().LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (int)x).AsEnumerable().LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (int)(x * (index % 5))).AsEnumerable().LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (uint)x).AsEnumerable().LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (uint)(x * (index % 5))).AsEnumerable().LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (long)x).AsEnumerable().LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (long)(x * (index % 5))).AsEnumerable().LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => x.PowerMod(new MpzT(power), new(mod))).LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (decimal)((double)x / 1000000000000 / 1000000000000)).LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (double)x / 1000000000000).LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (double)x / 1000000000000 * (index % 5)).LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (int)x).LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (int)(x * (index % 5))).LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (uint)x).LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (uint)(x * (index % 5))).LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (long)x).LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (long)(x * (index % 5))).LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => x.PowerMod(new MpzT(power), new(mod)))).LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)))).LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000))).LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5))).LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (double)x / 1000000000000)).LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5))).LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (int)x)).LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (int)(x * (index % 5)))).LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (uint)x)).LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (uint)(x * (index % 5)))).LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (long)x)).LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (long)(x * (index % 5)))).LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => x.PowerMod(new MpzT(power), new(mod))).LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod))).LastIndexOfMax();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000)).LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).LastIndexOfMax();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (double)x / 1000000000000).LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5)).LastIndexOfMax();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (int)x).LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (int)(x * (index % 5))).LastIndexOfMax();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (uint)x).LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (uint)(x * (index % 5))).LastIndexOfMax();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (long)x).LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (long)(x * (index % 5))).LastIndexOfMax();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Max);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power, mod)), index),
+			RedStarLinqMath.Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power * index, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power * index, mod)), index),
+			RedStarLinqMath.Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000), index),
+			Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index),
+			Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000, (x, index) => (double)x / 1000000000000,
+			(elem, index) => ((double)elem / 1000000000000, index), Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000 * (index % 5),
+			(x, index) => (double)x / 1000000000000 * (index % 5),
+			(elem, index) => ((double)elem / 1000000000000 * (index % 5), index), Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)x, (x, index) => (int)(uint)(x % 4294967296),
+			(elem, index) => ((int)(uint)(elem % 4294967296), index), Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)(x * (index % 5)),
+			(x, index) => (int)(uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((int)(uint)(elem * (index % 5) % 4294967296), index), Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)x,
+			(x, index) => (uint)(x % 4294967296), (elem, index) => ((uint)(elem % 4294967296), index),
+			Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)(x * (index % 5)),
+			(x, index) => (uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((uint)(elem * (index % 5) % 4294967296), index), Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)x,
+			(x, index) => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296),
+			(elem, index) => ((long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index),
+			Max, x => x.LastIndexOfMax(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)(x * (index % 5)),
+			(x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296),
+			(elem, index) => ((long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296
+			+ elem * (index % 5) % 4294967296), index), Max, x => x.LastIndexOfMax(), E.LastOrDefault);
 	});
 
 	[TestMethod]
@@ -3345,198 +2533,46 @@ public class OptimumTests
 		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
 		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
 		Assert.AreEqual(c, b);
-		b = a.ToArray(x => x.PowerMod(new MpzT(power), new(mod))).AsEnumerable().LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).AsEnumerable().LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (decimal)((double)x / 1000000000000 / 1000000000000)).AsEnumerable().LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).AsEnumerable().LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (double)x / 1000000000000).AsEnumerable().LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (double)x / 1000000000000 * (index % 5)).AsEnumerable().LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (int)x).AsEnumerable().LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (int)(x * (index % 5))).AsEnumerable().LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (uint)x).AsEnumerable().LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (uint)(x * (index % 5))).AsEnumerable().LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray(x => (long)x).AsEnumerable().LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToArray((x, index) => (long)(x * (index % 5))).AsEnumerable().LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => x.PowerMod(new MpzT(power), new(mod))).LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => x.PowerMod(new MpzT(power * index), new(mod))).LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (decimal)((double)x / 1000000000000 / 1000000000000)).LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (double)x / 1000000000000).LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (double)x / 1000000000000 * (index % 5)).LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (int)x).LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (int)(x * (index % 5))).LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (uint)x).LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (uint)(x * (index % 5))).LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList(x => (long)x).LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = a.ToList((x, index) => (long)(x * (index % 5))).LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => x.PowerMod(new MpzT(power), new(mod)))).LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)))).LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000))).LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5))).LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (double)x / 1000000000000)).LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5))).LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (int)x)).LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (int)(x * (index % 5)))).LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (uint)x)).LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (uint)(x * (index % 5)))).LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, x => (long)x)).LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.ToList(E.Select(a, (x, index) => (long)(x * (index % 5)))).LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => x.PowerMod(new MpzT(power), new(mod))).LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => x.PowerMod(new MpzT(power * index), new(mod))).LastIndexOfMin();
-		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), BigInteger.Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => x.elem == optimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (decimal)((double)x / 1000000000000 / 1000000000000)).LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)).LastIndexOfMin();
-		decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index)), x => x.elem == decimalOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (double)x / 1000000000000).LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (double)x / 1000000000000), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000, index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (double)x / 1000000000000 * (index % 5)).LastIndexOfMin();
-		doubleOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (double)x / 1000000000000 * (index % 5)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (double)elem / 1000000000000 * (index % 5), index)), x => x.elem == doubleOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (int)x).LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (int)(x * (index % 5))).LastIndexOfMin();
-		intOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == intOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (uint)x).LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (uint)(x * (index % 5))).LastIndexOfMin();
-		uintOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == uintOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, x => (long)x).LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
-		b = E.Select(a, (x, index) => (long)(x * (index % 5))).LastIndexOfMin();
-		longOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), Min);
-		c = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index), -1);
-		Assert.AreEqual(c, b);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power, mod)), index),
+			RedStarLinqMath.Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => x.PowerMod(new MpzT(power * index), new(mod)),
+			(x, index) => new MpzT(BigInteger.ModPow(x, power * index, mod)),
+			(elem, index) => (new MpzT(BigInteger.ModPow(elem, power * index, mod)), index),
+			RedStarLinqMath.Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000), index),
+			Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(x, index) => (decimal)((double)x / 1000000000000 / 1000000000000) * (index % 5),
+			(elem, index) => ((decimal)((double)elem / 1000000000000 / 1000000000000) * (index % 5), index),
+			Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000, (x, index) => (double)x / 1000000000000,
+			(elem, index) => ((double)elem / 1000000000000, index), Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (double)x / 1000000000000 * (index % 5),
+			(x, index) => (double)x / 1000000000000 * (index % 5),
+			(elem, index) => ((double)elem / 1000000000000 * (index % 5), index), Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)x, (x, index) => (int)(uint)(x % 4294967296),
+			(elem, index) => ((int)(uint)(elem % 4294967296), index), Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (int)(x * (index % 5)),
+			(x, index) => (int)(uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((int)(uint)(elem * (index % 5) % 4294967296), index), Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)x,
+			(x, index) => (uint)(x % 4294967296), (elem, index) => ((uint)(elem % 4294967296), index),
+			Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (uint)(x * (index % 5)),
+			(x, index) => (uint)(x * (index % 5) % 4294967296),
+			(elem, index) => ((uint)(elem * (index % 5) % 4294967296), index), Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)x,
+			(x, index) => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296),
+			(elem, index) => ((long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index),
+			Min, x => x.LastIndexOfMin(), E.LastOrDefault);
+		ProcessIndexOf(a, list3, (x, index) => (long)(x * (index % 5)),
+			(x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296),
+			(elem, index) => ((long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296
+			+ elem * (index % 5) % 4294967296), index), Min, x => x.LastIndexOfMin(), E.LastOrDefault);
 	});
 
 	[TestMethod]

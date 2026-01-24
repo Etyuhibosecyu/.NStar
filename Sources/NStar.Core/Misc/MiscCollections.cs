@@ -678,21 +678,21 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 		Array.Reverse(array, arrayIndex, _size);
 	}
 
-	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
+	void System.Collections.ICollection.CopyTo(Array array, int index)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
 			throw new RankException("Массив должен иметь одно измерение.");
 		if (array.GetLowerBound(0) != 0)
 			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
-		if (arrayIndex < 0 || arrayIndex > array.Length)
-			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-		if (array.Length - arrayIndex < _size)
+		if (index < 0 || index > array.Length)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (array.Length - index < _size)
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		try
 		{
-			Array.Copy(_array, 0, array, arrayIndex, _size);
-			Array.Reverse(array, arrayIndex, _size);
+			Array.Copy(_array, 0, array, index, _size);
+			Array.Reverse(array, index, _size);
 		}
 		catch (ArrayTypeMismatchException)
 		{
@@ -741,7 +741,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	{
 		if (_size == _array.Length)
 		{
-			var newArray = new T[(_array.Length == 0) ? _defaultCapacity : 2 * _array.Length];
+			var newArray = GC.AllocateUninitializedArray<T>((_array.Length == 0) ? _defaultCapacity : 2 * _array.Length);
 			Array.Copy(_array, 0, newArray, 0, _size);
 			_array = newArray;
 		}
@@ -750,18 +750,10 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 
 	public virtual T[] ToArray()
 	{
-		var array = new T[_size];
+		var array = GC.AllocateUninitializedArray<T>(_size);
 		for (var i = 0; i < _size; i++)
 			array[i] = _array[i];
 		return array;
-	}
-
-	public virtual List<T> ToList()
-	{
-		List<T> list = new(_size);
-		for (var i = 0; i < _size; i++)
-			list.Add(_array[i]);
-		return list;
 	}
 
 	public virtual void TrimExcess()
@@ -769,7 +761,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 		var threshold = (int)(_array.Length * 0.9);
 		if (_size < threshold)
 		{
-			var newarray = new T[_size];
+			var newarray = GC.AllocateUninitializedArray<T>(_size);
 			Array.Copy(_array, 0, newarray, 0, _size);
 			_array = newarray;
 		}
