@@ -1398,27 +1398,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				yield return function(item, item2, i);
-			}
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				yield return function(item, item2, i);
-			}
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Min(list2_.Count, list2_2.Count);
 			for (var i = 0; i < length; i++)
@@ -1459,29 +1439,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
-		{
-			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
-				yield return function(item, item2, item3);
-			}
-		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
-		{
-			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				var item3 = array3[i];
-				yield return function(item, item2, item3);
-			}
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
 			for (var i = 0; i < length; i++)
@@ -1526,29 +1484,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
-		{
-			var length = RedStarLinqMath.Min([list.Length, list2.Length, list3.Length]);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
-				yield return function(item, item2, item3, i);
-			}
-		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
-		{
-			var length = RedStarLinqMath.Min([array.Length, array2.Length, array3.Length]);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				var item3 = array3[i];
-				yield return function(item, item2, item3, i);
-			}
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
 			for (var i = 0; i < length; i++)
@@ -1636,78 +1572,14 @@ public static class RedStarLinqExtras
 	public static bool Contains<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(comparer);
-		if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (comparer.Equals(item, target))
-					return true;
-				i++;
-			}
-			return false;
-		}
+		return ContainsInternal(source, target, comparer);
 	}
 
 	public static bool Contains<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
-		if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (comparer.Equals(item, target))
-					return true;
-			}
-			return false;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (comparer.Equals(item, target))
-					return true;
-				i++;
-			}
-			return false;
-		}
+		return ContainsInternal(source, target, comparer);
 	}
 
 	public static bool Contains<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
@@ -1715,6 +1587,11 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
+		return ContainsInternal(source, target, comparer);
+	}
+
+	private static bool ContainsInternal<T>(G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
+	{
 		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
@@ -1859,34 +1736,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			if (list.Length != list2.Length)
-				return false;
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (!function(item, item2, i))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			if (array.Length != array2.Length)
-				return false;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (!function(item, item2, i))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			if (list2_.Count != list2_2.Count)
 				return false;
@@ -3274,85 +3124,27 @@ public static class RedStarLinqExtras
 	public static int IndexOf<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(comparer);
-		if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (comparer.Equals(item, target))
-					return i;
-				i++;
-			}
-			return -1;
-		}
+		return IndexOfInternal(source, target, comparer);
 	}
 
 	public static int IndexOf<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
-		if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (comparer.Equals(item, target))
-					return i;
-				i++;
-			}
-			return -1;
-		}
+		return IndexOfInternal(source, target, comparer);
 	}
 
-	public static int IndexOf<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	public static int IndexOf<T>(this G.IEnumerable<T> source, T target,
+		Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
+		return IndexOfInternal(source, target, comparer);
+	}
+
+	private static int IndexOfInternal<T>(G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
+	{
 		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
@@ -3576,60 +3368,14 @@ public static class RedStarLinqExtras
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(comparer);
-		if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else
-			return LastIndexOf([.. source], target, comparer);
+		return LastIndexOfInternal(source, target, comparer);
 	}
 
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
 	{
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
-		if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list2[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = length - 1; i >= 0; i--)
-			{
-				var item = list3[i];
-				if (comparer.Equals(item, target))
-					return i;
-			}
-			return -1;
-		}
-		else
-			return LastIndexOf([.. source], target, equalFunction);
+		return LastIndexOfInternal(source, target, comparer);
 	}
 
 	public static int LastIndexOf<T>(this G.IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
@@ -3637,6 +3383,11 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(equalFunction);
 		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
+		return LastIndexOfInternal(source, target, comparer);
+	}
+
+	private static int LastIndexOfInternal<T>(G.IEnumerable<T> source, T target, G.IEqualityComparer<T> comparer)
+	{
 		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
@@ -3660,7 +3411,7 @@ public static class RedStarLinqExtras
 			return -1;
 		}
 		else
-			return LastIndexOf([.. source], target, equalFunction, hashCodeFunction);
+			return LastIndexOfInternal([.. source], target, comparer);
 	}
 
 	public static Slice<TResult> Pairs<T, TResult>(this G.IReadOnlyList<T> source, Func<T, T, TResult> function, int offset = 1)
@@ -4780,34 +4531,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			if (list.Length < list2.Length)
-				return false;
-			var length = list2.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (!function(item, item2))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			if (array.Length < array2.Length)
-				return false;
-			for (var i = 0; i < array2.Length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (!function(item, item2))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			if (list2_.Count < list2_2.Count)
 				return false;
@@ -4855,34 +4579,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			if (list.Length < list2.Length)
-				return false;
-			var length = list2.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (!function(item, item2, i))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			if (array.Length < array2.Length)
-				return false;
-			for (var i = 0; i < array2.Length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (!function(item, item2, i))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			if (list2_.Count < list2_2.Count)
 				return false;
@@ -4930,34 +4627,7 @@ public static class RedStarLinqExtras
 
 	public static bool StartsWith<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2)
 	{
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			if (list.Length < list2.Length)
-				return false;
-			var length = list2.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			if (array.Length < array2.Length)
-				return false;
-			for (var i = 0; i < array2.Length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			if (list2_.Count < list2_2.Count)
 				return false;
@@ -5059,61 +4729,73 @@ public static class RedStarLinqExtras
 		int index = range.Start.Value, index2 = range.End.Value;
 		using var en = source.GetEnumerator();
 		if (!range.Start.IsFromEnd && !range.End.IsFromEnd)
-		{
-			if (index >= index2)
-				return new();
-			var i = 0;
-			for (; i < index; i++)
-				if (!en.MoveNext())
-					return new();
-			List<T> result = new(index2 - index);
-			for (; i < index2 && en.MoveNext(); i++)
-				result.Add(en.Current);
-			result.Resize(i - index);
-			return result.GetSlice();
-		}
+			return TakeFirst(index, index2, en);
 		else if (!range.Start.IsFromEnd && range.End.IsFromEnd)
-		{
-			var i = 0;
-			for (; i < index; i++)
-				if (!en.MoveNext())
-					return new();
-			List<T> result = [];
-			using LimitedQueue<T> queue = new(index2);
-			while (en.MoveNext())
-				queue.Enqueue(en.Current, result);
-			return result.GetSlice();
-		}
+			return TakeStretched(index, index2, en);
 		else if (range.Start.IsFromEnd && !range.End.IsFromEnd)
-		{
-			using LimitedQueue<T> queue = new(index);
-			var i = 0;
-			while (en.MoveNext())
-			{
-				queue.Enqueue(en.Current);
-				i++;
-				if (i >= index + index2)
-					return new();
-			}
-			var result = RedStarLinq.EmptyList<T>(Min(index + index2 - i, i));
-			for (i = 0; i < result.Length; i++)
-				result[i] = queue.Dequeue();
-			return result.GetSlice();
-		}
+			return TakeTurnedOut(index, index2, en);
 		else if (range.Start.IsFromEnd && range.End.IsFromEnd)
-		{
-			using LimitedQueue<T> queue = new(index);
-			while (en.MoveNext())
-				queue.Enqueue(en.Current);
-			if (queue.Length <= index2)
-				return new();
-			var result = RedStarLinq.EmptyList<T>(queue.Length - index2);
-			for (var i = 0; i < result.Length; i++)
-				result[i] = queue.Dequeue();
-			return result.GetSlice();
-		}
+			return TakeLast(en, index, index2);
 		else
 			return new();
+	}
+
+	private static Slice<T> TakeFirst<T>(int index, int index2, G.IEnumerator<T> en)
+	{
+		if (index >= index2)
+			return new();
+		var i = 0;
+		for (; i < index; i++)
+			if (!en.MoveNext())
+				return new();
+		List<T> result = new(index2 - index);
+		for (; i < index2 && en.MoveNext(); i++)
+			result.Add(en.Current);
+		result.Resize(i - index);
+		return result.GetSlice();
+	}
+
+	private static Slice<T> TakeStretched<T>(int index, int index2, G.IEnumerator<T> en)
+	{
+		var i = 0;
+		for (; i < index; i++)
+			if (!en.MoveNext())
+				return new();
+		List<T> result = [];
+		using LimitedQueue<T> queue = new(index2);
+		while (en.MoveNext())
+			queue.Enqueue(en.Current, result);
+		return result.GetSlice();
+	}
+
+	private static Slice<T> TakeTurnedOut<T>(int index, int index2, G.IEnumerator<T> en)
+	{
+		using LimitedQueue<T> queue = new(index);
+		var i = 0;
+		while (en.MoveNext())
+		{
+			queue.Enqueue(en.Current);
+			i++;
+			if (i >= index + index2)
+				return new();
+		}
+		var result = RedStarLinq.EmptyList<T>(Min(index + index2 - i, i));
+		for (i = 0; i < result.Length; i++)
+			result[i] = queue.Dequeue();
+		return result.GetSlice();
+	}
+
+	private static Slice<T> TakeLast<T>(G.IEnumerator<T> en, int index, int index2)
+	{
+		using LimitedQueue<T> queue = new(index);
+		while (en.MoveNext())
+			queue.Enqueue(en.Current);
+		if (queue.Length <= index2)
+			return new();
+		var result = RedStarLinq.EmptyList<T>(queue.Length - index2);
+		for (var i = 0; i < result.Length; i++)
+			result[i] = queue.Dequeue();
+		return result.GetSlice();
 	}
 
 	public static Slice<T> TakeLast<T>(this G.IEnumerable<T> source, int length)

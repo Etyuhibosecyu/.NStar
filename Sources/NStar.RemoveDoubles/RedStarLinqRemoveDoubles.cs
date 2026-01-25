@@ -404,45 +404,7 @@ public static class RedStarLinqRemoveDoubles
 	private static (List<T>, List<T2>) RemoveDoublesInternal<T, T2, TResult>(G.IEnumerable<T> source, G.IEnumerable<T2> source2,
 		Func<T, TResult> function, ListHashSet<TResult> hs)
 	{
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			List<T> result = new(length);
-			List<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (hs.TryAdd(function(item)))
-				{
-					result.Add(item);
-					result2.Add(item2);
-				}
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return (result, result2);
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			List<T> result = new(length);
-			List<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (hs.TryAdd(function(item)))
-				{
-					result.Add(item);
-					result2.Add(item2);
-				}
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
@@ -487,45 +449,7 @@ public static class RedStarLinqRemoveDoubles
 	private static (List<T>, List<T2>) RemoveDoublesInternal<T, T2, TResult>(G.IEnumerable<T> source, G.IEnumerable<T2> source2,
 		Func<T, int, TResult> function, ListHashSet<TResult> hs)
 	{
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			List<T> result = new(length);
-			List<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (hs.TryAdd(function(item, i)))
-				{
-					result.Add(item);
-					result2.Add(item2);
-				}
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return (result, result2);
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			List<T> result = new(length);
-			List<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (hs.TryAdd(function(item, i)))
-				{
-					result.Add(item);
-					result2.Add(item2);
-				}
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
@@ -570,45 +494,7 @@ public static class RedStarLinqRemoveDoubles
 	private static (List<T>, List<T2>) RemoveDoublesInternal<T, T2>(G.IEnumerable<T> source, G.IEnumerable<T2> source2,
 		ListHashSet<T> hs)
 	{
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			List<T> result = new(length);
-			List<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (hs.TryAdd(item))
-				{
-					result.Add(item);
-					result2.Add(item2);
-				}
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return (result, result2);
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Min(array.Length, array2.Length);
-			List<T> result = new(length);
-			List<T2> result2 = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (hs.TryAdd(item))
-				{
-					result.Add(item);
-					result2.Add(item2);
-				}
-			}
-			result.TrimExcess();
-			result2.TrimExcess();
-			return (result, result2);
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);

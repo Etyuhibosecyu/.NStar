@@ -11,184 +11,10 @@ namespace NStar.MathLib;
 
 public static class RedStarLinqMath
 {
-	public static decimal Max<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Max(function(list[0]), function(list[1])),
-					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Max(function(array[0]), function(array[1])),
-					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Max(function(list2[0]), function(list2[1])),
-					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Max(function(list3[0]), function(list3[1])),
-					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
 	public static decimal Max<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -250,129 +76,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static double Max<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Max(function(list[0]), function(list[1])),
-					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Max(function(array[0]), function(array[1])),
-					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Max(function(list2[0]), function(list2[1])),
-					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Max(function(list3[0]), function(list3[1])),
-					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
 					indicator = f;
 				i++;
 			}
@@ -383,58 +86,7 @@ public static class RedStarLinqMath
 	public static double Max<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -496,129 +148,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static int Max<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Max(function(list[0]), function(list[1])),
-					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Max(function(array[0]), function(array[1])),
-					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Max(function(list2[0]), function(list2[1])),
-					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Max(function(list3[0]), function(list3[1])),
-					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
 					indicator = f;
 				i++;
 			}
@@ -629,58 +158,7 @@ public static class RedStarLinqMath
 	public static int Max<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			var indicator = 0;
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -742,129 +220,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static uint Max<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list[0]),
-					2 => Math.Max(function(list[0]), function(list[1])),
-					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0u,
-					1 => function(array[0]),
-					2 => Math.Max(function(array[0]), function(array[1])),
-					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list2[0]),
-					2 => Math.Max(function(list2[0]), function(list2[1])),
-					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list3[0]),
-					2 => Math.Max(function(list3[0]), function(list3[1])),
-					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
 					indicator = f;
 				i++;
 			}
@@ -875,58 +230,7 @@ public static class RedStarLinqMath
 	public static uint Max<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list[0], 0),
-					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0u,
-					1 => function(array[0], 0),
-					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -995,184 +299,10 @@ public static class RedStarLinqMath
 		}
 	}
 
-	public static long Max<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Max(function(list[0]), function(list[1])),
-					3 => Math.Max(Math.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Max(function(array[0]), function(array[1])),
-					3 => Math.Max(Math.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Max(function(list2[0]), function(list2[1])),
-					3 => Math.Max(Math.Max(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Max(function(list3[0]), function(list3[1])),
-					3 => Math.Max(Math.Max(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
 	public static long Max<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Max(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Max(Math.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Max(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Max(Math.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -1244,58 +374,7 @@ public static class RedStarLinqMath
 	public static MpzT Max<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => MpzT.Max(function(list[0]), function(list[1])),
-					3 => MpzT.Max(MpzT.Max(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => MpzT.Max(function(array[0]), function(array[1])),
-					3 => MpzT.Max(MpzT.Max(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -1367,58 +446,7 @@ public static class RedStarLinqMath
 	public static MpzT Max<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => MpzT.Max(function(list[0], 0), function(list[1], 1)),
-					3 => MpzT.Max(MpzT.Max(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => MpzT.Max(function(array[0], 0), function(array[1], 1)),
-					3 => MpzT.Max(MpzT.Max(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -1480,486 +508,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static decimal Max(this G.IEnumerable<decimal> source)
-	{
-		if (source is List<decimal> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Max(list[0], list[1]),
-					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is decimal[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Max(array[0], array[1]),
-					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Max(list2[0], list2[1]),
-					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static double Max(this G.IEnumerable<double> source)
-	{
-		if (source is List<double> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Max(list[0], list[1]),
-					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is double[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Max(array[0], array[1]),
-					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Max(list2[0], list2[1]),
-					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static int Max(this G.IEnumerable<int> source)
-	{
-		if (source is List<int> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Max(list[0], list[1]),
-					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is int[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Max(array[0], array[1]),
-					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Max(list2[0], list2[1]),
-					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static uint Max(this G.IEnumerable<uint> source)
-	{
-		if (source is List<uint> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => list[0],
-					2 => Math.Max(list[0], list[1]),
-					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is uint[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0u,
-					1 => array[0],
-					2 => Math.Max(array[0], array[1]),
-					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => list2[0],
-					2 => Math.Max(list2[0], list2[1]),
-					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static long Max(this G.IEnumerable<long> source)
-	{
-		if (source is List<long> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Max(list[0], list[1]),
-					3 => Math.Max(Math.Max(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is long[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Max(array[0], array[1]),
-					3 => Math.Max(Math.Max(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Max(list2[0], list2[1]),
-					3 => Math.Max(Math.Max(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "максимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) > indicator!)
 					indicator = f;
 				i++;
 			}
@@ -2161,17 +709,7 @@ public static class RedStarLinqMath
 	public static decimal Median<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2188,17 +726,7 @@ public static class RedStarLinqMath
 	public static decimal Median<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2215,17 +743,7 @@ public static class RedStarLinqMath
 	public static double Median<T>(this G.IEnumerable<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2242,17 +760,7 @@ public static class RedStarLinqMath
 	public static double Median<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2269,17 +777,7 @@ public static class RedStarLinqMath
 	public static int Median<T>(this G.IEnumerable<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2296,17 +794,7 @@ public static class RedStarLinqMath
 	public static int Median<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2323,17 +811,7 @@ public static class RedStarLinqMath
 	public static uint Median<T>(this G.IEnumerable<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2350,17 +828,7 @@ public static class RedStarLinqMath
 	public static uint Median<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2377,17 +845,7 @@ public static class RedStarLinqMath
 	public static long Median<T>(this G.IEnumerable<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2404,17 +862,7 @@ public static class RedStarLinqMath
 	public static long Median<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2431,17 +879,7 @@ public static class RedStarLinqMath
 	public static MpzT Median<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2458,17 +896,7 @@ public static class RedStarLinqMath
 	public static MpzT Median<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? 0 : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? 0 : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2557,17 +985,7 @@ public static class RedStarLinqMath
 	public static TResult? Median<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? default : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? default : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? default : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2586,17 +1004,7 @@ public static class RedStarLinqMath
 	public static TResult? Median<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			return list.Length == 0 ? default : list.ToList(function).Sort()[(list.Length - 1) / 2];
-		}
-		else if (source is T[] array)
-		{
-			var length = array.Length;
-			return array.Length == 0 ? default : array.AsSpan().ToList(function).Sort()[(array.Length - 1) / 2];
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? default : list2.ToList(function).Sort()[(list2.Count - 1) / 2];
@@ -2626,184 +1034,10 @@ public static class RedStarLinqMath
 			return Median(new List<T>(source));
 	}
 
-	public static decimal Min<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Min(function(list[0]), function(list[1])),
-					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Min(function(array[0]), function(array[1])),
-					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Min(function(list2[0]), function(list2[1])),
-					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Min(function(list3[0]), function(list3[1])),
-					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
 	public static decimal Min<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -2865,129 +1099,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static double Min<T>(this G.IEnumerable<T> source, Func<T, double> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Min(function(list[0]), function(list[1])),
-					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Min(function(array[0]), function(array[1])),
-					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Min(function(list2[0]), function(list2[1])),
-					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Min(function(list3[0]), function(list3[1])),
-					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
 					indicator = f;
 				i++;
 			}
@@ -2998,58 +1109,7 @@ public static class RedStarLinqMath
 	public static double Min<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -3111,129 +1171,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static int Min<T>(this G.IEnumerable<T> source, Func<T, int> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Min(function(list[0]), function(list[1])),
-					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Min(function(array[0]), function(array[1])),
-					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Min(function(list2[0]), function(list2[1])),
-					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Min(function(list3[0]), function(list3[1])),
-					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
 					indicator = f;
 				i++;
 			}
@@ -3244,58 +1181,7 @@ public static class RedStarLinqMath
 	public static int Min<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -3357,129 +1243,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static uint Min<T>(this G.IEnumerable<T> source, Func<T, uint> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list[0]),
-					2 => Math.Min(function(list[0]), function(list[1])),
-					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0u,
-					1 => function(array[0]),
-					2 => Math.Min(function(array[0]), function(array[1])),
-					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list2[0]),
-					2 => Math.Min(function(list2[0]), function(list2[1])),
-					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list3[0]),
-					2 => Math.Min(function(list3[0]), function(list3[1])),
-					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
 					indicator = f;
 				i++;
 			}
@@ -3490,58 +1253,7 @@ public static class RedStarLinqMath
 	public static uint Min<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => function(list[0], 0),
-					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0u,
-					1 => function(array[0], 0),
-					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -3610,184 +1322,10 @@ public static class RedStarLinqMath
 		}
 	}
 
-	public static long Min<T>(this G.IEnumerable<T> source, Func<T, long> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => Math.Min(function(list[0]), function(list[1])),
-					3 => Math.Min(Math.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => Math.Min(function(array[0]), function(array[1])),
-					3 => Math.Min(Math.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list2[0]),
-					2 => Math.Min(function(list2[0]), function(list2[1])),
-					3 => Math.Min(Math.Min(function(list2[0]), function(list2[1])), function(list2[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list3[0]),
-					2 => Math.Min(function(list3[0]), function(list3[1])),
-					3 => Math.Min(Math.Min(function(list3[0]), function(list3[1])), function(list3[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
 	public static long Min<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => Math.Min(function(list[0], 0), function(list[1], 1)),
-					3 => Math.Min(Math.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => Math.Min(function(array[0], 0), function(array[1], 1)),
-					3 => Math.Min(Math.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -3859,58 +1397,7 @@ public static class RedStarLinqMath
 	public static MpzT Min<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0]),
-					2 => MpzT.Min(function(list[0]), function(list[1])),
-					3 => MpzT.Min(MpzT.Min(function(list[0]), function(list[1])), function(list[2])),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0]),
-					2 => MpzT.Min(function(array[0]), function(array[1])),
-					3 => MpzT.Min(MpzT.Min(function(array[0]), function(array[1])), function(array[2])),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -3982,58 +1469,7 @@ public static class RedStarLinqMath
 	public static MpzT Min<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => function(list[0], 0),
-					2 => MpzT.Min(function(list[0], 0), function(list[1], 1)),
-					3 => MpzT.Min(MpzT.Min(function(list[0], 0), function(list[1], 1)), function(list[2], 2)),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => function(array[0], 0),
-					2 => MpzT.Min(function(array[0], 0), function(array[1], 1)),
-					3 => MpzT.Min(MpzT.Min(function(array[0], 0), function(array[1], 1)), function(array[2], 2)),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			MpzT indicator = 0;
-			MpzT f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -4095,486 +1531,6 @@ public static class RedStarLinqMath
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static decimal Min(this G.IEnumerable<decimal> source)
-	{
-		if (source is List<decimal> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Min(list[0], list[1]),
-					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is decimal[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Min(array[0], array[1]),
-					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<decimal> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Min(list2[0], list2[1]),
-					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			decimal indicator = 0;
-			decimal f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			decimal indicator = 0;
-			decimal f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static double Min(this G.IEnumerable<double> source)
-	{
-		if (source is List<double> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Min(list[0], list[1]),
-					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is double[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Min(array[0], array[1]),
-					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<double> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Min(list2[0], list2[1]),
-					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			double indicator = 0;
-			double f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			double indicator = 0;
-			double f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static int Min(this G.IEnumerable<int> source)
-	{
-		if (source is List<int> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Min(list[0], list[1]),
-					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is int[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Min(array[0], array[1]),
-					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<int> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Min(list2[0], list2[1]),
-					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			var indicator = 0;
-			int f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			var indicator = 0;
-			int f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static uint Min(this G.IEnumerable<uint> source)
-	{
-		if (source is List<uint> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => list[0],
-					2 => Math.Min(list[0], list[1]),
-					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is uint[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0u,
-					1 => array[0],
-					2 => Math.Min(array[0], array[1]),
-					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<uint> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0u,
-					1 => list2[0],
-					2 => Math.Min(list2[0], list2[1]),
-					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			uint indicator = 0;
-			uint f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			uint indicator = 0;
-			uint f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-				i++;
-			}
-			return indicator;
-		}
-	}
-
-	public static long Min(this G.IEnumerable<long> source)
-	{
-		if (source is List<long> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list[0],
-					2 => Math.Min(list[0], list[1]),
-					3 => Math.Min(Math.Min(list[0], list[1]), list[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is long[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 0,
-					1 => array[0],
-					2 => Math.Min(array[0], array[1]),
-					3 => Math.Min(Math.Min(array[0], array[1]), array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else if (source is G.IList<long> list2)
-		{
-			var length = list2.Count;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 0,
-					1 => list2[0],
-					2 => Math.Min(list2[0], list2[1]),
-					3 => Math.Min(Math.Min(list2[0], list2[1]), list2[2]),
-					_ => ZZZInvalidOperation(source, length, "минимум")
-				};
-			}
-			long indicator = 0;
-			long f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
-					indicator = f;
-			}
-			return indicator;
-		}
-		else
-		{
-			long indicator = 0;
-			long f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i == 0)
-					indicator = item;
-				else if ((f = item) < indicator!)
 					indicator = f;
 				i++;
 			}
@@ -4681,44 +1637,7 @@ public static class RedStarLinqMath
 	public static decimal Product<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0]),
-					2 => function(list[0]) * function(list[1]),
-					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			decimal result = 1;
-			for (var i = 0; i < length; i++)
-				result *= function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0]),
-					2 => function(array[0]) * function(array[1]),
-					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			decimal result = 1;
-			for (var i = 0; i < array.Length; i++)
-				result *= function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -4772,50 +1691,7 @@ public static class RedStarLinqMath
 	public static decimal Product<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0], 0),
-					2 => function(list[0], 0) * function(list[1], 1),
-					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			decimal result = 1;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0], 0),
-					2 => function(array[0], 0) * function(array[1], 1),
-					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			decimal result = 1;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -4875,44 +1751,7 @@ public static class RedStarLinqMath
 	public static double Product<T>(this G.IEnumerable<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0]),
-					2 => function(list[0]) * function(list[1]),
-					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			double result = 1;
-			for (var i = 0; i < length; i++)
-				result *= function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0]),
-					2 => function(array[0]) * function(array[1]),
-					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			double result = 1;
-			for (var i = 0; i < array.Length; i++)
-				result *= function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -4966,50 +1805,7 @@ public static class RedStarLinqMath
 	public static double Product<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0], 0),
-					2 => function(list[0], 0) * function(list[1], 1),
-					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			double result = 1;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0], 0),
-					2 => function(array[0], 0) * function(array[1], 1),
-					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			double result = 1;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5069,44 +1865,7 @@ public static class RedStarLinqMath
 	public static int Product<T>(this G.IEnumerable<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0]),
-					2 => function(list[0]) * function(list[1]),
-					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			var result = 1;
-			for (var i = 0; i < length; i++)
-				result *= function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0]),
-					2 => function(array[0]) * function(array[1]),
-					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			var result = 1;
-			for (var i = 0; i < array.Length; i++)
-				result *= function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5160,50 +1919,7 @@ public static class RedStarLinqMath
 	public static int Product<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0], 0),
-					2 => function(list[0], 0) * function(list[1], 1),
-					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			var result = 1;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0], 0),
-					2 => function(array[0], 0) * function(array[1], 1),
-					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			var result = 1;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5263,44 +1979,7 @@ public static class RedStarLinqMath
 	public static uint Product<T>(this G.IEnumerable<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1u,
-					1 => function(list[0]),
-					2 => function(list[0]) * function(list[1]),
-					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			uint result = 1;
-			for (var i = 0; i < length; i++)
-				result *= function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1u,
-					1 => function(array[0]),
-					2 => function(array[0]) * function(array[1]),
-					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			uint result = 1;
-			for (var i = 0; i < array.Length; i++)
-				result *= function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5354,50 +2033,7 @@ public static class RedStarLinqMath
 	public static uint Product<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1u,
-					1 => function(list[0], 0),
-					2 => function(list[0], 0) * function(list[1], 1),
-					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			uint result = 1;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1u,
-					1 => function(array[0], 0),
-					2 => function(array[0], 0) * function(array[1], 1),
-					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			uint result = 1;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5457,44 +2093,7 @@ public static class RedStarLinqMath
 	public static long Product<T>(this G.IEnumerable<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0]),
-					2 => function(list[0]) * function(list[1]),
-					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			long result = 1;
-			for (var i = 0; i < length; i++)
-				result *= function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0]),
-					2 => function(array[0]) * function(array[1]),
-					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			long result = 1;
-			for (var i = 0; i < array.Length; i++)
-				result *= function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5548,50 +2147,7 @@ public static class RedStarLinqMath
 	public static long Product<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0], 0),
-					2 => function(list[0], 0) * function(list[1], 1),
-					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			long result = 1;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0], 0),
-					2 => function(array[0], 0) * function(array[1], 1),
-					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			long result = 1;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5651,44 +2207,7 @@ public static class RedStarLinqMath
 	public static MpzT Product<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0]),
-					2 => function(list[0]) * function(list[1]),
-					3 => function(list[0]) * function(list[1]) * function(list[2]),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			MpzT result = 1;
-			for (var i = 0; i < length; i++)
-				result *= function(list[i]);
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0]),
-					2 => function(array[0]) * function(array[1]),
-					3 => function(array[0]) * function(array[1]) * function(array[2]),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			MpzT result = 1;
-			for (var i = 0; i < array.Length; i++)
-				result *= function(array[i]);
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -5742,50 +2261,7 @@ public static class RedStarLinqMath
 	public static MpzT Product<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list.Length;
-			if (length <= 3)
-			{
-				return length switch
-				{
-					0 => 1,
-					1 => function(list[0], 0),
-					2 => function(list[0], 0) * function(list[1], 1),
-					3 => function(list[0], 0) * function(list[1], 1) * function(list[2], 2),
-					_ => ZZZInvalidOperation(source, length, "произведение")
-				};
-			}
-			MpzT result = 1;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			if (array.Length <= 3)
-			{
-				return array.Length switch
-				{
-					0 => 1,
-					1 => function(array[0], 0),
-					2 => function(array[0], 0) * function(array[1], 1),
-					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
-					_ => ZZZInvalidOperation(source, array.Length, "произведение")
-				};
-			}
-			MpzT result = 1;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result *= function(item, i);
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
+		if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			if (length <= 3)
@@ -8136,316 +4612,88 @@ public static class RedStarLinqMath
 	public static decimal PMax<T>(this G.IReadOnlyList<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Max(function(source[0]), function(source[1])),
-				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static decimal PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static double PMax<T>(this G.IReadOnlyList<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Max(function(source[0]), function(source[1])),
-				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static double PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static int PMax<T>(this G.IReadOnlyList<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Max(function(source[0]), function(source[1])),
-				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static int PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static uint PMax<T>(this G.IReadOnlyList<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0u,
-				1 => function(source[0]),
-				2 => Math.Max(function(source[0]), function(source[1])),
-				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static uint PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0u,
-				1 => function(source[0], 0),
-				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static long PMax<T>(this G.IReadOnlyList<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Max(function(source[0]), function(source[1])),
-				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static long PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, length, "максимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f < indicator)
-				return;
-			lock (lockObj)
-				if (f > indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMaxInternal(source, function);
 	}
 
 	public static MpzT PMax<T>(this G.IReadOnlyList<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
+		return PMaxInternal(source, function);
+	}
+
+	public static MpzT PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		return PMaxInternal(source, function);
+	}
+
+	private static TResult PMaxInternal<T, TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function)
+		where TResult : INumber<TResult>
+	{
 		var length = source.Count;
 		if (length <= 3)
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => TResult.Zero,
 				1 => function(source[0]),
-				2 => MpzT.Max(function(source[0]), function(source[1])),
-				3 => MpzT.Max(MpzT.Max(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, length, "максимум")
+				2 => TResult.Max(function(source[0]), function(source[1])),
+				3 => TResult.Max(TResult.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => ZZZInvalidOperation(source, source.Count, "максимум")
 			};
 		}
 		var indicator = function(source[0]);
@@ -8463,19 +4711,19 @@ public static class RedStarLinqMath
 		return indicator;
 	}
 
-	public static MpzT PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, MpzT> function)
+	private static TResult PMaxInternal<T, TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function)
+		where TResult : INumber<TResult>
 	{
-		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		if (length <= 3)
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => TResult.Zero,
 				1 => function(source[0], 0),
-				2 => MpzT.Max(function(source[0], 0), function(source[1], 1)),
-				3 => MpzT.Max(MpzT.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, length, "максимум")
+				2 => TResult.Max(function(source[0], 0), function(source[1], 1)),
+				3 => TResult.Max(TResult.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => ZZZInvalidOperation(source, source.Count, "максимум")
 			};
 		}
 		var indicator = function(source[0], 0);
@@ -8496,315 +4744,87 @@ public static class RedStarLinqMath
 	public static decimal PMin<T>(this G.IReadOnlyList<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Min(function(source[0]), function(source[1])),
-				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static decimal PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static double PMin<T>(this G.IReadOnlyList<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Min(function(source[0]), function(source[1])),
-				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static double PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static int PMin<T>(this G.IReadOnlyList<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Min(function(source[0]), function(source[1])),
-				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static int PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static uint PMin<T>(this G.IReadOnlyList<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0u,
-				1 => function(source[0]),
-				2 => Math.Min(function(source[0]), function(source[1])),
-				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static uint PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0u,
-				1 => function(source[0], 0),
-				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static long PMin<T>(this G.IReadOnlyList<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0]),
-				2 => Math.Min(function(source[0]), function(source[1])),
-				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0]);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static long PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Count;
-		if (length <= 3)
-		{
-			return length switch
-			{
-				0 => 0,
-				1 => function(source[0], 0),
-				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
-				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
-				_ => ZZZInvalidOperation(source, source.Count, "минимум")
-			};
-		}
-		var indicator = function(source[0], 0);
-		object lockObj = new();
-		Parallel.For(1, source.Count, i =>
-		{
-			var item = source[i];
-			var f = function(item, i);
-			if (f > indicator)
-				return;
-			lock (lockObj)
-				if (f < indicator)
-					indicator = f;
-		});
-		return indicator;
+		return PMinInternal(source, function);
 	}
 
 	public static MpzT PMin<T>(this G.IReadOnlyList<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
+		return PMinInternal(source, function);
+	}
+
+	public static MpzT PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		return PMinInternal(source, function);
+	}
+
+	private static TResult PMinInternal<T, TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function)
+		where TResult : INumber<TResult>
+	{
 		var length = source.Count;
 		if (length <= 3)
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => TResult.Zero,
 				1 => function(source[0]),
-				2 => MpzT.Min(function(source[0]), function(source[1])),
-				3 => MpzT.Min(MpzT.Min(function(source[0]), function(source[1])), function(source[2])),
+				2 => TResult.Min(function(source[0]), function(source[1])),
+				3 => TResult.Min(TResult.Min(function(source[0]), function(source[1])), function(source[2])),
 				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
@@ -8823,18 +4843,18 @@ public static class RedStarLinqMath
 		return indicator;
 	}
 
-	public static MpzT PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, MpzT> function)
+	private static TResult PMinInternal<T, TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function)
+		where TResult : INumber<TResult>
 	{
-		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		if (length <= 3)
 		{
 			return length switch
 			{
-				0 => 0,
+				0 => TResult.Zero,
 				1 => function(source[0], 0),
-				2 => MpzT.Min(function(source[0], 0), function(source[1], 1)),
-				3 => MpzT.Min(MpzT.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				2 => TResult.Min(function(source[0], 0), function(source[1], 1)),
+				3 => TResult.Min(TResult.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
 				_ => ZZZInvalidOperation(source, source.Count, "минимум")
 			};
 		}
@@ -8885,6 +4905,32 @@ public static class RedStarLinqMath
 
 	public static TResult? Max<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> selector) => E.Max(source, selector);
 	public static T? Max<T>(this G.IEnumerable<T> source) => E.Max(source);
+	public static decimal Max(decimal x) => x;
+	public static decimal Max(decimal x, decimal y) => x > y ? x : y;
+	public static decimal Max(decimal x, decimal y, decimal z) => Max(Max(x, y), z);
+	public static decimal Max<T>(this G.IEnumerable<T> source, Func<T, decimal> function) => !E.Any(source) ? 0 : E.Max(source, function);
+	public static decimal Max(this G.IEnumerable<decimal> source) => !E.Any(source) ? 0 : E.Max(source);
+	public static double Max(double x) => x;
+	public static double Max(double x, double y) => x > y ? x : y;
+	public static double Max(double x, double y, double z) => Max(Max(x, y), z);
+	public static double Max<T>(this G.IEnumerable<T> source, Func<T, double> function) => !E.Any(source) ? 0 : E.Max(source, function);
+	public static double Max(this G.IEnumerable<double> source) => !E.Any(source) ? 0 : E.Max(source);
+	public static int Max(int x) => x;
+	public static int Max(int x, int y) => x > y ? x : y;
+	public static int Max(int x, int y, int z) => Max(Max(x, y), z);
+	public static int Max<T>(this G.IEnumerable<T> source, Func<T, int> function) => !E.Any(source) ? 0 : E.Max(source, function);
+	public static int Max(this G.IEnumerable<int> source) => !E.Any(source) ? 0 : E.Max(source);
+	public static uint Max(uint x) => x;
+	public static uint Max(uint x, uint y) => x > y ? x : y;
+	public static uint Max(uint x, uint y, uint z) => Max(Max(x, y), z);
+	public static uint Max<T>(this G.IEnumerable<T> source, Func<T, uint> function) => !E.Any(source) ? 0 : E.Max(source, function);
+	public static uint Max(this G.IEnumerable<uint> source) => !E.Any(source) ? 0 : E.Max(source);
+	public static long Max(long x) => x;
+	public static long Max(long x, long y) => x > y ? x : y;
+	public static long Max(long x, long y, long z) => Max(Max(x, y), z);
+	public static long Max<T>(this G.IEnumerable<T> source, Func<T, long> function) => !E.Any(source) ? 0 : E.Max(source, function);
+	public static long Max(this G.IEnumerable<long> source) => !E.Any(source) ? 0 : E.Max(source);
+	public static MpzT Max(MpzT x) => x;
 	public static MpzT Max(MpzT x, MpzT y) => x > y ? x : y;
 	public static MpzT Max(MpzT x, MpzT y, MpzT z) => Max(Max(x, y), z);
 	public static decimal Max(params decimal[] source) => Max(source.AsSpan());
@@ -8910,6 +4956,32 @@ public static class RedStarLinqMath
 	public static MpzT Median(params MpzT[] source) => Median(source.AsSpan());
 	public static TResult? Min<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> selector) => E.Min(source, selector);
 	public static T? Min<T>(this G.IEnumerable<T> source) => E.Min(source);
+	public static decimal Min(decimal x) => x;
+	public static decimal Min(decimal x, decimal y) => x < y ? x : y;
+	public static decimal Min(decimal x, decimal y, decimal z) => Min(Min(x, y), z);
+	public static decimal Min<T>(this G.IEnumerable<T> source, Func<T, decimal> function) => !E.Any(source) ? 0 : E.Min(source, function);
+	public static decimal Min(this G.IEnumerable<decimal> source) => !E.Any(source) ? 0 : E.Min(source);
+	public static double Min(double x) => x;
+	public static double Min(double x, double y) => x < y ? x : y;
+	public static double Min(double x, double y, double z) => Min(Min(x, y), z);
+	public static double Min<T>(this G.IEnumerable<T> source, Func<T, double> function) => !E.Any(source) ? 0 : E.Min(source, function);
+	public static double Min(this G.IEnumerable<double> source) => !E.Any(source) ? 0 : E.Min(source);
+	public static int Min(int x) => x;
+	public static int Min(int x, int y) => x < y ? x : y;
+	public static int Min(int x, int y, int z) => Min(Min(x, y), z);
+	public static int Min<T>(this G.IEnumerable<T> source, Func<T, int> function) => !E.Any(source) ? 0 : E.Min(source, function);
+	public static int Min(this G.IEnumerable<int> source) => !E.Any(source) ? 0 : E.Min(source);
+	public static uint Min(uint x) => x;
+	public static uint Min(uint x, uint y) => x < y ? x : y;
+	public static uint Min(uint x, uint y, uint z) => Min(Min(x, y), z);
+	public static uint Min<T>(this G.IEnumerable<T> source, Func<T, uint> function) => !E.Any(source) ? 0 : E.Min(source, function);
+	public static uint Min(this G.IEnumerable<uint> source) => !E.Any(source) ? 0 : E.Min(source);
+	public static long Min(long x) => x;
+	public static long Min(long x, long y) => x < y ? x : y;
+	public static long Min(long x, long y, long z) => Min(Min(x, y), z);
+	public static long Min<T>(this G.IEnumerable<T> source, Func<T, long> function) => !E.Any(source) ? 0 : E.Min(source, function);
+	public static long Min(this G.IEnumerable<long> source) => !E.Any(source) ? 0 : E.Min(source);
+	public static MpzT Min(MpzT x) => x;
 	public static MpzT Min(MpzT x, MpzT y) => x < y ? x : y;
 	public static MpzT Min(MpzT x, MpzT y, MpzT z) => Min(Min(x, y), z);
 	public static decimal Min(params decimal[] source) => Min(source.AsSpan());

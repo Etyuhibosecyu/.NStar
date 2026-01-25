@@ -263,32 +263,7 @@ public static class RedStarLinq
 	public static bool Equals<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Min(list.Length, list2.Length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (!function(item, item2))
-					return false;
-			}
-			return list.Length == list2.Length;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			if (array.Length != array2.Length)
-				return false;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (!function(item, item2))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			if (list2_.Count != list2_2.Count)
 				return false;
@@ -335,34 +310,7 @@ public static class RedStarLinq
 
 	public static bool Equals<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2)
 	{
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			if (list.Length != list2.Length)
-				return false;
-			var length = list.Length;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				var item2 = list2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
-					return false;
-			}
-			return true;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			if (array.Length != array2.Length)
-				return false;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
-					return false;
-			}
-			return true;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			if (list2_.Count != list2_2.Count)
 				return false;

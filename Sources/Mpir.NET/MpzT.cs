@@ -1324,6 +1324,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 				ulong uli => uli,
 				float f => (MpzT)f,
 				double d => (MpzT)d,
+				decimal m => (MpzT)(double)m,
+				BigInteger ll => new(ll),
 				string s => new(s),
 				_ => throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, string."),
