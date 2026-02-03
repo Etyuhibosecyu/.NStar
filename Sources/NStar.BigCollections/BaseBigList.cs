@@ -297,7 +297,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	protected bool EqualItems(MpzT index, T listItem) => GetInternal(index)?.Equals(listItem) ?? listItem == null;
+	protected bool EqualItems(MpzT index, T listItem) => GetInternal(index)?.Equals(listItem) ?? listItem is null;
 
 	public virtual bool Equals(G.IEnumerable<T>? collection) =>
 		ReferenceEquals(this, collection) || EqualsInternal(collection, 0, true);
@@ -407,8 +407,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		if (length == 0)
 			return CapacityCreator(0);
-		else if (!alwaysCopy && index == 0 && length == Length && this is TCertain thisList)
-			return thisList;
+		else if (!alwaysCopy && index == 0 && length == Length)
+			return (TCertain)this;
 		var list = CapacityCreator(length);
 		GetRangeCopyTo(index, length, list);
 		list.Length = length;

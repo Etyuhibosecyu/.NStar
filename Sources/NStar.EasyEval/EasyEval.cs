@@ -112,7 +112,7 @@ public static void Main()
 
 	public static void Execute(byte[]? compiledAssembly, string[] args)
 	{
-		if (compiledAssembly == null)
+		if (compiledAssembly is null)
 			return;
 		LoadAndExecute(compiledAssembly, args);
 	}
@@ -122,7 +122,7 @@ public static void Main()
 	{
 		var assembly = GetAssembly(compiledAssembly);
 		var entry = assembly?.EntryPoint;
-		if (entry == null)
+		if (entry is null)
 			return;
 		else if (entry.GetParameters().Length == 0)
 			entry.Invoke(null, null);
@@ -132,7 +132,7 @@ public static void Main()
 
 	public static Assembly? GetAssembly(byte[]? compiledAssembly)
 	{
-		if (compiledAssembly == null)
+		if (compiledAssembly is null)
 			return null;
 		using var asm = new MemoryStream(compiledAssembly);
 		var assemblyLoadContext = new SimpleUnloadableAssemblyLoadContext();

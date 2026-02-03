@@ -27,13 +27,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	private protected int freeCount;
 	private protected int freeList;
 
-	public FastDelHashSet() : this(0, (G.IEqualityComparer<T>?)null) { }
+	protected FastDelHashSet() : this(0, (G.IEqualityComparer<T>?)null) { }
 
-	public FastDelHashSet(int capacity) : this(capacity, (G.IEqualityComparer<T>?)null) { }
+	protected FastDelHashSet(int capacity) : this(capacity, (G.IEqualityComparer<T>?)null) { }
 
-	public FastDelHashSet(G.IEqualityComparer<T>? comparer) : this(0, comparer) { }
+	protected FastDelHashSet(G.IEqualityComparer<T>? comparer) : this(0, comparer) { }
 
-	public FastDelHashSet(int capacity, G.IEqualityComparer<T>? comparer)
+	protected FastDelHashSet(int capacity, G.IEqualityComparer<T>? comparer)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
@@ -46,31 +46,33 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		Comparer = comparer ?? G.EqualityComparer<T>.Default;
 	}
 
-	public FastDelHashSet(G.IEnumerable<T> collection) : this(collection, null) { }
+	protected FastDelHashSet(G.IEnumerable<T> collection) : this(collection, null) { }
 
-	public FastDelHashSet(G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer) : this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	protected FastDelHashSet(G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer)
+		: this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
 
-	public FastDelHashSet(int capacity, G.IEnumerable<T> collection) : this(capacity, collection, null) { }
+	protected FastDelHashSet(int capacity, G.IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public FastDelHashSet(int capacity, G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	protected FastDelHashSet(int capacity, G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer)
+		: this(capacity, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
 
-	public FastDelHashSet(params T[] array) : this((G.IEnumerable<T>)array) { }
+	protected FastDelHashSet(params T[] array) : this((G.IEnumerable<T>)array) { }
 
-	public FastDelHashSet(int capacity, params T[] array) : this(capacity, (G.IEnumerable<T>)array) { }
+	protected FastDelHashSet(int capacity, params T[] array) : this(capacity, (G.IEnumerable<T>)array) { }
 
-	public FastDelHashSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
+	protected FastDelHashSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
-	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
+	protected FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = false]
 	{
@@ -111,7 +113,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].hashCode < 0 && (entries[index2].item?.Equals(value) ?? value == null))
+			if (entries[index2].hashCode < 0 && (entries[index2].item?.Equals(value) ?? value is null))
 				return;
 			if (Contains(value))
 				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
@@ -154,20 +156,20 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		GC.SuppressFinalize(this);
 	}
 
-	protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd)
+	protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _size - list.Count);
 		for (var i = 0; i < list.Count; i++)
 		{
 			while (index < _size && entries[index].hashCode >= 0)
 				index++;
-			if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
+			if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
 				return false;
 		}
 		return !toEnd || index == _size;
 	}
 
-	protected override bool EqualsToNonList(G.IEnumerable<T> collection, int index, bool toEnd)
+	protected override bool EqualsToNonList(G.IEnumerable<T> collection, int index, bool toEnd = false)
 	{
 		if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -175,7 +177,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		{
 			while (index < _size && entries[index].hashCode >= 0)
 				index++;
-			if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
+			if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item is null))
 				return false;
 		}
 		return !toEnd || index == _size;
@@ -237,11 +239,11 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			Initialize(0, out buckets, out entries);
-		if (buckets == null)
+		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
@@ -275,7 +277,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public override TCertain RemoveAt(int index)
 	{
-		if (buckets == null || entries == null)
+		if (buckets is null || entries is null)
 			return (TCertain)this;
 		if (entries[index].hashCode >= 0)
 			return (TCertain)this;
@@ -287,18 +289,17 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		return (TCertain)this;
 	}
 
-	protected override TCertain RemoveInternal(int index, int length)
+	protected override void RemoveInternal(int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
 			RemoveAt(i);
-		return (TCertain)this;
 	}
 
 	public override bool RemoveValue(T? item)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			return false;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		return RemoveValueCommon(item, hashCode, (ref Entry t, int i) =>
@@ -309,13 +310,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		});
 	}
 
-	protected override void SetInternal(int index, T item)
+	protected override void SetInternal(int index, T value)
 	{
 		if (entries[index].hashCode < 0)
 			RemoveAt(index);
-		if (item == null)
+		if (value is null)
 			return;
-		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var hashCode = Comparer.GetHashCode(value) & 0x7FFFFFFF;
 		var targetBucket = hashCode % buckets.Length;
 		uint collisionCount = 0;
 		var last = -1;
@@ -350,10 +351,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
-		t.item = item;
+		t.item = value;
 		buckets[targetBucket] = ~index;
-		Changed();
-		Debug.Assert(IsValidIndex(index) && (entries[index].item?.Equals(item) ?? item == null));
+		Debug.Assert(IsValidIndex(index) && (entries[index].item?.Equals(value) ?? value is null));
 	}
 
 	public new struct Enumerator : G.IEnumerator<T>
@@ -518,14 +518,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			freeList = 0;
 			_size = 0;
 			freeCount = 0;
-			Changed();
 		}
 	}
 
 	protected override void ClearInternal(int index, int length)
 	{
 		Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));
-		Changed();
 	}
 
 	public override bool Contains(T? item, int index, int length) => UnsafeContains(item, index, length) || Lock(lockObj, () => UnsafeContains(item, index, length));
@@ -559,6 +557,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		else
 			foreach (var item in other)
 				RemoveValue(item);
+		Changed();
 		return this;
 	}
 
@@ -583,7 +582,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	{
 		lock (lockObj)
 		{
-			if (this.buckets == null)
+			if (this.buckets is null)
 				base.Initialize(capacity, out buckets, out entries);
 			else
 			{
@@ -595,9 +594,9 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> Insert(int index, T item)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			Initialize(0, out buckets, out entries);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -619,18 +618,18 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> Insert(int index, ReadOnlySpan<T> span)
 	{
-		lock(lockObj)
+		lock (lockObj)
 			base.Insert(index, span);
 		return this;
 	}
 
 	protected override ParallelHashSet<T> Insert(T? item, out int index, int hashCode)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			Initialize(0, out buckets, out entries);
-		if (buckets == null)
+		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		uint collisionCount = 0;
@@ -717,21 +716,21 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		{
 			UnsafeRemoveAt(index);
 			Debug.Assert(entries[index].hashCode >= 0);
+			Changed();
 		}
 		return this;
 	}
 
-	protected override ParallelHashSet<T> RemoveInternal(int index, int length)
+	protected override void RemoveInternal(int index, int length)
 	{
 		Parallel.For(index, index + length, i => RemoveAt(i));
-		return this;
 	}
 
 	public override bool RemoveValue(T? item)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			return false;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var index = UnsafeIndexOf(item, 0, _size, hashCode);
@@ -807,7 +806,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override bool TryAdd(T item, out int index)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		index = UnsafeIndexOf(item, 0, _size, hashCode);
@@ -818,6 +817,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			UnsafeTryAdd(item, out index, hashCode);
 			Debug.Assert(Contains(item));
 		}
+		Changed();
 		return true;
 	}
 
@@ -853,7 +853,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
 	/// в хэш-множество.
 	/// </summary>
-	public virtual bool UnsafeContains(T? item, int index, int length) => item != null && UnsafeIndexOf(item, index, length) >= 0;
+	public virtual bool UnsafeContains(T? item, int index, int length) => item is not null && UnsafeIndexOf(item, index, length) >= 0;
 
 	/// <summary>
 	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
@@ -877,12 +877,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
 	/// в хэш-множество.
 	/// </summary>
-	public virtual int UnsafeIndexOf(T item, int index, int length) => item != null ? UnsafeIndexOf(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
+	public virtual int UnsafeIndexOf(T item, int index, int length) => item is not null ? UnsafeIndexOf(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
 
 	protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
 	{
 		var buckets = this.buckets;
-		if (buckets == null)
+		if (buckets is null)
 			return -1;
 		uint collisionCount = 0;
 		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
@@ -902,11 +902,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	protected virtual ParallelHashSet<T> UnsafeInsert(T? item, out int index, int hashCode)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			Initialize(0, out buckets, out entries);
-		if (buckets == null)
+		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		var targetBucket = hashCode % buckets.Length;
@@ -931,13 +931,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
-		Changed();
 		return this;
 	}
 
 	protected virtual ParallelHashSet<T> UnsafeRemoveAt(int index)
 	{
-		if (buckets == null || entries == null)
+		if (buckets is null || entries is null)
 			return this;
 		if (entries[index].hashCode >= 0)
 			return this;

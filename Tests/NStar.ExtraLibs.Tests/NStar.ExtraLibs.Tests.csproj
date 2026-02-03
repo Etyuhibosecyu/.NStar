@@ -15,8 +15,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-	<PackageReference Include="MSTest" Version="3.10.4" />
+	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+	<PackageReference Include="MSTest" Version="4.1.0" />
 	<ProjectReference Include="..\NStar.Core.Tests\NStar.Core.Tests.csproj" />
 	<ProjectReference Include="..\..\Sources\NStar.ExtraReplacing\NStar.ExtraReplacing.csproj" />
 	<ProjectReference Include="..\..\Sources\NStar.Linq\NStar.Linq.csproj" />

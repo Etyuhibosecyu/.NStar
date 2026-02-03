@@ -60,7 +60,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	/// <returns><c>true</c> if the entire tree has been walked; otherwise, <c>false</c>.</returns>
 	internal virtual bool BreadthFirstTreeWalk(BaseSumWalkPredicate<T, TCertain> action)
 	{
-		if (root == null)
+		if (root is null)
 			return true;
 		using Queue<Node> processQueue = [];
 		processQueue.Enqueue(root);
@@ -70,15 +70,15 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			current = processQueue.Dequeue();
 			if (!action(current))
 				return false;
-			if (current.Left != null)
+			if (current.Left is not null)
 				processQueue.Enqueue(current.Left);
-			if (current.Right != null)
+			if (current.Right is not null)
 				processQueue.Enqueue(current.Right);
 		}
 		return true;
 	}
 
-	public override void Clear(bool _)
+	public override void Clear(bool deep)
 	{
 		root?.Dispose();
 		root = null;
@@ -114,21 +114,21 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			return null;
 			case 1:
 			root = NodeCreator(arr[startIndex], NodeColor.Black);
-			if (redNode != null)
+			if (redNode is not null)
 				root.Left = redNode;
 			break;
 			case 2:
 			root = NodeCreator(arr[startIndex], NodeColor.Black);
 			root.Right = NodeCreator(arr[endIndex], NodeColor.Black);
 			root.Right.ColorRed();
-			if (redNode != null)
+			if (redNode is not null)
 				root.Left = redNode;
 			break;
 			case 3:
 			root = NodeCreator(arr[startIndex + 1], NodeColor.Black);
 			root.Left = NodeCreator(arr[startIndex], NodeColor.Black);
 			root.Right = NodeCreator(arr[endIndex], NodeColor.Black);
-			if (redNode != null)
+			if (redNode is not null)
 				root.Left.Left = redNode;
 			break;
 			default:
@@ -158,6 +158,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		root = null;
 		_size = 0;
 		version = 0;
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
@@ -180,17 +181,17 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		match = null;
 		parentOfMatch = null;
 		var foundMatch = false;
-		while (current != null)
+		while (current is not null)
 		{
 			if (current.Is2Node)
 			{
 				// Fix up 2-node
-				if (parent == null)
+				if (parent is null)
 					current.ColorRed();
-				else if (parent.Left != null && parent.Right != null)
+				else if (parent.Left is not null && parent.Right is not null)
 				{
 					var sibling = parent.GetSibling(current);
-					Debug.Assert(sibling != null, "parent must have two children");
+					Debug.Assert(sibling is not null, "parent must have two children");
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -240,7 +241,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 				parentOfMatch = grandParent;
 				current = current.Right;
 			}
-			else if (current.Left == null)
+			else if (current.Left is null)
 			{
 				index--;
 				current = current.Right;
@@ -258,11 +259,11 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	internal virtual Node? FindNode(int index)
 	{
 		var current = root;
-		while (current != null)
+		while (current is not null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 				return current;
-			else if (current.Left == null)
+			else if (current.Left is null)
 			{
 				index--;
 				current = current.Right;
@@ -283,7 +284,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	internal virtual Node? FindRange(int from, int to, bool lowerBoundActive, bool upperBoundActive)
 	{
 		var current = root;
-		while (current != null)
+		while (current is not null)
 		{
 			if (lowerBoundActive && Comparer.Compare(from, current.Left?.LeavesCount ?? 0) > 0)
 			{
@@ -302,12 +303,12 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	public override T GetAndRemove(Index index)
 	{
 		var index2 = index.GetOffset(_size);
-		if (root == null)
+		if (root is null)
 			return default!;
 		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		T found = default!;
 		// Move successor to the matching node position and replace links.
-		if (match != null)
+		if (match is not null)
 		{
 			found = match.Value;
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
@@ -341,16 +342,16 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	/// <returns><c>true</c> if the entire tree has been walked; otherwise, <c>false</c>.</returns>
 	internal virtual bool InOrderTreeWalk(BaseSumWalkPredicate<T, TCertain> action)
 	{
-		if (root == null)
+		if (root is null)
 			return true;
 		// The maximum height of a red-black tree is 2 * log2(n+1).
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
 		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
-		Debug.Assert(stack != null);
+		Debug.Assert(stack is not null);
 		var current = root;
-		while (current != null)
+		while (current is not null)
 		{
 			stack.Push(current);
 			current = current.Left;
@@ -361,7 +362,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			if (!action(current))
 				return false;
 			var node = current.Right;
-			while (node != null)
+			while (node is not null)
 			{
 				stack.Push(node);
 				node = node.Left;
@@ -376,7 +377,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		var this2 = (TCertain)this;
 		if (value == T.Zero)
 			return this2;
-		if (root == null)
+		if (root is null)
 		{
 			// The tree is empty and this is the first value.
 			root = NodeCreator(value, NodeColor.Black);
@@ -398,7 +399,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		var oldIndex = index;
 		var order = 0;
 		var foundMatch = false;
-		while (current != null)
+		while (current is not null)
 		{
 			order = foundMatch ? 1 : Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
 			if (order == 0)
@@ -437,7 +438,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 #endif
-		Debug.Assert(parent != null);
+		Debug.Assert(parent is not null);
 		// We're ready to insert the new node.
 		var node = NodeCreator(value, NodeColor.Red);
 		if (order <= 0)
@@ -461,18 +462,16 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, G.IEnumerable<T> collection)
+	protected override void InsertInternal(int index, G.IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 			Insert(index++, item);
-		return (TCertain)this;
 	}
 
-	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		for (var i = 0; i < span.Length; i++)
 			Insert(index++, span[i]);
-		return (TCertain)this;
 	}
 
 	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
@@ -481,8 +480,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	// By the time we need to split again, everything will be correctly set.
 	private protected void InsertionBalance(Node current, ref Node parent, Node grandParent, Node greatGrandParent)
 	{
-		Debug.Assert(parent != null);
-		Debug.Assert(grandParent != null);
+		Debug.Assert(parent is not null);
+		Debug.Assert(grandParent is not null);
 		var parentIsOnRight = grandParent.Right == parent;
 		var currentIsOnRight = parent.Right == current;
 		Node newChildOfGreatGrandParent;
@@ -518,11 +517,11 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	public override TCertain RemoveAt(int index)
 	{
 		var this2 = (TCertain)this;
-		if (root == null)
+		if (root is null)
 			return this2;
 		FindForRemove(index, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		// Move successor to the matching node position and replace links.
-		if (match != null)
+		if (match is not null)
 		{
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
@@ -547,7 +546,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	/// <param name="newChild">The node to replace <paramref name="child"/> with.</param>
 	private protected void ReplaceChildOrRoot(Node? parent, Node child, Node newChild)
 	{
-		if (parent != null)
+		if (parent is not null)
 			parent.ReplaceChild(child, newChild);
 		else
 		{
@@ -561,18 +560,18 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	/// </summary>
 	private protected void ReplaceNode(Node match, Node parentOfMatch, Node successor, Node parentOfSuccessor)
 	{
-		Debug.Assert(match != null);
+		Debug.Assert(match is not null);
 		if (successor == match)
 		{
-			// This node has no successor. This can only happen if the right child of the match == null.
-			Debug.Assert(match.Right == null);
+			// This node has no successor. This can only happen if the right child of the match is null.
+			Debug.Assert(match.Right is null);
 			successor = match.Left!;
 		}
 		else
 		{
-			Debug.Assert(parentOfSuccessor != null);
-			Debug.Assert(successor.Left == null);
-			Debug.Assert(successor.Right == null ? successor.IsRed : successor.Right.IsRed && successor.IsBlack);
+			Debug.Assert(parentOfSuccessor is not null);
+			Debug.Assert(successor.Left is null);
+			Debug.Assert(successor.Right is null ? successor.IsRed : successor.Right.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -598,7 +597,6 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		if (newSize > _size)
 		{
 			AddRange(RedStarLinq.FillArray(T.One, newSize - _size));
-			Changed();
 			return (TCertain)this;
 		}
 		else
@@ -610,9 +608,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		using List<Node> nodes = [];
 		var i = 0;
 		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
-		Debug.Assert(stack != null);
+		Debug.Assert(stack is not null);
 		var current = root;
-		while (current != null)
+		while (current is not null)
 		{
 			stack.Push(current);
 			current = current.Left;
@@ -625,7 +623,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			if (i >= index + length)
 				break;
 			var node = current.Right;
-			while (node != null)
+			while (node is not null)
 			{
 				stack.Push(node);
 				node = node.Left;
@@ -650,13 +648,14 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			return true;
 		}
 		var node = FindNode(index);
-		if (node != null)
+		if (node is not null)
 		{
 			node.Update(value);
 #if VERIFY
 			foreach (var x in new[] { node, root })
 				x?.Verify();
 #endif
+			Changed();
 			return true;
 		}
 		else
@@ -666,7 +665,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	public virtual T UpdateIfGreater(int index, T value)
 	{
 		var node = FindNode(index);
-		if (node != null)
+		if (node is not null)
 		{
 			if ((dynamic?)value <= 0)
 				return node.Value;
@@ -676,6 +675,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			foreach (var x in new[] { node, root })
 				x?.Verify();
 #endif
+			Changed();
 			return node.Value;
 		}
 		else
@@ -718,7 +718,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			{
 				if (_left == value)
 					return;
-				if (_left != null && _left.Parent != value)
+				if (_left is not null && _left.Parent != value)
 					_left.Parent = null;
 				LeavesCount += (value?.LeavesCount ?? 0) - (_left?.LeavesCount ?? 0);
 				UpdateValuesSum(value, _left);
@@ -738,7 +738,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			{
 				if (_right == value)
 					return;
-				if (_right != null && _right.Parent != value)
+				if (_right is not null && _right.Parent != value)
 					_right.Parent = null;
 				LeavesCount += (value?.LeavesCount ?? 0) - (_right?.LeavesCount ?? 0);
 				UpdateValuesSum(value, _right);
@@ -756,10 +756,10 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			get => _leavesCount;
 			set
 			{
-				if (Parent != null)
+				if (Parent is not null)
 					Parent.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
-				if (Parent == null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+				if (Parent is null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -831,22 +831,22 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		/// </summary>
 		internal virtual Node GetSibling(Node node)
 		{
-			Debug.Assert(node != null);
+			Debug.Assert(node is not null);
 			Debug.Assert(node == Left ^ node == Right);
 			return node == Left ? Right! : Left!;
 		}
 
-		internal static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+		internal static bool IsNonNullBlack(Node? node) => node is not null && node.IsBlack;
 
-		internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+		internal static bool IsNonNullRed(Node? node) => node is not null && node.IsRed;
 
-		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+		internal static bool IsNullOrBlack(Node? node) => node is null || node.IsBlack;
 
 		internal virtual void Isolate()
 		{
-			if (Parent != null && Parent.Left == this)
+			if (Parent is not null && Parent.Left == this)
 				Parent.Left = null;
-			if (Parent != null && Parent.Right == this)
+			if (Parent is not null && Parent.Right == this)
 				Parent.Right = null;
 		}
 
@@ -925,12 +925,12 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		{
 			var child = Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+			var isRight = parent is not null && (parent.Right == this || (parent.Left == this ? false
 				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = child.Left;
 			child.Left = this;
-			if (parent != null)
+			if (parent is not null)
 			{
 				if (isRight)
 					parent.Right = child;
@@ -953,14 +953,14 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			var child = Left!;
 			var grandChild = child.Right!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+			var isRight = parent is not null && (parent.Right == this || (parent.Left == this ? false
 				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
 			grandChild.Left = child;
-			if (parent != null)
+			if (parent is not null)
 			{
 				if (isRight)
 					parent.Right = grandChild;
@@ -982,12 +982,12 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		{
 			var child = Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+			var isRight = parent is not null && (parent.Right == this || (parent.Left == this ? false
 				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Left = child.Right;
 			child.Right = this;
-			if (parent != null)
+			if (parent is not null)
 			{
 				if (isRight)
 					parent.Right = child;
@@ -1010,14 +1010,14 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			var child = Right!;
 			var grandChild = child.Left!;
 			var parent = Parent;
-			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false
+			var isRight = parent is not null && (parent.Right == this || (parent.Left == this ? false
 				: throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.")));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
 			grandChild.Right = child;
-			if (parent != null)
+			if (parent is not null)
 			{
 				if (isRight)
 					parent.Right = grandChild;
@@ -1036,8 +1036,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 		internal virtual void Split4Node()
 		{
-			Debug.Assert(Left != null);
-			Debug.Assert(Right != null);
+			Debug.Assert(Left is not null);
+			Debug.Assert(Right is not null);
 			ColorRed();
 			Left.ColorBlack();
 			Right.ColorBlack();
@@ -1061,16 +1061,16 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 		internal virtual void Verify()
 		{
-			if (Right != null && Right == Left)
+			if (Right is not null && Right == Left)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			if (LeavesCount != (Left?.LeavesCount ?? 0) + (Right?.LeavesCount ?? 0) + 1)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
-			if (Left != null && Left.Parent == null)
+			if (Left is not null && Left.Parent is null)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
-			if (Right != null && Right.Parent == null)
+			if (Right is not null && Right.Parent is null)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}

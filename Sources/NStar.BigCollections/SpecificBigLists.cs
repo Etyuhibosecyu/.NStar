@@ -60,8 +60,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		Length = length;
 		AddCapacity(Length - _capacity);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -69,7 +69,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	public BigBitList(BitArray bitArray, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(subbranchesBitLength, leafSizeBitLength)
 	{
-		if (bitArray == null)
+		if (bitArray is null)
 			throw new ArgumentNullException(nameof(bitArray));
 		else
 		{
@@ -77,8 +77,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			ConstructFromBitList(bitList);
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -86,7 +86,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	public BigBitList(G.IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(subbranchesBitLength, leafSizeBitLength)
 	{
-		if (bytes == null)
+		if (bytes is null)
 			throw new ArgumentNullException(nameof(bytes));
 		else if (bytes is byte[] byteArray && byteArray.Length <= int.MaxValue / BitsPerByte)
 		{
@@ -114,8 +114,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			ConstructFromUIntList(values, n % BytesPerInt * BitsPerByte);
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -123,14 +123,14 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	public BigBitList(G.IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(subbranchesBitLength, leafSizeBitLength)
 	{
-		if (bools == null)
+		if (bools is null)
 			throw new ArgumentNullException(nameof(bools));
 		else if (bools is BigBitList bigBitList)
 		{
 			ConstructFromCapacity(bigBitList.Length);
-			if (bigBitList.low != null)
+			if (bigBitList.low is not null)
 				ConstructFromBitList(bigBitList.low);
-			else if (bigBitList.high != null)
+			else if (bigBitList.high is not null)
 				bigBitList.CopyToInternal(0, this, 0, bigBitList.Length);
 		}
 		else if (bools is BitList bitList)
@@ -149,8 +149,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 				Add(en.Current);
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -158,7 +158,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	public BigBitList(G.IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(subbranchesBitLength, leafSizeBitLength)
 	{
-		if (ints == null)
+		if (ints is null)
 			throw new ArgumentNullException(nameof(ints));
 		else if (ints is int[] intArray && intArray.Length <= int.MaxValue / BitsPerInt)
 		{
@@ -171,8 +171,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			ConstructFromUIntList(list);
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -180,7 +180,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	public BigBitList(G.IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(subbranchesBitLength, leafSizeBitLength)
 	{
-		if (uints == null)
+		if (uints is null)
 			throw new ArgumentNullException(nameof(uints));
 		else if (uints is BigList<uint> bigUIntList)
 			ConstructFromUIntList(bigUIntList);
@@ -196,8 +196,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -211,8 +211,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -228,8 +228,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -277,9 +277,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (Length != value.Length)
 			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.",
 				nameof(value));
-		if (low != null && value.low != null)
+		if (low is not null && value.low is not null)
 			low.And(value.low);
-		else if (high != null && value.high != null)
+		else if (high is not null && value.high is not null)
 			foreach (var (x, y) in high.Combine(value.high))
 				x.And(y);
 		else
@@ -292,20 +292,20 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromBitList(BitList bitList)
 	{
-		if ((low == null || low.Capacity == 0) && high == null && fragment == 1 && _capacity == 0)
+		if ((low is null || low.Capacity == 0) && high is null && fragment == 1 && _capacity == 0)
 		{
 			ConstructFromBitListFromScratch(bitList);
 			return;
 		}
 		Debug.Assert(bitList.Length <= _capacity);
-		if (bitList.Length <= LeafSize && low != null && high == null && fragment == 1)
+		if (bitList.Length <= LeafSize && low is not null && high is null && fragment == 1)
 		{
 			low.AddRange(bitList);
 			Length = bitList.Length;
 		}
 		else
 		{
-			Debug.Assert(low == null && high != null && fragment != 1);
+			Debug.Assert(low is null && high is not null && fragment != 1);
 			var fragment2 = (int)fragment;
 			var i = 0;
 			var index = 0;
@@ -326,11 +326,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromBitListFromScratch(BitList bitList)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null
+		Debug.Assert((low is null || low.Capacity == 0) && high is null
 			&& fragment == 1 && _capacity == 0);
-		if (bitList.Length <= LeafSize && high == null && fragment == 1)
+		if (bitList.Length <= LeafSize && high is null && fragment == 1)
 		{
-			if (low == null)
+			if (low is null)
 				low = new(bitList);
 			else
 				low.AddRange(bitList);
@@ -369,7 +369,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromUIntList(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
-		if ((low == null || low.Capacity == 0) && high == null && high == null && _capacity == 0)
+		if ((low is null || low.Capacity == 0) && high is null && high is null && _capacity == 0)
 		{
 			ConstructFromUIntListFromScratch(bigUIntList, overrideLength);
 			return;
@@ -379,7 +379,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt
 			: (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
 		Debug.Assert(bitLength <= _capacity);
-		if (length <= LeafSize / BitsPerInt && low != null && high == null && fragment == 1)
+		if (length <= LeafSize / BitsPerInt && low is not null && high is null && fragment == 1)
 		{
 			low.AddRange(bigUIntList);
 			low.RemoveEnd((int)bitLength);
@@ -387,7 +387,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else
 		{
-			Debug.Assert(low == null && high != null && fragment != 1);
+			Debug.Assert(low is null && high is not null && fragment != 1);
 			var uintsFragment = fragment / BitsPerInt;
 			var i = 0;
 			MpzT index = 0;
@@ -410,15 +410,15 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	protected virtual void ConstructFromUIntListFromScratch(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null
+		Debug.Assert((low is null || low.Capacity == 0) && high is null
 			&& fragment == 1 && _capacity == 0);
 		ArgumentOutOfRangeException.ThrowIfNegative(overrideLength);
 		var length = bigUIntList.Length;
 		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt
 			: (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
-		if (bitLength <= LeafSize && high == null && fragment == 1)
+		if (bitLength <= LeafSize && high is null && fragment == 1)
 		{
-			if (low == null)
+			if (low is null)
 				low = new(bigUIntList);
 			else
 				low.AddRange(bigUIntList);
@@ -470,9 +470,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (length > BitsPerInt)
 			throw new ArgumentException($"Метод GetSmallRange() возвращает одно число типа uint,"
 				+ " поэтому необходим диапазон длиной не более {BitsPerInt} бит.", nameof(length));
-		if (low != null)
+		if (low is not null)
 			return low.GetSmallRange((int)index, length);
-		else if (high != null)
+		else if (high is not null)
 		{
 			var quotient = (int)index.Divide(fragment, out var remainder);
 			var quotient2 = (int)(index + length - 1).Divide(fragment, out var remainder2);
@@ -495,9 +495,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual BigBitList Not()
 	{
-		if (low != null)
+		if (low is not null)
 			low.Not();
-		else if (high != null)
+		else if (high is not null)
 			foreach (var x in high)
 				x.Not();
 		else
@@ -514,9 +514,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (Length != value.Length)
 			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.",
 				nameof(value));
-		if (low != null && value.low != null)
+		if (low is not null && value.low is not null)
 			low.Or(value.low);
-		else if (high != null && value.high != null)
+		else if (high is not null && value.high is not null)
 			foreach (var (x, y) in high.Combine(value.high))
 				x.Or(y);
 		else
@@ -531,9 +531,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual void SetAll(bool value)
 	{
-		if (low != null)
+		if (low is not null)
 			low.SetAll(value);
-		else if (high != null)
+		else if (high is not null)
 			foreach (var x in high)
 				x.SetAll(value);
 		else
@@ -546,9 +546,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual BigList<uint> ToUIntBigList()
 	{
-		if (low != null)
+		if (low is not null)
 			return new(low.ToUIntList());
-		else if (high != null)
+		else if (high is not null)
 			return new(E.SelectMany(high, x => x.ToUIntBigList()));
 		else
 			throw new InvalidOperationException("Невозможно преобразовать в BigList<uint>."
@@ -564,9 +564,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (Length != value.Length)
 			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.",
 				nameof(value));
-		if (low != null && value.low != null)
+		if (low is not null && value.low is not null)
 			low.Xor(value.low);
-		else if (high != null && value.high != null)
+		else if (high is not null && value.high is not null)
 			foreach (var (x, y) in high.Combine(value.high))
 				x.Xor(y);
 		else

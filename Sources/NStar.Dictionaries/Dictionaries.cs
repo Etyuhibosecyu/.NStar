@@ -96,7 +96,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 	{
 		get
 		{
-			if (_syncRoot == null)
+			if (_syncRoot is null)
 				Interlocked.CompareExchange(ref _syncRoot, new(), null);
 			return _syncRoot;
 		}
@@ -177,9 +177,9 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	protected abstract IDictionaryEnumerator GetEnumeratorHelper();
 
-	internal abstract System.Collections.ICollection GetKeyListHelper();
+	internal virtual System.Collections.ICollection GetKeyListHelper() => (System.Collections.ICollection)Keys;
 
-	internal abstract System.Collections.ICollection GetValueListHelper();
+	internal virtual System.Collections.ICollection GetValueListHelper() => (System.Collections.ICollection)Values;
 
 	public abstract void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other);
 
@@ -280,7 +280,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual bool TryAdd(G.KeyValuePair<TKey, TValue> item) => TryAdd(item.Key, item.Value);
 
-	public abstract bool TryGetValue(TKey key, out TValue value);
+	public abstract bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value);
 
 	public virtual void UnionWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
@@ -290,8 +290,8 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual void UnionWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
-		foreach (var x in other)
-			this[x.Key] = x.Value;
+		foreach (var (Key, Value) in other)
+			this[Key] = Value;
 	}
 }
 
@@ -399,9 +399,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 	{
 		get
 		{
-			if (!isHigh && low != null)
+			if (!isHigh && low is not null)
 				return low[key];
-			else if (high != null)
+			else if (high is not null)
 				return high[key];
 			else
 				throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
@@ -414,9 +414,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		}
 		set
 		{
-			if (!isHigh && low != null)
+			if (!isHigh && low is not null)
 				low[key] = value;
-			else if (high != null)
+			else if (high is not null)
 				high[key] = value;
 			else
 				throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
@@ -426,7 +426,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-			if (!isHigh && low != null && Length >= _hashThreshold)
+			if (!isHigh && low is not null && Length >= _hashThreshold)
 			{
 				high = new(low, comparer);
 				low = null;
@@ -441,9 +441,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 	{
 		get
 		{
-			if (!isHigh && low != null)
+			if (!isHigh && low is not null)
 				return low.Length;
-			else if (high != null)
+			else if (high is not null)
 				return high.Count;
 			else
 				return 0;
@@ -454,9 +454,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 	{
 		get
 		{
-			if (!isHigh && low != null)
+			if (!isHigh && low is not null)
 				return low.Keys;
-			else if (high != null)
+			else if (high is not null)
 				return high.Keys;
 			else
 				throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
@@ -473,9 +473,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 	{
 		get
 		{
-			if (!isHigh && low != null)
+			if (!isHigh && low is not null)
 				return low.Values;
-			else if (high != null)
+			else if (high is not null)
 				return high.Values;
 			else
 				throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
@@ -490,9 +490,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void Add(TKey key, TValue value)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.Add(key, value);
-		else if (high != null)
+		else if (high is not null)
 			high.Add(key, value);
 		else
 			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
@@ -502,7 +502,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		if (!isHigh && low != null && Length >= _hashThreshold)
+		if (!isHigh && low is not null && Length >= _hashThreshold)
 		{
 			high = new(low, comparer);
 			low = null;
@@ -512,9 +512,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void Clear()
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.Clear();
-		else if (high != null)
+		else if (high is not null)
 			high.Clear();
 		else
 			throw new InvalidOperationException("Невозможно очистить словарь. Возможные причины:\r\n"
@@ -528,9 +528,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override bool ContainsKey(TKey key)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.ContainsKey(key);
-		else if (high != null)
+		else if (high is not null)
 			return high.ContainsKey(key);
 		else
 			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
@@ -544,9 +544,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	protected override void CopyToHelper(Array array, int arrayIndex)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			((Core.ICollection)low).CopyTo(array, arrayIndex);
-		else if (high != null)
+		else if (high is not null)
 			((Core.ICollection)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
@@ -560,9 +560,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	protected override void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			((G.ICollection<G.KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
-		else if (high != null)
+		else if (high is not null)
 			((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
@@ -576,9 +576,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void ExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.ExceptWith(other);
-		else if (high != null)
+		else if (high is not null)
 			foreach (var x in other)
 				RemoveValue(x);
 		else
@@ -593,9 +593,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void ExceptWith(G.IEnumerable<TKey> other)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.ExceptWith(other);
-		else if (high != null)
+		else if (high is not null)
 			foreach (var x in other)
 				Remove(x);
 		else
@@ -610,9 +610,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.ExceptWith(other);
-		else if (high != null)
+		else if (high is not null)
 			foreach (var x in other)
 				RemoveValue(x);
 		else
@@ -627,9 +627,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator()
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.GetEnumerator();
-		else if (high != null)
+		else if (high is not null)
 			return high.GetEnumerator();
 		else
 			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
@@ -643,9 +643,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	protected override IDictionaryEnumerator GetEnumeratorHelper()
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return ((System.Collections.IDictionary)low).GetEnumerator();
-		else if (high != null)
+		else if (high is not null)
 			return high.GetEnumerator();
 		else
 			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
@@ -659,9 +659,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	internal override System.Collections.ICollection GetKeyListHelper()
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.GetKeyListHelper();
-		else if (high != null)
+		else if (high is not null)
 			return high.Keys;
 		else
 			throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
@@ -675,9 +675,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	internal override System.Collections.ICollection GetValueListHelper()
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.GetValueListHelper();
-		else if (high != null)
+		else if (high is not null)
 			return high.Values;
 		else
 			throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
@@ -691,9 +691,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.IntersectWith(other);
-		else if (high != null)
+		else if (high is not null)
 		{
 			var hs = other.ToHashSet();
 			foreach (var x in high)
@@ -712,9 +712,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void IntersectWith(G.IEnumerable<TKey> other)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.IntersectWith(other);
-		else if (high != null)
+		else if (high is not null)
 		{
 			var hs = other.ToHashSet();
 			foreach (var x in high)
@@ -733,9 +733,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.IntersectWith(other);
-		else if (high != null)
+		else if (high is not null)
 		{
 			var hs = other.ToHashSet();
 			foreach (var x in high)
@@ -754,9 +754,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override bool Remove(TKey key)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.Remove(key);
-		else if (high != null)
+		else if (high is not null)
 			return high.Remove(key);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
@@ -770,9 +770,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.Remove(key, out value);
-		else if (high != null)
+		else if (high is not null)
 			return high.Remove(key, out value);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
@@ -786,9 +786,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override bool RemoveValue(G.KeyValuePair<TKey, TValue> keyValuePair)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.RemoveValue(keyValuePair);
-		else if (high != null)
+		else if (high is not null)
 			return ((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
@@ -802,9 +802,9 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public override void TrimExcess()
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			low.TrimExcess();
-		else if (high != null)
+		else if (high is not null)
 			high.TrimExcess();
 		else
 			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
@@ -816,11 +816,11 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
-	public override bool TryGetValue(TKey key, out TValue value)
+	public override bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
-		if (!isHigh && low != null)
+		if (!isHigh && low is not null)
 			return low.TryGetValue(key, out value);
-		else if (high != null)
+		else if (high is not null)
 			return high.TryGetValue(key, out value!);
 		else
 			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
@@ -866,11 +866,11 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public static implicit operator G.Dictionary<TKey, TValue>?(Dictionary<TKey, TValue>? x)
 	{
-		if (x == null)
+		if (x is null)
 			return null;
-		else if (!x.isHigh && x.low != null)
+		else if (!x.isHigh && x.low is not null)
 			return new(x.low);
-		else if (x.high != null)
+		else if (x.high is not null)
 			return x.high;
 		else
 			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"

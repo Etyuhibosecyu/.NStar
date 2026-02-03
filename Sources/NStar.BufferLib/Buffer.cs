@@ -136,6 +136,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 		else
 			SetInternal(_size++, item);
+		Changed();
 		return (TCertain)this;
 	}
 
@@ -154,7 +155,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 		else
 			Array.Clear(_items, (_start + index) % Capacity, length);
-		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
@@ -165,7 +165,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		else
 			for (var i = length - 1; i >= 0; i--)
 				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
-		destination.Changed();
 	}
 
 	protected override void CopyToInternal(Array array, int arrayIndex)
@@ -196,6 +195,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 	{
 		_items = default!;
 		_size = 0;
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
@@ -210,7 +210,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
-			if (GetInternal(i)?.Equals(item) ?? item == null)
+			if (GetInternal(i)?.Equals(item) ?? item is null)
 				return i;
 		return -1;
 	}
@@ -238,14 +238,14 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, G.IEnumerable<T> collection)
+	protected override void InsertInternal(int index, G.IEnumerable<T> collection)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var length = collection.Length();
 		var this2 = (TCertain)this;
 		if (length == 0)
-			return this2;
+			return;
 		var toSkip = Max(0, length + _size - Capacity - index);
 		var index2 = _size + length - toSkip >= Capacity + index ? 0 : index;
 		if (index2 > 0 && index2 < _size)
@@ -262,18 +262,16 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if (index2 != 0)
 			_start = (_start + Max(0, _size + length - Capacity - toSkip)) % Capacity;
 		_size = Min(_size + length - toSkip, Capacity);
-		Changed();
-		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var length = span.Length;
 		var this2 = (TCertain)this;
 		if (length == 0)
-			return this2;
+			return;
 		var toSkip = Max(0, length + _size - Capacity - index);
 		var index2 = _size + length - toSkip >= Capacity + index ? 0 : index;
 		if (index2 > 0 && index2 < _size)
@@ -285,15 +283,13 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if (index2 != 0)
 			_start = (_start + Max(0, _size + length - Capacity - toSkip)) % Capacity;
 		_size = Min(_size + length - toSkip, Capacity);
-		Changed();
-		return this2;
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		var endIndex = index - length + 1;
 		for (var i = index; i >= endIndex; i--)
-			if (GetInternal(i)?.Equals(item) ?? item == null)
+			if (GetInternal(i)?.Equals(item) ?? item is null)
 				return i;
 		return -1;
 	}
@@ -313,6 +309,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		else if (index < _size)
 			CopyToInternal(index + 1, this2, index, _size - index);
 		SetInternal(_size, default!);
+		Changed();
 		return this2;
 	}
 
@@ -329,7 +326,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 	protected override void SetInternal(int index, T value)
 	{
 		_items[(_start + index) % Capacity] = value;
-		Changed();
 	}
 }
 

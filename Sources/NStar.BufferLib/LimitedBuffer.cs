@@ -144,7 +144,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 				newItems = arrayPool.GetAndRemove(value);
 			if (_size > 0)
 			{
-				Debug.Assert(_items != null);
+				Debug.Assert(_items is not null);
 				if (_start + _size < Capacity)
 					Array.Copy(_items, _start, newItems, 0, _size);
 				else
@@ -167,6 +167,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			throw new FullBufferException();
 		else
 			SetInternal(_size++, item);
+		Changed();
 		return (TCertain)this;
 	}
 
@@ -176,7 +177,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void ClearInternal(int index, int length)
 	{
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		if (_start + index + length < Capacity)
 			Array.Clear(_items, _start + index, length);
 		else if (_start + index < Capacity)
@@ -186,7 +187,6 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		}
 		else
 			Array.Clear(_items, (_start + index) % Capacity, length);
-		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
@@ -201,12 +201,11 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
-		destination.Changed();
 	}
 
 	protected override void CopyToInternal(Array array, int arrayIndex)
 	{
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		if (_start + _size < Capacity)
 			Array.Copy(_items, _start, array, arrayIndex, _size);
 		else
@@ -218,7 +217,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		if (_start + index + length < Capacity)
 			Array.Copy(_items, _start + index, array, arrayIndex, length);
 		else if (_start + index < Capacity)
@@ -234,6 +233,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 	{
 		_items = default!;
 		_size = 0;
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
@@ -245,14 +245,14 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override T GetInternal(int index)
 	{
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		return _items[(_start + index) % Capacity];
 	}
 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
-			if (GetInternal(i)?.Equals(item) ?? item == null)
+			if (GetInternal(i)?.Equals(item) ?? item is null)
 				return i;
 		return -1;
 	}
@@ -276,10 +276,11 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		else
 			_size++;
 		SetInternal(index, item);
+		Changed();
 		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, G.IEnumerable<T> collection)
+	protected override void InsertInternal(int index, G.IEnumerable<T> collection)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -288,7 +289,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			throw new FullBufferException();
 		var this2 = (TCertain)this;
 		if (length == 0)
-			return this2;
+			return;
 		if (index < _size >> 1)
 		{
 			_start = (_start + Capacity - length) % Capacity;
@@ -303,10 +304,9 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		using var en = collection.GetEnumerator();
 		while (en.MoveNext())
 			SetInternal(index++, en.Current);
-		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -315,7 +315,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			throw new FullBufferException();
 		var this2 = (TCertain)this;
 		if (length == 0)
-			return this2;
+			return;
 		if (index < _size >> 1)
 		{
 			_start = (_start + Capacity - length) % Capacity;
@@ -329,14 +329,13 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			_size += length;
 		for (var i = 0; i < length; i++)
 			SetInternal(index + i, span[i]);
-		return this2;
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		var endIndex = index - length + 1;
 		for (var i = index; i >= endIndex; i--)
-			if (GetInternal(i)?.Equals(item) ?? item == null)
+			if (GetInternal(i)?.Equals(item) ?? item is null)
 				return i;
 		return -1;
 	}
@@ -355,14 +354,15 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		}
 		else if (index < _size)
 			CopyToInternal(index + 1, this2, index, _size - index);
+		Changed();
 		return this2;
 	}
 
-	protected override TCertain RemoveInternal(int index, int length)
+	protected override void RemoveInternal(int index, int length)
 	{
 		var this2 = (TCertain)this;
 		if (length <= 0)
-			return this2;
+			return;
 		_size -= length;
 		if (index * 2 + length < _size)
 		{
@@ -372,7 +372,6 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		}
 		else if (index < _size)
 			CopyToInternal(index + length, this2, index, _size - index);
-		return this2;
 	}
 
 	public override TCertain Resize(int newSize)
@@ -410,19 +409,17 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	protected override void SetInternal(int index, T value)
 	{
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		_items[(_start + index) % Capacity] = value;
-		Changed();
 	}
 
-	protected override TCertain SetRangeInternal(int index, int length, TCertain list)
+	protected override void SetRangeInternal(int index, int length, TCertain list)
 	{
 		if (index + length > Capacity)
 			throw new FullBufferException();
 		var this2 = (TCertain)this;
 		if (length > 0)
 			list.CopyToInternal(0, this2, index, length);
-		return this2;
 	}
 }
 

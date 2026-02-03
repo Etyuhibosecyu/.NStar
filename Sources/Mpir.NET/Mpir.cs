@@ -79,17 +79,9 @@ public static partial class Mpir
 			libpath = Path.GetDirectoryName(path);
 			if (!File.Exists(libpath + Path.DirectorySeparatorChar + name))
 				libpath = "";
+			if (File.Exists(path + Path.DirectorySeparatorChar + name))
+				libpath = path;
 		}
-		if (libpath == "")
-			if (Assembly.GetEntryAssembly() != null)
-			{
-				var codeBase = AppDomain.CurrentDomain.BaseDirectory ?? "";
-				var uri = new UriBuilder(codeBase);
-				var path = Uri.UnescapeDataString(uri.Path);
-				libpath = Path.GetDirectoryName(path);
-				if (!File.Exists(libpath + Path.DirectorySeparatorChar + name))
-					libpath = "";
-			}
 		if (libpath == "")
 			throw new Exception("MPIR: can't determine path to the " + name);
 		return libpath + Path.DirectorySeparatorChar + name;

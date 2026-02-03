@@ -1009,13 +1009,13 @@ public class RedStarLinqTests
 			Assert.IsTrue(RedStarLinq.Equals(b2, c2));
 			Assert.IsTrue(E.SequenceEqual(c2, b2));
 			var c3 = a.FindIndex(selector);
-			var d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out var found).elem == null ? -1 : found.index;
+			var d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out var found).elem is null ? -1 : found.index;
 			Assert.AreEqual(d3, c3);
 			b = a.FindLast(selector);
 			c = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2).elem;
 			Assert.AreEqual(c, b);
 			c3 = a.FindLastIndex(selector);
-			d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out found).elem == null ? -1 : found.index;
+			d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out found).elem is null ? -1 : found.index;
 			Assert.AreEqual(d3, c3);
 		}
 		static void ProcessA2(G.IEnumerable<string> a, Func<string, int, bool> selector, Func<(string elem, int index), bool> selector2)
@@ -1028,13 +1028,13 @@ public class RedStarLinqTests
 			Assert.IsTrue(RedStarLinq.Equals(b2, c2));
 			Assert.IsTrue(E.SequenceEqual(c2, b2));
 			var c3 = a.FindIndex(selector);
-			var d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out var found).elem == null ? -1 : found.index;
+			var d3 = CreateVar(E.FirstOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out var found).elem is null ? -1 : found.index;
 			Assert.AreEqual(d3, c3);
 			b = a.FindLast(selector);
 			c = E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2).elem;
 			Assert.AreEqual(c, b);
 			c3 = a.FindLastIndex(selector);
-			d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out found).elem == null ? -1 : found.index;
+			d3 = CreateVar(E.LastOrDefault(E.Select(a, (elem, index) => (elem, index)), selector2), out found).elem is null ? -1 : found.index;
 			Assert.AreEqual(d3, c3);
 		}
 	});

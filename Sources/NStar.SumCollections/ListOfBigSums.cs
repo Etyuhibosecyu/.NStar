@@ -14,7 +14,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		{
 			if (sumList.Length > 0)
 			{
-				Debug.Assert(sumList.root != null);
+				Debug.Assert(sumList.root is not null);
 				_size = sumList._size;
 				root = sumList.root.DeepClone(_size);
 			}
@@ -65,7 +65,6 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		_size += length;
 		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
 		subset.Clear();
-		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, ListOfBigSums destination, int destinationIndex, int length)
@@ -120,6 +119,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		root = null;
 		_size = 0;
 		version = 0;
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
@@ -128,11 +128,11 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 	protected override MpzT GetInternal(int index)
 	{
 		var current = root;
-		while (current != null)
+		while (current is not null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 				return new(current.Value);
-			else if (current.Left == null)
+			else if (current.Left is null)
 			{
 				index--;
 				current = current.Right;
@@ -152,7 +152,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 	{
 		var current = root as Node;
 		MpzT sum = 0;
-		while (current != null)
+		while (current is not null)
 		{
 			var order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
 			if (order == 0)
@@ -194,7 +194,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		var current = root as Node;
 		sumExceedsBy = MpzT.Zero;
 		var index = 0;
-		while (current != null)
+		while (current is not null)
 		{
 			var left = current.Left;
 			var leftCount = left?.LeavesCount ?? 0;
@@ -229,15 +229,14 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			return;
 		}
 		var current = root;
-		while (current != null)
+		while (current is not null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
 				current.Update(value);
-				Changed();
 				return;
 			}
-			else if (current.Left == null)
+			else if (current.Left is null)
 			{
 				index--;
 				current = current.Right;
@@ -270,10 +269,10 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			get => _valuesSum;
 			set
 			{
-				if (Parent != null)
+				if (Parent is not null)
 					Parent.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
-				if (Parent == null || Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
+				if (Parent is null || Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -288,7 +287,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			var newRoot = ShallowClone();
 			using var pendingNodes = (Stack<(Node source, Node target)>?)typeof(Stack<(Node source, Node target)>)
 				.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(length + 1)]);
-			Debug.Assert(pendingNodes != null);
+			Debug.Assert(pendingNodes is not null);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -329,16 +328,16 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		/// </summary>
 		internal Node GetSibling(Node node)
 		{
-			Debug.Assert(node != null);
+			Debug.Assert(node is not null);
 			Debug.Assert(node == Left ^ node == Right);
 			return node == Left ? Right! : Left!;
 		}
 
-		internal static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+		internal static bool IsNonNullBlack(Node? node) => node is not null && node.IsBlack;
 
-		internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+		internal static bool IsNonNullRed(Node? node) => node is not null && node.IsRed;
 
-		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+		internal static bool IsNullOrBlack(Node? node) => node is null || node.IsBlack;
 
 		private protected override BaseSumList<MpzT, ListOfBigSums>.Node Reconstruct(MpzT value, NodeColor color)
 		{
@@ -392,7 +391,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
 			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(list.TotalCount() + 1)])!;
-			Debug.Assert(_stack != null);
+			Debug.Assert(_stack is not null);
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -402,7 +401,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		{
 			get
 			{
-				if (_current != null)
+				if (_current is not null)
 					return _current.Value;
 				return default!; // Should only happen when accessing Current is undefined behavior
 			}
@@ -412,13 +411,13 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		{
 			get
 			{
-				if (_current == null)
+				if (_current is null)
 					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				return _current.Value;
 			}
 		}
 
-		internal readonly bool NotStartedOrEnded => _current == null;
+		internal readonly bool NotStartedOrEnded => _current is null;
 
 		public readonly void Dispose() => _stack?.Dispose();
 
@@ -427,7 +426,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			_current = null;
 			var node = _list.root;
 			Node? next, other;
-			while (node != null)
+			while (node is not null)
 			{
 				next = (_reverse ? node.Right : node.Left) as Node;
 				other = (_reverse ? node.Left : node.Right) as Node;
@@ -438,7 +437,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
 					node = next;
 				}
-				else if (next == null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
+				else if (next is null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
 					node = other;
 				else
 					node = next;
@@ -459,7 +458,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			_current = _stack.Pop();
 			var node = _reverse ? _current.Left : _current.Right;
 			Node? next, other;
-			while (node != null)
+			while (node is not null)
 			{
 				next = _reverse ? node.Right : node.Left;
 				other = _reverse ? node.Left : node.Right;
@@ -468,7 +467,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 					_stack.Push(node);
 					node = next;
 				}
-				else if (other == null || !_list.IsWithinRange(other.Left?.LeavesCount ?? 0))
+				else if (other is null || !_list.IsWithinRange(other.Left?.LeavesCount ?? 0))
 					node = next;
 				else
 					node = other;
@@ -523,7 +522,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 				VersionCheck();
 				var current = root;
 				int result = default;
-				while (current != null)
+				while (current is not null)
 				{
 					var comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
 					if (comp < 0)
@@ -547,7 +546,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 				VersionCheck();
 				var current = root;
 				int result = default;
-				while (current != null)
+				while (current is not null)
 				{
 					var comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
 					if (comp > 0)
@@ -567,7 +566,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		internal override bool BreadthFirstTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action)
 		{
 			VersionCheck();
-			if (root == null)
+			if (root is null)
 				return true;
 			using Queue<Node> processQueue = [];
 			processQueue.Enqueue(root as Node
@@ -579,15 +578,15 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 				current = processQueue.Dequeue();
 				if (IsWithinRange(current.Left?.LeavesCount ?? 0) && !action(current))
 					return false;
-				if (current.Left != null && (!_lBoundActive || Comparer.Compare(_min, current.Left.LeavesCount) < 0))
+				if (current.Left is not null && (!_lBoundActive || Comparer.Compare(_min, current.Left.LeavesCount) < 0))
 					processQueue.Enqueue(current.Left);
-				if (current.Right != null && (!_uBoundActive || Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) > 0))
+				if (current.Right is not null && (!_uBoundActive || Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) > 0))
 					processQueue.Enqueue(current.Right);
 			}
 			return true;
 		}
 
-		public override void Clear(bool _)
+		public override void Clear(bool deep)
 		{
 			if (Length == 0)
 				return;
@@ -633,19 +632,19 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		internal override bool InOrderTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action)
 		{
 			VersionCheck();
-			if (root == null)
+			if (root is null)
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
-			Debug.Assert(stack != null);
+			Debug.Assert(stack is not null);
 			var current = root;
 			using var indexStack = (Stack<int>?)typeof(Stack<int>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
-			Debug.Assert(indexStack != null);
+			Debug.Assert(indexStack is not null);
 			var index = current.Left?.LeavesCount ?? 0;
 			using var flagStack = (Stack<bool>?)typeof(Stack<bool>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
-			Debug.Assert(flagStack != null);
-			while (current != null)
+			Debug.Assert(flagStack is not null);
+			while (current is not null)
 			{
 				if (IsWithinRange(index))
 				{
@@ -680,7 +679,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 					return false;
 				var node = current.Right;
 				index = indexStack.Pop() + (node?.Left?.LeavesCount ?? 0) + 1;
-				while (node != null)
+				while (node is not null)
 				{
 					if (IsWithinRange(index))
 					{
@@ -740,7 +739,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		/// </summary>
 		internal override int TotalCount()
 		{
-			Debug.Assert(_underlying != null);
+			Debug.Assert(_underlying is not null);
 			return _underlying.Length;
 		}
 
@@ -752,7 +751,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 
 		private void VersionCheckImpl(bool updateCount)
 		{
-			Debug.Assert(_underlying != null);
+			Debug.Assert(_underlying is not null);
 			if (version != _underlying.version)
 			{
 				root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive);
@@ -763,7 +762,6 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 				_size = 0;
 				InOrderTreeWalk(n => { _size++; return true; });
 				_countVersion = _underlying.version;
-				Changed();
 			}
 		}
 

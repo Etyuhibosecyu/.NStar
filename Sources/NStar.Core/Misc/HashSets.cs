@@ -35,7 +35,6 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 				entries[i] = new();
 			}
 			_size = 0;
-			Changed();
 		}
 	}
 
@@ -43,7 +42,6 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		for (var i = 0; i < length; i++)
 			SetNull(index + i);
-		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
@@ -56,7 +54,6 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
-		destination.Changed();
 	}
 
 	protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
@@ -95,18 +92,21 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		buckets = default!;
 		entries = default!;
 		_size = 0;
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
 	protected override T GetInternal(int index) => entries[index].item;
 
-	protected override int IndexOfInternal(T item, int index, int length) => item != null ? IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
+	protected override int IndexOfInternal(T item, int index, int length) =>
+		item is not null ? IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF)
+		: throw new ArgumentNullException(nameof(item));
 
 	protected virtual int IndexOfInternal(T item, int index, int length, int hashCode)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			return -1;
 		uint collisionCount = 0;
 		Debug.Assert(hashCode >= 0);
@@ -136,7 +136,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	protected abstract TCertain Insert(T? item, out int index, int hashCode);
 
-	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override void InsertInternal(int index, IEnumerable<T> collection)
 	{
 		var this2 = (TCertain)this;
 		var set = CollectionCreator(collection).ExceptWith(this);
@@ -148,16 +148,15 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		if (length > 0)
 		{
 			if (this == collection)
-				return this2;
+				return;
 			EnsureCapacity(_size + length);
 			if (index < _size)
 				CopyToInternal(index, this2, index + length, _size - index);
 			set.CopyToInternal(0, this2, index, length);
 		}
-		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		var this2 = (TCertain)this;
 		var set = SpanCreator(span).ExceptWith(this);
@@ -173,7 +172,6 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 				CopyToInternal(index, this2, index + length, _size - index);
 			set.CopyToInternal(0, this2, index, length);
 		}
-		return this2;
 	}
 
 	protected virtual void RemoveAtCommon(int index, ref Entry t)
@@ -245,7 +243,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		var newBuckets = new int[newSize];
 		var newEntries = new Entry[newSize];
-		if (entries != null)
+		if (entries is not null)
 			Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
 		if (forceNewHashCodes)
 			for (var i = 0; i < _size; i++)
@@ -287,38 +285,41 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	public override bool TryAdd(T item, out int index)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		if (TryGetIndexOf(item, out index, hashCode))
 			return false;
 		Insert(item, out index, hashCode);
+		Changed();
 		return true;
 	}
 
-	public override bool TryGetIndexOf(T item, out int index) => item != null ? TryGetIndexOf(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
+	public override bool TryGetIndexOf(T item, out int index) =>
+		item is not null ? TryGetIndexOf(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF)
+		: throw new ArgumentNullException(nameof(item));
 
 	protected virtual bool TryGetIndexOf(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 }
 
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
 /// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
-/// что здесь, в отличие от класса FastDelHashSet<T>, индексация гарантированно "правильная", но за это
+/// что здесь, в отличие от класса FastDelHashSet&lt;T&gt;, индексация гарантированно "правильная", но за это
 /// приходится платить тем, что после каждого удаления нужно сдвинуть все следующие элементы влево, а это
 /// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
-/// серию удалений, используйте FastDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
+/// серию удалений, используйте FastDelHashSet&lt;T&gt;, а по завершению серии вызовите FixUpFakeIndexes().
 /// </summary>
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : ListHashSet<T, TCertain>, new()
 {
-	public ListHashSet() : this(0, (IEqualityComparer<T>?)null) { }
+	protected ListHashSet() : this(0, (IEqualityComparer<T>?)null) { }
 
-	public ListHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+	protected ListHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
 
-	public ListHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+	protected ListHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
 
-	public ListHashSet(int capacity, IEqualityComparer<T>? comparer)
+	protected ListHashSet(int capacity, IEqualityComparer<T>? comparer)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
@@ -331,31 +332,31 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		Comparer = comparer ?? EqualityComparer<T>.Default;
 	}
 
-	public ListHashSet(IEnumerable<T> collection) : this(collection, null) { }
+	protected ListHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	protected ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
 
-	public ListHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	protected ListHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	protected ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
 
-	public ListHashSet(params T[] array) : this((IEnumerable<T>)array) { }
+	protected ListHashSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public ListHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
+	protected ListHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public ListHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
+	protected ListHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public ListHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
+	protected ListHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = false]
 	{
@@ -365,7 +366,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? value == null)
+			if (entries[index2].item?.Equals(value) ?? value is null)
 				return;
 			if (Contains(value))
 				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
@@ -381,11 +382,11 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			Initialize(0, out buckets, out entries);
-		if (buckets == null)
+		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
@@ -419,9 +420,9 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		return this2;
 	}
 
-	protected override void SetInternal(int index, T item)
+	protected override void SetInternal(int index, T value)
 	{
-		var hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var hashCode = value is null ? 0 : Comparer.GetHashCode(value) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
 		ref var t = ref entries[index];
 		uint collisionCount = 0;
@@ -449,21 +450,20 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 		t.hashCode = ~hashCode;
 		t.next = buckets[bucket];
-		t.item = item;
+		t.item = value;
 		buckets[bucket] = ~index;
-		Changed();
 	}
 }
 
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
 /// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
-/// что здесь, в отличие от класса FastDelHashSet<T>, индексация гарантированно "правильная", но за это
+/// что здесь, в отличие от класса FastDelHashSet&lt;T&gt;, индексация гарантированно "правильная", но за это
 /// приходится платить тем, что после каждого удаления нужно сдвинуть все следующие элементы влево, а это
 /// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
-/// серию удалений, используйте FastDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
+/// серию удалений, используйте FastDelHashSet&lt;T&gt;, а по завершению серии вызовите FixUpFakeIndexes().
 /// </summary>
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 {
 	public ListHashSet() : base() { }

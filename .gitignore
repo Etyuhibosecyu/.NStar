@@ -348,5 +348,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/DllExport.bat
+*.bat
 *.txt
+api/
+_site/
+docs/
+docfx.json
+index.md
+toc.yml

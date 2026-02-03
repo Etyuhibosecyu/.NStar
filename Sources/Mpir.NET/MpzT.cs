@@ -1472,14 +1472,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	//public static bool operator ==(decimal x, MpzT y)
 	//{
-	//	if(y == null)
+	//	if(y is null)
 	//		return false;
 	//	return y.CompareTo(x) == 0;
 	//}
 
 	//public static bool operator ==(MpzT x, decimal y)
 	//{
-	//	if(x == null)
+	//	if(x is null)
 	//		return false;
 	//	return x.CompareTo(y) == 0;
 	//}
@@ -1516,14 +1516,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	//public static bool operator !=(decimal x, MpzT y)
 	//{
-	//	if(y == null)
+	//	if(y is null)
 	//		return true;
 	//	return y.CompareTo(x) != 0;
 	//}
 
 	//public static bool operator !=(MpzT x, decimal y)
 	//{
-	//	if(x == null)
+	//	if(x is null)
 	//		return true;
 	//	return x.CompareTo(y) != 0;
 	//}

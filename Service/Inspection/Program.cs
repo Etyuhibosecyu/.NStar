@@ -28,13 +28,13 @@ ListHashSet<MethodDefinition> GetMethodsCalled(MethodDefinition caller)
 	var instructions = caller?.Body?.Instructions?.Filter(x =>
 		x.OpCode.Name is "call" or "calli" or "callvirt" or "newobj").ToHashSet();
 	ListHashSet<MethodDefinition> hs = [];
-	if (instructions == null || !instructions.Any())
+	if (instructions is null || !instructions.Any())
 		return hs;
 	foreach (var x in instructions)
 	{
 		var operand = (MethodReference)x.Operand;
 		var item = E.FirstOrDefault(methods, y => operand.Name == y.Name && operand.DeclaringType.Name is "BaseBigList`3" or "BigList`3");
-		if (item != null)
+		if (item is not null)
 			hs.Add(item);
 	}
 	return hs;

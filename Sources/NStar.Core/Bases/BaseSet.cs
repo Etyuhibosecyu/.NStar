@@ -25,13 +25,16 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
+	/// <inheritdoc/>
+	public override void Clear(bool deep) => base.Clear(true);
+
 	protected override void ClearInternal(int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
 			SetInternal(i, default!);
 	}
 
-	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
+	public override bool Contains(T? item, int index, int length) => item is not null && IndexOf(item, index, length) >= 0;
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
@@ -43,7 +46,6 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
-		destination.Changed();
 	}
 
 	public virtual TCertain ExceptWith(IEnumerable<T> other)
@@ -58,13 +60,13 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override TCertain FillInPlace(Func<int, T> function, int length)
 	{
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1, nameof(length));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1);
 		return base.FillInPlace(function, length);
 	}
 
 	public override TCertain FillInPlace(T item, int length)
 	{
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1, nameof(length));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1);
 		return base.FillInPlace(item, length);
 	}
 
@@ -150,7 +152,28 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		_ => throw new ArgumentOutOfRangeException(nameof(length)),
 	};
 
-	protected override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) => base.ReplaceRangeInternal(index, length, collection is TCertain list ? list : CollectionCreator(collection).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)));
+	/// <inheritdoc/>
+	public override TCertain Replace(IEnumerable<T> collection)
+	{
+		if (ReferenceEquals(this, collection))
+			return (TCertain)this;
+		ClearInternal();
+		return AddRange(collection);
+	}
+
+	/// <inheritdoc/>
+	public override TCertain Replace(ReadOnlySpan<T> span)
+	{
+		ClearInternal();
+		return AddRange(span);
+	}
+
+	protected override void ReplaceRangeInternal(int index, int length, IEnumerable<T> collection)
+	{
+		if (collection is not TCertain list)
+			list = CollectionCreator(collection).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length));
+		base.ReplaceRangeInternal(index, length, list);
+	}
 
 	protected override void ReverseInternal(int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
@@ -179,7 +202,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		}
 	}
 
-	protected override TCertain SetRangeInternal(int index, int length, TCertain list) => base.SetRangeInternal(index, CreateVar(CollectionCreator(list).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)), out var list2).Length, list2);
+	protected override void SetRangeInternal(int index, int length, TCertain list) => base.SetRangeInternal(index, CreateVar(CollectionCreator(list).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)), out var list2).Length, list2);
 
 	public virtual TCertain SymmetricExceptWith(IEnumerable<T> other)
 	{

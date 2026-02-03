@@ -68,11 +68,12 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			if (entries[IndexGetDirect(index2)].item?.Equals(value) ?? value == null)
+			if (entries[IndexGetDirect(index2)].item?.Equals(value) ?? value is null)
 				return;
 			if (Contains(value))
 				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
 			SetInternal(index2, value);
+			Changed();
 		}
 	}
 
@@ -97,7 +98,6 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 				destination.SetInternal(destinationIndex2 + i, GetInternal(sourceIndex2 + i));
 		if (destination._size < destinationIndex2 + length + deleted.Length)
 			destination._size = destinationIndex2 + length + deleted.Length;
-		destination.Changed();
 	}
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(IndexGetDirect(index), array, arrayIndex, length);
@@ -171,11 +171,11 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			Initialize(0, out buckets, out entries);
-		if (buckets == null)
+		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
@@ -201,28 +201,32 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		return (TCertain)this;
 	}
 
-	public override TCertain RemoveAt(int index) => RemoveAtDirect(IndexGetDirect(index));
-
-	protected virtual TCertain RemoveAtDirect(int index)
+	public override TCertain RemoveAt(int index)
 	{
-		if (buckets == null || entries == null)
-			return (TCertain)this;
+		RemoveAtDirect(IndexGetDirect(index));
+		Changed();
+		return (TCertain)this;
+	}
+
+	protected virtual void RemoveAtDirect(int index)
+	{
+		if (buckets is null || entries is null)
+			return;
 		if (entries[index].hashCode >= 0)
-			return (TCertain)this;
+			return;
 		ref var t = ref entries[index];
 		RemoveAtCommon(index, ref t);
 		t.next = 0;
 		deleted.TryAdd(index);
 		if (deleted.Length >= Length && deleted.Length >= DefaultCapacity)
 			FixUpDeleted();
-		return (TCertain)this;
 	}
 
 	public override bool RemoveValue(T? item)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
+		if (buckets is null)
 			return false;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		return RemoveValueCommon(item, hashCode, (ref Entry t, int i) =>
@@ -234,7 +238,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		});
 	}
 
-	protected override void SetInternal(int index, T item) => SetDirect(IndexGetDirect(index), item, index);
+	protected override void SetInternal(int index, T value) => SetDirect(IndexGetDirect(index), value, index);
 
 	internal virtual void SetDirect(int index, T item, int actualIndex)
 	{
@@ -249,7 +253,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			Insert(actualIndex, item);
 			return;
 		}
-		if (item == null)
+		if (item is null)
 			return;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
@@ -270,7 +274,6 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		t.next = buckets[bucket];
 		t.item = item;
 		buckets[bucket] = ~index;
-		Changed();
 	}
 
 	public new struct Enumerator : G.IEnumerator<T>

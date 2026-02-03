@@ -194,8 +194,10 @@ public unsafe class String : List<char, String>, IComparable, IComparable<char[]
 
 	public virtual bool EndsWith(String value, StringComparison comparisonType) => AsSpan().EndsWith(value.AsSpan(), comparisonType);
 
+	/// <inheritdoc/>
 	public override bool Equals(object? obj) => base.Equals(obj);
 
+	/// <inheritdoc/>
 	public override int GetHashCode() => base.GetHashCode();
 
 	public virtual int IndexOf(char value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
@@ -224,7 +226,7 @@ public unsafe class String : List<char, String>, IComparable, IComparable<char[]
 			if (newCapacity < min)
 				newCapacity = min;
 			var newItems = new char[newCapacity];
-			if (_items != null)
+			if (_items is not null)
 			{
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
@@ -232,17 +234,17 @@ public unsafe class String : List<char, String>, IComparable, IComparable<char[]
 					CopyMemory(_items, index, newItems, index + length, _size - index);
 			}
 			fixed (char* ptr = s)
-				fixed (char* newItemsPtr = newItems)
-					CopyMemory(ptr, 0, newItemsPtr, index, length);
+			fixed (char* newItemsPtr = newItems)
+				CopyMemory(ptr, 0, newItemsPtr, index, length);
 			_items = newItems;
 		}
 		else
 		{
-			if (_items != null && index < _size)
+			if (_items is not null && index < _size)
 				CopyMemory(_items, index, _items, index + length, _size - index);
 			fixed (char* ptr = s)
-				fixed (char* _itemsPtr = _items)
-					CopyMemory(ptr, 0, _itemsPtr, index, length);
+			fixed (char* _itemsPtr = _items)
+				CopyMemory(ptr, 0, _itemsPtr, index, length);
 		}
 		_size += length;
 		Changed();
@@ -571,9 +573,9 @@ public unsafe class String : List<char, String>, IComparable, IComparable<char[]
 
 	public static implicit operator String(char x) => new(32, x);
 
-	public static implicit operator String(char[]? x) => x == null ? [] : new(32, x);
+	public static implicit operator String(char[]? x) => x is null ? [] : new(32, x);
 
-	public static implicit operator String(string? x) => x == null ? [] : new(32, (ReadOnlySpan<char>)x);
+	public static implicit operator String(string? x) => x is null ? [] : new(32, (ReadOnlySpan<char>)x);
 
 	public static explicit operator String((char, char) x) => [x.Item1, x.Item2];
 

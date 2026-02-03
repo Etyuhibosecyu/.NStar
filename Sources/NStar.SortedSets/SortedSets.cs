@@ -28,7 +28,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		var ret = Search(item);
 		return ret >= index && ret < index + length ? ret : -1;
@@ -36,13 +36,13 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 
 	public virtual int IndexOfNotLess(T item)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		var ret = Search(item);
 		return ret >= 0 ? ret : ~ret;
 	}
 
-	protected override TCertain InsertInternal(int index, G.IEnumerable<T> collection) =>
+	protected override void InsertInternal(int index, G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
@@ -52,13 +52,13 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 
 	protected abstract void InsertInternal(int index, T item);
 
-	protected override TCertain ReplaceRangeInternal(int index, int length, G.IEnumerable<T> collection) =>
+	protected override void ReplaceRangeInternal(int index, int length, G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
 	public abstract int Search(T item);
 
-	protected override TCertain SetRangeInternal(int index, int length, TCertain list) =>
+	protected override void SetRangeInternal(int index, int length, TCertain list) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
@@ -68,12 +68,13 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 
 	public override bool TryAdd(T item, out int index)
 	{
-		if (item == null)
+		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		index = Search(item);
 		if (index >= 0)
 			return false;
 		InsertInternal(index = ~index, item);
+		Changed();
 		return true;
 	}
 }
@@ -166,6 +167,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 	public override void Dispose()
 	{
 		items.Dispose();
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
@@ -183,7 +185,6 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 	{
 		items.GetType().GetMethod("SetInternal", System.Reflection.BindingFlags.Instance
 			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, value]);
-		Changed();
 	}
 }
 

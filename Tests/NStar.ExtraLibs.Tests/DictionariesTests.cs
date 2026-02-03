@@ -9,14 +9,13 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 	l1:
 		var (dic, arr) = create();
 		var dic2 = E.ToDictionary(arr.RemoveDoubles(x => x.Key), x => x.Key, x => x.Value);
-		var bytes = new byte[100];
 		var collectionActions = new[] { ((TKey Key, TValue Value)[] arr) =>
 		{
 			dic.ExceptWith(arr);
 			foreach (var x in arr)
 				if (dic2.TryGetValue(x.Key, out var x2) && x.Value.Equals(x2))
 					dic2.Remove(x.Key);
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, arr =>
 		{
@@ -24,7 +23,7 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 			foreach (var x in dic2)
 				if (Array.IndexOf(arr, (x.Key, x.Value)) < 0)
 					dic2.Remove(x.Key);
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		//}, arr =>
 		//{
@@ -41,7 +40,7 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 			dic.UnionWith(arr);
 			foreach (var x in arr)
 				dic2[x.Key] = x.Value;
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		} };
 		var actions = new[] { () =>
@@ -49,7 +48,7 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 			var (index, n) = newKeyAndValueFunc();
 			if (dic.TryAdd(index, n))
 				dic2.Add(index, n);
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
@@ -57,7 +56,7 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 			var (index, n) = newKeyAndValueFunc();
 			dic[index] = n;
 			dic2[index] = n;
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
@@ -67,13 +66,13 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 			if (!b) return;
 			dic.Remove(n);
 			dic2.Remove(n);
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
 			var arr = RedStarLinq.FillArray(25, _ => (CreateVar(newKeyFunc(), out var key), dic.TryGetValue(key, out var value) ? value : newValueFunc()));
 			collectionActions.Random(random)(arr);
-			Assert.AreEqual(dic.Length, dic2.Count);
+			Assert.HasCount(dic.Length, dic2);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		} };
 		for (var i = 0; i < 1000; i++)
@@ -256,7 +255,7 @@ public class DictionaryTests
 		for (var i = 0; i < 5000; i++)
 		{
 			var a = funcs.Random(random)(random);
-			var b = funcs.Random(random2)(random2);
+			var b = funcs2.Random(random2)(random2);
 			Assert.IsTrue(RedStarLinq.Equals(a, b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			a.TryAdd(random.Next(), random.Next());
@@ -351,8 +350,8 @@ public class MirrorTests
 				dic.Clear();
 				dic2.Clear();
 			}
-			Assert.AreEqual(mir.Length, dic.Count);
-			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
 		}, () =>
@@ -368,8 +367,8 @@ public class MirrorTests
 				dic.Add(index, n);
 				dic2.Add(n, index);
 			}
-			Assert.AreEqual(mir.Length, dic.Count);
-			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
 		}, () =>
@@ -396,8 +395,8 @@ public class MirrorTests
 				dic[index] = n;
 				dic2[n] = index;
 			}
-			Assert.AreEqual(mir.Length, dic.Count);
-			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
 		}, () =>
@@ -421,8 +420,8 @@ public class MirrorTests
 				dic.Remove(key);
 				dic2.Remove(n);
 			}
-			Assert.AreEqual(mir.Length, dic.Count);
-			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
 		}, () =>
@@ -448,8 +447,8 @@ public class MirrorTests
 				dic.Remove(key);
 				dic2.Remove(n);
 			}
-			Assert.AreEqual(mir.Length, dic.Count);
-			Assert.AreEqual(mir.Length, dic2.Count);
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
 			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
 		}, () =>

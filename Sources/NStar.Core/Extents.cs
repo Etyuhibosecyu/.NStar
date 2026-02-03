@@ -26,16 +26,16 @@ public class Comparer<T>(Func<T, T, int> comparer) : IComparer<T>
 
 	public int Compare(T? x, T? y)
 	{
-		if (x == null)
+		if (x is null)
 		{
-			if (y == null)
+			if (y is null)
 				return 0;
 			else
 				return -1;
 		}
 		else
 		{
-			if (y == null)
+			if (y is null)
 				return 1;
 			else
 				return comparer(x, y);
@@ -62,9 +62,9 @@ public class EComparer<T> : IEqualityComparer<T>
 
 	public bool Equals(T? x, T? y)
 	{
-		if (x == null && y == null)
+		if (x is null && y is null)
 			return true;
-		else if (x != null && y != null)
+		else if (x is not null && y is not null)
 			return equals(x, y);
 		else
 			return false;
@@ -98,9 +98,9 @@ public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
 
 	public bool Equals(G.IList<T>? x, G.IList<T>? y)
 	{
-		if (x == null && y == null)
+		if (x is null && y is null)
 			return true;
-		else if (x == null || y == null)
+		else if (x is null || y is null)
 			return false;
 		if (x.Count != y.Count)
 			return false;

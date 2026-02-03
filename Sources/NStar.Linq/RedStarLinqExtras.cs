@@ -70,7 +70,7 @@ public static class RedStarLinqExtras
 			for (var i = 1; i < length; i++)
 			{
 				item = function(list2[i]);
-				if (!(item?.Equals(prev) ?? prev == null))
+				if (!(item?.Equals(prev) ?? prev is null))
 					return false;
 				prev = item;
 			}
@@ -85,7 +85,7 @@ public static class RedStarLinqExtras
 			for (var i = 1; i < length; i++)
 			{
 				item = function(list3[i]);
-				if (!(item?.Equals(prev) ?? prev == null))
+				if (!(item?.Equals(prev) ?? prev is null))
 					return false;
 				prev = item;
 			}
@@ -100,7 +100,7 @@ public static class RedStarLinqExtras
 			while (en.MoveNext())
 			{
 				item = function(en.Current);
-				if (!(item?.Equals(prev) ?? prev == null))
+				if (!(item?.Equals(prev) ?? prev is null))
 					return false;
 				prev = item;
 			}
@@ -223,7 +223,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				item = list2[i];
-				if (!(item?.Equals(prev) ?? prev == null))
+				if (!(item?.Equals(prev) ?? prev is null))
 					return false;
 			}
 			return true;
@@ -237,7 +237,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				item = list3[i];
-				if (!(item?.Equals(prev) ?? prev == null))
+				if (!(item?.Equals(prev) ?? prev is null))
 					return false;
 			}
 			return true;
@@ -251,7 +251,7 @@ public static class RedStarLinqExtras
 			while (en.MoveNext())
 			{
 				item = en.Current;
-				if (!(item?.Equals(prev) ?? prev == null))
+				if (!(item?.Equals(prev) ?? prev is null))
 					return false;
 				prev = item;
 			}
@@ -480,20 +480,20 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(T item, int index, int length)
 		{
 			for (var i = index; i < Min(index + length, source.Count); i++)
-				if (source[i]?.Equals(item) ?? item == null)
+				if (source[i]?.Equals(item) ?? item is null)
 					return i;
-			if (index + length - 1 == _size && (element?.Equals(item) ?? item == null))
+			if (index + length - 1 == _size && (element?.Equals(item) ?? item is null))
 				return source.Count;
 			return -1;
 		}
 
 		protected override int LastIndexOfInternal(T item, int index, int length)
 		{
-			if (index == source.Count && (element?.Equals(item) ?? item == null))
+			if (index == source.Count && (element?.Equals(item) ?? item is null))
 				return 0;
 			var endIndex = index - length + 1;
 			for (var i = Min(index, source.Count - 1); i >= endIndex; i--)
-				if (source[i]?.Equals(item) ?? item == null)
+				if (source[i]?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1062,7 +1062,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(TResult item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (function(source[i], source2[i])?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i])?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1071,7 +1071,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (function(source[i], source2[i])?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i])?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1122,7 +1122,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(TResult item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (function(source[i], source2[i], i)?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i], i)?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1131,7 +1131,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (function(source[i], source2[i], i)?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i], i)?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1178,7 +1178,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal((T, T2) item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null))
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 is null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 is null))
 					return i;
 			return -1;
 		}
@@ -1187,7 +1187,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null))
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 is null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 is null))
 					return i;
 			return -1;
 		}
@@ -1242,7 +1242,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(TResult item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1251,7 +1251,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1306,7 +1306,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(TResult item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1315,7 +1315,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item == null)
+				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -1366,7 +1366,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal((T, T2, T3) item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 == null))
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 is null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 is null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 is null))
 					return i;
 			return -1;
 		}
@@ -1375,7 +1375,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 == null))
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 is null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 is null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 is null))
 					return i;
 			return -1;
 		}
@@ -3619,10 +3619,10 @@ public static class RedStarLinqExtras
 
 		protected override int IndexOfInternal(T item, int index, int length)
 		{
-			if (index == 0 && (element?.Equals(item) ?? item == null))
+			if (index == 0 && (element?.Equals(item) ?? item is null))
 				return 0;
 			for (var i = Max(index, 1); i < index + length; i++)
-				if (source[i - 1]?.Equals(item) ?? item == null)
+				if (source[i - 1]?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -3631,9 +3631,9 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= Max(endIndex, 1); i--)
-				if (source[i - 1]?.Equals(item) ?? item == null)
+				if (source[i - 1]?.Equals(item) ?? item is null)
 					return i;
-			if (endIndex == 0 && (element?.Equals(item) ?? item == null))
+			if (endIndex == 0 && (element?.Equals(item) ?? item is null))
 				return 0;
 			return -1;
 		}
@@ -3652,7 +3652,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result = result == null || i == 0 ? item : function(result, item);
+				result = result is null || i == 0 ? item : function(result, item);
 			}
 			return result;
 		}
@@ -3663,7 +3663,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result = result == null || i == 0 ? item : function(result, item);
+				result = result is null || i == 0 ? item : function(result, item);
 			}
 			return result;
 		}
@@ -3673,7 +3673,7 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result = result == null || i == 0 ? item : function(result, item);
+				result = result is null || i == 0 ? item : function(result, item);
 				i++;
 			}
 			return result;
@@ -3911,7 +3911,7 @@ public static class RedStarLinqExtras
 		protected override int IndexOfInternal(T item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (source[_size - 1 - i]?.Equals(item) ?? item == null)
+				if (source[_size - 1 - i]?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -3920,7 +3920,7 @@ public static class RedStarLinqExtras
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (source[_size - 1 - i]?.Equals(item) ?? item == null)
+				if (source[_size - 1 - i]?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -4636,7 +4636,7 @@ public static class RedStarLinqExtras
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -4650,7 +4650,7 @@ public static class RedStarLinqExtras
 			{
 				var item = list3_[i];
 				var item2 = list3_2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -4664,7 +4664,7 @@ public static class RedStarLinqExtras
 			{
 				var item = en.Current;
 				var item2 = en2.Current;
-				if (!(item?.Equals(item2) ?? item2 == null))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return !b2;
@@ -5243,7 +5243,7 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (item == null || !item.Equals(source2[i]))
+			if (item is null || !item.Equals(source2[i]))
 				return false;
 		}
 		return true;
@@ -6313,7 +6313,7 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result = result == null ? item : function(result, item);
+			result = result is null ? item : function(result, item);
 		}
 		return result;
 	}
@@ -6325,7 +6325,7 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result = result == null ? seed : function(result, item);
+			result = result is null ? seed : function(result, item);
 		}
 		return result;
 	}
@@ -6378,7 +6378,7 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (item == null || !item.Equals(source2[i]))
+			if (item is null || !item.Equals(source2[i]))
 				return false;
 		}
 		return true;
@@ -6823,7 +6823,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	public static bool TryWrap<T, TResult>(this T source, Func<T, TResult> function, out TResult? result)
+	public static bool TryWrap<T, TResult>(this T source, Func<T, TResult> function, [MaybeNullWhen(false)] out TResult result)
 	{
 		try
 		{

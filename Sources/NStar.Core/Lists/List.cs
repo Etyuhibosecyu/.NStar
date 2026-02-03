@@ -8,11 +8,11 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	private protected static readonly SortedDictionary<int, G.List<T[]>> arrayPool = [];
 	private protected static readonly object globalLockObj = new();
 
-	public List() => _items = null;
+	protected List() => _items = null;
 
-	public List(int capacity) : this(capacity, false) { }
+	protected List(int capacity) : this(capacity, false) { }
 
-	public List(int capacity, bool exact)
+	protected List(int capacity, bool exact)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity == 0)
@@ -24,7 +24,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			_items = arrayPool.GetAndRemove(capacity, exact);
 	}
 
-	public List(IEnumerable<T> collection)
+	protected List(IEnumerable<T> collection)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		int length;
@@ -52,13 +52,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
-			return;
 		}
 	}
 
-	public List(int capacity, IEnumerable<T> collection) : this(capacity, collection, false) { }
+	protected List(int capacity, IEnumerable<T> collection) : this(capacity, collection, false) { }
 
-	public List(int capacity, IEnumerable<T> collection, bool exact) : this(capacity, exact)
+	protected List(int capacity, IEnumerable<T> collection, bool exact) : this(capacity, exact)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not G.ICollection<T> c)
@@ -74,12 +73,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (length > capacity)
 			lock (globalLockObj)
 				_items = arrayPool.GetAndRemove(length, exact);
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		c.CopyTo(_items, 0);
 		_size = length;
 	}
 
-	public List(params T[] array)
+	protected List(params T[] array)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
@@ -88,7 +87,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		array.CopyTo(_items, 0);
 	}
 
-	public List(int capacity, params T[] array)
+	protected List(int capacity, params T[] array)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
@@ -106,7 +105,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
-	public List(ReadOnlySpan<T> span)
+	protected List(ReadOnlySpan<T> span)
 	{
 		_size = span.Length;
 		lock (globalLockObj)
@@ -114,9 +113,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		span.CopyTo(_items);
 	}
 
-	public List(int capacity, ReadOnlySpan<T> span) : this(capacity, span, false) { }
+	protected List(int capacity, ReadOnlySpan<T> span) : this(capacity, span, false) { }
 
-	public List(int capacity, ReadOnlySpan<T> span, bool exact)
+	protected List(int capacity, ReadOnlySpan<T> span, bool exact)
 	{
 		_size = span.Length;
 		if (span.Length > capacity)
@@ -146,7 +145,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				T[] newItems;
 				lock (globalLockObj)
 					newItems = arrayPool.GetAndRemove(value, true);
-				if (_size > 0 && _items != null)
+				if (_size > 0 && _items is not null)
 					Array.Copy(_items, 0, newItems, 0, _size);
 				_items = newItems;
 			}
@@ -186,7 +185,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
-		if (_items == null)
+		if (_items is null)
 			return -1;
 		return Array.BinarySearch(_items, index, length, item, comparer);
 	}
@@ -197,39 +196,37 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	protected override void ClearInternal(int index, int length)
 	{
-		if (_items == null)
+		if (_items is null)
 			return;
 		Array.Clear(_items, index, length);
-		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		if (_items == null || destination._items == null)
+		if (_items is null || destination._items is null)
 			return;
 		Array.Copy(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
-		Changed();
 	}
 
 	protected override void CopyToInternal(Array array, int arrayIndex)
 	{
-		if (_items == null)
+		if (_items is null)
 			return;
 		Array.Copy(_items, 0, array, arrayIndex, _size);
 	}
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
-		if (_items == null)
+		if (_items is null)
 			return;
 		Array.Copy(_items, index, array, arrayIndex, length);
 	}
 
 	public override void Dispose()
 	{
-		if (_items == null)
+		if (_items is null)
 			return;
 		lock (globalLockObj)
 		{
@@ -240,6 +237,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		_items = null;
 		_size = 0;
+		Changed();
 		GC.SuppressFinalize(this);
 	}
 
@@ -247,7 +245,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public static unsafe TCertain FromPointer(int capacity, void* ptr)
 	{
-		if (ptr == null)
+		if (ptr is null)
 			throw new ArgumentNullException(nameof(ptr));
 		TCertain list = [];
 		list._size = capacity;
@@ -259,13 +257,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	protected override T GetInternal(int index)
 	{
-		Debug.Assert(_items != null);
+		Debug.Assert(_items is not null);
 		return _items[index];
 	}
 
 	protected override int IndexOfInternal(T item, int index, int length)
 	{
-		if (_items == null)
+		if (_items is null)
 			return -1;
 		return Array.IndexOf(_items, item, index, length);
 	}
@@ -285,9 +283,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			T[] newItems;
 			lock (globalLockObj)
 				newItems = arrayPool.GetAndRemove(newCapacity);
-			if (index > 0 && _items != null)
+			if (index > 0 && _items is not null)
 				Array.Copy(_items, 0, newItems, 0, index);
-			if (index < _size && _items != null)
+			if (index < _size && _items is not null)
 				Array.Copy(_items, index, newItems, index + 1, _size - index);
 			_size++;
 			newItems[index] = item;
@@ -299,20 +297,20 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				CopyToInternal(index, (TCertain)this, index + 1, _size - index);
 			else
 				_size++;
-			Debug.Assert(_items != null);
+			Debug.Assert(_items is not null);
 			_items[index] = item;
 		}
 		Changed();
 		return (TCertain)this;
 	}
 
-	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var length = span.Length;
 		if (length == 0)
-			return (TCertain)this;
+			return;
 		if (Capacity < _size + length)
 		{
 			var min = _size + length;
@@ -324,31 +322,29 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			T[] newItems;
 			lock (globalLockObj)
 				newItems = arrayPool.GetAndRemove(newCapacity);
-			if (index > 0 && _items != null)
+			if (index > 0 && _items is not null)
 				Array.Copy(_items, 0, newItems, 0, index);
-			if (index < _size && _items != null)
+			if (index < _size && _items is not null)
 				Array.Copy(_items, index, newItems, index + length, _size - index);
 			span.CopyTo(MemoryExtensions.AsSpan(newItems, index));
 			_items = newItems;
 		}
 		else
 		{
-			if (index < _size && _items != null)
+			if (index < _size && _items is not null)
 				Array.Copy(_items, index, _items, index + length, _size - index);
 			span.CopyTo(MemoryExtensions.AsSpan(_items, index));
 		}
 		_size += length;
-		Changed();
-		return (TCertain)this;
 	}
 
-	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override void InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (collection is List<T, TCertain> list)
 		{
 			var length = list._size;
 			if (length == 0)
-				return (TCertain)this;
+				return;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -360,38 +356,36 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				T[] newItems;
 				lock (globalLockObj)
 					newItems = arrayPool.GetAndRemove(newCapacity);
-				if (index > 0 && _items != null)
+				if (index > 0 && _items is not null)
 					Array.Copy(_items, 0, newItems, 0, index);
-				if (index < _size && _items != null)
+				if (index < _size && _items is not null)
 					Array.Copy(_items, index, newItems, index + length, _size - index);
-				if (list._items != null)
+				if (list._items is not null)
 					Array.Copy(list._items, 0, newItems, index, length);
 				_items = newItems;
 			}
 			else
 			{
-				if (index < _size && _items != null)
+				if (index < _size && _items is not null)
 					Array.Copy(_items, index, _items, index + length, _size - index);
-				if (this == list && _items != null)
+				if (this == list && _items is not null)
 				{
 					Array.Copy(_items, 0, _items, index, index);
 					Array.Copy(_items, index + length, _items, index * 2, _size - index);
 				}
-				else if (list._items != null)
+				else if (list._items is not null)
 				{
-					Debug.Assert(_items != null);
+					Debug.Assert(_items is not null);
 					Array.Copy(list._items, 0, _items, index, length);
 				}
 			}
 			_size += length;
-			Changed();
-			return (TCertain)this;
 		}
 		else if (collection is T[] array)
 		{
 			var length = array.Length;
 			if (length == 0)
-				return (TCertain)this;
+				return;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -403,29 +397,27 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				T[] newItems;
 				lock (globalLockObj)
 					newItems = arrayPool.GetAndRemove(newCapacity);
-				if (index > 0 && _items != null)
+				if (index > 0 && _items is not null)
 					Array.Copy(_items, 0, newItems, 0, index);
-				if (index < _size && _items != null)
+				if (index < _size && _items is not null)
 					Array.Copy(_items, index, newItems, index + length, _size - index);
 				Array.Copy(array, 0, newItems, index, length);
 				_items = newItems;
 			}
 			else
 			{
-				if (index < _size && _items != null)
+				if (index < _size && _items is not null)
 					Array.Copy(_items, index, _items, index + length, _size - index);
-				Debug.Assert(_items != null);
+				Debug.Assert(_items is not null);
 				Array.Copy(array, 0, _items, index, length);
 			}
 			_size += length;
-			Changed();
-			return (TCertain)this;
 		}
 		else if (collection is G.ICollection<T> list2)
 		{
 			var length = list2.Count;
 			if (length == 0)
-				return (TCertain)this;
+				return;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -437,31 +429,29 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				T[] newItems;
 				lock (globalLockObj)
 					newItems = arrayPool.GetAndRemove(newCapacity);
-				if (index > 0 && _items != null)
+				if (index > 0 && _items is not null)
 					Array.Copy(_items, 0, newItems, 0, index);
-				if (index < _size && _items != null)
+				if (index < _size && _items is not null)
 					Array.Copy(_items, index, newItems, index + length, _size - index);
 				list2.CopyTo(newItems, index);
 				_items = newItems;
 			}
 			else
 			{
-				if (index < _size && _items != null)
+				if (index < _size && _items is not null)
 					Array.Copy(_items, index, _items, index + length, _size - index);
-				Debug.Assert(_items != null);
+				Debug.Assert(_items is not null);
 				list2.CopyTo(_items, index);
 			}
 			_size += length;
-			Changed();
-			return (TCertain)this;
 		}
 		else
-			return InsertInternal(index, CollectionCreator(collection));
+			InsertInternal(index, CollectionCreator(collection));
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
-		if (_items == null)
+		if (_items is null)
 			return -1;
 		return Array.LastIndexOf(_items, item, index, length);
 	}
@@ -478,24 +468,23 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			return (TCertain)this;
 		if (this is List<byte> byteList)
 		{
-			Debug.Assert(byteList._items != null);
+			Debug.Assert(byteList._items is not null);
 			byteList._items.NSort(index, length);
-			return (TCertain)this;
 		}
 		else if (this is List<ushort> ushortList)
 		{
-			Debug.Assert(ushortList._items != null);
+			Debug.Assert(ushortList._items is not null);
 			ushortList._items.NSort(index, length);
-			return (TCertain)this;
 		}
 		else if (this is List<uint> uintList)
 		{
-			Debug.Assert(uintList._items != null);
+			Debug.Assert(uintList._items is not null);
 			uintList._items.NSort(index, length);
-			return (TCertain)this;
 		}
 		else
 			return Sort(index, length, G.Comparer<T>.Default);
+		Changed();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
@@ -506,9 +495,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
-		if (_items == null)
+		if (_items is null)
 			return (TCertain)this;
 		_items.NSort(function, index, length);
+		Changed();
 		return (TCertain)this;
 	}
 
@@ -516,18 +506,16 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	protected override void ReverseInternal(int index, int length)
 	{
-		if (_items == null)
+		if (_items is null)
 			return;
 		Array.Reverse(_items, index, length);
-		Changed();
 	}
 
 	protected override void SetInternal(int index, T value)
 	{
-		if (_items == null)
+		if (_items is null)
 			return;
 		_items[index] = value;
-		Changed();
 	}
 
 	public virtual TCertain Sort() => Sort(0, _size, G.Comparer<T>.Default);
@@ -540,9 +528,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
-		if (_items == null)
+		if (_items is null)
 			return (TCertain)this;
 		Array.Sort(_items, index, length, comparer);
+		Changed();
 		return (TCertain)this;
 	}
 
@@ -555,6 +544,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (fasterButMoreMemory)
 		{
 			RedStarLinq.ToList(this, function).Sort(this, index, length, comparer);
+			Changed();
 			return (TCertain)this;
 		}
 		else
@@ -573,9 +563,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
 		if (index + length > values._size)
 			throw new ArgumentException("Сортируемый диапазон выходит за размер экстра-коллекции.");
-		if (_items == null)
+		if (_items is null)
 			return (TCertain)this;
 		Array.Sort(_items, values._items, index, length, comparer);
+		Changed();
 		return (TCertain)this;
 	}
 }

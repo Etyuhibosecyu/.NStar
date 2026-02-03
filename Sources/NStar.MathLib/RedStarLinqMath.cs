@@ -2941,51 +2941,51 @@ public static class RedStarLinqMath
 		return TResult.CreateChecked(sum) / TResult.CreateChecked(source.Length);
 	}
 
-	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => function == null
+	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => function == null
+	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static double Median<T>(this ReadOnlySpan<T> source, Func<T, double> function) => function == null
+	public static double Median<T>(this ReadOnlySpan<T> source, Func<T, double> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static double Median<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => function == null
+	public static double Median<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static int Median<T>(this ReadOnlySpan<T> source, Func<T, int> function) => function == null
+	public static int Median<T>(this ReadOnlySpan<T> source, Func<T, int> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static int Median<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => function == null
+	public static int Median<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static uint Median<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => function == null
+	public static uint Median<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static uint Median<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => function == null
+	public static uint Median<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static long Median<T>(this ReadOnlySpan<T> source, Func<T, long> function) => function == null
+	public static long Median<T>(this ReadOnlySpan<T> source, Func<T, long> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static long Median<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => function == null
+	public static long Median<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => function == null
+	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? 0 : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => function == null
+	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => function is null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? 0 : source.ToList(function).Sort()[(source.Length - 1) / 2];
 

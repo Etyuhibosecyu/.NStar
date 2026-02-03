@@ -68,8 +68,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			low = new();
 		ConstructFromCapacity(capacity);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -86,8 +86,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		low = new();
 		ConstructFromEnumerable(collection);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -97,8 +97,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromEnumerable(collection);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -108,8 +108,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -119,8 +119,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -133,11 +133,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, Length);
 			if (value == _capacity)
 				return;
-			if (parent != null && value > parent.fragment)
+			if (parent is not null && value > parent.fragment)
 				value = parent.fragment;
 			if (value == 0)
 			{
-				if (low != null)
+				if (low is not null)
 					low.Capacity = 0;
 				else
 				{
@@ -153,14 +153,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (value <= LeafSize) // Список сокращается до одного листа
 			{
-				if (high != null)
+				if (high is not null)
 					ReduceCapacityExponential(LeafSize);
-				if (high != null) // В этом случае в списке очень много пустоты
+				if (high is not null) // В этом случае в списке очень много пустоты
 					MoveRange((null!, -2, (TCertain)this, -1, -_capacity, MoveRangeMode.None));
 				var first = this;
 				var reverse = false;
 				// Ищем первый лист и разрушаем "лишние" ветки
-				while (first.high != null)
+				while (first.high is not null)
 				{
 					first.high.Skip(1).ForEach(x => x.Dispose());
 					first.highLength?.Dispose();
@@ -170,7 +170,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					first.parent?.high = null;
 					reverse ^= first.bReversed;
 				}
-				Debug.Assert(first.low != null);
+				Debug.Assert(first.low is not null);
 				low = first.low;
 				if (reverse)
 					Reverse();
@@ -180,7 +180,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high = null;
 				highLength = null;
 			}
-			else if (low != null) // Список расширяется с одного листа до многих
+			else if (low is not null) // Список расширяется с одного листа до многих
 			{
 				// Разберем эту строку по частям:
 				// (value - 1).BitLength - какого порядка (по основанию 2) новая длина.
@@ -197,7 +197,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				IncreaseLowCapacity(value, fragment);
 				return;
 			}
-			else if (high != null) // Как старая, так и новая емкость определяет много листьев
+			else if (high is not null) // Как старая, так и новая емкость определяет много листьев
 			{
 				// См. подробный разбор аналогичной строки в предыдущем разделе
 				var newFragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
@@ -220,8 +220,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			AddCapacity(value - _capacity);
 #if VERIFY
-			if (high != null)
-				Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+			if (high is not null)
+				Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 			Verify();
 #endif
 		}
@@ -242,31 +242,31 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		get => base.Length;
 		private protected set
 		{
-			if (parent != null)
+			if (parent is not null)
 				parent.Length += value - base.Length;
 			base.Length = value;
 		}
 	}
 
-	protected virtual TCertain Root => parent == null ? (TCertain)this : parent.Root;
+	protected virtual TCertain Root => parent is null ? (TCertain)this : parent.Root;
 
 	public override TCertain Add(T item)
 	{
 		var this2 = (TCertain)this;
 		EnsureCapacity(Length + 1);
 		var compactified = false;
-		if (low != null)
+		if (low is not null)
 		{
 			low.Insert(bReversed ? 0 : ^0, item);
 			Length += 1;
 #if VERIFY
-			if (high != null)
-				Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+			if (high is not null)
+				Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 			Verify();
 #endif
 			return this2;
 		}
-		else if (high == null)
+		else if (high is null)
 			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
@@ -312,8 +312,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			break;
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 		return this2;
@@ -323,19 +323,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		if (increment == 0)
 			return;
-		for (var list = this; list != null; list = list.parent)
+		for (var list = this; list is not null; list = list.parent)
 			list._capacity += increment;
 	}
 
 	protected override void ClearInternal(bool verify)
 	{
 		Root.accessCache?.Clear();
-		if (low != null)
+		if (low is not null)
 		{
 			low.Clear(false);
 			Length = 0;
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			foreach (var x in high)
 				x?.ClearInternal(false);
@@ -354,9 +354,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		if (length == 0)
 			return;
-		if (low != null)
+		if (low is not null)
 			low.Clear((int)(bReversed ? Length - length - index : index), (int)length);
-		else if (high != null)
+		else if (high is not null)
 		{
 			if (bReversed)
 				index = Length - length - index;
@@ -377,8 +377,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[endIntIndex].ClearInternal(0, length - previousPart);
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -423,8 +423,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		Length = 0;
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -437,9 +437,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			ConstructFromList(list2.GetSlice());
 		else if (collection is BigList<T, TCertain, TLow> bigList)
 		{
-			if (bigList.low != null)
+			if (bigList.low is not null)
 				ConstructFromList(bigList.low);
-			else if (bigList.high != null)
+			else if (bigList.high is not null)
 			{
 				ConstructFromCapacity(bigList.Length);
 				bigList.CopyToInternal(0, (TCertain)this, 0, bigList.Length);
@@ -457,14 +457,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected void ConstructFromList(G.IReadOnlyList<T> list)
 	{
-		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
+		if ((low is null || low.Capacity == 0) && high is null && highLength is null && fragment == 1 && _capacity == 0)
 		{
 			ConstructFromListFromScratch(list);
 			return;
 		}
-		if (list.Count <= LeafSize && low != null && high == null && highLength == null && fragment == 1)
+		if (list.Count <= LeafSize && low is not null && high is null && highLength is null && fragment == 1)
 		{
-			if (low == null)
+			if (low is null)
 				low = CollectionLowCreator(list);
 			else
 				low.AddRange(list);
@@ -472,7 +472,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 		{
-			Debug.Assert(low == null && high != null && fragment != 1);
+			Debug.Assert(low is null && high is not null && fragment != 1);
 			var fragment2 = (int)fragment;
 			var i = 0;
 			var index = 0;
@@ -491,17 +491,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		AddCapacity(Length - _capacity);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
 
 	protected virtual void ConstructFromListFromScratch(G.IReadOnlyList<T> list)
 	{
-		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null
+		Debug.Assert((low is null || low.Capacity == 0) && high is null && highLength is null
 			&& fragment == 1 && _capacity == 0);
-		if (list.Count <= LeafSize && high == null && highLength == null && fragment == 1)
+		if (list.Count <= LeafSize && high is null && highLength is null && fragment == 1)
 		{
 			low = CollectionLowCreator(list);
 			high = null;
@@ -536,8 +536,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -547,13 +547,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
 		if ((mode & MoveRangeMode.SpecialMode) != 0)
 			return;
-		if (source == null && sourceIndex < 0 && destinationIndex < 0)
+		if (source is null && sourceIndex < 0 && destinationIndex < 0)
 			return;
-		if (source == null)
+		if (source is null)
 			throw new ArgumentNullException(nameof(context), "Исходный массив не может быть нулевым.");
 		if (source.Capacity == 0 && !(sourceIndex == 0 && length == 0))
 			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(context));
-		if (destination == null)
+		if (destination is null)
 			throw new ArgumentNullException(nameof(context), "Целевой массив не может быть нулевым.");
 		if (destination.Capacity == 0)
 			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(context));
@@ -600,13 +600,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		if (length == 0)
 			return;
-		if (low != null)
+		if (low is not null)
 		{
 			int index2 = (int)index, count2 = (int)length;
 			for (var i = 0; i < count2; i++)
 				list[listIndex + i] = low[index2 + i];
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			var endIndex = index + length - 1;
 			var ((_, intIndex, restIndex), (_, endIntIndex, endRestIndex)) = new CopyRangeSide((TCertain)this, index, endIndex);
@@ -638,7 +638,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		low?.Dispose();
 		low = null;
-		if (high != null)
+		if (high is not null)
 		{
 			foreach (var x in high)
 				x.Dispose();
@@ -658,9 +658,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected virtual int EffectiveHighLength()
 	{
-		if (highLength != null)
+		if (highLength is not null)
 			return highLength.Length;
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		if (MpzCmpSi(high[^1].Length, 0) != 0)
 			return high.Length;
 		var lo = 0;
@@ -678,7 +678,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected override T GetInternal(MpzT index, bool invoke = true)
 	{
-		if (low != null)
+		if (low is not null)
 			return low[(int)(bReversed ? Length - 1 - index : index)];
 		else if (GetProcessAccessCache(Root, index, invoke, out var result))
 			return result;
@@ -691,9 +691,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected virtual MpzT GetLeftValuesSum(int index, out MpzT actualValue)
 	{
-		if (highLength != null)
+		if (highLength is not null)
 			return highLength.GetLeftValuesSum(index, out actualValue);
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		MpzT sum = 0;
 		var i = 0;
 		for (; i < index && i < high.Length; i++)
@@ -706,7 +706,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		TCertain branch;
 		MpzT start;
-		if (root.accessCache == null || root.accessCache.Length == 0)
+		if (root.accessCache is null || root.accessCache.Length == 0)
 		{
 			root.accessCache ??= new();
 			(branch, start) = (root, 0);
@@ -725,9 +725,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			(branch, start) = root.accessCache.Peek();
 		}
-		while (branch.low == null)
+		while (branch.low is null)
 		{
-			if (branch.high == null)
+			if (branch.high is null)
 			{
 				result = default;
 				return false;
@@ -750,17 +750,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected virtual bool HasMaxHighLength()
 	{
-		if (highLength != null)
+		if (highLength is not null)
 			return highLength.Length == Subbranches;
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		return high.Length == Subbranches && high[^1].Length != 0;
 	}
 
 	protected virtual bool HasSufficientLength(int length)
 	{
-		if (highLength != null)
+		if (highLength is not null)
 			return highLength.Length > length;
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		return high.Length > length && high[length].Length != 0;
 	}
 
@@ -770,12 +770,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		var this2 = (TCertain)this;
 		Root.accessCache?.Clear();
-		if (low != null)
+		if (low is not null)
 		{
 			IncreaseLowCapacity(value, targetFragment);
 			return;
 		}
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		var newFragment = fragment << SubbranchesBitLength;
 		var value2 = RedStarLinqMath.Min(value, newFragment);
 		if (_capacity < newFragment)
@@ -812,8 +812,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (_capacity == value)
 		{
 #if VERIFY
-			if (high != null)
-				Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+			if (high is not null)
+				Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 			Verify();
 #endif
 			return;
@@ -834,7 +834,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			first.highLength = oldHighLength;
 			first.Length = oldHighLength?.ValuesSum ?? oldHigh.Sum(x => x.Length);
 			first._capacity = _capacity;
-			Debug.Assert(first.high != null);
+			Debug.Assert(first.high is not null);
 			first.parent = this2;
 			highLength = SubbranchesBitLength >= 6 ? [Length] : null;
 			foreach (var x in oldHigh)
@@ -854,16 +854,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (_capacity == value)
 			{
 #if VERIFY
-				if (high != null)
-					Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+				if (high is not null)
+					Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 				Verify();
 #endif
 				return;
 			}
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -875,7 +875,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		var this2 = (TCertain)this;
 		Root.accessCache?.Clear();
-		Debug.Assert(low != null);
+		Debug.Assert(low is not null);
 		if (value <= LeafSize)
 		{
 			low.Capacity = (int)value;
@@ -906,7 +906,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Length = 0;
 		var first = this;
 		// Устанавливаем highLength на всех уровнях
-		for (; first.high != null; first = first.high[0])
+		for (; first.high is not null; first = first.high[0])
 		{
 			first.highLength = SubbranchesBitLength >= 6 ? [preservedLow.Length] : null;
 			first.high[0]._capacity = RedStarLinqMath.Min(first.fragment, value);
@@ -918,8 +918,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			first.Length = preservedLow.Length;
 		AddCapacity(value - _capacity);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 		return;
@@ -929,9 +929,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		if (length == 0)
 			return -1;
-		if (low != null)
+		if (low is not null)
 			return IndexOfTrivial(item, index, length, fromEnd);
-		else if (high == null)
+		else if (high is null)
 			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
@@ -1016,9 +1016,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected virtual int IndexOfNotGreaterSum(MpzT sum, out MpzT sumExceedsBy)
 	{
-		if (highLength != null)
+		if (highLength is not null)
 			return highLength.IndexOfNotGreaterSum(sum, out sumExceedsBy);
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		if (sum == 0)
 		{
 			sumExceedsBy = 0;
@@ -1063,7 +1063,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected virtual void IndexOfNotGreaterSum(MpzT leftSum, MpzT rightSum,
 		out CopyRangeIndex leftIndexes, out CopyRangeIndex rightIndexes)
 	{
-		if (highLength != null)
+		if (highLength is not null)
 		{
 			var leftIntIndex = highLength.IndexOfNotGreaterSum(leftSum, out var leftRestIndex);
 			var rightIntIndex = highLength.IndexOfNotGreaterSum(rightSum, out var rightRestIndex);
@@ -1071,7 +1071,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			rightIndexes = new(rightSum, rightIntIndex, rightRestIndex);
 			return;
 		}
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		var oldLeftSum = leftSum;
 		var oldRightSum = rightSum;
 		rightSum = new(rightSum);
@@ -1185,7 +1185,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected virtual MpzT IndexOfTrivial(T item, MpzT index, MpzT length, bool fromEnd)
 	{
-		Debug.Assert(low != null);
+		Debug.Assert(low is not null);
 		Debug.Assert(index < int.MaxValue - 1);
 		Func<T, int, int, int> func = bReversed ^ fromEnd ? low.LastIndexOf : low.IndexOf;
 		if (fromEnd)
@@ -1207,7 +1207,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		EnsureCapacity(Length + 1);
 		var bReversedOld = bReversed;
 		var compactified = false;
-		if (low != null)
+		if (low is not null)
 		{
 			Debug.Assert(index < int.MaxValue - 1);
 			low.Insert((int)(bReversed ? Length - index : index), item);
@@ -1218,7 +1218,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		Root.accessCache?.Clear();
-		if (high == null)
+		if (high is null)
 			throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
@@ -1258,12 +1258,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (Length > fragment * Subbranches - 1)
 			{
-				Debug.Assert(parent == null);
+				Debug.Assert(parent is null);
 				Capacity <<= 1;
 				continue;
 			}
-			if (!(HasSufficientLength(intIndex) && (high[intIndex].low != null && high[intIndex].Length == LeafSize
-				|| high[intIndex].high != null && high[intIndex].HasMaxHighLength())))
+			if (!(HasSufficientLength(intIndex) && (high[intIndex].low is not null && high[intIndex].Length == LeafSize
+				|| high[intIndex].high is not null && high[intIndex].HasMaxHighLength())))
 			{
 				high[intIndex].InsertInternal(restIndex, item);
 				if (!HasSufficientLength(intIndex))
@@ -1274,7 +1274,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (HasMaxHighLength())
 			{
-				if (parent == null && Length << GetArrayLength((Length - 1).BitLength - LeafSizeBitLength,
+				if (parent is null && Length << GetArrayLength((Length - 1).BitLength - LeafSizeBitLength,
 					SubbranchesBitLength) >= fragment << SubbranchesBitLength)
 				{
 					IncreaseCapacity(Capacity << 1, fragment << SubbranchesBitLength);
@@ -1326,8 +1326,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (bReversedOld)
 			Reverse();
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -1340,7 +1340,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (length == 0)
 			return;
 		Root.accessCache?.Clear();
-		if (low != null)
+		if (low is not null)
 		{
 			Debug.Assert(index < int.MaxValue - 1);
 			low.Insert((int)(bReversed ? Length - index : index), bigList.Wrap(x => bReversed ? x.Reverse() : x));
@@ -1350,7 +1350,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 			return;
 		}
-		else if (high == null)
+		else if (high is null)
 			throw new InvalidOperationException("Невозможно вставить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
@@ -1422,8 +1422,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			break;
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -1433,7 +1433,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var this2 = (TCertain)this;
 		var length = bigList.Length;
 		var (index, intIndex, restIndex) = copyRange;
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		var oldLength = Length;
 		var targetLength = length;
 		var shiftedIntIndex = intIndex;
@@ -1519,8 +1519,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected virtual MpzT LastEffectiveLength()
 	{
-		Debug.Assert(high != null);
-		if (highLength != null)
+		Debug.Assert(high is not null);
+		if (highLength is not null)
 			return highLength[^1];
 		return high[EffectiveHighLength() - 1].Length;
 	}
@@ -1528,7 +1528,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRange(MoveRangeContext context)
 	{
 		List<MoveRangeContext> stack;
-		if (context.Destination.Root.moveStack == null)
+		if (context.Destination.Root.moveStack is null)
 			stack = context.Destination.Root.moveStack = new(32, context);
 		else
 		{
@@ -1548,7 +1548,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if ((mode & MoveRangeMode.SpecialMode) == 0 && length == 0)
 			return;
 		var stackIndex = stack.Length;
-		if (source == null)
+		if (source is null)
 		{
 			if (sourceIndex == -1 && destinationIndex <= -1 && destinationIndex >= -2 && length < 0)
 				MoveRangeIterationResize(stack, context, stackIndex);
@@ -1569,14 +1569,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				MoveRangeIterationSpecial(stack, context, stackIndex);
 		}
 		// Тривиальный случай - оба списка являются листьями дерева
-		else if (source.low != null && destination.low != null)
+		else if (source.low is not null && destination.low is not null)
 			MoveRangeTrivial(context);
 		// Только целевой список является листом дерева
-		else if (destination.low != null || destination.fragment < fragment)
+		else if (destination.low is not null || destination.fragment < fragment)
 			MoveRangeToLeaf(stack, context, stackIndex, fragment);
 		// Исходный список является более мелкой веткой (возможно, даже листом)
-		else if ((source.low != null || destination.fragment > fragment)
-			&& destination.high != null)
+		else if ((source.low is not null || destination.fragment > fragment)
+			&& destination.high is not null)
 			MoveRangeToLarger(stack, context, stackIndex);
 		// Самый сложный случай: исходный список является соизмеримой или более крупной веткой,
 		// а целевой также не является листом
@@ -1590,11 +1590,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var startIndex = -(int)sourceIndex;
 		targetLength = -targetLength;
 		source.Root.accessCache?.Clear();
-		Debug.Assert(source.high != null);
+		Debug.Assert(source.high is not null);
 		MpzT oldTargetLength = new(targetLength);
 		LimitedBuffer<MpzT> estimatedLengths = new(source.high.Convert(x => x.Length).TakeWhile(x => x != 0));
 		var deepCompactify = targetLength >= source.fragment * (source.high.Length - 1);
-		var mergeThreshold = source.fragment - (source.high[0].high != null ? source.high[0].fragment : 0);
+		var mergeThreshold = source.fragment - (source.high[0].high is not null ? source.high[0].fragment : 0);
 	start:
 		if (source.Length + (estimatedLengths.Length > 0 ? source.fragment - estimatedLengths[^1] : 0)
 			+ (source.high.Length - estimatedLengths.Length - 1) * source.fragment + source.high[^1].Capacity
@@ -1622,7 +1622,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				break;
 			var highAtI = source.high[i];
 			var highBeforeI = source.high[i - highOffset - 1];
-			if (i >= startIndex && highBeforeI.high != null && highBeforeI.Length
+			if (i >= startIndex && highBeforeI.high is not null && highBeforeI.Length
 				+ highBeforeI.fragment - highBeforeI.LastEffectiveLength() + amount > highBeforeI.Capacity)
 			{
 				stack.Insert(stackIndex, (null!, -2, highBeforeI, -1, -source.fragment, mode));
@@ -1682,8 +1682,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				stack.Insert(stackIndex, (null!, -2, source, -1, -oldTargetLength, mode));
 		}
 #if VERIFY
-		if (source.high != null)
-			Debug.Assert((source.highLength == null || source.Length == source.highLength?.ValuesSum)
+		if (source.high is not null)
+			Debug.Assert((source.highLength is null || source.Length == source.highLength?.ValuesSum)
 				&& source.Length == source.high.Sum(x => x.Length));
 		source.Verify();
 #endif
@@ -1694,7 +1694,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var source = context.Destination;
 		var increment = -context.Length;
 		var inverted = context.DestinationIndex == -2;
-		if (source.low != null)
+		if (source.low is not null)
 		{
 			if (!source.bReversed || source.low.Length == 0)
 				source.low.Resize((int)(source.Length + increment));
@@ -1703,7 +1703,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			source.Length = source.low.Length;
 			return;
 		}
-		else if (source.high == null)
+		else if (source.high is null)
 			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {source.Length}, подветок - {source.high?.Length ?? 0},"
 				+ $" реверс - {source.bReversed}, емкость - {source.Capacity},"
@@ -1714,7 +1714,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		var sourceEffectiveHighLength = source.EffectiveHighLength();
-		if (source.high != null && source.HasSufficientLength(0)
+		if (source.high is not null && source.HasSufficientLength(0)
 			&& (sourceEffectiveHighLength - 1) * source.fragment + source.LastEffectiveLength() + increment
 			> source.fragment << source.SubbranchesBitLength)
 		{
@@ -1722,7 +1722,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			stack.Insert(stackIndex, context);
 			return;
 		}
-		Debug.Assert(source.high != null);
+		Debug.Assert(source.high is not null);
 		sourceEffectiveHighLength = source.EffectiveHighLength();
 		var targetCapacity = (source.HasSufficientLength(0) ? (sourceEffectiveHighLength - 1)
 			* source.fragment + source.LastEffectiveLength() : 0) + increment;
@@ -1777,7 +1777,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeIterationSpecial(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
 	{
 		var (source, indexes, destination, step, destinationCurrentRestIndex, mode) = context;
-		Debug.Assert(source.high != null && destination.high != null);
+		Debug.Assert(source.high is not null && destination.high is not null);
 		Debug.Assert((mode & MoveRangeMode.Copy) == 0);
 		var sourceIndex = indexes.Divide(1 << 30, out int iDestination);
 		var iSource = (int)sourceIndex;
@@ -1817,14 +1817,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				destination.highLength?.SetOrAdd(i, destination.high[i].Length);
 			for (var i = iSource; i < iSource + destinationIntLength; i++)
 			{
-				if (source.parent == null && source.high.Length - i + iSource != 1)
+				if (source.parent is null && source.high.Length - i + iSource != 1)
 					source.AddCapacity(-source.high[iSource].Capacity);
 				source.Length -= source.high[i].Length;
 				source.high[i].parent = destination;
 			}
 			source.high.Remove(iSource, destinationIntLength);
 			for (var i = 0; i < destinationIntLength; i++)
-				if (source.parent != null || source.high.Length == 0)
+				if (source.parent is not null || source.high.Length == 0)
 				{
 					source.high.Add(source.CapacityCreator(source.fragment));
 					source.high[^1].parent = source;
@@ -1847,7 +1847,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				if (currentSource.bReversed)
 				{
 					currentSource.low?.Reverse();
-					var highEffectiveLength = currentSource.high != null ? currentSource.EffectiveHighLength() : 0;
+					var highEffectiveLength = currentSource.high is not null ? currentSource.EffectiveHighLength() : 0;
 					currentSource.high?.Reverse(0, highEffectiveLength);
 					currentSource.high?.Take(highEffectiveLength).ForEach(x => x.Reverse());
 					currentSource.highLength?.Reverse();
@@ -1858,14 +1858,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				destination.Length += currentSource.Length;
 			currentDestination.Dispose();
 			destination.high[iDestination] = currentSource;
-			if (destination.highLength != null && destination.highLength[iDestination] < currentSource.Length)
+			if (destination.highLength is not null && destination.highLength[iDestination] < currentSource.Length)
 				destination.highLength[iDestination] = currentSource.Length;
-			if (source.parent == null && source.high.Length != 1)
+			if (source.parent is null && source.high.Length != 1)
 				source.AddCapacity(-source.high[iSource].Capacity);
 			source.high.RemoveAt(iSource);
 			source.Length -= currentSource.Length;
 			currentSource.parent = destination;
-			if (source.parent != null || source.high.Length == 0)
+			if (source.parent is not null || source.high.Length == 0)
 			{
 				source.high.Add(source.CapacityCreator(source.fragment));
 				source.high[^1].parent = source;
@@ -1880,7 +1880,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeIterationSpecial2(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
 	{
 		var (source, leftCheck, destination, rightCheck, sourceIndex, mode) = context;
-		Debug.Assert(source.high != null && destination.high != null && leftCheck == -1 && rightCheck == -1);
+		Debug.Assert(source.high is not null && destination.high is not null && leftCheck == -1 && rightCheck == -1);
 		Debug.Assert((mode & MoveRangeMode.Copy) == 0);
 		var iSource = ~(int)sourceIndex;
 		var currentSource = source.high[iSource];
@@ -1901,8 +1901,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeToLarger(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
 	{
 		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
-		Debug.Assert((source.low != null || destination.fragment > source.fragment)
-			&& destination.high != null);
+		Debug.Assert((source.low is not null || destination.fragment > source.fragment)
+			&& destination.high is not null);
 		var fragment = destination.fragment;
 		var endIndex = destinationIndex + length - 1;
 		var (start, end) = new CopyRangeSide(destination, destinationIndex, endIndex);
@@ -1961,8 +1961,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		var (source, sourceIndex, destination, _, length, mode) = context;
-		Debug.Assert((source.low != null || destination.fragment > source.fragment)
-			&& destination.high != null);
+		Debug.Assert((source.low is not null || destination.fragment > source.fragment)
+			&& destination.high is not null);
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 		var previousPart = RedStarLinqMath.Min((destination.HasSufficientLength(indexes.Start.IntIndex + 1)
 			? destination.high[indexes.Start.IntIndex].Length : fragment) - indexes.Start.RestIndex, length);
@@ -2002,8 +2002,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		var (source, sourceIndex, destination, _, length, mode) = context;
-		Debug.Assert((source.low != null || destination.fragment > source.fragment)
-			&& destination.high != null);
+		Debug.Assert((source.low is not null || destination.fragment > source.fragment)
+			&& destination.high is not null);
 		// Диапазон копируется слева направо
 		var previousPart = RedStarLinqMath.Min((destination.HasSufficientLength(indexes.Start.IntIndex + 1)
 			? destination.high[indexes.Start.IntIndex].Length : fragment) - indexes.Start.RestIndex, length);
@@ -2042,7 +2042,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment)
 	{
 		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
-		Debug.Assert(source.high != null);
+		Debug.Assert(source.high is not null);
 		var endIndex = sourceIndex + length - 1;
 		var (start, end) = new CopyRangeSide(source, sourceIndex, endIndex);
 		// Диапазон дописывается после конца списка
@@ -2087,7 +2087,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		var (source, _, destination, destinationIndex, length, mode) = context;
-		Debug.Assert(source.high != null);
+		Debug.Assert(source.high is not null);
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 		var (start, end) = indexes;
 		var newSize = destinationIndex + length;
@@ -2116,7 +2116,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide indexes)
 	{
 		var (source, _, destination, destinationIndex, length, mode) = context;
-		Debug.Assert(source.high != null);
+		Debug.Assert(source.high is not null);
 		// Диапазон копируется слева направо
 		var (start, end) = indexes;
 		var newSize = destinationIndex + length;
@@ -2145,7 +2145,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeToSimilar(List<MoveRangeContext> stack, MoveRangeContext context, int stackIndex)
 	{
 		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
-		if (!(source.high != null && destination.high != null))
+		if (!(source.high is not null && destination.high is not null))
 			throw new InvalidOperationException("Невозможно переместить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина источника - {source.Length}, подветок источника - {source.high?.Length ?? 0},"
 				+ $" реверс источника - {source.bReversed}, емкость источника - {source.Capacity},"
@@ -2233,7 +2233,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				destination.high[destinationIntIndex],
 				ProcessReverse(destination.high[destinationIntIndex], destinationRestIndex, length),
 				length, MoveRangeMode.Copy));
-			if (destination.highLength != null && (destinationIntIndex >= destination.highLength.Length
+			if (destination.highLength is not null && (destinationIntIndex >= destination.highLength.Length
 				|| destinationRestIndex + length > destination.highLength[destinationIntIndex]))
 				destination.highLength.SetOrAdd(destinationIntIndex, destinationRestIndex + length);
 		}
@@ -2263,7 +2263,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var (source, sourceIndex, destination, _, length, mode) = context;
 		Debug.Assert((mode & MoveRangeMode.Copy) != 0);
 		var offset = source.Length - (sourceIndex + length);
-		Debug.Assert(source == destination && source.high != null);
+		Debug.Assert(source == destination && source.high is not null);
 		for (var i = sourceStart.IntIndex; i < source.high.Length; i++)
 		{
 			if ((source.high[i].Length == source.fragment || source.high[i].Length == source.high[i].Capacity)
@@ -2311,7 +2311,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
 		var (source, _, destination, _, length, mode) = context;
-		Debug.Assert(source.high != null && destination.high != null);
+		Debug.Assert(source.high is not null && destination.high is not null);
 		var sourceCurrentRestIndex = sourceIndexes.End.RestIndex + 1;
 		MpzT sourceCurrentRestIndexOffset = 0;
 		var destinationCurrentRestIndex = destinationIndexes.Start.RestIndex;
@@ -2399,7 +2399,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
 		var (source, _, destination, _, length, mode) = context;
-		Debug.Assert(source.high != null && destination.high != null);
+		Debug.Assert(source.high is not null && destination.high is not null);
 		Dictionary<int, MpzT> highLengthPool = [];
 		var toEnd = sourceIndexes.End.Index + 1 == source.Length && destinationIndexes.End.Index + 1 >= destination.Length;
 		var sourceCurrentRestIndex = sourceIndexes.Start.RestIndex;
@@ -2450,7 +2450,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				|| iSource == sourceIndexes.Start.IntIndex && sourceIndexes.Start.RestIndex != 0)
 				stack.Insert(stackIndex, (currentSource,
 					ProcessReverse(currentSource, sourceCurrentRestIndex - sourceCurrentRestIndexOffset, step,
-					source != destination || currentSource.low == null && !hs.Contains(iSource) ? 0 : sourceEffectiveLength),
+					source != destination || currentSource.low is null && !hs.Contains(iSource) ? 0 : sourceEffectiveLength),
 					currentDestination, ProcessReverse(currentDestination, destinationCurrentRestIndex, step, newSize),
 					step, mode & ~MoveRangeMode.SpecialMode));
 			else if (sourceCurrentRestIndex + step != sourceEffectiveLength && !skipRest)
@@ -2545,7 +2545,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		int stackIndex, MpzT fragment, CopyRangeSide sourceIndexes, CopyRangeSide destinationIndexes)
 	{
 		var (source, _, destination, _, length, mode) = context;
-		Debug.Assert(source == destination && source.high != null);
+		Debug.Assert(source == destination && source.high is not null);
 		Debug.Assert((mode & MoveRangeMode.Copy) != 0);
 		var sourceEffectiveHighLength = source.EffectiveHighLength();
 		MpzT destinationHighLengthOld = new(sourceEffectiveHighLength);
@@ -2588,7 +2588,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			currentSource = source.high[iSource];
 			stack.Insert(stackIndex, (currentSource,
 				ProcessReverse(currentSource, sourceCurrentRestIndex, step,
-				currentSource.low == null && !hs.Contains(iSource) ? 0 : lengthSource),
+				currentSource.low is null && !hs.Contains(iSource) ? 0 : lengthSource),
 				source.high[iDestination],
 				ProcessReverse(source.high[iDestination], destinationCurrentRestIndex, step,
 				EffectiveLength(iDestination)), step, MoveRangeMode.Copy));
@@ -2628,7 +2628,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected static void MoveRangeTrivial(MoveRangeContext context)
 	{
 		var (source, sourceIndex, destination, destinationIndex, length, mode) = context;
-		Debug.Assert(source.low != null && destination.low != null);
+		Debug.Assert(source.low is not null && destination.low is not null);
 		MpzT oldLength = new(destination.Length);
 		if (destinationIndex == 0 && length >= destination.Length)
 			destination.bReversed = false;
@@ -2697,7 +2697,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Root.accessCache?.Clear();
 		do
 		{
-			Debug.Assert(high != null);
+			Debug.Assert(high is not null);
 			if (high.Length > 1 && high[1].Length != 0)
 				MoveRange((null!, -2, (TCertain)this, -1, -fragment << SubbranchesBitLength, MoveRangeMode.None));
 			fragment >>= SubbranchesBitLength;
@@ -2713,9 +2713,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			reverse ^= oldHigh[0].bReversed;
 			oldHigh.Dispose();
 			oldHighLength?.Dispose();
-			if (high == null)
+			if (high is null)
 			{
-				Debug.Assert(low != null);
+				Debug.Assert(low is not null);
 				break;
 			}
 			foreach (var x in high)
@@ -2724,15 +2724,15 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (reverse)
 			Reverse();
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
 
 	protected virtual void ReduceCapacityLinear(MpzT value)
 	{
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		var highCount = (int)GetArrayLength(value, fragment);
 		if (highCount == high.Length || high[highCount].Length != 0)
 			MoveRange((null!, -2, (TCertain)this, -1, -fragment << SubbranchesBitLength, MoveRangeMode.None));
@@ -2750,7 +2750,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var targetLastCapacity = leftCapacity == 0 ? fragment : leftCapacity;
 		if (high[^1].Capacity > targetLastCapacity)
 		{
-			if (high[^1].low != null)
+			if (high[^1].low is not null)
 			{
 				high[^1].low!.Capacity = (int)targetLastCapacity;
 				high[^1].AddCapacity(targetLastCapacity - high[^1].Capacity);
@@ -2759,8 +2759,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high[^1].ReduceCapacityLinear(targetLastCapacity);
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -2768,12 +2768,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected override void RemoveAtInternal(MpzT index)
 	{
 		Root.accessCache?.Clear();
-		if (low != null)
+		if (low is not null)
 		{
 			low.RemoveAt((int)(bReversed ? Length - 1 - index : index));
 			Length -= 1;
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			var intIndex = IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
 			if (HasSufficientLength(intIndex + 1) && high[intIndex].Length == 1)
@@ -2801,8 +2801,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -2817,12 +2817,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		Root.accessCache?.Clear();
-		if (low != null)
+		if (low is not null)
 		{
 			low.RemoveEnd((int)index);
 			Length = index;
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			var intIndex = IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
 			for (var i = high.Length - 1; i > intIndex; i--)
@@ -2842,8 +2842,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -2852,7 +2852,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		if (length == 0)
 			return;
-		if (low != null)
+		if (low is not null)
 		{
 			low.Remove((int)(bReversed ? Length - length - index : index), (int)length);
 			Length -= length;
@@ -2866,7 +2866,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			ClearInternal(true);
 			return;
 		}
-		else if (high == null)
+		else if (high is null)
 			throw new InvalidOperationException("Невозможно удалить диапазон. Возможные причины:\r\n" + InternalError
 				+ $"Текущее состояние: длина - {Length}, подветок - {high?.Length ?? 0},"
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
@@ -2920,7 +2920,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				bufferRange?.CopyRangeTo(0, high, pasteIndex = high.Length + intIndex + startOffset
 					- (endIntIndex + endOffset) - tempOffset, Min(bufferLength, high.Length - pasteIndex));
 			}
-			if (bufferRange != null && bufferRange.Length != 0)
+			if (bufferRange is not null && bufferRange.Length != 0)
 			{
 				var lastHigh = high[^1];
 				if (lastHigh.Capacity != fragment)
@@ -2939,8 +2939,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -2991,7 +2991,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Reverse();
 			return;
 		}
-		if (low != null)
+		if (low is not null)
 		{
 			low.Reverse((int)(bReversed ? Length - length - index : index), (int)length);
 #if VERIFY
@@ -3000,7 +3000,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		Root.accessCache?.Clear();
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		var endIndex = index + length - 1;
 		var bReversedOld = bReversed;
 		if (bReversedOld)
@@ -3090,10 +3090,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		finally
 		{
 #if VERIFY
-			if (high != null)
+			if (high is not null)
 			{
-				Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
-				Debug.Assert(highLength == null || highLength.All((x, index) => x == high[index].Length));
+				Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+				Debug.Assert(highLength is null || highLength.All((x, index) => x == high[index].Length));
 			}
 			Verify();
 #endif
@@ -3104,9 +3104,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected override void SetInternal(MpzT index, T value)
 	{
-		if (low != null)
+		if (low is not null)
 			low[(int)(bReversed ? Length - 1 - index : index)] = value;
-		else if (high != null)
+		else if (high is not null)
 		{
 			var intIndex = IndexOfNotGreaterSum(bReversed ? Length - 1 - index : index, out var restIndex);
 			if (intIndex != 0 && (!HasSufficientLength(intIndex) || restIndex == high[intIndex].Length)
@@ -3120,8 +3120,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				+ $" реверс - {bReversed}, емкость - {Capacity},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
@@ -3135,17 +3135,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		SetInternal(index, value);
 #if VERIFY
-		if (high != null)
-			Debug.Assert((highLength == null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
+		if (high is not null)
+			Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
 		Verify();
 #endif
 	}
 
 	protected virtual MpzT ValuesSum()
 	{
-		if (highLength != null)
+		if (highLength is not null)
 			return highLength.ValuesSum;
-		Debug.Assert(high != null);
+		Debug.Assert(high is not null);
 		MpzT sum = 0;
 		for (var i = 0; i < high.Length; i++)
 			if (high[i].Length == 0)
@@ -3161,7 +3161,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	protected virtual void Verify(TCertain item)
 	{
 		item.VerifySingle();
-		if (item.high == null)
+		if (item.high is null)
 			return;
 		for (var i = 0; i < item.high.Length; i++)
 		{
@@ -3172,15 +3172,15 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	protected override void VerifySingle()
 	{
-		Debug.Assert(low != null ^ high != null);
+		Debug.Assert(low is not null ^ high is not null);
 		Debug.Assert(Length <= Capacity);
-		if (low != null)
+		if (low is not null)
 		{
 			Debug.Assert(Length == low.Length);
 			Debug.Assert(Length <= LeafSize);
 			Debug.Assert(Capacity <= LeafSize);
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			Debug.Assert(Length == high.Sum(x => x.Length));
 			Debug.Assert(Length <= fragment << SubbranchesBitLength);

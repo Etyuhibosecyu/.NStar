@@ -64,13 +64,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			Initialize(capacity);
 		if (!typeof(TKey).IsValueType)
 			_comparer = keyComparer ?? G.EqualityComparer<TKey>.Default;
-		else if (keyComparer != null && keyComparer != G.EqualityComparer<TKey>.Default) // first check for null to avoid forcing default comparer instantiation unnecessarily
+		else if (keyComparer is not null && keyComparer != G.EqualityComparer<TKey>.Default) // first check for null to avoid forcing default comparer instantiation unnecessarily
 			_comparer = keyComparer;
 		else
 			_comparer = G.EqualityComparer<TKey>.Default;
 		if (!typeof(TValue).IsValueType)
 			_comparerM = valueComparer ?? G.EqualityComparer<TValue>.Default;
-		else if (valueComparer != null && valueComparer != G.EqualityComparer<TValue>.Default) // first check for null to avoid forcing default comparer instantiation unnecessarily
+		else if (valueComparer is not null && valueComparer != G.EqualityComparer<TValue>.Default) // first check for null to avoid forcing default comparer instantiation unnecessarily
 			_comparerM = valueComparer;
 		else
 			_comparerM = G.EqualityComparer<TValue>.Default;
@@ -106,7 +106,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(collection != null && collection.TryGetLengthEasily(out var length) ? length : 0, keyComparer, valueComparer)
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(collection is not null && collection.TryGetLengthEasily(out var length) ? length : 0, keyComparer, valueComparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		AddRange(collection);
@@ -263,8 +263,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				return;
 			// This is not currently a true .AddRange as it needs to be an initialized dictionary
 			// of the correct size, and also an empty dictionary with no current entities (and no argument checks).
-			Debug.Assert(source._entries != null);
-			Debug.Assert(_entries != null);
+			Debug.Assert(source._entries is not null);
+			Debug.Assert(_entries is not null);
 			Debug.Assert(_entries.Length >= source.Length);
 			Debug.Assert(_count == 0);
 			var oldEntries = source._entries;
@@ -305,9 +305,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		var length = _count;
 		if (length > 0)
 		{
-			Debug.Assert(_buckets != null, "_buckets should be non-null");
-			Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
-			Debug.Assert(_entries != null, "_entries should be non-null");
+			Debug.Assert(_buckets is not null, "_buckets should be non-null");
+			Debug.Assert(_bucketsM is not null, "_bucketsM should be non-null");
+			Debug.Assert(_entries is not null, "_entries should be non-null");
 			Array.Clear(_buckets);
 			Array.Clear(_bucketsM);
 			_count = 0;
@@ -343,7 +343,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 	protected virtual void CopyEntries(Entry[] entries, int length)
 	{
-		Debug.Assert(_entries != null);
+		Debug.Assert(_entries is not null);
 		var newEntries = _entries;
 		var newCount = 0;
 		for (var i = 0; i < length; i++)
@@ -373,16 +373,17 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
-		Debug.Assert(_entries != null);
+		Debug.Assert(_entries is not null);
 		var length = _count;
-		Debug.Assert(_entries != null);
+		Debug.Assert(_entries is not null);
 		var entries = _entries;
 		for (var i = 0; i < length; i++)
 			if (entries[i].next >= -1 && entries[i].nextM >= -1)
 				array[index++] = new G.KeyValuePair<TKey, TValue>(entries[i].key, entries[i].value);
 	}
 
-	void G.ICollection<G.KeyValuePair<TKey, TValue>>.CopyTo(G.KeyValuePair<TKey, TValue>[] array, int index) => CopyTo(array, index);
+	void G.ICollection<G.KeyValuePair<TKey, TValue>>.CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
+		CopyTo(array, arrayIndex);
 
 	void System.Collections.ICollection.CopyTo(Array array, int index)
 	{
@@ -395,7 +396,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
-		Debug.Assert(_entries != null);
+		Debug.Assert(_entries is not null);
 		if (array is G.KeyValuePair<TKey, TValue>[] pairs)
 			CopyTo(pairs, index);
 		else if (array is DictionaryEntry[] dictEntryArray)
@@ -423,11 +424,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	protected virtual int EnsureCapacity(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-		var currentCapacity = _entries == null ? 0 : _entries.Length;
+		var currentCapacity = _entries is null ? 0 : _entries.Length;
 		if (currentCapacity >= capacity)
 			return currentCapacity;
 		_version++;
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 			return Initialize(capacity);
 		var newSize = HashHelpers.GetPrime(capacity);
 		Resize(newSize, forceNewHashCodes: false);
@@ -460,14 +461,14 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 	internal ref TKey FindKey(TValue value)
 	{
-		if (value == null)
+		if (value is null)
 			throw new ArgumentNullException(nameof(value));
 		ref var entry = ref Unsafe.NullRef<Entry>();
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 			goto ReturnNotFound;
-		Debug.Assert(_entries != null, "expected entries to be != null");
+		Debug.Assert(_entries is not null, "expected entries to be is not null");
 		var comparerM = _comparerM;
-			Debug.Assert(comparerM != null);
+			Debug.Assert(comparerM is not null);
 			var hashCodeM = (uint)comparerM.GetHashCode(value);
 			var currentM = GetBucketM(hashCodeM);
 			var entries = _entries;
@@ -505,14 +506,14 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 	internal ref TValue FindValue(TKey key)
 	{
-		if (key == null)
+		if (key is null)
 			throw new ArgumentNullException(nameof(key));
 		ref var entry = ref Unsafe.NullRef<Entry>();
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 			goto ReturnNotFound;
-		Debug.Assert(_entries != null, "expected entries to be != null");
+		Debug.Assert(_entries is not null, "expected entries to be is not null");
 		var comparer = _comparer;
-			Debug.Assert(comparer != null);
+			Debug.Assert(comparer is not null);
 			var hashCode = (uint)comparer.GetHashCode(key);
 			var current = GetBucket(hashCode);
 			var entries = _entries;
@@ -551,7 +552,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	protected virtual ref int GetBucket(uint hashCode)
 	{
-		Debug.Assert(_buckets != null, "_buckets should be non-null");
+		Debug.Assert(_buckets is not null, "_buckets should be non-null");
 		var buckets = _buckets;
 		return ref buckets[hashCode % buckets.Length];
 	}
@@ -559,7 +560,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	protected virtual ref int GetBucketM(uint hashCode)
 	{
-		Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
+		Debug.Assert(_bucketsM is not null, "_bucketsM should be non-null");
 		var buckets = _bucketsM;
 		return ref buckets[hashCode % buckets.Length];
 	}
@@ -640,15 +641,15 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		// The overload RemoveKey(TKey key, out TValue value) is a copy of this method with one
 		// additional statement to copy the value for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
-		if (key == null)
+		if (key is null)
 			throw new ArgumentNullException(nameof(key));
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 			return false;
-		Debug.Assert(_entries != null, "entries should be non-null");
+		Debug.Assert(_entries is not null, "entries should be non-null");
 		uint collisionCount = 0;
 		var comparer = _comparer;
-		Debug.Assert(typeof(TKey).IsValueType || comparer != null);
-		var hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
+		Debug.Assert(typeof(TKey).IsValueType || comparer is not null);
+		var hashCode = (uint)(typeof(TKey).IsValueType && comparer is null ? key.GetHashCode() : comparer.GetHashCode(key));
 		ref var bucket = ref GetBucket(hashCode);
 		var entries = _entries;
 		var last = -1;
@@ -656,7 +657,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		while (current >= 0)
 		{
 			ref var entry = ref entries[current];
-			if (entry.hashCode == hashCode && (typeof(TKey).IsValueType && comparer == null ? G.EqualityComparer<TKey>.Default.Equals(entry.key, key) : comparer!.Equals(entry.key, key)))
+			if (entry.hashCode == hashCode && (typeof(TKey).IsValueType && comparer is null ? G.EqualityComparer<TKey>.Default.Equals(entry.key, key) : comparer!.Equals(entry.key, key)))
 			{
 				ref var bucketM = ref GetBucketM(entry.hashCodeM);
 				var lastM = Find(entries, current, bucketM);
@@ -696,18 +697,18 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		// This overload is a copy of the overload RemoveKey(TKey key) with one additional
 		// statement to copy the value for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
-		if (key == null)
+		if (key is null)
 			throw new ArgumentNullException(nameof(key));
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 		{
 			value = default;
 			return false;
 		}
-		Debug.Assert(_entries != null, "entries should be non-null");
+		Debug.Assert(_entries is not null, "entries should be non-null");
 		uint collisionCount = 0;
 		var comparer = _comparer;
-		Debug.Assert(typeof(TKey).IsValueType || comparer != null);
-		var hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
+		Debug.Assert(typeof(TKey).IsValueType || comparer is not null);
+		var hashCode = (uint)(typeof(TKey).IsValueType && comparer is null ? key.GetHashCode() : comparer.GetHashCode(key));
 		ref var bucket = ref GetBucket(hashCode);
 		var entries = _entries;
 		var last = -1;
@@ -715,7 +716,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		while (current >= 0)
 		{
 			ref var entry = ref entries[current];
-			if (entry.hashCode == hashCode && (typeof(TKey).IsValueType || comparer == null ? G.EqualityComparer<TKey>.Default.Equals(entry.key, key) : comparer.Equals(entry.key, key)))
+			if (entry.hashCode == hashCode && (typeof(TKey).IsValueType || comparer is null ? G.EqualityComparer<TKey>.Default.Equals(entry.key, key) : comparer.Equals(entry.key, key)))
 			{
 				ref var bucketM = ref GetBucketM(entry.hashCodeM);
 				var lastM = Find(entries, current, bucketM);
@@ -757,15 +758,15 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		// The overload RemoveValue(TValue value, out TKey key) is a copy of this method with one
 		// additional statement to copy the key for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
-		if (value == null)
+		if (value is null)
 			throw new ArgumentNullException(nameof(value));
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 			return false;
-		Debug.Assert(_entries != null, "entries should be non-null");
+		Debug.Assert(_entries is not null, "entries should be non-null");
 		uint collisionCountM = 0;
 		var comparerM = _comparerM;
-		Debug.Assert(typeof(TValue).IsValueType || comparerM != null);
-		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparerM == null ? value.GetHashCode() : comparerM.GetHashCode(value));
+		Debug.Assert(typeof(TValue).IsValueType || comparerM is not null);
+		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparerM is null ? value.GetHashCode() : comparerM.GetHashCode(value));
 		ref var bucketM = ref GetBucketM(hashCodeM);
 		var entries = _entries;
 		var lastM = -1;
@@ -773,7 +774,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		while (currentM >= 0)
 		{
 			ref var entry = ref entries[currentM];
-			if (entry.hashCodeM == hashCodeM && (typeof(TValue).IsValueType && comparerM == null ? G.EqualityComparer<TValue>.Default.Equals(entry.value, value) : comparerM!.Equals(entry.value, value)))
+			if (entry.hashCodeM == hashCodeM && (typeof(TValue).IsValueType && comparerM is null ? G.EqualityComparer<TValue>.Default.Equals(entry.value, value) : comparerM!.Equals(entry.value, value)))
 			{
 				ref var bucket = ref GetBucket(entry.hashCode);
 				var last = Find(entries, currentM, bucket, true);
@@ -813,18 +814,18 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		// This overload is a copy of the overload RemoveValue(TValue value) with one additional
 		// statement to copy the key for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
-		if (value == null)
+		if (value is null)
 			throw new ArgumentNullException(nameof(value));
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 		{
 			key = default;
 			return false;
 		}
-		Debug.Assert(_entries != null, "entries should be non-null");
+		Debug.Assert(_entries is not null, "entries should be non-null");
 		uint collisionCountM = 0;
 		var comparerM = _comparerM;
-		Debug.Assert(typeof(TValue).IsValueType || comparerM != null);
-		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparerM == null ? value.GetHashCode() : comparerM.GetHashCode(value));
+		Debug.Assert(typeof(TValue).IsValueType || comparerM is not null);
+		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparerM is null ? value.GetHashCode() : comparerM.GetHashCode(value));
 		ref var bucketM = ref GetBucketM(hashCodeM);
 		var entries = _entries;
 		var lastM = -1;
@@ -832,7 +833,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		while (currentM >= 0)
 		{
 			ref var entry = ref entries[currentM];
-			if (entry.hashCodeM == hashCodeM && (typeof(TValue).IsValueType && comparerM == null ? G.EqualityComparer<TValue>.Default.Equals(entry.value, value) : comparerM!.Equals(entry.value, value)))
+			if (entry.hashCodeM == hashCodeM && (typeof(TValue).IsValueType && comparerM is null ? G.EqualityComparer<TValue>.Default.Equals(entry.value, value) : comparerM!.Equals(entry.value, value)))
 			{
 				ref var bucket = ref GetBucket(entry.hashCode);
 				var last = Find(entries, currentM, bucket, true);
@@ -890,7 +891,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	{
 		// Value types never rehash
 		Debug.Assert(!forceNewHashCodes || !typeof(TKey).IsValueType || !typeof(TValue).IsValueType);
-		Debug.Assert(_entries != null, "_entries should be non-null");
+		Debug.Assert(_entries is not null, "_entries should be non-null");
 		Debug.Assert(newSize >= _entries.Length);
 		var entries = new Entry[newSize];
 		var length = _count;
@@ -962,13 +963,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		ArgumentOutOfRangeException.ThrowIfLessThan(capacity, Length);
 		var newSize = HashHelpers.GetPrime(capacity);
 		var oldEntries = _entries;
-		var currentCapacity = oldEntries == null ? 0 : oldEntries.Length;
+		var currentCapacity = oldEntries is null ? 0 : oldEntries.Length;
 		if (newSize >= currentCapacity)
 			return;
 		var oldCount = _count;
 		_version++;
 		Initialize(newSize);
-		Debug.Assert(oldEntries != null);
+		Debug.Assert(oldEntries is not null);
 		CopyEntries(oldEntries, oldCount);
 	}
 
@@ -1002,23 +1003,23 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	{
 		// NOTE: this method is mirrored in CollectionsMarshal.GetValueRefOrAddDefault below.
 		// If you make any changes here, make sure to keep that version in sync as well.
-		if (key == null)
+		if (key is null)
 			throw new ArgumentNullException(nameof(key));
-		if (value == null)
+		if (value is null)
 			throw new ArgumentNullException(nameof(value));
-		if (_buckets == null || _bucketsM == null)
+		if (_buckets is null || _bucketsM is null)
 			Initialize(0);
-		Debug.Assert(_buckets != null, "_buckets should be non-null");
-		Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
+		Debug.Assert(_buckets is not null, "_buckets should be non-null");
+		Debug.Assert(_bucketsM is not null, "_bucketsM should be non-null");
 		var entries = _entries;
-		Debug.Assert(entries != null, "expected entries to be non-null");
+		Debug.Assert(entries is not null, "expected entries to be non-null");
 		var comparer = _comparer;
 		var comparerM = _comparerM;
-		var hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
+		var hashCode = (uint)(typeof(TKey).IsValueType && comparer is null ? key.GetHashCode() : comparer.GetHashCode(key));
 		uint collisionCount = 0;
 		ref var bucket = ref GetBucket(hashCode);
 		var current = bucket - 1; // Value in _buckets is 1-based
-		if (typeof(TKey).IsValueType && comparer == null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
+		if (typeof(TKey).IsValueType && comparer is null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
 			while (true)
 			{
 				var a = TryInsertInternal(key, value, behavior, entries, G.EqualityComparer<TKey>.Default, comparerM, hashCode, ref collisionCount, ref current);
@@ -1033,7 +1034,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			}
 		else
 		{
-			Debug.Assert(comparer != null);
+			Debug.Assert(comparer is not null);
 			while (true)
 			{
 				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
@@ -1049,11 +1050,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 					return false;
 			}
 		}
-		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparer == null ? value.GetHashCode() : comparerM.GetHashCode(value));
+		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparer is null ? value.GetHashCode() : comparerM.GetHashCode(value));
 		uint collisionCountM = 0;
 		ref var bucketM = ref GetBucketM(hashCodeM);
 		var currentM = bucketM - 1; // Value in _bucketsM is 1-based
-		if (typeof(TValue).IsValueType && comparerM == null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
+		if (typeof(TValue).IsValueType && comparerM is null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
 			while (true)
 			{
 				var a = TryInsertInternal(key, value, behavior, entries, comparer ?? G.EqualityComparer<TKey>.Default, G.EqualityComparer<TValue>.Default, hashCodeM, ref collisionCountM, ref currentM, true);
@@ -1068,7 +1069,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			}
 		else
 		{
-			Debug.Assert(comparer != null);
+			Debug.Assert(comparer is not null);
 			while (true)
 			{
 				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
@@ -1170,7 +1171,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				ref var bucket = ref GetBucket(entry.hashCode);
 				var last = Find(entries, current, bucket, true);
 				ProcessLast(entries, entry, ref bucket, last);
-				entry.hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
+				entry.hashCode = (uint)(typeof(TKey).IsValueType && comparer is null ? key.GetHashCode() : comparer.GetHashCode(key));
 				bucket = ref GetBucket(entry.hashCode);
 				entry.next = bucket - 1; // Value in _buckets is 1-based
 				entries[current].key = key;
@@ -1183,7 +1184,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				ref var bucketM = ref GetBucketM(entry.hashCodeM);
 				var lastM = Find(entries, current, bucketM);
 				ProcessLast(entries, entry, ref bucketM, lastM, true);
-				entry.hashCodeM = (uint)(typeof(TValue).IsValueType && comparer == null ? value.GetHashCode() : comparerM.GetHashCode(value));
+				entry.hashCodeM = (uint)(typeof(TValue).IsValueType && comparer is null ? value.GetHashCode() : comparerM.GetHashCode(value));
 				bucketM = ref GetBucketM(entry.hashCodeM);
 				entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
 				entries[current].value = value;
@@ -1311,18 +1312,18 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 		public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
-		public void CopyTo(TKey[] array, int index)
+		public void CopyTo(TKey[] array, int arrayIndex)
 		{
 			ArgumentNullException.ThrowIfNull(array);
-			if (index < 0 || index > array.Length)
-				throw new ArgumentOutOfRangeException(nameof(index));
-			if (array.Length - index < _dictionary.Length)
+			if (arrayIndex < 0 || arrayIndex > array.Length)
+				throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+			if (array.Length - arrayIndex < _dictionary.Length)
 				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 			var length = _dictionary._count;
 			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
 				if (entries![i].next >= -1 && entries![i].nextM >= -1)
-					array[index++] = entries[i].key;
+					array[arrayIndex++] = entries[i].key;
 		}
 
 		void System.Collections.ICollection.CopyTo(Array array, int index)
@@ -1438,18 +1439,18 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 		bool G.ICollection<TValue>.Contains(TValue item) => _dictionary.ContainsValue(item);
 
-		public void CopyTo(TValue[] array, int index)
+		public void CopyTo(TValue[] array, int arrayIndex)
 		{
 			ArgumentNullException.ThrowIfNull(array);
-			if ((uint)index > array.Length)
-				throw new ArgumentOutOfRangeException(nameof(index));
-			if (array.Length - index < _dictionary.Length)
+			if ((uint)arrayIndex > array.Length)
+				throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+			if (array.Length - arrayIndex < _dictionary.Length)
 				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 			var length = _dictionary._count;
 			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
 				if (entries![i].next >= -1 && entries![i].nextM >= -1)
-					array[index++] = entries[i].value;
+					array[arrayIndex++] = entries[i].value;
 		}
 
 		void System.Collections.ICollection.CopyTo(Array array, int index)

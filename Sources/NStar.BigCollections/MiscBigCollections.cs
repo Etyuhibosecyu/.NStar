@@ -66,7 +66,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	}
 
 	public BigQueue(G.IEnumerable<T> col, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: this((col == null) ? throw new ArgumentNullException(nameof(col))
+		: this((col is null) ? throw new ArgumentNullException(nameof(col))
 		: col.TryGetLengthEasily(out var length) ? length : 32, subbranchesBitLength, leafSizeBitLength)
 	{
 		using var en = col.GetEnumerator();
@@ -79,14 +79,14 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		get
 		{
 			var last = this;
-			while (last.high != null)
+			while (last.high is not null)
 			{
 				if (last.high.Length != Subbranches
-					|| last.fragment != (last.high[^1].low != null ? LeafSize : last.high[^1].fragment << SubbranchesBitLength))
+					|| last.fragment != (last.high[^1].low is not null ? LeafSize : last.high[^1].fragment << SubbranchesBitLength))
 					return false;
 				last = last.high[^1];
 			}
-			Debug.Assert(last.low != null);
+			Debug.Assert(last.low is not null);
 			return last.low.Length == LeafSize;
 		}
 	}
@@ -103,9 +103,9 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	public virtual void Clear()
 	{
-		if (low != null)
+		if (low is not null)
 			low.Clear();
-		else if (high != null)
+		else if (high is not null)
 		{
 			foreach (var x in high)
 				x.Clear();
@@ -125,12 +125,12 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	public virtual object Clone()
 	{
 		BigQueue<T> q = new(SubbranchesBitLength, LeafSizeBitLength) { Length = Length };
-		if (low != null)
+		if (low is not null)
 		{
 			q.low = (Queue<T>)low.Clone();
 			q.high = null;
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			q.low = null;
 			q.high = new(high.Convert(x => (BigQueue<T>)x.Clone()));
@@ -153,9 +153,9 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	public virtual bool Contains(T? obj)
 	{
-		if (low != null)
+		if (low is not null)
 			return low.Contains(obj);
-		else if (high != null)
+		else if (high is not null)
 		{
 			foreach (var subQueue in high)
 				if (subQueue.Contains(obj))
@@ -175,9 +175,9 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			throw new RankException("Массив должен иметь одно измерение.");
 		try
 		{
-			if (low != null)
+			if (low is not null)
 				low.CopyTo(array, arrayIndex);
-			else if (high != null)
+			else if (high is not null)
 			{
 				for (var i = 0; i < high.Length; i++)
 				{
@@ -199,9 +199,9 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		if (Length == 0)
 			throw new InvalidOperationException("Невозможно удалить элемент из очереди, так как она пуста.");
 		Length--;
-		if (low != null)
+		if (low is not null)
 			return low.Dequeue();
-		else if (high != null)
+		else if (high is not null)
 		{
 			var removed = high[0].Dequeue();
 			if (high[0].Length == 0 && high.Length != 1)
@@ -228,7 +228,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	{
 		low?.Dispose();
 		low = null;
-		if (high != null)
+		if (high is not null)
 		{
 			foreach (var x in high)
 				x.Dispose();
@@ -242,7 +242,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	public virtual void Enqueue(T item)
 	{
-		if (Length == LeafSize && low != null)
+		if (Length == LeafSize && low is not null)
 		{
 			high = new(4)
 			{
@@ -254,15 +254,15 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			low = null;
 			fragment = LeafSize;
 		}
-		else if (low != null)
+		else if (low is not null)
 			low.Enqueue(item);
-		else if (high != null)
+		else if (high is not null)
 		{
 			var index = high.Length == 1 || high[1].Length == 0 || Length < high[0].Length
 				? 0 : (int)((Length - high[0].Length) / fragment) + 1;
 			if (index < high.Length
 				&& (index == high.Length - 1
-				? fragment == (high[^1].low != null ? LeafSize : high[^1].fragment << SubbranchesBitLength)
+				? fragment == (high[^1].low is not null ? LeafSize : high[^1].fragment << SubbranchesBitLength)
 				&& high[index].IsFull : high[index].Length == fragment))
 				index++;
 			if (index == Subbranches)
@@ -308,9 +308,9 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	internal T GetElement(MpzT i)
 	{
-		if (low != null)
+		if (low is not null)
 			return E.ElementAt(low, (int)(i % LeafSize));
-		else if (high != null)
+		else if (high is not null)
 		{
 			if (high[0].Length == 0 || i < high[0].Length)
 				return high[0].GetElement(i);
@@ -337,9 +337,9 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	{
 		if (Length == 0)
 			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди, так как она пуста.");
-		if (low != null)
+		if (low is not null)
 			return low.Peek();
-		else if (high != null)
+		else if (high is not null)
 			return high[0].Peek();
 		else
 			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди. Возможные причины:\r\n"
@@ -353,7 +353,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	public virtual T[] ToArray()
 	{
-		if (low != null)
+		if (low is not null)
 			return [.. low];
 		else
 			throw new InvalidOperationException("Слишком большая очередь для преобразования в массив!");
@@ -363,10 +363,10 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	{
 		if (Length <= LeafSize)
 		{
-			if (low != null)
+			if (low is not null)
 				return;
 			var first = this;
-			while (high != null)
+			while (high is not null)
 			{
 				var index = high.Length == 1 || high[1].Length == 0 || Length < high[0].Length
 					? 1 : (int)((Length - high[0].Length) / fragment) + 1;
@@ -389,16 +389,16 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 				oldHigh.Clear();
 				oldHigh.Dispose();
 			}
-			Debug.Assert(low != null);
+			Debug.Assert(low is not null);
 			high = null;
 			fragment = 1;
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			int index;
 			while (Length <= fragment)
 			{
-				Debug.Assert(high != null);
+				Debug.Assert(high is not null);
 				index = high.Length == 1 || high[1].Length == 0 || Length < high[0].Length
 					? 1 : (int)((Length - high[0].Length) / fragment) + 1;
 				if (index < high.Length && high[index].Length != 0)
@@ -418,7 +418,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 				oldHigh.Dispose();
 				fragment >>= SubbranchesBitLength;
 			}
-			Debug.Assert(high != null);
+			Debug.Assert(high is not null);
 			index = high.Length == 1 || high[1].Length == 0 || Length < high[0].Length
 				? 1 : (int)((Length - high[0].Length) / fragment) + 1;
 			if (index < high.Length && high[index].Length != 0)
@@ -474,7 +474,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	protected virtual void Verify(BigQueue<T> item)
 	{
 		item.VerifySingle();
-		if (item.high == null)
+		if (item.high is null)
 			return;
 		for (var i = 0; i < item.high.Length; i++)
 		{
@@ -485,20 +485,20 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	protected virtual void VerifySingle()
 	{
-		Debug.Assert(low != null ^ high != null);
-		if (low != null)
+		Debug.Assert(low is not null ^ high is not null);
+		if (low is not null)
 		{
 			Debug.Assert(Length == low.Length);
 			Debug.Assert(Length <= LeafSize);
 		}
-		else if (high != null)
+		else if (high is not null)
 		{
 			Debug.Assert(high.Length != 0);
 			Debug.Assert(Length == 0 || high[0].Length != 0);
 			Debug.Assert(Length == high.Sum(x => x.Length));
 			Debug.Assert(Length <= fragment << SubbranchesBitLength);
 			for (var i = 0; i < high.Length - 1; i++)
-				Debug.Assert(fragment == (high[i].low != null ? LeafSize : high[i].fragment << SubbranchesBitLength));
+				Debug.Assert(fragment == (high[i].low is not null ? LeafSize : high[i].fragment << SubbranchesBitLength));
 			Debug.Assert(high.Capacity <= Subbranches);
 		}
 		else

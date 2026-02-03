@@ -179,7 +179,7 @@ public static class RedStarLinq
 		protected override int IndexOfInternal(TResult item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (function(source[i])?.Equals(item) ?? item == null)
+				if (function(source[i])?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -188,7 +188,7 @@ public static class RedStarLinq
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (function(source[i])?.Equals(item) ?? item == null)
+				if (function(source[i])?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -235,7 +235,7 @@ public static class RedStarLinq
 		protected override int IndexOfInternal(TResult item, int index, int length)
 		{
 			for (var i = index; i < index + length; i++)
-				if (function(source[i], i)?.Equals(item) ?? item == null)
+				if (function(source[i], i)?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -244,7 +244,7 @@ public static class RedStarLinq
 		{
 			var endIndex = index - length + 1;
 			for (var i = index; i >= endIndex; i--)
-				if (function(source[i], i)?.Equals(item) ?? item == null)
+				if (function(source[i], i)?.Equals(item) ?? item is null)
 					return i;
 			return -1;
 		}
@@ -319,7 +319,7 @@ public static class RedStarLinq
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -333,7 +333,7 @@ public static class RedStarLinq
 			{
 				var item = list3_[i];
 				var item2 = list3_2[i];
-				if (!(item?.Equals(item2) ?? item2 == null))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -348,13 +348,30 @@ public static class RedStarLinq
 					return false;
 				var item = en.Current;
 				var item2 = en2.Current;
-				if (!(item?.Equals(item2) ?? item2 == null))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return !en2.MoveNext();
 		}
 	}
 
+	/// <summary>
+	/// Создает список одинаковых элементов.
+	/// Если <typeparamref name="T"/> является ссылочным типом, клонирования не производится и список заполняется ссылками
+	/// на один и тот же элемент - если изменить какое-то его поле или свойство, оно изменится во всех элементах данного списка.
+	/// Если вам нужно заполнить список копиями элемента с возможностью изменять их по отдельности,
+	/// замените "elem" на "_ => elem" (предполагается, что в качестве elem используется какая-то генеративная функция,
+	/// если же вам нужно заполнить список копиями какой-либо существующей коллекции,
+	/// используйте collection.Copy() (для наследующихся от нашего <see cref="BaseList{T, TCertain}"/>),
+	/// new CollectionType(collection) или другую конструкцию в зависимости от коллекции -
+	/// обратитесь к разработчикам коллекции для уточнения, какая функция, конструктор или другая конструкция
+	/// создает копию коллекции, а вообще желательно минимизировать смешение коллекций из разных фреймворков -
+	/// если вы используете наш фреймворк, используйте наши коллекции, или тогда полностью перейдите на другой фреймворк).
+	/// </summary>
+	/// <typeparam name="T">Тип элемента для заполнения списка.</typeparam>
+	/// <param name="elem">Элемент для заполнения списка.</param>
+	/// <param name="length">Желаемое количество элементов в списке.</param>
+	/// <returns>Созданный список.</returns>
 	public static List<T> Fill<T>(T elem, int length)
 	{
 		var result = EmptyList<T>(length);
@@ -363,6 +380,18 @@ public static class RedStarLinq
 		return result;
 	}
 
+	/// <summary>
+	/// Создает список шаблонных элементов.
+	/// Для генерации нужны функция или лямбда-выражение, принимающие на вход индекс и возвращающие элемент.
+	/// В процессе можно использовать внешние переменные и функции.
+	/// В отличие от <see cref="Fill{T}(T, int)"/>, даже если индекс не используется в функции,
+	/// все равно она вычисляется для каждого элемента заново
+	/// (таким способом можно, например, заполнить список случайными элементами).
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="function">Функция или лямбда-выражение, принимающие индекс и возвращающие элемент.</param>
+	/// <param name="length">Желаемое количество элементов в списке.</param>
+	/// <returns>Созданный список.</returns>
 	public static List<T> Fill<T>(Func<int, T> function, int length)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -372,6 +401,14 @@ public static class RedStarLinq
 		return result;
 	}
 
+	/// <summary>
+	/// Создает список шаблонных элементов
+	/// (подробнее см. <see cref="Fill{T}(Func{int, T}, int)">в описании перегрузки с прямым порядком</see>).
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="function">Функция или лямбда-выражение, принимающие индекс и возвращающие элемент.</param>
+	/// <param name="length">Желаемое количество элементов в списке.</param>
+	/// <returns>Созданный список.</returns>
 	public static List<T> Fill<T>(int length, Func<int, T> function) => Fill(function, length);
 
 	public static T[] FillArray<T>(T elem, int length)

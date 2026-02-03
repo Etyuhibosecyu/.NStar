@@ -84,7 +84,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		_size = 0;
 	}
 
-	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetLengthEasily(out var length) ? length : 32)
+	public Queue(IEnumerable<T> col) : this((col is null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetLengthEasily(out var length) ? length : 32)
 	{
 		using var en = col.GetEnumerator();
 		while (en.MoveNext())
@@ -176,9 +176,9 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		var length = _size;
 		while (length-- > 0)
 		{
-			if (obj == null && _array[index] == null)
+			if (obj is null && _array[index] is null)
 				return true;
-			else if (_array[index] != null && (_array[index]?.Equals(obj) ?? false))
+			else if (_array[index] is not null && (_array[index]?.Equals(obj) ?? false))
 				return true;
 			index = (index + 1) % _array.Length;
 		}
@@ -415,7 +415,7 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (start + length > (@base?.Count ?? base2?.Count ?? 0))
 			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
-		if (@base == null && base2 == null)
+		if (@base is null && base2 is null)
 			throw new ArgumentNullException(nameof(@base));
 		if (@base is Slice<T> slice)
 		{
@@ -470,7 +470,7 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 			collection.CopyTo(_start + index, array, arrayIndex, length);
 		else if (_base is T[] array2)
 			Array.Copy(array2, _start + index, array, arrayIndex, length);
-		else if (_base != null)
+		else if (_base is not null)
 		{
 			var start = _start + index;
 			var end = start + length;
@@ -479,7 +479,7 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 		}
 		else if (_base2 is BaseIndexable<T> collection2)
 			collection2.CopyTo(_start + index, array, arrayIndex, length);
-		else if (_base2 != null)
+		else if (_base2 is not null)
 		{
 			var start = _start + index;
 			var end = start + length;
@@ -496,11 +496,11 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 	{
 		if (_base is BaseIndexable<T> collection)
 			return collection[_start + index];
-		else if (_base != null)
+		else if (_base is not null)
 			return _base[_start + index];
 		else if (_base2 is BaseIndexable<T> collection2)
 			return collection2[_start + index];
-		else if (_base2 != null)
+		else if (_base2 is not null)
 			return _base2[_start + index];
 		else
 			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
@@ -524,9 +524,9 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 		else
 		{
 			for (var i = _start + index; i < _start + index + length; i++)
-				if ((_base != null ? _base[i] : _base2 != null ? _base2[i]
+				if ((_base is not null ? _base[i] : _base2 is not null ? _base2[i]
 					: throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст."))
-					?.Equals(item) ?? item == null)
+					?.Equals(item) ?? item is null)
 					return i - _start;
 			return -1;
 		}
@@ -547,9 +547,9 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 		{
 			var endIndex = _start + index - length + 1;
 			for (var i = _start + index; i >= endIndex; i--)
-				if ((_base != null ? _base[i] : _base2 != null ? _base2[i]
+				if ((_base is not null ? _base[i] : _base2 is not null ? _base2[i]
 					: throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст."))
-					?.Equals(item) ?? item == null)
+					?.Equals(item) ?? item is null)
 					return i - _start;
 			return -1;
 		}
@@ -559,11 +559,11 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 	{
 		if (_base is BaseIndexable<T> collection)
 			collection[_start + index] = value;
-		else if (_base != null)
+		else if (_base is not null)
 			_base[_start + index] = value;
 		else if (_base2 is BaseIndexable<T> collection2)
 			collection2[_start + index] = value;
-		else if (_base2 != null)
+		else if (_base2 is not null)
 			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как коллекция, на которой"
 				+ " основан срез, доступна только для чтения.");
 		else
@@ -640,7 +640,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	{
 		get
 		{
-			if (_syncRoot == null)
+			if (_syncRoot is null)
 				Interlocked.CompareExchange<object>(ref _syncRoot!, new(), new());
 			return _syncRoot;
 		}
@@ -657,12 +657,12 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 		var length = _size;
 		var c = EqualityComparer<T>.Default;
 		while (length-- > 0)
-			if (item == null)
+			if (item is null)
 			{
-				if (_array[length] == null)
+				if (_array[length] is null)
 					return true;
 			}
-			else if (_array[length] != null && c.Equals(_array[length], item))
+			else if (_array[length] is not null && c.Equals(_array[length], item))
 				return true;
 		return false;
 	}
