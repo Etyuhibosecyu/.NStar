@@ -399,19 +399,38 @@ public class ListHashSetTests
 	public void TestCopyTo()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var a = list.ToHashSet();
-		var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
-		var c = (string[])b.Clone();
-		var d = (string[])b.Clone();
-		var e = (string[])b.Clone();
-		a.CopyTo(b);
-		new G.List<string>(E.Distinct(list)).CopyTo(c);
-		a.CopyTo(d, 3);
-		new G.List<string>(E.Distinct(list)).CopyTo(e, 3);
-		Assert.IsTrue(a.Equals(E.Distinct(list)));
-		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.IsTrue(E.SequenceEqual(e, d));
+		for (var i = 0; i < 10000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(0, 14), x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
+			var a = array.ToHashSet();
+			var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
+			var b2 = (string[])b.Clone();
+			var c = (string[])b.Clone();
+			var c2 = (string[])b.Clone();
+			a.CopyTo(b);
+			new G.List<string>(E.Distinct(array)).CopyTo(b2);
+			a.CopyTo(c, 3);
+			new G.List<string>(E.Distinct(array)).CopyTo(c2, 3);
+			Assert.IsTrue(a.Equals(E.Distinct(array)));
+			Assert.IsTrue(E.SequenceEqual(E.Distinct(array), a));
+			Assert.IsTrue(E.SequenceEqual(b2, b));
+			Assert.IsTrue(E.SequenceEqual(c2, c));
+			var b3 = (Array)RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
+			b2 = (string[])b3.Clone();
+			var c3 = (Array)b3.Clone();
+			c2 = (string[])b3.Clone();
+			a.CopyTo(b3, 0);
+			new G.List<string>(array).CopyTo(b2);
+			a.CopyTo(c3, 3);
+			new G.List<string>(array).CopyTo(c2, 3);
+			Assert.IsTrue(a.Equals(array));
+			Assert.IsTrue(E.SequenceEqual(array, a));
+			Assert.IsTrue(E.SequenceEqual(b2, (string[])b3));
+			Assert.IsTrue(E.SequenceEqual(c2, (string[])c3));
+		}
+		Assert.ThrowsExactly<RankException>(() => new BitList(bitList).CopyTo(new string[128, 128], 0));
+		Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new BitList(bitList).CopyTo(new long[128], 0));
+		Assert.ThrowsExactly<ArgumentException>(() => new BitList(bitList).CopyTo(new bool[128], 77));
 	}
 
 	[TestMethod]

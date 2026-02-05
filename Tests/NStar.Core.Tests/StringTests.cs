@@ -545,19 +545,38 @@ public class StringTests
 	public void TestCopyTo()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var a = nString.ToNString();
-		var b = RedStarLinq.FillArray(16, x => (char)random.Next(65536));
-		var c = (char[])b.Clone();
-		var d = (char[])b.Clone();
-		var e = (char[])b.Clone();
-		a.CopyTo(b);
-		new string(E.ToArray(nString)).CopyTo(c);
-		a.CopyTo(d, 3);
-		new string(E.ToArray(nString)).CopyTo(e.AsSpan(3));
-		Assert.IsTrue(a.Equals(nString));
-		Assert.IsTrue(E.SequenceEqual(nString, a));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.IsTrue(E.SequenceEqual(e, d));
+		for (var i = 0; i < 10000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(0, 14), x => (char)random.Next(65536));
+			var a = array.ToNString();
+			var b = RedStarLinq.FillArray(16, x => (char)random.Next(65536));
+			var b2 = (char[])b.Clone();
+			var c = (char[])b.Clone();
+			var c2 = (char[])b.Clone();
+			a.CopyTo(b);
+			new string(E.ToArray(array)).CopyTo(b2);
+			a.CopyTo(c, 3);
+			new string(E.ToArray(array)).CopyTo(c2.AsSpan(3));
+			Assert.IsTrue(a.Equals(array));
+			Assert.IsTrue(E.SequenceEqual(array, a));
+			Assert.IsTrue(E.SequenceEqual(b2, b));
+			Assert.IsTrue(E.SequenceEqual(c2, c));
+			var b3 = (Array)RedStarLinq.FillArray(16, x => (char)random.Next(65536));
+			b2 = (char[])b3.Clone();
+			var c3 = (Array)b3.Clone();
+			c2 = (char[])b3.Clone();
+			a.CopyTo(b3, 0);
+			new G.List<char>(array).CopyTo(b2);
+			a.CopyTo(c3, 3);
+			new G.List<char>(array).CopyTo(c2, 3);
+			Assert.IsTrue(a.Equals(array));
+			Assert.IsTrue(E.SequenceEqual(array, a));
+			Assert.IsTrue(E.SequenceEqual(b2, (char[])b3));
+			Assert.IsTrue(E.SequenceEqual(c2, (char[])c3));
+		}
+		Assert.ThrowsExactly<RankException>(() => new BitList(bitList).CopyTo(new string[128, 128], 0));
+		Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new BitList(bitList).CopyTo(new long[128], 0));
+		Assert.ThrowsExactly<ArgumentException>(() => new BitList(bitList).CopyTo(new bool[128], 77));
 	}
 
 	[TestMethod]

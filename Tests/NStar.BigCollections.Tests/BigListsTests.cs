@@ -547,14 +547,14 @@ public class BigBitListTests
 [TestClass]
 public class BigListTests
 {
-	private BigList<int> bl = default!;
+	private CustomBigList<int> bl = default!;
 	private G.List<int> gl = default!;
 
 	[TestMethod]
 	public void ComplexTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseBigListTests<int, BigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
+		BaseBigListTests<int, CustomBigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
 		{
 			var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
 			bl = new(arr, 2, 2);
@@ -568,7 +568,7 @@ public class BigListTests
 	public void ComplexTestPro()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseBigListTests<int, BigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
+		BaseBigListTests<int, CustomBigList<int>, LimitedBuffer<int>>.ComplexTest(() =>
 		{
 			var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
 			bl = new(arr, random.Next(2, 7), random.Next(1, 7));
@@ -587,7 +587,7 @@ public class BigListTests
 		var length = 2;
 		var sourceIndex = 5;
 		var destinationIndex = 9;
-		BigList<byte> modified, original;
+		CustomBigList<byte> modified, original;
 		List<byte> bitList;
 		PerformIteration();
 		for (var i = 0; i < 5000; i++)
@@ -638,7 +638,7 @@ public class BigListTests
 		var length = 435;
 		var sourceIndex = 123;
 		var destinationIndex = 272;
-		BigList<byte> destination, source;
+		CustomBigList<byte> destination, source;
 		bool reverseSource = false, reverseDestination = false;
 		PerformIteration();
 		for (var i = 0; i < 1000; i++)
@@ -719,10 +719,10 @@ public class BigListTests
 		EComparer<string> comparer = new((x, y) => x[0] == y[0]);
 		for (var i = 0; i < 10000; i++)
 		{
-			BigList<string> a = new(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			CustomBigList<string> a = new(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
 		}
-		void ProcessA(BigList<string> a)
+		void ProcessA(CustomBigList<string> a)
 		{
 			G.IEnumerable<string> b = a;
 			ProcessB(a, b);
@@ -761,7 +761,7 @@ public class BigListTests
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
 		}
-		void ProcessB(BigList<string> a, G.IEnumerable<string> b)
+		void ProcessB(CustomBigList<string> a, G.IEnumerable<string> b)
 		{
 			G.IEnumerable<string> c = RedStarLinq.ToList(b);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));

@@ -8,7 +8,7 @@ using NStar.BigCollections;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
-var _assembly = AssemblyDefinition.ReadAssembly(typeof(BigList<>).Assembly.Location);
+var _assembly = AssemblyDefinition.ReadAssembly(typeof(CustomBigList<>).Assembly.Location);
 var programType = E.FirstOrDefault(_assembly.MainModule.Types,
 	x => x.Name == "BigList`3") ?? throw new InvalidOperationException();
 var programType2 = E.FirstOrDefault(_assembly.MainModule.Types,

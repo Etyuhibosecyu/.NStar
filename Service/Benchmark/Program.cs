@@ -12,17 +12,20 @@ global using static System.Math;
 global using String = NStar.Core.String;
 using NStar.BigCollections;
 using NStar.BigCollections.Tests;
+using NStar.BigCollections.LowMemory;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
 
 var sw = Stopwatch.StartNew();
-BigList<byte> bigList = new(GC.AllocateUninitializedArray<byte>(1000000000), 5, 10);
-for (var i = 1; i < 32; i++)
+BigList<byte> bigList = new();
+for (var i = 0; i < 20; i++)
 {
 	Console.WriteLine(i);
-	bigList.AddRange(GC.AllocateUninitializedArray<byte>(1000000000));
+	for (var j = 0; j < 100000000; j++)
+		bigList.Add(default!);
 }
 sw.Stop();
 Console.WriteLine(sw.Elapsed);
-;
+while (true) ;
+

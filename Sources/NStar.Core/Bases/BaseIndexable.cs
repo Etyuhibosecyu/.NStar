@@ -315,14 +315,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
 			throw new RankException("Массив должен иметь одно измерение.");
-		try
-		{
-			CopyTo(array, arrayIndex);
-		}
-		catch (ArrayTypeMismatchException)
-		{
-			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
-		}
+		CopyToInternal(array, arrayIndex);
 	}
 
 	/// <summary>

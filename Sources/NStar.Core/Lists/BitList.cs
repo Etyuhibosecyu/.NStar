@@ -614,14 +614,14 @@ public unsafe class BitList : BaseList<bool, BitList>
 		else if (array is bool[] boolArray)
 			CopyToInternal(boolArray, index);
 		else
-			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
+			throw new ArrayTypeMismatchException("Ошибка, такой тип массива не подходит для копирования этой коллекции.");
 	}
 
 	private protected void CopyToInternal(bool[] array, int index)
 	{
 		if (array.Length - index < _size)
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
-		CopyToInternal(index, array, 0, array.Length);
+		CopyToInternal(0, array, index, _size);
 	}
 
 	protected override void CopyToInternal(int index, bool[] array, int arrayIndex, int length)

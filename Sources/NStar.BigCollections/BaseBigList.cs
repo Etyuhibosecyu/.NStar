@@ -103,12 +103,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		if (index + length > Length)
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 #if !VERIFY
-		try
+		if (Length > int.MaxValue)
 		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
+			try
+			{
+				throw new SlowOperationException();
+			}
+			catch
+			{
+			}
 		}
 #endif
 		return IndexOfInternal(item, index, length, false) >= 0;
@@ -453,12 +456,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		if (index + length > Length)
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 #if !VERIFY
-		try
+		if (Length > int.MaxValue)
 		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
+			try
+			{
+				throw new SlowOperationException();
+			}
+			catch
+			{
+			}
 		}
 #endif
 		return IndexOfInternal(item, index, length, false);
@@ -610,12 +616,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Length);
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, index + 1);
 #if !VERIFY
-		try
+		if (Length > int.MaxValue)
 		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
+			try
+			{
+				throw new SlowOperationException();
+			}
+			catch
+			{
+			}
 		}
 #endif
 		return IndexOfInternal(item, index - length + 1, length, true);

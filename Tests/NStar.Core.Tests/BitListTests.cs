@@ -400,19 +400,38 @@ public class BitListTests
 	public void TestCopyTo()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var a = new BitList(bitList);
-		var b = RedStarLinq.FillArray(128, x => random.Next(2) == 0);
-		var c = (bool[])b.Clone();
-		var d = (bool[])b.Clone();
-		var e = (bool[])b.Clone();
-		a.CopyTo(b);
-		new G.List<bool>(bitList).CopyTo(c);
-		a.CopyTo(d, 3);
-		new G.List<bool>(bitList).CopyTo(e, 3);
-		Assert.IsTrue(a.Equals(bitList));
-		Assert.IsTrue(E.SequenceEqual(bitList, a));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.IsTrue(E.SequenceEqual(e, d));
+		for (var i = 0; i < 10000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(0, 113), x => random.Next(2) == 0);
+			var a = new BitList(array);
+			var b = RedStarLinq.FillArray(128, x => random.Next(2) == 0);
+			var b2 = (bool[])b.Clone();
+			var c = (bool[])b.Clone();
+			var c2 = (bool[])b.Clone();
+			a.CopyTo(b);
+			new G.List<bool>(array).CopyTo(b2);
+			a.CopyTo(c, 3);
+			new G.List<bool>(array).CopyTo(c2, 3);
+			Assert.IsTrue(a.Equals(array));
+			Assert.IsTrue(E.SequenceEqual(array, a));
+			Assert.IsTrue(E.SequenceEqual(b2, b));
+			Assert.IsTrue(E.SequenceEqual(c2, c));
+			var b3 = (Array)RedStarLinq.FillArray(128, x => random.Next(2) == 0);
+			b2 = (bool[])b3.Clone();
+			var c3 = (Array)b3.Clone();
+			c2 = (bool[])b3.Clone();
+			a.CopyTo(b3, 0);
+			new G.List<bool>(array).CopyTo(b2);
+			a.CopyTo(c3, 3);
+			new G.List<bool>(array).CopyTo(c2, 3);
+			Assert.IsTrue(a.Equals(array));
+			Assert.IsTrue(E.SequenceEqual(array, a));
+			Assert.IsTrue(E.SequenceEqual(b2, (bool[])b3));
+			Assert.IsTrue(E.SequenceEqual(c2, (bool[])c3));
+		}
+		Assert.ThrowsExactly<RankException>(() => new BitList(bitList).CopyTo(new bool[128, 128], 0));
+		Assert.ThrowsExactly<ArrayTypeMismatchException>(() => new BitList(bitList).CopyTo(new long[128], 0));
+		Assert.ThrowsExactly<ArgumentException>(() => new BitList(bitList).CopyTo(new bool[128], 77));
 	}
 
 	[TestMethod]
