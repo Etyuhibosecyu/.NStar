@@ -2,7 +2,6 @@
 global using System;
 global using G = System.Collections.Generic;
 global using static System.Math;
-global using String = NStar.Core.String;
 using System.Diagnostics.CodeAnalysis;
 
 namespace NStar.RemoveDoubles;

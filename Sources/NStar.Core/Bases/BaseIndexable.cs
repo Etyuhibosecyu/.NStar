@@ -23,9 +23,20 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		get
 		{
 			var index2 = index.GetOffset(_size);
-			if ((uint)index2 >= (uint)_size)
+			return this[index2];
+		}
+		set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
+			+ " Если оно нужно вам, используйте один из видов коллекций, наследующихся от BaseList.");
+	}
+
+	/// <inheritdoc cref="G.IReadOnlyList{T}.this[int]"/>
+	public virtual T this[int index, bool invoke = false]
+	{
+		get
+		{
+			if ((uint)index >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			return GetInternal(index2);
+			return GetInternal(index);
 		}
 		set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
 			+ " Если оно нужно вам, используйте один из видов коллекций, наследующихся от BaseList.");
@@ -133,7 +144,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns><see langword="true"/>, если последовательность была найдена, иначе <see langword="false"/>.</returns>
 	public virtual bool Contains(IEnumerable<T> collection, int index, int length) =>
 		Contains(collection, index, length, EqualityComparer<T>.Default);
@@ -170,7 +181,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <param name="comparer">Компаратор на равенство, содержащий методы Equals() и GetHashCode(),
 	/// (подробнее см. в описании интерфейса <see cref="IEqualityComparer{T}"/>).</param>
 	/// <returns><see langword="true"/>, если последовательность была найдена, иначе <see langword="false"/>.</returns>
@@ -197,7 +208,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="item">Элемент для поиска в данной коллекции.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns><see langword="true"/>, если элемент был найден, иначе <see langword="false"/>.</returns>
 	public virtual bool Contains(T? item, int index, int length)
 	{
@@ -245,7 +256,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="collection">Коллекция элементов для поиска любого из них в коллекции,
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns><see langword="true"/>, если какой-либо из элементов был найден, иначе <see langword="false"/>.</returns>
 	public virtual bool ContainsAny(IEnumerable<T> collection, int index, int length)
 	{
@@ -286,7 +297,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="collection">Коллекция элементов для поиска любого, кроме них, в коллекции,
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns><see langword="true"/>, если какой-либо отличающийся элемент был найден,
 	/// иначе <see langword="false"/>.</returns>
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index, int length)
@@ -766,7 +777,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <param name="collectionLength">Посчитанная длина <paramref name="collection"/>.</param>
 	/// <returns>Индекс начала первого вхождения <paramref name="collection"/>,
 	/// или -1, если последовательность не была найдена.</returns>
@@ -779,7 +790,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс начала первого вхождения <paramref name="collection"/>,
 	/// или -1, если последовательность не была найдена.</returns>
 	public virtual int IndexOf(IEnumerable<T> collection, int index, int length) =>
@@ -819,7 +830,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <param name="comparer">Компаратор на равенство, содержащий методы Equals() и GetHashCode(),
 	/// (подробнее см. в описании интерфейса <see cref="IEqualityComparer{T}"/>).</param>
 	/// <returns>Индекс начала первого вхождения <paramref name="collection"/>,
@@ -836,7 +847,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <param name="comparer">Компаратор на равенство, содержащий методы Equals() и GetHashCode(),
 	/// (подробнее см. в описании интерфейса <see cref="IEqualityComparer{T}"/>).</param>
 	/// <param name="collectionLength">Посчитанная длина <paramref name="collection"/>.</param>
@@ -920,7 +931,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="item">Элемент для поиска в данной коллекции.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс первого вхождения элемента, или -1, если такой элемент не был найден.</returns>
 	public virtual int IndexOf(T item, int index, int length)
 	{
@@ -954,7 +965,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="collection">Коллекция элементов для поиска любого из них в коллекции,
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс первого вхождения какого-либо из элементов, или -1, если такой элемент не был найден.</returns>
 	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int length)
 	{
@@ -995,7 +1006,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="collection">Коллекция элементов для поиска любого, кроме них, в коллекции,
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс первого вхождения какого-либо из отличающихся элементов,
 	/// или -1, если такой элемент не был найден.</returns>
 	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
@@ -1039,7 +1050,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс начала последнего вхождения <paramref name="collection"/>,
 	/// или -1, если последовательность не была найдена.</returns>
 	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length) => LastIndexOf(collection, index, length, out _);
@@ -1052,7 +1063,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="collection">Последовательность для поиска в коллекции, для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <param name="collectionLength">Посчитанная длина <paramref name="collection"/>.</param>
 	/// <returns>Индекс начала последнего вхождения <paramref name="collection"/>,
 	/// или -1, если последовательность не была найдена.</returns>
@@ -1101,7 +1112,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// </summary>
 	/// <param name="item">Элемент для поиска в данной коллекции.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс последнего вхождения элемента, или -1, если такой элемент не был найден.</returns>
 	public virtual int LastIndexOf(T item, int index, int length)
 	{
@@ -1141,7 +1152,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="collection">Коллекция элементов для поиска любого из них в коллекции,
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс последнего вхождения какого-либо из элементов, или -1, если такой элемент не был найден.</returns>
 	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index, int length)
 	{
@@ -1186,7 +1197,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="collection">Коллекция элементов для поиска любого, кроме них, в коллекции,
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
-	/// <param name="length">Длина диапазона</param>
+	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс последнего вхождения какого-либо из отличающихся элементов,
 	/// или -1, если такой элемент не был найден.</returns>
 	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
@@ -1817,25 +1828,39 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCertain> where TCertain : BaseMutableIndexable<T, TCertain>, new()
 {
+	/// <inheritdoc cref="G.IList{T}.this[int]"/>
 	public override T this[Index index, bool invoke = false]
 	{
 		get
 		{
 			var index2 = index.GetOffset(_size);
-			if ((uint)index2 >= (uint)_size)
+			return this[index2];
+		}
+		set
+		{
+			var index2 = index.GetOffset(_size);
+			this[index2] = value;
+		}
+	}
+
+	/// <inheritdoc cref="G.IList{T}.this[int]"/>
+	public override T this[int index, bool invoke = false]
+	{
+		get
+		{
+			if ((uint)index >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			var item = GetInternal(index2);
+			var item = GetInternal(index);
 			if (invoke)
 				Changed();
 			return item;
 		}
 		set
 		{
-			var index2 = index.GetOffset(_size);
-			if ((uint)index2 >= (uint)_size)
+			if ((uint)index >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			SetInternal(index2, value);
-		Changed();
+			SetInternal(index, value);
+			Changed();
 		}
 	}
 

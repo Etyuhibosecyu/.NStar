@@ -23,10 +23,10 @@ binary import/export functions etc.
 */
 
 using System.Runtime.InteropServices;
-using mpz_intptr = nint;
-using mpq_intptr = nint;
-using mpf_intptr = nint;
 using gmp_randstate_intptr = nint;
+using mpf_intptr = nint;
+using mpq_intptr = nint;
+using mpz_intptr = nint;
 
 // Disable warning about missing XML comments.
 

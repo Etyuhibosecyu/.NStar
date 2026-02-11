@@ -1,6 +1,5 @@
 ﻿global using NStar.Core;
 global using NStar.Linq;
-global using NStar.MathLib;
 global using System;
 global using E = System.Linq.Enumerable;
 using Mono.Cecil;

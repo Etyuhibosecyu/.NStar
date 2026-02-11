@@ -1,13 +1,11 @@
 ﻿namespace NStar.Core;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public readonly struct Chain(int start, int length) : IReadOnlyCollection<int>
+public readonly record struct Chain(int Start, int Length) : IReadOnlyCollection<int>
 {
-	private readonly int start = start;
-
 	public Chain(int length) : this(0, length) { }
 
-	public int Length { get; } = Max(length, 0);
+	public int Length { get; } = Max(Length, 0);
 
 	public readonly Enumerator GetEnumerator() => new(this);
 
@@ -19,7 +17,7 @@ public readonly struct Chain(int start, int length) : IReadOnlyCollection<int>
 	{
 		List<int> list = new(Length);
 		for (var i = 0; i < Length; i++)
-			list.Add(start + i);
+			list.Add(Start + i);
 		return list;
 	}
 
@@ -28,7 +26,7 @@ public readonly struct Chain(int start, int length) : IReadOnlyCollection<int>
 		private readonly Chain chain = chain;
 		private int index = 0;
 
-		public int Current { get; private set; } = chain.start;
+		public int Current { get; private set; } = chain.Start;
 
 		readonly object IEnumerator.Current => Current;
 
@@ -38,12 +36,12 @@ public readonly struct Chain(int start, int length) : IReadOnlyCollection<int>
 		{
 			if (index < chain.Length)
 			{
-				Current = chain.start + index++;
+				Current = chain.Start + index++;
 				return true;
 			}
 			else
 			{
-				Current = chain.start + chain.Length;
+				Current = chain.Start + chain.Length;
 				return false;
 			}
 		}

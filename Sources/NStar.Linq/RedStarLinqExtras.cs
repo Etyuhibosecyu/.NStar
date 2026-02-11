@@ -1218,7 +1218,7 @@ public static class RedStarLinqExtras
 			this.source2 = source2;
 			this.source3 = source3;
 			this.function = function;
-			_size = RedStarLinqMath.Min([source.Count, source2.Count, source3.Count]);
+			_size = RedStarLinqMath.Min(source.Count, source2.Count, source3.Count);
 		}
 
 		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
@@ -1282,7 +1282,7 @@ public static class RedStarLinqExtras
 			this.source2 = source2;
 			this.source3 = source3;
 			this.function = function;
-			_size = RedStarLinqMath.Min([source.Count, source2.Count, source3.Count]);
+			_size = RedStarLinqMath.Min(source.Count, source2.Count, source3.Count);
 		}
 
 		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
@@ -1342,7 +1342,7 @@ public static class RedStarLinqExtras
 			this.source = source;
 			this.source2 = source2;
 			this.source3 = source3;
-			_size = RedStarLinqMath.Min([source.Count, source2.Count, source3.Count]);
+			_size = RedStarLinqMath.Min(source.Count, source2.Count, source3.Count);
 		}
 
 		public override Memory<(T, T2, T3)> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
@@ -1441,7 +1441,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
-			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
+			var length = RedStarLinqMath.Min(list2_.Count, list2_2.Count, list2_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
@@ -1452,7 +1452,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
-			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
+			var length = RedStarLinqMath.Min(list3_.Count, list3_2.Count, list3_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
@@ -1486,7 +1486,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
-			var length = RedStarLinqMath.Min([list2_.Count, list2_2.Count, list2_3.Count]);
+			var length = RedStarLinqMath.Min(list2_.Count, list2_2.Count, list2_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
@@ -1497,7 +1497,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
-			var length = RedStarLinqMath.Min([list3_.Count, list3_2.Count, list3_3.Count]);
+			var length = RedStarLinqMath.Min(list3_.Count, list3_2.Count, list3_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
@@ -4735,7 +4735,7 @@ public static class RedStarLinqExtras
 		else if (range.Start.IsFromEnd && !range.End.IsFromEnd)
 			return TakeTurnedOut(index, index2, en);
 		else if (range.Start.IsFromEnd && range.End.IsFromEnd)
-			return TakeLast(en, index, index2);
+			return TakeLast(index, index2, en);
 		else
 			return new();
 	}
@@ -4785,7 +4785,7 @@ public static class RedStarLinqExtras
 		return result.GetSlice();
 	}
 
-	private static Slice<T> TakeLast<T>(G.IEnumerator<T> en, int index, int index2)
+	private static Slice<T> TakeLast<T>(int index, int index2, G.IEnumerator<T> en)
 	{
 		using LimitedQueue<T> queue = new(index);
 		while (en.MoveNext())

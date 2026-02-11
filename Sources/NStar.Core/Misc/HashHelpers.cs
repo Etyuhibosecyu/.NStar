@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace NStar.Core;
+﻿namespace NStar.Core;
 
 internal static class HashHelpers
 {

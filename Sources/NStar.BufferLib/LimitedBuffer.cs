@@ -145,12 +145,12 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			if (_size > 0)
 			{
 				Debug.Assert(_items is not null);
-				if (_start + _size < Capacity)
+				if (_start + _size < _items.Length)
 					Array.Copy(_items, _start, newItems, 0, _size);
 				else
 				{
-					Array.Copy(_items, _start, newItems, 0, Capacity - _start);
-					Array.Copy(_items, 0, newItems, Capacity - _start, _size - (Capacity - _start));
+					Array.Copy(_items, _start, newItems, 0, _items.Length - _start);
+					Array.Copy(_items, 0, newItems, _items.Length - _start, _size - (_items.Length - _start));
 				}
 			}
 			_items = newItems;
@@ -178,15 +178,15 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 	protected override void ClearInternal(int index, int length)
 	{
 		Debug.Assert(_items is not null);
-		if (_start + index + length < Capacity)
+		if (_start + index + length < _items.Length)
 			Array.Clear(_items, _start + index, length);
-		else if (_start + index < Capacity)
+		else if (_start + index < _items.Length)
 		{
-			Array.Clear(_items, _start + index, Capacity - _start - index);
-			Array.Clear(_items, 0, length - (Capacity - _start - index));
+			Array.Clear(_items, _start + index, _items.Length - _start - index);
+			Array.Clear(_items, 0, length - (_items.Length - _start - index));
 		}
 		else
-			Array.Clear(_items, (_start + index) % Capacity, length);
+			Array.Clear(_items, (_start + index) % _items.Length, length);
 	}
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
@@ -206,27 +206,27 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 	protected override void CopyToInternal(Array array, int arrayIndex)
 	{
 		Debug.Assert(_items is not null);
-		if (_start + _size < Capacity)
+		if (_start + _size < _items.Length)
 			Array.Copy(_items, _start, array, arrayIndex, _size);
 		else
 		{
-			Array.Copy(_items, _start, array, arrayIndex, Capacity - _start);
-			Array.Copy(_items, 0, array, arrayIndex + Capacity - _start, _size - (Capacity - _start));
+			Array.Copy(_items, _start, array, arrayIndex, _items.Length - _start);
+			Array.Copy(_items, 0, array, arrayIndex + _items.Length - _start, _size - (_items.Length - _start));
 		}
 	}
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		Debug.Assert(_items is not null);
-		if (_start + index + length < Capacity)
+		if (_start + index + length < _items.Length)
 			Array.Copy(_items, _start + index, array, arrayIndex, length);
-		else if (_start + index < Capacity)
+		else if (_start + index < _items.Length)
 		{
-			Array.Copy(_items, _start + index, array, arrayIndex, Capacity - _start - index);
-			Array.Copy(_items, 0, array, arrayIndex + Capacity - _start - index, length - (Capacity - _start - index));
+			Array.Copy(_items, _start + index, array, arrayIndex, _items.Length - _start - index);
+			Array.Copy(_items, 0, array, arrayIndex + _items.Length - _start - index, length - (_items.Length - _start - index));
 		}
 		else
-			Array.Copy(_items, (_start + index) % Capacity, array, arrayIndex, length);
+			Array.Copy(_items, (_start + index) % _items.Length, array, arrayIndex, length);
 	}
 
 	public override void Dispose()
@@ -246,7 +246,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 	protected override T GetInternal(int index)
 	{
 		Debug.Assert(_items is not null);
-		return _items[(_start + index) % Capacity];
+		return _items[(_start + index) % _items.Length];
 	}
 
 	protected override int IndexOfInternal(T item, int index, int length)

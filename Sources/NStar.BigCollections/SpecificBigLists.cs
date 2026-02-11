@@ -56,9 +56,9 @@ namespace NStar.BigCollections
 				high[^1].parent = this;
 				AddCapacity(rest);
 				highLength?.Add(rest);
+				Length = length;
+				AddCapacity(DirectLength - _capacity);
 			}
-			Length = length;
-			AddCapacity(Length - _capacity);
 #if VERIFY
 			if (high is not null)
 				Debug.Assert((highLength is null || Length == highLength?.ValuesSum) && Length == high.Sum(x => x.Length));
@@ -134,7 +134,7 @@ namespace NStar.BigCollections
 				if (bigBitList.low is not null)
 					ConstructFromBitList(bigBitList.low);
 				else if (bigBitList.high is not null)
-					bigBitList.CopyToInternal(0, this, 0, bigBitList.Length);
+					bigBitList.CopyToInternal(0, this, 0, bigBitList.DirectLength);
 			}
 			else if (bools is BitList bitList)
 			{
@@ -312,7 +312,7 @@ namespace NStar.BigCollections
 			if (bitList.Length <= LeafSize && low is not null && high is null && fragment == 1)
 			{
 				low.AddRange(bitList);
-				Length = bitList.Length;
+				parent?.Length += bitList.Length;
 			}
 			else
 			{
@@ -349,7 +349,7 @@ namespace NStar.BigCollections
 				highLength = null;
 				fragment = 1;
 				AddCapacity(bitList.Length);
-				Length = bitList.Length;
+				parent?.Length += bitList.Length;
 			}
 			else
 			{

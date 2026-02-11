@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NStar.BigCollections;
+﻿namespace NStar.BigCollections;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, IDisposable
@@ -414,7 +412,6 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 			return (TCertain)this;
 		var list = CapacityCreator(length);
 		GetRangeCopyTo(index, length, list);
-		list.Length = length;
 #if VERIFY
 		Verify();
 		list.Verify();
