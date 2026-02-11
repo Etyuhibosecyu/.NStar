@@ -31,7 +31,7 @@ using NStar.ExtraHS;
 using NStar.ExtraReplacing;
 using NStar.Linq;
 using NStar.MathLib;
-using Mpir.NET;
+using NStar.Mpir;
 using NStar.RemoveDoubles;
 using NStar.SumCollections;
 using System;
@@ -105,7 +105,7 @@ public static void Main()
 	public static ListHashSet<String> GetAllAssemblies(G.IEnumerable<String> extraAssemblies) =>
 		new ListHashSet<String>("NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
 		"NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
-		"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
+		"Microsoft.CSharp", "mscorlib", "NStar.Mpir", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
 		"NStar.SumCollections", "System", "System.Console", "System.Core", "System.Linq.Expressions",
 		"System.Private.CoreLib", "System.Runtime")
 		.UnionWith(extraAssemblies);

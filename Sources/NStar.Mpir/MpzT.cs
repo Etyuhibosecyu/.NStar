@@ -4,7 +4,7 @@ using System.Numerics;
 
 // Disable warning about missing XML comments.
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 {
@@ -44,20 +44,20 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	private MpzT(Init2Type _, ulong n) => val = Mpir.MpzInit2(n);
 
 	/// Initializes a new MpzT to the long op.
-	public MpzT(long op)
-			: this()
+	public MpzT(long op) : this()
 	{
 		var bytes = BitConverter.GetBytes(op);
 		FromByteArray(bytes, BitConverter.IsLittleEndian ? -1 : 1);
 	}
 
 	/// Initializes a new MpzT to the unsigned long op.
-	public MpzT(ulong op)
-		: this()
+	public MpzT(ulong op) : this()
 	{
 		var bytes = BitConverter.GetBytes(op);
 		FromByteArray(bytes, BitConverter.IsLittleEndian ? -1 : 1);
 	}
+
+	public MpzT(decimal op) : this(new BigInteger(op)) { }
 
 	/// Initializes a new MpzT to the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
@@ -377,15 +377,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static bool operator <(MpzT x, double y) => x.CompareTo(y) < 0;
 
-	//public static bool operator <(decimal x, MpzT y)
-	//{
-	//	return y.CompareTo(x) > 0;
-	//}
+	public static bool operator <(decimal x, MpzT y) => y.CompareTo(x) > 0;
 
-	//public static bool operator <(MpzT x, decimal y)
-	//{
-	//	return x.CompareTo(y) < 0;
-	//}
+	public static bool operator <(MpzT x, decimal y) => x.CompareTo(y) < 0;
 
 	public static bool operator <=(MpzT x, MpzT y) => x.CompareTo(y) <= 0;
 
@@ -414,15 +408,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static bool operator <=(MpzT x, double y) => x.CompareTo(y) <= 0;
 
-	//public static bool operator <=(decimal x, MpzT y)
-	//{
-	//	return y.CompareTo(x) >= 0;
-	//}
+	public static bool operator <=(decimal x, MpzT y) => y.CompareTo(x) >= 0;
 
-	//public static bool operator <=(MpzT x, decimal y)
-	//{
-	//	return x.CompareTo(y) <= 0;
-	//}
+	public static bool operator <=(MpzT x, decimal y) => x.CompareTo(y) <= 0;
 
 	public static bool operator >(MpzT x, MpzT y) => x.CompareTo(y) > 0;
 
@@ -454,15 +442,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static bool operator >(MpzT x, double y) => x.CompareTo(y) > 0;
 
-	//public static bool operator >(decimal x, MpzT y)
-	//{
-	//	return y.CompareTo(x) < 0;
-	//}
+	public static bool operator >(decimal x, MpzT y) => y.CompareTo(x) < 0;
 
-	//public static bool operator >(MpzT x, decimal y)
-	//{
-	//	return x.CompareTo(y) > 0;
-	//}
+	public static bool operator >(MpzT x, decimal y) => x.CompareTo(y) > 0;
 
 	public static bool operator >=(MpzT x, MpzT y) => x.CompareTo(y) >= 0;
 
@@ -494,15 +476,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static bool operator >=(MpzT x, double y) => x.CompareTo(y) >= 0;
 
-	//public static bool operator >=(decimal x, MpzT y)
-	//{
-	//	return y.CompareTo(x) <= 0;
-	//}
+	public static bool operator >=(decimal x, MpzT y) => y.CompareTo(x) <= 0;
 
-	//public static bool operator >=(MpzT x, decimal y)
-	//{
-	//	return x.CompareTo(y) >= 0;
-	//}
+	public static bool operator >=(MpzT x, decimal y) => x.CompareTo(y) >= 0;
 
 	public static MpzT operator <<(MpzT x, int shiftAmount)
 	{
@@ -1419,10 +1395,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public readonly bool Equals(double other) => CompareTo(other) == 0;
 
-	//public bool Equals(decimal other)
-	//{
-	//	return this.CompareTo(other) == 0;
-	//}
+	public readonly bool Equals(decimal other) => CompareTo(other) == 0;
 
 	public readonly bool EqualsMod(MpzT x, MpzT mod) => Mpir.MpzCongruentP(this, x, mod) != 0;
 
@@ -1470,19 +1443,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static bool operator ==(MpzT x, double y) => x.CompareTo(y) == 0;
 
-	//public static bool operator ==(decimal x, MpzT y)
-	//{
-	//	if(y is null)
-	//		return false;
-	//	return y.CompareTo(x) == 0;
-	//}
+	public static bool operator ==(decimal x, MpzT y) => y.CompareTo(x) == 0;
 
-	//public static bool operator ==(MpzT x, decimal y)
-	//{
-	//	if(x is null)
-	//		return false;
-	//	return x.CompareTo(y) == 0;
-	//}
+	public static bool operator ==(MpzT x, decimal y) => x.CompareTo(y) == 0;
 
 	public static bool operator !=(MpzT x, MpzT y) => x.CompareTo(y) != 0;
 
@@ -1514,19 +1477,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static bool operator !=(MpzT x, double y) => x.CompareTo(y) != 0;
 
-	//public static bool operator !=(decimal x, MpzT y)
-	//{
-	//	if(y is null)
-	//		return true;
-	//	return y.CompareTo(x) != 0;
-	//}
+	public static bool operator !=(decimal x, MpzT y) => y.CompareTo(x) != 0;
 
-	//public static bool operator !=(MpzT x, decimal y)
-	//{
-	//	if(x is null)
-	//		return true;
-	//	return x.CompareTo(y) != 0;
-	//}
+	public static bool operator !=(MpzT x, decimal y) => x.CompareTo(y) != 0;
 
 	public readonly int CompareTo(object? obj) => obj switch
 	{
@@ -1571,10 +1524,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public readonly int CompareTo(double other) => Mpir.MpzCmpD(this, other);
 
-	//public int CompareTo(decimal other)
-	//{
-	//	return mpir.MpzCmpD(this, (double)other);
-	//}
+	public readonly int CompareTo(decimal other) => Mpir.MpzCmpD(this, (double)other);
 
 	public readonly int CompareAbsTo(object obj)
 	{
@@ -1600,8 +1550,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 				return CompareAbsTo(y);
 			else if (obj is sbyte sy)
 				return CompareAbsTo(sy);
-			//else if(obj is decimal)
-			//	return this.CompareAbsTo((decimal)obj);
+			else if (obj is decimal m)
+				return CompareAbsTo(m);
 			else if (obj is string s)
 				return CompareAbsTo(new MpzT(s));
 			else
@@ -1654,15 +1604,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static int Compare(double x, MpzT y) => -y.CompareTo(x);
 
-	//public static int Compare(MpzT x, decimal y)
-	//{
-	//	return x.CompareTo(y);
-	//}
+	public static int Compare(MpzT x, decimal y) => x.CompareTo(y);
 
-	//public static int Compare(decimal x, MpzT y)
-	//{
-	//	return -y.CompareTo(x);
-	//}
+	public static int Compare(decimal x, MpzT y) => -y.CompareTo(x);
 
 	public static int CompareAbs(MpzT x, object y) => x.CompareAbsTo(y);
 
@@ -1690,15 +1634,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static int CompareAbs(double x, MpzT y) => -y.CompareAbsTo(x);
 
-	//public static int CompareAbs(MpzT x, decimal y)
-	//{
-	//	return x.CompareAbsTo(y);
-	//}
+	public static int CompareAbs(MpzT x, decimal y) => x.CompareAbsTo(y);
 
-	//public static int CompareAbs(decimal x, MpzT y)
-	//{
-	//	return -y.CompareAbsTo(x);
-	//}
+	public static int CompareAbs(decimal x, MpzT y) => -y.CompareAbsTo(x);
 
 	readonly int IComparable.CompareTo(object? obj) => Compare(this, obj);
 
@@ -1724,10 +1662,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static explicit operator MpzT(double value) => new(value);
 
-	//public static implicit operator MpzT(decimal value)
-	//{
-	//	return new MpzT(value);
-	//}
+	public static explicit operator MpzT(decimal value) => new(value);
 
 	public static explicit operator MpzT(string value) => new(value, sDefaultStringBase);
 
@@ -1773,10 +1708,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static explicit operator double(MpzT value) => Mpir.MpzGetD(value);
 
-	//public static explicit operator decimal(MpzT value)
-	//{
-	//	return (decimal)(double)value;
-	//}
+	public static explicit operator decimal(MpzT value) => (decimal)(double)value;
 
 	public static explicit operator string?(MpzT value) => value.ToString();
 
@@ -1945,7 +1877,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		return true;
 	}
 
-	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
+	public readonly bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
 	{
 		var bytes = ToByteArray(1);
 		if (bytes.AsSpan().TryCopyTo(destination))
@@ -1957,7 +1889,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		return false;
 	}
 
-	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
+	public readonly bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
 	{
 		var bytes = ToByteArray(-1);
 		if (bytes.AsSpan().TryCopyTo(destination))

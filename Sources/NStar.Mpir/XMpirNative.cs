@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 public static partial class Mpir
 {

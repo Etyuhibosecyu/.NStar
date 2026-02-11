@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 internal partial class MpirDynamicLoader
 {

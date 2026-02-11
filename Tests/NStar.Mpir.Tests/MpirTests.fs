@@ -2,7 +2,7 @@
 
 open System
 open System.Linq
-open Mpir.NET
+open NStar.Mpir
 open NUnit.Framework
 
 [<AutoOpen>]

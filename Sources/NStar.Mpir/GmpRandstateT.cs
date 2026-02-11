@@ -1,7 +1,7 @@
 ﻿
 // Disable warning about missing XML comments.
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 public class GmpRandstateT : IDisposable
 {

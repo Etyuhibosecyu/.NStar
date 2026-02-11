@@ -1,4 +1,4 @@
-﻿global using Mpir.NET;
+﻿global using NStar.Mpir;
 global using NStar.Core;
 global using NStar.Linq;
 global using System;

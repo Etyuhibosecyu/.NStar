@@ -1,4 +1,4 @@
-﻿global using Mpir.NET;
+﻿global using NStar.Mpir;
 global using NStar.BufferLib;
 global using NStar.Dictionaries;
 global using NStar.Core;
@@ -15,7 +15,7 @@ global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
-using static Mpir.NET.Mpir;
+using static NStar.Mpir.Mpir;
 
 namespace NStar.BigCollections;
 

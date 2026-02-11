@@ -30,7 +30,7 @@ using mpz_intptr = nint;
 
 // Disable warning about missing XML comments.
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 public static partial class Mpir
 {

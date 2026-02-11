@@ -14,10 +14,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Generation", "Service\Gener
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inspection", "Service\Inspection\Inspection.csproj", "{BE535E58-94EF-F3D6-D38A-FDEBEF5F4DE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mpir.NET", "Sources\Mpir.NET\Mpir.NET.csproj", "{46445AD7-52C5-4A52-854D-56BD3D15D926}"
-EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Mpir.NET.Tests", "Tests\Mpir.NET.Tests\Mpir.NET.Tests.fsproj", "{BD041582-C254-4E3E-9E81-03AFC595C11F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.BigCollections", "Sources\NStar.BigCollections\NStar.BigCollections.csproj", "{E9C5EDB0-7EDB-4234-8A63-3FCD86CC4F55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.BigCollections.Tests", "Tests\NStar.BigCollections.Tests\NStar.BigCollections.Tests.csproj", "{2A94E257-F764-4D05-8EAB-378AC668FC29}"
@@ -43,6 +39,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.MathLib", "Sources\NStar.MathLib\NStar.MathLib.csproj", "{9C705A4E-9D2C-CDFB-6D6F-B975C207D953}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.MathLib.Extras", "Sources\NStar.MathLib.Extras\NStar.MathLib.Extras.csproj", "{519622BE-E897-3912-F392-13FE873F7E79}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NStar.Mpir", "Sources\NStar.Mpir\NStar.Mpir.csproj", "{46445AD7-52C5-4A52-854D-56BD3D15D926}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Mpir.NET.Tests", "Tests\NStar.Mpir.Tests\NStar.Mpir.Tests.fsproj", "{BD041582-C254-4E3E-9E81-03AFC595C11F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStar.ParallelHS", "Sources\NStar.ParallelHS\NStar.ParallelHS.csproj", "{C5D604E7-C622-6362-9458-3444EBD17F9F}"
 EndProject

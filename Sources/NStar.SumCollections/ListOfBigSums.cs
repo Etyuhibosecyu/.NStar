@@ -201,23 +201,23 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			var leftSum = left?.ValuesSum ?? 0;
 			if (sum < leftSum)
 			{
-				Mpir.NET.Mpir.MpzSet(sumExceedsBy, current.Value);
+				Mpir.Mpir.MpzSet(sumExceedsBy, current.Value);
 				current = left;
 			}
 			else if (sum < leftSum + current.Value)
 			{
-				Mpir.NET.Mpir.MpzSub(sumExceedsBy, sum, leftSum);
+				Mpir.Mpir.MpzSub(sumExceedsBy, sum, leftSum);
 				return index + leftCount;
 			}
 			else
 			{
 				index += leftCount + 1;
-				Mpir.NET.Mpir.MpzSub(sum, sum, leftSum + current.Value);
-				Mpir.NET.Mpir.MpzSet(sumExceedsBy, current.Value);
+				Mpir.Mpir.MpzSub(sum, sum, leftSum + current.Value);
+				Mpir.Mpir.MpzSet(sumExceedsBy, current.Value);
 				current = current.Right;
 			}
 		}
-		Mpir.NET.Mpir.MpzAdd(sumExceedsBy, sumExceedsBy, sum);
+		Mpir.Mpir.MpzAdd(sumExceedsBy, sumExceedsBy, sum);
 		return index - 1;
 	}
 

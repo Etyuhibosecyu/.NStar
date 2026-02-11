@@ -1,4 +1,4 @@
-﻿using Mpir.NET;
+﻿using NStar.Mpir;
 using System.Numerics;
 
 namespace NStar.Core.Tests;

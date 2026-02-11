@@ -1,4 +1,4 @@
-global using Mpir.NET;
+global using NStar.Mpir;
 global using NStar.BufferLib;
 global using NStar.Core;
 global using NStar.Core.Tests;

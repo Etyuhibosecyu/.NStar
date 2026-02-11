@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using gmp_randstate_intptr = nint;
 using mpz_intptr = nint;
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 public static partial class Mpir
 {

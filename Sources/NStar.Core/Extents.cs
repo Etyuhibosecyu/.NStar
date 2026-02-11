@@ -1,4 +1,4 @@
-﻿global using Mpir.NET;
+﻿global using NStar.Mpir;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;

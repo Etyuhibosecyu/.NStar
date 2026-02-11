@@ -6,7 +6,7 @@ using System.Numerics;
 
 // Disable warning about missing XML comments.
 
-namespace Mpir.NET;
+namespace NStar.Mpir;
 
 public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 {
@@ -84,6 +84,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 		var bytes = BitConverter.GetBytes(op);
 		FromByteArray(bytes, BitConverter.IsLittleEndian ? -1 : 1);
 	}
+
+	public MpuT(decimal op) : this(op < 0
+		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : new BigInteger(op)) { }
 
 	/// Initializes a new MpuT to the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
@@ -1401,10 +1404,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 
 	public readonly bool Equals(double other) => CompareTo(other) == 0;
 
-	//public bool Equals(decimal other)
-	//{
-	//	return this.CompareTo(other) == 0;
-	//}
+	public readonly bool Equals(decimal other) => this.CompareTo(other) == 0;
 
 	public readonly bool EqualsMod(MpuT x, MpuT mod) => Mpir.MpuCongruentP(this, x, mod) != 0;
 
@@ -1452,19 +1452,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 
 	public static bool operator ==(MpuT x, double y) => x.CompareTo(y) == 0;
 
-	//public static bool operator ==(decimal x, MpuT y)
-	//{
-	//	if(y is null)
-	//		return false;
-	//	return y.CompareTo(x) == 0;
-	//}
+	public static bool operator ==(decimal x, MpuT y) => y.CompareTo(x) == 0;
 
-	//public static bool operator ==(MpuT x, decimal y)
-	//{
-	//	if(x is null)
-	//		return false;
-	//	return x.CompareTo(y) == 0;
-	//}
+	public static bool operator ==(MpuT x, decimal y) => x.CompareTo(y) == 0;
 
 	public static bool operator !=(MpuT x, MpuT y) => x.CompareTo(y) != 0;
 
@@ -1477,16 +1467,16 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 	public static bool operator !=(MpuT x, uint y) => x.CompareTo(y) != 0;
 
 	// TODO: Optimize this by accessing memory directly
-	public static bool operator !=(long x, MpuT y) => y.CompareTo((MpuT)x) != 0;
+	public static bool operator !=(long x, MpuT y) => y.CompareTo(x) != 0;
 
 	// TODO: Optimize this by accessing memory directly
-	public static bool operator !=(MpuT x, long y) => x.CompareTo((MpuT)y) != 0;
+	public static bool operator !=(MpuT x, long y) => x.CompareTo(y) != 0;
 
 	// TODO: Optimize this by accessing memory directly
-	public static bool operator !=(ulong x, MpuT y) => y.CompareTo((MpuT)x) != 0;
+	public static bool operator !=(ulong x, MpuT y) => y.CompareTo(x) != 0;
 
 	// TODO: Optimize this by accessing memory directly
-	public static bool operator !=(MpuT x, ulong y) => x.CompareTo((MpuT)y) != 0;
+	public static bool operator !=(MpuT x, ulong y) => x.CompareTo(y) != 0;
 
 	public static bool operator !=(float x, MpuT y) => y.CompareTo(x) != 0;
 
@@ -1496,19 +1486,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 
 	public static bool operator !=(MpuT x, double y) => x.CompareTo(y) != 0;
 
-	//public static bool operator !=(decimal x, MpuT y)
-	//{
-	//	if(y is null)
-	//		return true;
-	//	return y.CompareTo(x) != 0;
-	//}
+	public static bool operator !=(decimal x, MpuT y) => y.CompareTo(x) != 0;
 
-	//public static bool operator !=(MpuT x, decimal y)
-	//{
-	//	if(x is null)
-	//		return true;
-	//	return x.CompareTo(y) != 0;
-	//}
+	public static bool operator !=(MpuT x, decimal y) => x.CompareTo(y) != 0;
 
 	public readonly int CompareTo(object? obj) => obj switch
 	{
@@ -1553,10 +1533,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 
 	public readonly int CompareTo(double other) => Mpir.MpuCmpD(this, other);
 
-	//public int CompareTo(decimal other)
-	//{
-	//	return mpir.MpuCmpD(this, (double)other);
-	//}
+	public readonly int CompareTo(decimal other) => Mpir.MpuCmpD(this, (double)other);
 
 	public readonly int CompareAbsTo(object obj)
 	{
@@ -1582,8 +1559,8 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 				return CompareAbsTo(y);
 			else if (obj is sbyte sy)
 				return CompareAbsTo(sy);
-			//else if(obj is decimal)
-			//	return this.CompareAbsTo((decimal)obj);
+			else if (obj is decimal m)
+				return CompareAbsTo(m);
 			else if (obj is string s)
 				return CompareAbsTo(new MpuT(s));
 			else
@@ -1605,10 +1582,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 
 	public readonly int CompareAbsTo(double other) => Mpir.MpuCmpabsD(this, other);
 
-	//public int CompareAbsTo(decimal other)
-	//{
-	//	return mpir.MpuCmpabsD(this, (double)other);
-	//}
+	public readonly int CompareAbsTo(decimal other) => Mpir.MpuCmpabsD(this, (double)other);
 
 	public static int Compare(MpuT x, object? y) => x.CompareTo(y);
 
@@ -1706,10 +1680,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpuT>
 
 	public static explicit operator MpuT(double value) => new(value);
 
-	//public static implicit operator MpuT(decimal value)
-	//{
-	//	return new MpuT(value);
-	//}
+	public static explicit operator MpuT(decimal value) => new(value);
 
 	public static implicit operator MpzT(MpuT value)
 	{
