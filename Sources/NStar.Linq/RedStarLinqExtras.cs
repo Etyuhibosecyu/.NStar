@@ -4527,6 +4527,38 @@ public static class RedStarLinqExtras
 		}
 	}
 
+	public static List<Slice<T>> SplitIntoSlices<T>(this G.IEnumerable<T> source, int fragmentLength)
+	{
+		if (fragmentLength <= 0)
+			throw new ArgumentException("Длина фрагмента должна быть положительной.", nameof(fragmentLength));
+		if (source is G.IList<T> list2)
+		{
+			var length = GetArrayLength(list2.Count, fragmentLength);
+			var result = RedStarLinq.EmptyList<Slice<T>>(length);
+			var length2 = list2.Count / fragmentLength;
+			for (var i = 0; i < length2; i++)
+				result[i] = list2.GetSlice(i * fragmentLength, fragmentLength);
+			var rest = list2.Count % fragmentLength;
+			if (rest != 0)
+				result[length2] = list2.GetSlice(length2 * fragmentLength);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = GetArrayLength(list3.Count, fragmentLength);
+			var result = RedStarLinq.EmptyList<Slice<T>>(length);
+			var length2 = list3.Count / fragmentLength;
+			for (var i = 0; i < length2; i++)
+				result[i] = list3.GetROLSlice(i * fragmentLength, fragmentLength);
+			var rest = list3.Count % fragmentLength;
+			if (rest != 0)
+				result[length2] = list3.GetROLSlice(length2 * fragmentLength);
+			return result;
+		}
+		else
+			return SplitIntoSlices(source.ToList(), fragmentLength);
+	}
+
 	public static bool StartsWith<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(source);
@@ -7325,6 +7357,7 @@ public static class RedStarLinqExtras
 	public static string ToString(this Span<char> source) => new((ReadOnlySpan<char>)source.ToArray());
 	public static string ToString(this char[] source) => new(source);
 	public static List<List<T>> Transpose<T>(this List<List<T>> source, bool widen = false) => List<T>.Transpose(source, widen);
+	public static List<List<T>> Transpose<T>(this List<Slice<T>> source, bool widen = false) => List<T>.Transpose(source, widen);
 	public static G.IEnumerable<T> Union<T>(this G.IEnumerable<T> source, G.IEnumerable<T> source2) => E.Union(source, source2);
 	public static G.IEnumerable<T> Union<T>(this G.IEnumerable<T> source, G.IEnumerable<T> source2, G.IEqualityComparer<T> comparer) => E.Union(source, source2, comparer);
 	public static List<T> PFill<T>(int length, Func<int, T> function) => PFill(function, length);

@@ -1,5 +1,14 @@
 ﻿namespace NStar.Core;
 
+/// <summary>
+/// Представляет общий базовый класс для <see cref="List{T}"/> и <see cref="String"/>
+/// - списков последовательных элементов переменного размера, упорядоченных по индексу.
+/// Список бит (<see cref="BitList"/>) также очень похож на них, но технически сюда не относится из-за низкоуровневых причин,
+/// плюс он не поддерживает сортировку из-за бессмысленности сортировки битов
+/// (можно просто посчитать количество <see langword="true"/> и разместить столько-то их и столько-то <see langword="false"/>).
+/// </summary>
+/// <typeparam name="T">Тип элемента данной коллекции.</typeparam>
+/// <typeparam name="TCertain">См. описание TCertain в <see cref="BaseIndexable{T, TCertain}"/>.</typeparam>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TCertain : List<T, TCertain>, new()
 {
@@ -132,6 +141,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
+	/// <summary>
+	/// Представляет максимальное количество элементов, под которое в данный момент выделена память.
+	/// Это НЕ длина списка и НЕ максимальное количество элементов, которое вообще в принципе можно добавить
+	/// (которое постоянно и равно количеству элементов, умещающемуся в 2 ГБ минус 1 байт)
+	/// - емкость автоматически увеличивается при попытке добавить/вставить элемент, когда она равна длине,
+	/// но это происходит редко, также можно в любой момент вручную изменить ее на любое число не меньше длины.
+	/// </summary>
 	public override int Capacity
 	{
 		get => _items?.Length ?? 0;
@@ -458,7 +474,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain NSort() => NSort(0, _size);
 
-	public unsafe virtual TCertain NSort(int index, int length)
+	public virtual TCertain NSort(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -489,7 +505,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
 
-	public unsafe virtual TCertain NSort(Func<T, uint> function, int index, int length)
+	public virtual TCertain NSort(Func<T, uint> function, int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -569,8 +585,38 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 		return (TCertain)this;
 	}
+
+	/// <summary>
+	/// Описание этого метода в разработке.
+	/// </summary>
+	public static List<List<T>> Transpose(List<Slice<T>> list, bool widen = false)
+	{
+		if (list._size == 0)
+			throw new ArgumentException("Невозможно транспонировать коллекцию нулевой длины.", nameof(list));
+		var yCount = widen ? list.Max(x => x.Length) : list.Min(x => x.Length);
+		List<List<T>> newList = [];
+		for (var i = 0; i < yCount; i++)
+		{
+			newList.Add(new List<T>(list._size));
+			for (var j = 0; j < list._size; j++)
+			{
+				var temp = list.GetInternal(j);
+				newList.GetInternal(i).Add(temp.Length <= i ? default! : temp[i]);
+			}
+		}
+		return newList;
+	}
 }
 
+/// <summary>
+/// Представляет список последовательных элементов переменного размера, упорядоченных по индексу.
+/// Доступны методы добавления, удаления, вставки, поиска, сортировки, реверса и другие методы для манипулирования списком.
+/// Любой элемент, в том числе одна и та же ссылка, может встречаться несколько раз (в отличие от множеств).
+/// Содержит такое свойство, как емкость (<see cref="List{T, TCertain}.Capacity">Capacity</see>),
+/// представляющее собой максимальное количество элементов, под которое в данный момент выделена память
+/// (подробнее см. по ссылке выше).
+/// </summary>
+/// <typeparam name="T">Тип элемента данной коллекции.</typeparam>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class List<T> : List<T, List<T>>
 {

@@ -1494,17 +1494,17 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 		if (list._size == 0)
 			throw new ArgumentException("Невозможно транспонировать коллекцию нулевой длины.", nameof(list));
 		var yCount = widen ? list.Max(x => x._size) : list.Min(x => x._size);
-		List<TCertain> new_list = [];
+		List<TCertain> newList = [];
 		for (var i = 0; i < yCount; i++)
 		{
-			new_list.Add(list.GetInternal(0).CapacityCreator(list._size));
+			newList.Add(list.GetInternal(0).CapacityCreator(list._size));
 			for (var j = 0; j < list._size; j++)
 			{
 				var temp = list.GetInternal(j);
-				new_list.GetInternal(i).Add(temp._size <= i ? default! : temp.GetInternal(i));
+				newList.GetInternal(i).Add(temp._size <= i ? default! : temp.GetInternal(i));
 			}
 		}
-		return new_list;
+		return newList;
 	}
 
 	/// <summary>

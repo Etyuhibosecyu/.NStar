@@ -92,49 +92,6 @@ public static partial class Mpir
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpf_intptr MpfInit2(uint prec)
-	{
-		var __retval = xmpir_mpf_init2(out var result, prec);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static mpf_intptr MpfInitSet(MpfT op)
-	{
-		var __retval = xmpir_mpf_init_set(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static mpf_intptr MpfInitSetUi(uint op)
-	{
-		var __retval = xmpir_mpf_init_set_ui(out var result, op);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static mpf_intptr MpfInitSetSi(int op)
-	{
-		var __retval = xmpir_mpf_init_set_si(out var result, op);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static mpf_intptr MpfInitSetD(double op)
-	{
-		var __retval = xmpir_mpf_init_set_d(out var result, op);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static mpf_intptr MpfInitSetStr(string str, uint Base)
-	{
-		int __retval;
-		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
-		__retval = xmpir_malloc(out var __str, str.Length + 1);
-		if (__retval != 0) HandleError(__retval);
-		Marshal.Copy(__ba_str, 0, __str, str.Length + 1);
-		__retval = xmpir_mpf_init_set_str(out var result, __str, Base);
-		if (__retval != 0) HandleError(__retval);
-		__retval = xmpir_free(__str);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
 	public static void MpzClear(MpzT v)
 	{
 		var __retval = xmpir_mpz_clear(v.val);
@@ -143,11 +100,6 @@ public static partial class Mpir
 	public static void MpqClear(MpqT v)
 	{
 		var __retval = xmpir_mpq_clear(v.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfClear(MpfT v)
-	{
-		var __retval = xmpir_mpf_clear(v.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static void XMpirDummy()
@@ -223,17 +175,6 @@ public static partial class Mpir
 		var __retval = xmpir_mpz_realloc2(x.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
-	public static void MpfSetDefaultPrec(ulong prec)
-	{
-		var __retval = xmpir_mpf_set_default_prec(prec);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static ulong MpfGetDefaultPrec()
-	{
-		var __retval = xmpir_mpf_get_default_prec(out var result);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
 	public static void MpzSet(MpzT rop, MpzT op)
 	{
 		var __retval = xmpir_mpz_set(rop.val, op.val);
@@ -257,11 +198,6 @@ public static partial class Mpir
 	public static void MpzSetQ(MpzT rop, MpqT op)
 	{
 		var __retval = xmpir_mpz_set_q(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpzSetF(MpzT rop, MpfT op)
-	{
-		var __retval = xmpir_mpz_set_f(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpzSetStr(MpzT rop, string str, uint Base)
@@ -981,11 +917,6 @@ public static partial class Mpir
 		var __retval = xmpir_mpq_set_d(rop.val, op);
 		if (__retval != 0) HandleError(__retval);
 	}
-	public static void MpqSetF(MpqT rop, MpfT op)
-	{
-		var __retval = xmpir_mpq_set_f(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
 	public static string? MpqGetString(uint Base, MpqT op)
 	{
 		int __retval;
@@ -1090,264 +1021,6 @@ public static partial class Mpir
 	public static void MpqSetDen(MpqT rational, MpzT denominator)
 	{
 		var __retval = xmpir_mpq_set_den(rational.val, denominator.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static ulong MpfGetPrec(MpfT op)
-	{
-		var __retval = xmpir_mpf_get_prec(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static void MpfSetPrec(MpfT rop, ulong prec)
-	{
-		var __retval = xmpir_mpf_set_prec(rop.val, prec);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSet(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_set(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSetUi(MpfT rop, uint op)
-	{
-		var __retval = xmpir_mpf_set_ui(rop.val, op);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSetSi(MpfT rop, int op)
-	{
-		var __retval = xmpir_mpf_set_si(rop.val, op);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSetD(MpfT rop, double op)
-	{
-		var __retval = xmpir_mpf_set_d(rop.val, op);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSetZ(MpfT rop, MpzT op)
-	{
-		var __retval = xmpir_mpf_set_z(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSetQ(MpfT rop, MpqT op)
-	{
-		var __retval = xmpir_mpf_set_q(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static int MpfSetStr(MpfT rop, string str, uint Base)
-	{
-		int __retval;
-		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
-		__retval = xmpir_malloc(out var __str, str.Length + 1);
-		if (__retval != 0) HandleError(__retval);
-		Marshal.Copy(__ba_str, 0, __str, str.Length + 1);
-		__retval = xmpir_mpf_set_str(out var result, rop.val, __str, Base);
-		if (__retval != 0) HandleError(__retval);
-		__retval = xmpir_free(__str);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static void MpfSwap(MpfT rop1, MpfT rop2)
-	{
-		var __retval = xmpir_mpf_swap(rop1.val, rop2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static double MpfGetD(MpfT op)
-	{
-		var __retval = xmpir_mpf_get_d(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static double MpfGetD2exp(out long expptr, MpfT op)
-	{
-		var __retval = xmpir_mpf_get_d_2exp(out var result, out expptr, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfGetSi(MpfT op)
-	{
-		var __retval = xmpir_mpf_get_si(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static uint MpfGetUi(MpfT op)
-	{
-		var __retval = xmpir_mpf_get_ui(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static string? MpfGetString(out long expptr, uint Base, uint nDigits, MpfT op)
-	{
-		int __retval;
-		string? result;
-		__retval = xmpir_mpf_get_string(out var __result, out expptr, Base, nDigits, op.val);
-		if (__retval != 0) HandleError(__retval);
-		result = Marshal.PtrToStringAnsi(__result);
-		__retval = xmpir_free(__result);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static void MpfAdd(MpfT rop, MpfT op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_add(rop.val, op1.val, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfAddUi(MpfT rop, MpfT op1, uint op2)
-	{
-		var __retval = xmpir_mpf_add_ui(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSub(MpfT rop, MpfT op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_sub(rop.val, op1.val, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfUiSub(MpfT rop, uint op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_ui_sub(rop.val, op1, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSubUi(MpfT rop, MpfT op1, uint op2)
-	{
-		var __retval = xmpir_mpf_sub_ui(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfMul(MpfT rop, MpfT op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_mul(rop.val, op1.val, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfMulUi(MpfT rop, MpfT op1, uint op2)
-	{
-		var __retval = xmpir_mpf_mul_ui(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfDiv(MpfT rop, MpfT op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_div(rop.val, op1.val, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfUiDiv(MpfT rop, uint op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_ui_div(rop.val, op1, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfDivUi(MpfT rop, MpfT op1, uint op2)
-	{
-		var __retval = xmpir_mpf_div_ui(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSqrt(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_sqrt(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfSqrtUi(MpfT rop, uint op)
-	{
-		var __retval = xmpir_mpf_sqrt_ui(rop.val, op);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfPowUi(MpfT rop, MpfT op1, uint op2)
-	{
-		var __retval = xmpir_mpf_pow_ui(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfNeg(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_neg(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfAbs(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_abs(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfMul2exp(MpfT rop, MpfT op1, ulong op2)
-	{
-		var __retval = xmpir_mpf_mul_2exp(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfDiv2exp(MpfT rop, MpfT op1, ulong op2)
-	{
-		var __retval = xmpir_mpf_div_2exp(rop.val, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static int MpfCmp(MpfT op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_cmp(out var result, op1.val, op2.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfCmpD(MpfT op1, double op2)
-	{
-		var __retval = xmpir_mpf_cmp_d(out var result, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfCmpUi(MpfT op1, uint op2)
-	{
-		var __retval = xmpir_mpf_cmp_ui(out var result, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfCmpSi(MpfT op1, int op2)
-	{
-		var __retval = xmpir_mpf_cmp_si(out var result, op1.val, op2);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfEq(MpfT op1, MpfT op2, ulong op3)
-	{
-		var __retval = xmpir_mpf_eq(out var result, op1.val, op2.val, op3);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static void MpfReldiff(MpfT rop, MpfT op1, MpfT op2)
-	{
-		var __retval = xmpir_mpf_reldiff(rop.val, op1.val, op2.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static int MpfSgn(MpfT op)
-	{
-		var __retval = xmpir_mpf_sgn(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static void MpfCeil(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_ceil(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfFloor(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_floor(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpfTrunc(MpfT rop, MpfT op)
-	{
-		var __retval = xmpir_mpf_trunc(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static int MpfIntegerP(MpfT op)
-	{
-		var __retval = xmpir_mpf_integer_p(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfFitsUintP(MpfT op)
-	{
-		var __retval = xmpir_mpf_fits_uint_p(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static int MpfFitsSintP(MpfT op)
-	{
-		var __retval = xmpir_mpf_fits_sint_p(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
-	public static void MpfUrandomb(MpfT rop, GmpRandstateT state, ulong nbits)
-	{
-		var __retval = xmpir_mpf_urandomb(rop.val, state.val, nbits);
 		if (__retval != 0) HandleError(__retval);
 	}
 }

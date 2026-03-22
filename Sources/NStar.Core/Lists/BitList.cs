@@ -4,7 +4,8 @@ using System.Runtime.CompilerServices;
 namespace NStar.Core;
 
 /// <summary>
-/// Представляет компактный список значений битов, которые представлены в виде логических значений, где
+/// Представляет компактный список переменного размера (см. <see cref="List{T}"/>) последовательных значений битов,
+/// которые представлены в виде логических значений, где
 /// true указывает, что бит включен (1), а false указывает, что бит выключен (0).
 /// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -336,8 +337,7 @@ public unsafe class BitList : BaseList<bool, BitList>
 			if (value > _size)
 			{
 				(var last, var remainder) = DivRem(_size, BitsPerInt);
-				if (_items is not null)
-					_items[last] &= (1u << remainder) - 1;
+				_items?[last] &= (1u << remainder) - 1;
 				fixed (uint* itemsPtr = _items)
 					FillMemory(itemsPtr + (last + 1), newints - last - 1, 0);
 			}

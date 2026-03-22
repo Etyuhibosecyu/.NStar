@@ -1,7 +1,4 @@
-﻿using NStar.Mpir;
-using System.Numerics;
-
-namespace NStar.Core.Tests;
+﻿namespace NStar.Core.Tests;
 
 [TestClass]
 public class MpuTTests

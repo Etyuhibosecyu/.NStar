@@ -196,7 +196,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// An earlier implementation used delegates to perform these checks rather than returning
 	/// an ElementCount struct; however this was changed due to the perf overhead of delegates.
 	/// </summary>
-	protected virtual unsafe ElementCount CheckUniqueAndUnfoundElements(G.IEnumerable<(T Key, int Value)> other, bool returnIfUnfound)
+	protected virtual ElementCount CheckUniqueAndUnfoundElements(G.IEnumerable<(T Key, int Value)> other, bool returnIfUnfound)
 	{
 		ElementCount result;
 		// need special case in case this has no elements.
@@ -1624,8 +1624,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get => _leavesCount;
 			set
 			{
-				if (Parent is not null)
-					Parent.LeavesCount += value - _leavesCount;
+				Parent?.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
 				if (Parent is null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
 					return;
@@ -1639,8 +1638,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get => _valuesSum;
 			set
 			{
-				if (Parent is not null)
-					Parent.ValuesSum += value - _valuesSum;
+				Parent?.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
 				if (Parent is null || Parent.ValuesSum == (Parent._left?.ValuesSum ?? 0) + (Parent._right?.ValuesSum ?? 0) + Parent.Item.Value)
 					return;

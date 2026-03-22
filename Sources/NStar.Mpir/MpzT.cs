@@ -1,15 +1,17 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Numerics;
 
 // Disable warning about missing XML comments.
 
 namespace NStar.Mpir;
 
-public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
+public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, IDisposable, IBinaryInteger<MpzT>
 {
 	#region Data
 	private const uint sDefaultStringBase = 10u;
+	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
 
 	public nint val;
 	#endregion
@@ -27,7 +29,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	/// Initializes a new MpzT to the double op.
 	public MpzT(double op) => val = Mpir.MpzInitSetD(op);
 	/// Initializes a new MpzT to string s, parsed as an integer in the specified base.
-	public MpzT(string? s, uint Base) => val = Mpir.MpzInitSetStr(s ?? "0", Base);
+	public MpzT(string? s, uint @base) => val = Mpir.MpzInitSetStr(s ?? "0", @base);
 	/// Initializes a new MpzT to string s, parsed as an integer in base 10.
 	public MpzT(string? s) : this(s, sDefaultStringBase) { }
 	/// Initializes a new MpzT to the BigInteger op.
@@ -46,23 +48,29 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	/// Initializes a new MpzT to the long op.
 	public MpzT(long op) : this()
 	{
-		var bytes = BitConverter.GetBytes(op);
-		FromByteArray(bytes, BitConverter.IsLittleEndian ? -1 : 1);
+		val = Mpir.MpzInitSetSi(unchecked((int)(op >> sizeof(int) * 8)));
+		Mpir.MpzMul2exp(this, this, sizeof(int) * 8);
+		Mpir.MpzAddUi(this, this, unchecked((uint)op));
 	}
 
 	/// Initializes a new MpzT to the unsigned long op.
 	public MpzT(ulong op) : this()
 	{
-		var bytes = BitConverter.GetBytes(op);
-		FromByteArray(bytes, BitConverter.IsLittleEndian ? -1 : 1);
+		val = Mpir.MpzInitSetUi(unchecked((uint)(op >> sizeof(uint) * 8)));
+		Mpir.MpzMul2exp(this, this, sizeof(uint) * 8);
+		Mpir.MpzAddUi(this, this, unchecked((uint)op));
 	}
 
 	public MpzT(decimal op) : this(new BigInteger(op)) { }
+
+	public MpzT(MpuT op) => val = Mpir.MpzInitSet(op);
 
 	/// Initializes a new MpzT to the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
 	public MpzT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
+
+	public void Dispose() => val = 0;
 
 	#endregion
 
@@ -498,7 +506,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	{
 		if (x >= 0)
 			return x >> shiftAmount;
-		return -((-x) >> shiftAmount);
+		return ~((~x) >> shiftAmount);
 	}
 
 	public readonly int this[int bitIndex] => Mpir.MpzTstbit(this, (uint)bitIndex);
@@ -1201,6 +1209,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public readonly int CountOnes() => (int)Mpir.MpzPopcount(this);
 
+	public readonly int PopCount() => (int)Mpir.MpzPopcount(this);
+
 	public static int HammingDistance(MpzT x, MpzT y) => (int)Mpir.MpzHamdist(x, y);
 
 	public readonly int IndexOfZero(int startingIndex)
@@ -1223,7 +1233,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 		}
 	}
 
-	public static MpzT PopCount(MpzT value) => value.CountOnes();
+	public static MpzT PopCount(MpzT value) => value.PopCount();
 
 	public static MpzT TrailingZeroCount(MpzT value)
 	{
@@ -1231,16 +1241,21 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 			return Zero;
 		var result = 0;
 		const int ulongBits = sizeof(ulong) * 8;
-		for (MpzT i = ulong.MaxValue; i < value; i <<= ulongBits)
-			if ((value & i) == 0)
+		var value2 = value << ulongBits;
+		MpzT mask = ulong.MaxValue;
+		for (; mask < value2; mask <<= ulongBits)
+		{
+			if (Mpir.MpzCmpSi(value & mask, 0) == 0)
 				result += ulongBits;
-		for (var i = One << value.BitLength / ulongBits * ulongBits; i < value; i <<= 1)
-			if ((value & i) == 0)
-				result++;
-		return result;
+			else
+				return result + (int)ulong.TrailingZeroCount((ulong)((value & mask) >> result));
+		}
+		throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
+			+ $"Текущее состояние: длина - {value.BitLength}, значение - {value}"
+			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
-	public static bool IsPow2(MpzT value) => value.CountOnes() == 1;
+	public static bool IsPow2(MpzT value) => value.PopCount() == 1;
 
 	public static MpzT Log2(MpzT value)
 	{
@@ -1290,6 +1305,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 			result = value switch
 			{
 				MpzT z => z,
+				MpuT uz => uz,
 				byte y => y,
 				sbyte sy => sy,
 				short si => si,
@@ -1371,7 +1387,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 	public override readonly bool Equals(object? obj) => obj switch
 	{
 		null => false,
-		MpzT objAsBigInt => CompareTo(objAsBigInt) == 0,
+		MpzT z => CompareTo(z) == 0,
+		MpuT uz => CompareTo(uz) == 0,
 		int i => this == i,
 		uint ui => this == ui,
 		long li => this == li,
@@ -1483,7 +1500,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public readonly int CompareTo(object? obj) => obj switch
 	{
-		MpzT objAsBigInt => CompareTo(objAsBigInt),
+		MpzT z => CompareTo(z),
+		MpuT uz => CompareTo(uz),
 		int i => CompareTo(i),
 		uint ui => CompareTo(ui),
 		long li => CompareTo(li),
@@ -1526,40 +1544,24 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public readonly int CompareTo(decimal other) => Mpir.MpzCmpD(this, (double)other);
 
-	public readonly int CompareAbsTo(object obj)
+	public readonly int CompareAbsTo(object obj) => obj switch
 	{
-		if (obj is not MpzT objAsBigInt)
-		{
-			if (obj is int i)
-				return CompareAbsTo(i);
-			else if (obj is uint ui)
-				return CompareAbsTo(ui);
-			else if (obj is long li)
-				return CompareAbsTo(li);
-			else if (obj is ulong uli)
-				return CompareAbsTo(uli);
-			else if (obj is double d)
-				return CompareAbsTo(d);
-			else if (obj is float f)
-				return CompareAbsTo(f);
-			else if (obj is short si)
-				return CompareAbsTo(si);
-			else if (obj is ushort usi)
-				return CompareAbsTo(usi);
-			else if (obj is byte y)
-				return CompareAbsTo(y);
-			else if (obj is sbyte sy)
-				return CompareAbsTo(sy);
-			else if (obj is decimal m)
-				return CompareAbsTo(m);
-			else if (obj is string s)
-				return CompareAbsTo(new MpzT(s));
-			else
-				throw new ArgumentException("Cannot compare to " + obj.GetType());
-		}
-
-		return CompareAbsTo(objAsBigInt);
-	}
+		MpzT z => CompareAbsTo(z),
+		MpuT uz => CompareAbsTo(uz),
+		int i => CompareAbsTo(i),
+		uint ui => CompareAbsTo(ui),
+		long li => CompareAbsTo(li),
+		ulong uli => CompareAbsTo(uli),
+		double d => CompareAbsTo(d),
+		float f => CompareAbsTo(f),
+		short si => CompareAbsTo(si),
+		ushort usi => CompareAbsTo(usi),
+		byte y => CompareAbsTo(y),
+		sbyte sy => CompareAbsTo(sy),
+		decimal m => CompareAbsTo(m),
+		string s => CompareAbsTo(new MpzT(s)),
+		_ => throw new ArgumentException("Cannot compare to " + obj.GetType())
+	};
 
 	public readonly int CompareAbsTo(MpzT other) => Mpir.MpzCmpabs(this, other);
 
@@ -1658,6 +1660,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static implicit operator MpzT(ulong value) => new(value);
 
+	public static implicit operator MpzT(MpuT value) => new(value);
+
 	public static explicit operator MpzT(float value) => new((double)value);
 
 	public static explicit operator MpzT(double value) => new(value);
@@ -1684,24 +1688,17 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 
 	public static explicit operator long(MpzT value)
 	{
-		var bytes = GC.AllocateUninitializedArray<byte>(8);
-		Array.Fill(bytes, (byte)(value >= 0 ? 0 : 255));
-		var exportedBytes = value.ToByteArray(BitConverter.IsLittleEndian ? -1 : 1);
-		var length = Math.Min(exportedBytes.Length, bytes.Length);
-		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
-		Buffer.BlockCopy(exportedBytes, 0, bytes, destOffset, length);
-		return BitConverter.ToInt64(bytes, 0);
+		var upper = (long)Mpir.MpzGetSi(value >> sizeof(uint) * 8) << sizeof(uint) * 8;
+		return upper + Mpir.MpzGetUi(value) * (value < 0 ? -1 : 1);
 	}
 
 	public static explicit operator ulong(MpzT value)
 	{
-		var bytes = GC.AllocateUninitializedArray<byte>(8);
-		Array.Fill(bytes, (byte)(value >= 0 ? 0 : 255));
-		var exportedBytes = value.ToByteArray(BitConverter.IsLittleEndian ? -1 : 1);
-		var length = Math.Min(exportedBytes.Length, bytes.Length);
-		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
-		Buffer.BlockCopy(exportedBytes, 0, bytes, destOffset, length);
-		return BitConverter.ToUInt64(bytes, 0);
+		var @uint = Mpir.MpzGetUi(value >>> sizeof(uint) * 8);
+		if (value < 0)
+			@uint = ~@uint + 1;
+		var lower = Mpir.MpzGetUi(value);
+		return ((ulong)@uint << sizeof(uint) * 8) + (value < 0 ? ~lower + 1 : lower);
 	}
 
 	public static explicit operator float(MpzT value) => (float)(double)value;
@@ -1805,11 +1802,15 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 			return value.ToDouble(provider);
 		else if (targetType == typeof(decimal))
 			return value.ToDecimal(provider);
+		else if (targetType == typeof(MpzT))
+			return new MpzT(value.ToString(provider));
+		else if (targetType == typeof(MpuT))
+			return new MpuT(value.ToString(provider));
 		else if (targetType == typeof(string))
 			return value.ToString(provider);
 		else if (targetType == typeof(object))
 			return value;
-		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT)
+		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT) + ", " + nameof(MpuT)
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
 	}
 
@@ -1830,6 +1831,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IBinaryInteger<MpzT>
 			result = value switch
 			{
 				MpzT z => z,
+				MpuT uz => uz,
 				byte y => y,
 				sbyte sy => sy,
 				short si => si,

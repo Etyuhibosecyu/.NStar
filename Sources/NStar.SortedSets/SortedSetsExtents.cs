@@ -1,6 +1,6 @@
 ﻿namespace NStar.SortedSets;
 
-public static unsafe class SortedSetsExtents
+public static class SortedSetsExtents
 {
 	public static int NthAbsent<TCertain>(this BaseSortedSet<int, TCertain> set, int n) where TCertain : BaseSortedSet<int, TCertain>, new()
 	{

@@ -253,8 +253,7 @@ public class SumList : BaseSumList<int, SumList>
 			get => _valuesSum;
 			set
 			{
-				if (Parent is not null)
-					Parent.ValuesSum += value - _valuesSum;
+				Parent?.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
 				if (Parent is null || Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
 					return;

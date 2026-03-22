@@ -442,7 +442,7 @@ public class BigBitListTests
 	[TestMethod]
 	public void ConstructionTest2()
 	{
-		BigBitList bitList = new(RedStarLinq.FillArray(2345678901, 5 << 25)) { true };
+		using BigBitList bitList = new(RedStarLinq.FillArray(2345678901, 5 << 25)) { true };
 		Assert.AreNotEqual(bitList.Length, (int)bitList.Length);
 		Assert.AreNotEqual(bitList.Length, (uint)bitList.Length);
 		Assert.AreEqual(bitList.Length, (long)bitList.Length);
@@ -457,8 +457,6 @@ public class BigBitListTests
 		var length = 10;
 		var sourceIndex = 36;
 		var destinationIndex = 61;
-		BigBitList modified, original;
-		BitList bitList;
 		PerformIteration();
 		for (var i = 0; i < 5000; i++)
 		{
@@ -470,9 +468,9 @@ public class BigBitListTests
 		}
 		void PerformIteration()
 		{
-			bitList = new(bytes);
-			modified = new(bitList, 2, 6);
-			original = new(modified, 2, 6);
+			using BitList bitList = new(bytes);
+			using BigBitList modified = new(bitList, 2, 6);
+			using BigBitList original = new(modified, 2, 6);
 			modified.CopyTo(sourceIndex, modified, destinationIndex, length);
 			Assert.IsTrue(modified.GetRange(0, destinationIndex).Equals(original.GetRange(0, destinationIndex)));
 			Assert.IsTrue(E.SequenceEqual(modified.GetRange(0, destinationIndex), E.Take(original, destinationIndex)));
@@ -506,8 +504,6 @@ public class BigBitListTests
 		var length = 435;
 		var sourceIndex = 123;
 		var destinationIndex = 272;
-		BigBitList destination, source;
-		BitList bitList;
 		PerformIteration();
 		for (var i = 0; i < 100; i++)
 		{
@@ -519,27 +515,27 @@ public class BigBitListTests
 		}
 		void PerformIteration()
 		{
-			bitList = new(bytes);
-			destination = new(bitList, random.Next(2, 5), random.Next(5, 11));
-			source = new(destination, random.Next(2, 5), random.Next(5, 11));
-			Assert.IsTrue(destination.Equals(source));
-			source.CopyTo(sourceIndex, destination, destinationIndex, length);
-			var sourceStart = source.GetRange(0, destinationIndex);
-			var destinationStart = destination.GetRange(0, destinationIndex);
+			using BitList bitList = new(bytes);
+			using BigBitList modified = new(bitList, random.Next(2, 5), random.Next(5, 11));
+			using BigBitList original = new(modified, random.Next(2, 5), random.Next(5, 11));
+			Assert.IsTrue(modified.Equals(original));
+			original.CopyTo(sourceIndex, modified, destinationIndex, length);
+			var sourceStart = original.GetRange(0, destinationIndex);
+			var destinationStart = modified.GetRange(0, destinationIndex);
 			Assert.IsTrue(destinationStart.Equals(sourceStart));
-			Assert.IsTrue(E.SequenceEqual(destinationStart, E.Take(source, destinationIndex)));
-			var sourceMain = source.GetRange(sourceIndex, length);
-			var destinationMain = destination.GetRange(destinationIndex, length);
+			Assert.IsTrue(E.SequenceEqual(destinationStart, E.Take(original, destinationIndex)));
+			var sourceMain = original.GetRange(sourceIndex, length);
+			var destinationMain = modified.GetRange(destinationIndex, length);
 			Assert.IsTrue(destinationMain.Equals(sourceMain));
-			Assert.IsTrue(E.SequenceEqual(destinationMain, E.Take(E.Skip(source, sourceIndex), length)));
+			Assert.IsTrue(E.SequenceEqual(destinationMain, E.Take(E.Skip(original, sourceIndex), length)));
 			if (sourceIndex >= 1 && destinationIndex >= 1)
-				Assert.AreEqual(destination.GetRange(destinationIndex - 1, length + 1).Equals(source.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(source, sourceIndex - 1), length + 1)));
+				Assert.AreEqual(modified.GetRange(destinationIndex - 1, length + 1).Equals(original.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(modified.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(original, sourceIndex - 1), length + 1)));
 			if (sourceIndex + length < bytes.Length - 1 && destinationIndex + length < bytes.Length - 1)
-				Assert.AreEqual(destination.GetRange(destinationIndex, length + 1).Equals(source.GetRange(sourceIndex, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex, length + 1), E.Take(E.Skip(source, sourceIndex), length + 1)));
-			var sourceEnd = source.GetRange(destinationIndex + length);
-			var destinationEnd = destination.GetRange(destinationIndex + length);
+				Assert.AreEqual(modified.GetRange(destinationIndex, length + 1).Equals(original.GetRange(sourceIndex, length + 1)), E.SequenceEqual(modified.GetRange(destinationIndex, length + 1), E.Take(E.Skip(original, sourceIndex), length + 1)));
+			var sourceEnd = original.GetRange(destinationIndex + length);
+			var destinationEnd = modified.GetRange(destinationIndex + length);
 			Assert.IsTrue(destinationEnd.Equals(sourceEnd));
-			Assert.IsTrue(E.SequenceEqual(destinationEnd, E.Skip(source, destinationIndex + length)));
+			Assert.IsTrue(E.SequenceEqual(destinationEnd, E.Skip(original, destinationIndex + length)));
 		}
 	}
 }
@@ -587,8 +583,6 @@ public class BigListTests
 		var length = 2;
 		var sourceIndex = 5;
 		var destinationIndex = 9;
-		CustomBigList<byte> modified, original;
-		List<byte> bitList;
 		PerformIteration();
 		for (var i = 0; i < 5000; i++)
 		{
@@ -600,9 +594,9 @@ public class BigListTests
 		}
 		void PerformIteration()
 		{
-			bitList = new(bytes);
-			modified = new(bitList, 2, 2);
-			original = new(modified, 2, 2);
+			using List<byte> bitList = new(bytes);
+			using CustomBigList<byte> modified = new(bitList, 2, 2);
+			using CustomBigList<byte> original = new(modified, 2, 2);
 			modified.CopyTo(sourceIndex, modified, destinationIndex, length);
 			Assert.IsTrue(modified.GetRange(0, destinationIndex).Equals(original.GetRange(0, destinationIndex)));
 			Assert.IsTrue(E.SequenceEqual(modified.GetRange(0, destinationIndex), E.Take(original, destinationIndex)));
@@ -638,9 +632,9 @@ public class BigListTests
 		var length = 435;
 		var sourceIndex = 123;
 		var destinationIndex = 272;
-		CustomBigList<byte> destination, source;
 		bool reverseSource = false, reverseDestination = false;
 		PerformIteration();
+		regularList.Dispose();
 		for (var i = 0; i < 1000; i++)
 		{
 			random.NextBytes(bytes);
@@ -652,11 +646,12 @@ public class BigListTests
 			reverseSource = random.Next(2) == 0;
 			reverseDestination = random.Next(2) == 0;
 			PerformIteration();
+			regularList.Dispose();
 		}
 		void PerformIteration()
 		{
-			destination = new(regularList, random.Next(2, 5), random.Next(2, 7));
-			source = new(destination, random.Next(2, 5), random.Next(2, 7));
+			using CustomBigList<byte> destination = new(regularList, random.Next(2, 5), random.Next(2, 7));
+			using CustomBigList<byte> source = new(destination, random.Next(2, 5), random.Next(2, 7));
 			Assert.IsTrue(destination.Equals(source));
 			if (reverseSource)
 			{
@@ -719,7 +714,7 @@ public class BigListTests
 		EComparer<string> comparer = new((x, y) => x[0] == y[0]);
 		for (var i = 0; i < 10000; i++)
 		{
-			CustomBigList<string> a = new(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
+			using CustomBigList<string> a = new(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
 			ProcessA(a);
 		}
 		void ProcessA(CustomBigList<string> a)
@@ -743,15 +738,19 @@ public class BigListTests
 			b = new List<string>();
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			(b as IDisposable)?.Dispose();
 			b = Array.Empty<string>();
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			(b as IDisposable)?.Dispose();
 			b = new G.List<string>();
 #pragma warning restore IDE0301 // Упростите инициализацию коллекции
 #pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
-			b = new List<string>().Insert(0, "XXX").GetSlice(1);
+			var list = new List<string>();
+			b = list.Insert(0, "XXX").GetSlice(1);
+			list.Dispose();
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
 			b = E.Select(E.Take(a, 0), x => x);
@@ -772,7 +771,9 @@ public class BigListTests
 			c = E.ToList(b);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
 			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
-			c = new List<string>(b).Insert(0, "XXX").GetSlice(1);
+			var list = new List<string>();
+			c = list.Insert(0, "XXX").GetSlice(1);
+			list.Dispose();
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
 			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
 			c = E.Select(b, x => x);

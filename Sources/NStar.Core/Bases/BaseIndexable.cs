@@ -1825,8 +1825,19 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual bool StartsWith(TCertain collection) => StartsWith((IEnumerable<T>)collection);
 }
 
+/// <summary>
+/// Представляет базовый абстрактный класс для всех коллекций в фреймворке .NStar,
+/// которые могут быть проиндексированы и изменены.
+/// Сюда относятся все <see cref="BaseIndexable{T, TCertain}"/>, кроме некоторых технических типов, возвращаемых
+/// некоторыми RedStarLinq-экстентами: разнообразные списки, буферы, срез, строка и прочие.
+/// Тем не менее, в некоторых коллекциях, технически относимых сюда (например, ParallelHashSet&lt;T&gt;),
+/// на индексацию лучше забить, так как она не имеет практического смысла.
+/// </summary>
+/// <typeparam name="T">Тип элемента данной коллекции.</typeparam>
+/// <typeparam name="TCertain">См. описание TCertain в <see cref="BaseIndexable{T, TCertain}"/>.</typeparam>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCertain> where TCertain : BaseMutableIndexable<T, TCertain>, new()
+public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCertain> where TCertain
+	: BaseMutableIndexable<T, TCertain>, new()
 {
 	/// <inheritdoc cref="G.IList{T}.this[int]"/>
 	public override T this[Index index, bool invoke = false]

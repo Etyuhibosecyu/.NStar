@@ -756,8 +756,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			get => _leavesCount;
 			set
 			{
-				if (Parent is not null)
-					Parent.LeavesCount += value - _leavesCount;
+				Parent?.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
 				if (Parent is null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
 					return;

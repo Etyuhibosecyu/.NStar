@@ -193,7 +193,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// An earlier implementation used delegates to perform these checks rather than returning
 	/// an ElementCount struct; however this was changed due to the perf overhead of delegates.
 	/// </summary>
-	private protected unsafe ElementCount CheckUniqueAndUnfoundElements(G.IEnumerable<T> other, bool returnIfUnfound)
+	private protected ElementCount CheckUniqueAndUnfoundElements(G.IEnumerable<T> other, bool returnIfUnfound)
 	{
 		ElementCount result;
 		// need special case in case this has no elements.
@@ -1475,8 +1475,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			get;
 			set
 			{
-				if (Parent is not null)
-					Parent.LeavesCount += value - field;
+				Parent?.LeavesCount += value - field;
 				field = value;
 				if (Parent is null || Parent.LeavesCount == (Parent.Left?.LeavesCount ?? 0) + (Parent.Right?.LeavesCount ?? 0) + 1)
 					return;

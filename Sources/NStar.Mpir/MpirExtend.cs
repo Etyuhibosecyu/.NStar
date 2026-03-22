@@ -39,6 +39,21 @@ public static partial class Mpir
 		}
 		return destBuf;
 	}
+	public static unsafe void MpirMpuExport(ReadOnlySpan<byte> destBuf, int order, uint size, int endian, uint nails, MpuT op)
+	{
+		var bufSize = (int)Min(MpuSizeinbase(op, 256), 2147483647);
+		var op2 = op;
+		if (op < 0)
+		{
+			op = new(op);
+			op += (MpuT)1 << bufSize * 8;
+		}
+		fixed (void* destPtr = destBuf)
+		{
+			// null countp argument, because we already know how large the result will be.
+			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
+		}
+	}
 	public static mpz_intptr MpzInitSet(MpuT op)
 	{
 		var __retval = xmpir_mpz_init_set(out var result, op.val);
@@ -144,11 +159,6 @@ public static partial class Mpir
 	public static void MpuSetQ(MpuT rop, MpqT op)
 	{
 		var __retval = xmpir_mpz_set_q(rop.val, op.val);
-		if (__retval != 0) HandleError(__retval);
-	}
-	public static void MpuSetF(MpuT rop, MpfT op)
-	{
-		var __retval = xmpir_mpz_set_f(rop.val, op.val);
 		if (__retval != 0) HandleError(__retval);
 	}
 	public static int MpuSetStr(MpuT rop, string str, uint Base)

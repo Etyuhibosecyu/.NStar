@@ -838,7 +838,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					high[^1].parent = this2;
 					AddCapacity(fragment);
 				}
-				if (highCount >= 1 << 6 && highLength == null)
+				if (highCount >= 1 << 6 && highLength is null)
 					highLength = [.. high.Convert(x => x.Length)];
 				var leftCapacity = (value2 - _capacity) % fragment;
 				if (leftCapacity == 0)
@@ -1638,7 +1638,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		source.Root.accessCache?.Clear();
 		Debug.Assert(source.high is not null);
 		MpzT oldTargetLength = new(targetLength);
-		LimitedBuffer<MpzT> estimatedLengths = new(source.high.Convert(x => x.Length).TakeWhile(x => x != 0));
+		using LimitedBuffer<MpzT> estimatedLengths = new(source.high.Convert(x => x.Length).TakeWhile(x => x != 0));
 		var deepCompactify = targetLength >= source.fragment * (source.high.Length - 1);
 		var mergeThreshold = source.fragment - (source.high[0].high is not null ? source.high[0].fragment : 0);
 	start:
@@ -2685,8 +2685,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			if (destination.bReversed)
 			{
-				if (destination.parent is not null)
-					destination.parent.Length += destinationIndex + length - destination.low.Length;
+				destination.parent?.Length += destinationIndex + length - destination.low.Length;
 				destination.low.ResizeLeft((int)(destinationIndex + length));
 				if (source == destination)
 					sourceIndex += destination.low.Length - oldLength;
@@ -2694,8 +2693,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				// Иначе справа
-				if (destination.parent is not null)
-					destination.parent.Length += destinationIndex + length - destination.low.Length;
+				destination.parent?.Length += destinationIndex + length - destination.low.Length;
 			}
 		}
 		// Если оба списка направлены одинаково, копируем напрямую

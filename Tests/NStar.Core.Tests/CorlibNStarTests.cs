@@ -1,12 +1,15 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using NStar.Mpir;
 global using System;
 global using System.Collections;
 global using System.Collections.Immutable;
-global using E = System.Linq.Enumerable;
-global using G = System.Collections.Generic;
+global using System.Numerics;
+global using System.Reflection;
 global using static NStar.Core.Extents;
 global using static NStar.Core.Tests.Global;
 global using static System.Math;
+global using E = System.Linq.Enumerable;
+global using G = System.Collections.Generic;
 
 namespace NStar.Core.Tests;
 
