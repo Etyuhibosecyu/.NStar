@@ -135,15 +135,15 @@ public static partial class Mpir
 	private delegate int __xmpir_free(nint p);
 	private static readonly nint __ptr__xmpir_malloc = GetProcAddressSafe(hxmpir, "xmpir_malloc");
 	private static readonly nint __ptr__xmpir_free = GetProcAddressSafe(hxmpir, "xmpir_free");
-	private static readonly __xmpir_malloc xmpir_malloc = (__xmpir_malloc)Marshal.GetDelegateForFunctionPointer(__ptr__xmpir_malloc, typeof(__xmpir_malloc));
-	private static readonly __xmpir_free xmpir_free = (__xmpir_free)Marshal.GetDelegateForFunctionPointer(__ptr__xmpir_free, typeof(__xmpir_free));
+	private static readonly __xmpir_malloc xmpir_malloc = Marshal.GetDelegateForFunctionPointer<__xmpir_malloc>(__ptr__xmpir_malloc);
+	private static readonly __xmpir_free xmpir_free = Marshal.GetDelegateForFunctionPointer<__xmpir_free>(__ptr__xmpir_free);
 
 	#region Import and export functions
 
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	private unsafe delegate void __Mpir_internal_mpz_import(nint rop, uint count, int order, uint size, int endian, uint nails, void* op);
 	private static readonly nint __ptr__Mpir_internal_mpz_import = GetProcAddressSafe(hxmpir, "Mpir_internal_mpz_import");
-	private static readonly __Mpir_internal_mpz_import Mpir_internal_mpz_import = (__Mpir_internal_mpz_import)Marshal.GetDelegateForFunctionPointer(__ptr__Mpir_internal_mpz_import, typeof(__Mpir_internal_mpz_import));
+	private static readonly __Mpir_internal_mpz_import Mpir_internal_mpz_import = Marshal.GetDelegateForFunctionPointer<__Mpir_internal_mpz_import>(__ptr__Mpir_internal_mpz_import);
 	public static unsafe void MpirMpzImport(MpzT rop, uint count, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
 	{
 		fixed (void* srcPtr = op)
@@ -162,7 +162,7 @@ public static partial class Mpir
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	private unsafe delegate nint __Mpir_internal_mpz_export(void* rop, uint* countp, int order, uint size, int endian, uint nails, nint op);
 	private static readonly nint __ptr__Mpir_internal_mpz_export = GetProcAddressSafe(hxmpir, "Mpir_internal_mpz_export");
-	private static readonly __Mpir_internal_mpz_export Mpir_internal_mpz_export = (__Mpir_internal_mpz_export)Marshal.GetDelegateForFunctionPointer(__ptr__Mpir_internal_mpz_export, typeof(__Mpir_internal_mpz_export));
+	private static readonly __Mpir_internal_mpz_export Mpir_internal_mpz_export = Marshal.GetDelegateForFunctionPointer<__Mpir_internal_mpz_export>(__ptr__Mpir_internal_mpz_export);
 	public static unsafe byte[] MpirMpzExport(int order, uint size, int endian, uint nails, MpzT op)
 	{
 		var bufSize = (int)Min(MpzSizeinbase(op, 256), 2147483647);

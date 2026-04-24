@@ -305,7 +305,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		{
 			if (index < queue._size)
 			{
-				current = queue.GetElement(index++)!;
+				current = queue.GetElement(index++);
 				return true;
 			}
 			return MoveNextRare();
@@ -716,7 +716,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	internal static Stack<T> GetNew(int capacity)
 	{
 		lock (globalLockObj)
-			return pool.TryDequeue(out var stack) ? stack! : new(capacity);
+			return pool.TryDequeue(out var stack) ? stack : new(capacity);
 	}
 
 	public virtual T Peek()

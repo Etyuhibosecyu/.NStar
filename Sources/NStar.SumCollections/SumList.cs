@@ -361,7 +361,7 @@ public class SumList : BaseSumList<int, SumList>
 			{
 				if (_current is not null)
 					return _current.Value;
-				return default!; // Should only happen when accessing Current is undefined behavior
+				return default; // Should only happen when accessing Current is undefined behavior
 			}
 		}
 
@@ -493,7 +493,7 @@ public class SumList : BaseSumList<int, SumList>
 						current = current.Right;
 					}
 				}
-				return result!;
+				return result;
 			}
 		}
 
@@ -517,7 +517,7 @@ public class SumList : BaseSumList<int, SumList>
 						current = current.Left;
 					}
 				}
-				return result!;
+				return result;
 			}
 		}
 

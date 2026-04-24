@@ -521,10 +521,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	protected override void ClearInternal(int index, int length)
-	{
-		Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));
-	}
+	protected override void ClearInternal(int index, int length) => Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));
 
 	public override bool Contains(T? item, int index, int length) => UnsafeContains(item, index, length) || Lock(lockObj, () => UnsafeContains(item, index, length));
 
@@ -721,10 +718,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	protected override void RemoveInternal(int index, int length)
-	{
-		Parallel.For(index, index + length, i => RemoveAt(i));
-	}
+	protected override void RemoveInternal(int index, int length) => Parallel.For(index, index + length, i => RemoveAt(i));
 
 	public override bool RemoveValue(T? item)
 	{

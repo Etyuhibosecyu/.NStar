@@ -104,7 +104,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			lock (globalLockObj)
 				_items = arrayPool.GetAndRemove(array.Length);
-			array.CopyTo(_items!, 0);
+			array.CopyTo(_items, 0);
 		}
 		else
 		{

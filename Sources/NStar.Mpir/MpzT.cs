@@ -970,7 +970,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	{
 		var z = new MpzT();
 		a = new MpzT();
-		Mpir.MpzGcdext(z, a, default!, x, y);
+		Mpir.MpzGcdext(z, a, default, x, y);
 		return z;
 	}
 
@@ -1239,6 +1239,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	{
 		if (value == Zero)
 			return Zero;
+		if (value < 0)
+			value += (MpzT)1 << value.BitLength;
 		var result = 0;
 		const int ulongBits = sizeof(ulong) * 8;
 		var value2 = value << ulongBits;
@@ -1705,7 +1707,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static explicit operator double(MpzT value) => Mpir.MpzGetD(value);
 
-	public static explicit operator decimal(MpzT value) => (decimal)(double)value;
+	public static explicit operator decimal(MpzT value) => (decimal)((double)value is var x
+		&& x is not (< (double)decimal.MinValue or > (double)decimal.MaxValue or double.NaN) ? x : 0);
 
 	public static explicit operator string?(MpzT value) => value.ToString();
 

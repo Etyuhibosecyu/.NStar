@@ -458,4 +458,21 @@ public class MpuTTests
 		MpuT z = 3;
 		Assert.AreEqual(3403681052, z.Power(2147483647).GetFullBitLength());
 	}
+
+	[TestMethod]
+	public void TrailingZeroCount()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000000; i++)
+		{
+			var @long = random.NextInt64(1L << (random.Next(1, 16) << 2));
+			var shift = random.Next(1025);
+			var u = (MpuT)@long << shift;
+			Assert.AreEqual(@long == 0 ? 0 : long.TrailingZeroCount(@long) + shift, MpuT.TrailingZeroCount(u));
+			var z = (MpzT)@long << shift;
+			Assert.AreEqual(@long == 0 ? 0 : long.TrailingZeroCount(@long) + shift, MpzT.TrailingZeroCount(z));
+			var z2 = (MpzT)~@long << shift;
+			Assert.AreEqual(long.TrailingZeroCount(~@long) + shift, MpzT.TrailingZeroCount(z2));
+		}
+	}
 }

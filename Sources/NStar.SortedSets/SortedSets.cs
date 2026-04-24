@@ -181,11 +181,8 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public override int Search(T item) => items.BinarySearch(item, Comparer);
 
-	protected override void SetInternal(int index, T value)
-	{
-		items.GetType().GetMethod("SetInternal", System.Reflection.BindingFlags.Instance
+	protected override void SetInternal(int index, T value) => items.GetType().GetMethod("SetInternal", System.Reflection.BindingFlags.Instance
 			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, value]);
-	}
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]

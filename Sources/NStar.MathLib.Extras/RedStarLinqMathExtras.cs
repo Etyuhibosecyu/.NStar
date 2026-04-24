@@ -102,13 +102,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(item);
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -128,13 +128,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(item);
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -153,13 +153,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(item);
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 				i++;
 			}
@@ -185,13 +185,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(item);
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -211,13 +211,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(item);
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -236,13 +236,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(item);
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 				i++;
 			}
@@ -340,13 +340,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(item);
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -366,13 +366,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(item);
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -391,13 +391,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(item);
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 				i++;
 			}
@@ -423,13 +423,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(item);
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -449,13 +449,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(item);
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 			}
 			result.TrimExcess();
@@ -474,13 +474,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(item);
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result.Clear();
 					result.Add(item);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(item);
 				i++;
 			}
@@ -578,7 +578,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -600,7 +600,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -629,7 +629,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -651,7 +651,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -752,7 +752,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -774,7 +774,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -803,7 +803,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -825,7 +825,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -926,7 +926,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -948,7 +948,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -977,7 +977,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -999,7 +999,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1100,7 +1100,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1122,7 +1122,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1151,7 +1151,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1173,7 +1173,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1274,7 +1274,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1296,7 +1296,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1317,7 +1317,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1345,7 +1345,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1367,7 +1367,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1388,7 +1388,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1488,7 +1488,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1510,7 +1510,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1531,7 +1531,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = item;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1559,7 +1559,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1581,7 +1581,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1602,7 +1602,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = item;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = item;
@@ -1702,7 +1702,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1724,7 +1724,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1745,7 +1745,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1773,7 +1773,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1795,7 +1795,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1816,7 +1816,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1916,7 +1916,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1938,7 +1938,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1959,7 +1959,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -1987,7 +1987,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -2009,7 +2009,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -2030,7 +2030,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -2131,13 +2131,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2159,13 +2159,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2185,13 +2185,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(i);
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -2218,13 +2218,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2246,13 +2246,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2272,13 +2272,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(i);
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -2377,13 +2377,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2405,13 +2405,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2431,13 +2431,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(i);
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -2464,13 +2464,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2492,13 +2492,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2518,13 +2518,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(i);
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -2635,13 +2635,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2663,13 +2663,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2689,13 +2689,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(i);
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -2722,13 +2722,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2750,13 +2750,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2776,13 +2776,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(i);
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -2808,13 +2808,13 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result[j++] = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2836,13 +2836,13 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result[j++] = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -2862,13 +2862,13 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result.Add(i);
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -3816,13 +3816,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -3844,13 +3844,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result[j++] = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -3870,13 +3870,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result.Add(i);
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -3903,13 +3903,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -3931,13 +3931,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result[j++] = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -3957,13 +3957,13 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result.Add(i);
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -3989,13 +3989,13 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result[j++] = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -4017,13 +4017,13 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result[j++] = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result[j = 0] = i;
 					j++;
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result[j++] = i;
 			}
 			result.Resize(j);
@@ -4043,13 +4043,13 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result.Add(i);
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result.Clear(false);
 					result.Add(i);
 				}
-				else if (f == indicator!)
+				else if (f == indicator)
 					result.Add(i);
 				i++;
 			}
@@ -4159,7 +4159,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4181,7 +4181,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4202,7 +4202,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4230,7 +4230,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4252,7 +4252,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4273,7 +4273,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4300,7 +4300,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4322,7 +4322,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -4343,7 +4343,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5272,7 +5272,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5294,7 +5294,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5315,7 +5315,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5343,7 +5343,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5365,7 +5365,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5386,7 +5386,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5413,7 +5413,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5435,7 +5435,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5456,7 +5456,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5568,7 +5568,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5590,7 +5590,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5619,7 +5619,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5641,7 +5641,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5669,7 +5669,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -5691,7 +5691,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6492,7 +6492,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6514,7 +6514,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item);
 					result = i;
 				}
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6543,7 +6543,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6565,7 +6565,7 @@ public static class RedStarLinqMathExtras
 					indicator = function(item, i);
 					result = i;
 				}
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6593,7 +6593,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6615,7 +6615,7 @@ public static class RedStarLinqMathExtras
 					indicator = item;
 					result = i;
 				}
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 				{
 					indicator = f;
 					result = i;
@@ -6642,13 +6642,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6670,13 +6670,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6698,13 +6698,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6726,13 +6726,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6754,13 +6754,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6782,13 +6782,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6810,13 +6810,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6838,13 +6838,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6866,13 +6866,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6894,13 +6894,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6922,13 +6922,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6950,13 +6950,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -6978,13 +6978,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7006,13 +7006,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7034,13 +7034,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7062,13 +7062,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7090,13 +7090,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7118,13 +7118,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7146,13 +7146,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7174,13 +7174,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7202,13 +7202,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7230,13 +7230,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7258,13 +7258,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result.Add(item);
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7286,13 +7286,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result.Add(item);
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result.Clear();
 				result.Add(item);
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result.Add(item);
 		}
 		result.TrimExcess();
@@ -7314,7 +7314,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7338,7 +7338,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7362,7 +7362,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7386,7 +7386,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7410,7 +7410,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7434,7 +7434,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7458,7 +7458,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7482,7 +7482,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7506,7 +7506,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7530,7 +7530,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7554,7 +7554,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7578,7 +7578,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7602,7 +7602,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7626,7 +7626,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7650,7 +7650,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7674,7 +7674,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7698,7 +7698,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7722,7 +7722,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7746,7 +7746,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7770,7 +7770,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7794,7 +7794,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7818,7 +7818,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7842,7 +7842,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7866,7 +7866,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -7890,7 +7890,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -7914,7 +7914,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -7938,7 +7938,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -7962,7 +7962,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -7986,7 +7986,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8010,7 +8010,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8034,7 +8034,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8058,7 +8058,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8082,7 +8082,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8106,7 +8106,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8130,7 +8130,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8154,7 +8154,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8178,7 +8178,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8202,7 +8202,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8226,7 +8226,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8250,7 +8250,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8274,7 +8274,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8298,7 +8298,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8322,7 +8322,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8346,7 +8346,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8370,7 +8370,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8394,7 +8394,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8418,7 +8418,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8442,7 +8442,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -8466,7 +8466,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8490,7 +8490,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8514,7 +8514,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8538,7 +8538,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8562,7 +8562,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8586,7 +8586,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8610,7 +8610,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8634,7 +8634,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8658,7 +8658,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8682,7 +8682,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8706,7 +8706,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8730,7 +8730,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8754,7 +8754,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8778,7 +8778,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8802,7 +8802,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8826,7 +8826,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8850,7 +8850,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8874,7 +8874,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8898,7 +8898,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8922,7 +8922,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8946,7 +8946,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8970,7 +8970,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -8994,7 +8994,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = item;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -9018,7 +9018,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = item;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = item;
@@ -9042,7 +9042,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9066,7 +9066,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9090,7 +9090,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9114,7 +9114,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9138,7 +9138,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9162,7 +9162,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9186,7 +9186,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9210,7 +9210,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9234,7 +9234,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9258,7 +9258,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9282,7 +9282,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9306,7 +9306,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9330,7 +9330,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9354,7 +9354,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9378,7 +9378,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9402,7 +9402,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9426,7 +9426,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9450,7 +9450,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9474,7 +9474,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9498,7 +9498,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9522,7 +9522,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9546,7 +9546,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9570,7 +9570,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9594,7 +9594,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9618,7 +9618,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9642,7 +9642,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9666,7 +9666,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9690,7 +9690,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9714,7 +9714,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9738,7 +9738,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9762,7 +9762,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9786,7 +9786,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9810,7 +9810,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9834,7 +9834,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9858,7 +9858,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9882,7 +9882,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9905,7 +9905,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9928,7 +9928,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9951,7 +9951,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9974,7 +9974,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -9997,7 +9997,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10020,7 +10020,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10278,7 +10278,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10302,7 +10302,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10326,7 +10326,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10350,7 +10350,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10374,7 +10374,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10398,7 +10398,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10422,7 +10422,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10446,7 +10446,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10470,7 +10470,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10494,7 +10494,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10518,7 +10518,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10542,7 +10542,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10565,7 +10565,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10588,7 +10588,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10611,7 +10611,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10634,7 +10634,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10657,7 +10657,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10680,7 +10680,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10704,7 +10704,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10728,7 +10728,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10752,7 +10752,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10776,7 +10776,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10800,7 +10800,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10824,7 +10824,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10848,7 +10848,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10872,7 +10872,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10896,7 +10896,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10920,7 +10920,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10944,7 +10944,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10968,7 +10968,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -10991,7 +10991,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11014,7 +11014,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11037,7 +11037,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11060,7 +11060,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11083,7 +11083,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11106,7 +11106,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11364,7 +11364,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11388,7 +11388,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11412,7 +11412,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11436,7 +11436,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11460,7 +11460,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11484,7 +11484,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11508,7 +11508,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11532,7 +11532,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11556,7 +11556,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11580,7 +11580,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11604,7 +11604,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11628,7 +11628,7 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11651,7 +11651,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11674,7 +11674,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11697,7 +11697,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11720,7 +11720,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11743,7 +11743,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11766,7 +11766,7 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result = i;
@@ -11791,13 +11791,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -11821,13 +11821,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -11851,13 +11851,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -11881,13 +11881,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -11911,13 +11911,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -11941,13 +11941,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -11971,13 +11971,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12001,13 +12001,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12031,13 +12031,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12061,13 +12061,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12091,13 +12091,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12121,13 +12121,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12151,13 +12151,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12181,13 +12181,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12211,13 +12211,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12241,13 +12241,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12271,13 +12271,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12301,13 +12301,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12331,13 +12331,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12361,13 +12361,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12391,13 +12391,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12421,13 +12421,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12451,13 +12451,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12481,13 +12481,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12511,13 +12511,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12541,13 +12541,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12571,13 +12571,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12601,13 +12601,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12631,13 +12631,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12661,13 +12661,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12691,13 +12691,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12721,13 +12721,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12751,13 +12751,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12781,13 +12781,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12811,13 +12811,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12841,13 +12841,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12870,13 +12870,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12899,13 +12899,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12928,13 +12928,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12957,13 +12957,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -12986,13 +12986,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13015,13 +13015,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13273,13 +13273,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13303,13 +13303,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13333,13 +13333,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13363,13 +13363,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13393,13 +13393,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13423,13 +13423,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13453,13 +13453,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13483,13 +13483,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13513,13 +13513,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13543,13 +13543,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13573,13 +13573,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item);
 				result[j++] = i;
 			}
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13603,13 +13603,13 @@ public static class RedStarLinqMathExtras
 				indicator = function(item, i);
 				result[j++] = i;
 			}
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13632,13 +13632,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13661,13 +13661,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13690,13 +13690,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13719,13 +13719,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13748,13 +13748,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);
@@ -13777,13 +13777,13 @@ public static class RedStarLinqMathExtras
 				indicator = item;
 				result[j++] = i;
 			}
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 			{
 				indicator = f;
 				result[j = 0] = i;
 				j++;
 			}
-			else if (f == indicator!)
+			else if (f == indicator)
 				result[j++] = i;
 		}
 		result.Resize(j);

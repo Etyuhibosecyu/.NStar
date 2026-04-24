@@ -35,7 +35,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -61,7 +61,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -75,7 +75,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -107,7 +107,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -133,7 +133,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -147,7 +147,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -179,7 +179,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -205,7 +205,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -219,7 +219,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -251,7 +251,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -277,7 +277,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -291,7 +291,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -323,7 +323,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -349,7 +349,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -363,7 +363,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -395,7 +395,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -421,7 +421,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -435,7 +435,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item);
-				else if ((f = function(item)) > indicator!)
+				else if ((f = function(item)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -467,7 +467,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -493,7 +493,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -507,7 +507,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) > indicator!)
+				else if ((f = function(item, i)) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -538,7 +538,7 @@ public static class RedStarLinqMath
 				var item = list[i];
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -563,7 +563,7 @@ public static class RedStarLinqMath
 				var item = array[i];
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -589,7 +589,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -603,7 +603,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) > indicator!)
+				else if ((f = item) > indicator)
 					indicator = f;
 				i++;
 			}
@@ -1058,7 +1058,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1084,7 +1084,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1098,7 +1098,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1130,7 +1130,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1156,7 +1156,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1170,7 +1170,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1202,7 +1202,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1228,7 +1228,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1242,7 +1242,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1274,7 +1274,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1300,7 +1300,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1314,7 +1314,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1346,7 +1346,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1372,7 +1372,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1386,7 +1386,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1418,7 +1418,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1444,7 +1444,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1458,7 +1458,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item);
-				else if ((f = function(item)) < indicator!)
+				else if ((f = function(item)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1490,7 +1490,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1516,7 +1516,7 @@ public static class RedStarLinqMath
 				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1530,7 +1530,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = function(item, i);
-				else if ((f = function(item, i)) < indicator!)
+				else if ((f = function(item, i)) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -1561,7 +1561,7 @@ public static class RedStarLinqMath
 				var item = list[i];
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1586,7 +1586,7 @@ public static class RedStarLinqMath
 				var item = array[i];
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1612,7 +1612,7 @@ public static class RedStarLinqMath
 				var item = list2[i];
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 					indicator = f;
 			}
 			return indicator;
@@ -1626,7 +1626,7 @@ public static class RedStarLinqMath
 			{
 				if (i == 0)
 					indicator = item;
-				else if ((f = item) < indicator!)
+				else if ((f = item) < indicator)
 					indicator = f;
 				i++;
 			}
@@ -2404,7 +2404,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2432,7 +2432,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2460,7 +2460,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2488,7 +2488,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2516,7 +2516,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2544,7 +2544,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2572,7 +2572,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2600,7 +2600,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2628,7 +2628,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2656,7 +2656,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2673,7 +2673,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) > indicator!)
+			else if ((f = function(item)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2690,7 +2690,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) > indicator!)
+			else if ((f = function(item, i)) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2717,7 +2717,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2744,7 +2744,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2771,7 +2771,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2798,7 +2798,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2825,7 +2825,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -2852,7 +2852,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) > indicator!)
+			else if ((f = item) > indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3025,7 +3025,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3053,7 +3053,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3081,7 +3081,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3109,7 +3109,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3137,7 +3137,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3165,7 +3165,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3193,7 +3193,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3221,7 +3221,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3249,7 +3249,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3277,7 +3277,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3294,7 +3294,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
-			else if ((f = function(item)) < indicator!)
+			else if ((f = function(item)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3311,7 +3311,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
-			else if ((f = function(item, i)) < indicator!)
+			else if ((f = function(item, i)) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3338,7 +3338,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3365,7 +3365,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3392,7 +3392,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3419,7 +3419,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3446,7 +3446,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 				indicator = f;
 		}
 		return indicator;
@@ -3473,7 +3473,7 @@ public static class RedStarLinqMath
 			var item = source[i];
 			if (i == 0)
 				indicator = item;
-			else if ((f = item) < indicator!)
+			else if ((f = item) < indicator)
 				indicator = f;
 		}
 		return indicator;

@@ -402,7 +402,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			{
 				if (_current is not null)
 					return _current.Value;
-				return default!; // Should only happen when accessing Current is undefined behavior
+				return default; // Should only happen when accessing Current is undefined behavior
 			}
 		}
 
@@ -534,7 +534,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 						current = current.Right;
 					}
 				}
-				return result!;
+				return result;
 			}
 		}
 
@@ -558,7 +558,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 						current = current.Left;
 					}
 				}
-				return result!;
+				return result;
 			}
 		}
 

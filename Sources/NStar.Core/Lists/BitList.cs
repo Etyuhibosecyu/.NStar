@@ -836,7 +836,7 @@ public unsafe class BitList : BaseList<bool, BitList>
 		if (_items is null || _items.Length < 3)
 			return 1234567890;
 		else
-			return _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[_items.Length - 1].GetHashCode();
+			return _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
 	}
 
 	protected override bool GetInternal(int index)

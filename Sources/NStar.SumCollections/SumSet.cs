@@ -1713,7 +1713,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		internal static Node GetNew((T Key, int Value) item, NodeColor color)
 		{
 			lock (globalLockObj)
-				return nodePool.TryDequeue(out var node) ? node!.Reconstruct(item, color) : new(item, color);
+				return nodePool.TryDequeue(out var node) ? node.Reconstruct(item, color) : new(item, color);
 		}
 
 		/// <summary>
@@ -2021,7 +2021,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			{
 				if (_current is not null)
 					return _current.Item;
-				return default!; // Should only happen when accessing Current is undefined behavior
+				return default; // Should only happen when accessing Current is undefined behavior
 			}
 		}
 

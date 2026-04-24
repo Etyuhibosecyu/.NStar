@@ -13,7 +13,6 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	private const uint sDefaultStringBase = 10u;
 	private static readonly MpuT MantissaOverflow = new MpuT(1) << MantissaLength;
 	private static readonly MpuT MantissaMask = MantissaOverflow - 1;
-	private static readonly MpuT DoubleMaxValue = new MpuT(0xfffffffffffff) << 972;
 
 	private readonly MpuT m;
 	private readonly UnsignedLongReal? e;
@@ -60,8 +59,9 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		e = null;
 	}
 
-	public UnsignedLongReal(MpzT op)
+	public unsafe UnsignedLongReal(MpzT op)
 	{
+		ArgumentOutOfRangeException.ThrowIfNegative(op);
 		var bitLength = op.BitLength;
 		if (bitLength <= MantissaLength)
 		{
@@ -70,9 +70,9 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		}
 		else
 		{
-			var eDiff = bitLength - MantissaLength;
-			m = new((op >> eDiff - 1) & MantissaMask);
-			e = new(eDiff);
+			var eDiff = bitLength - MantissaLength - 1;
+			m = new((*(MpuT*)&op).ShiftRightRound(eDiff) & MantissaMask);
+			e = new(eDiff + 1);
 		}
 	}
 
@@ -227,49 +227,87 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		GC.SuppressFinalize(this);
 	}
 
-	public (UnsignedLongReal Quotient, UnsignedLongReal Remainder) DivRem(UnsignedLongReal x)
+	public (UnsignedLongReal Quotient, MpuT Remainder) DivRem(MpuT x)
 	{
-		if (e is null && x.e is null)
+		if (e is null)
 		{
-			var result = m.Divide(x.m, out var remainder);
+			var result = m.Divide(x, out var remainder);
 			return (new(result, null), new(remainder));
 		}
-		else if (x.e is null)
+		else if (x.BitLength < MantissaLength)
 		{
 			Debug.Assert(e is not null);
-			if (Mpir.MpuCmpSi(x.m, 0) == 0)
+			if (Mpir.MpuCmpSi(x, 0) == 0)
 				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
-			else if (Mpir.MpuCmpSi(x.m, 1) == 0)
-				return (this, Zero);
-			else if (e <= x.m.BitLength)
-				return (new(((MantissaOverflow + m) << (int)e - 1).Divide(x.m, out var remainder), null), remainder);
+			else if (Mpir.MpuCmpSi(x, 1) == 0)
+				return (this, MpuT.Zero);
+			else if (e <= x.BitLength + 1)
+				return (new((MantissaOverflow + m << (int)e + 1).Divide(x << 2, out var remainder), null), remainder.ShiftRightRound(2));
 			else
 			{
-				var quotient = (MantissaOverflow + m << MantissaLength + 1) / x.m;
+				var quotient = (MantissaOverflow + m << MantissaLength + 1) / x;
 				var shiftAmount = quotient.BitLength - MantissaLength - 1;
-				return (new(quotient.ShiftRightRound(shiftAmount) & MantissaMask, e + shiftAmount - MantissaLength - 1), Zero);
+				return (new(quotient.ShiftRightRound(shiftAmount) & MantissaMask, e + shiftAmount - MantissaLength - 1), MpuT.Zero);
 			}
 		}
-		else if (e is null || e < x.e)
-			return (Zero, Copy());
+		else if (e is null || e < x.BitLength - MantissaLength - 1)
+			return (Zero, (MpuT)this);
 		else
 		{
-			if (e < x.e + MantissaLength)
-			{
-				var eDiff = (int)(e - x.e);
-				var result = ((MantissaOverflow + m) << eDiff).Divide(MantissaOverflow + x.m, out var remainder);
-				return (new(result, null), remainder << (int)x.e);
-			}
-			else
-			{
-				var quotient = (MantissaOverflow + m << MantissaLength + 1) / (MantissaOverflow + x.m);
-				var shiftAmount = quotient.BitLength - MantissaLength - 1;
-				return (new(quotient.ShiftRightRound(shiftAmount) & MantissaMask, e - x.e + shiftAmount - MantissaLength), Zero);
-			}
+			if (e <= x.BitLength + 1)
+				return (new((MantissaOverflow + m << (int)e + 1).Divide(x << 2, out var remainder), null), remainder.ShiftRightRound(2));
+			var quotient = (MantissaOverflow + m << (int)e) / (x << 1);
+			var shiftAmount = quotient.BitLength - MantissaLength;
+			return (new(quotient.ShiftRightRound(shiftAmount - 1) & MantissaMask, shiftAmount), MpuT.Zero);
 		}
 	}
 
-	public UnsignedLongReal DivRem(UnsignedLongReal x, out UnsignedLongReal remainder)
+	//public (UnsignedLongReal Quotient, UnsignedLongReal Remainder) DivRem(UnsignedLongReal x)
+	//{
+	//	if (e is null && x.e is null)
+	//	{
+	//		var result = m.Divide(x.m, out var remainder);
+	//		return (new(result, null), new(remainder));
+	//	}
+	//	else if (x.e is null)
+	//	{
+	//		Debug.Assert(e is not null);
+	//		if (Mpir.MpuCmpSi(x.m, 0) == 0)
+	//			throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+	//		else if (Mpir.MpuCmpSi(x.m, 1) == 0)
+	//			return (this, Zero);
+	//		else if (e <= x.m.BitLength)
+	//			return (new(((MantissaOverflow + m) << (int)e - 1).Divide(x.m, out var remainder), null), remainder);
+	//		else
+	//		{
+	//			var quotient = (MantissaOverflow + m << MantissaLength + 1) / x.m;
+	//			var shiftAmount = quotient.BitLength - MantissaLength - 1;
+	//			return (new(quotient.ShiftRightRound(shiftAmount) & MantissaMask, e + shiftAmount - MantissaLength - 1), Zero);
+	//		}
+	//	}
+	//	else if (e is null || e < x.e)
+	//		return (Zero, Copy());
+	//	else
+	//	{
+	//		if (e <= x.e + MantissaLength + 1)
+	//		{
+	//			var eDiff = (int)(e - x.e);
+	//			var quotient = (MantissaOverflow + m << eDiff + MantissaLength + 2).Divide(MantissaOverflow + x.m << MantissaLength + 2);
+	//			var rounded = (MantissaOverflow + x.m << MantissaLength + 2) * quotient;
+	//			UnsignedLongReal diff = (MantissaOverflow + m << eDiff + MantissaLength + 2) - rounded;
+	//			var shiftAmount = (int)x.e - MantissaLength - 3;
+	//			return (new(quotient, null), shiftAmount >= 0 ? diff << shiftAmount : diff >> -shiftAmount);
+	//		}
+	//		else
+	//		{
+	//			var quotient = (MantissaOverflow + m << MantissaLength + 2) / (MantissaOverflow + x.m);
+	//			var shiftAmount = quotient.BitLength - MantissaLength - 1;
+	//			return (new(quotient.ShiftRightRound(shiftAmount) & MantissaMask, e - x.e + shiftAmount - MantissaLength - 1), Zero);
+	//		}
+	//	}
+	//}
+
+	public UnsignedLongReal DivRem(MpuT x, out MpuT remainder)
 	{
 		(var Quotient, remainder) = DivRem(x);
 		return Quotient;
@@ -339,8 +377,10 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		return value >= sqrt ? bitLength : bitLength - 1;
 	}
 
+	public static UnsignedLongReal Max(UnsignedLongReal x, UnsignedLongReal y) => x.CompareTo(y) >= 0 ? x : y;
 	public static UnsignedLongReal MaxMagnitude(UnsignedLongReal x, UnsignedLongReal y) => x.CompareTo(y) >= 0 ? x : y;
 	public static UnsignedLongReal MaxMagnitudeNumber(UnsignedLongReal x, UnsignedLongReal y) => x.CompareTo(y) >= 0 ? x : y;
+	public static UnsignedLongReal Min(UnsignedLongReal x, UnsignedLongReal y) => x.CompareTo(y) < 0 ? x : y;
 	public static UnsignedLongReal MinMagnitude(UnsignedLongReal x, UnsignedLongReal y) => x.CompareTo(y) < 0 ? x : y;
 	public static UnsignedLongReal MinMagnitudeNumber(UnsignedLongReal x, UnsignedLongReal y) => x.CompareTo(y) < 0 ? x : y;
 
@@ -395,7 +435,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	short IConvertible.ToInt16(IFormatProvider? provider) => (short)this;
 	int IConvertible.ToInt32(IFormatProvider? provider) => (int)this;
 	long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
-	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)this;
+	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 	public override string? ToString() => ((MpuT)this).ToString();
 	public string ToString(IFormatProvider? provider) => ToString() ?? "";
@@ -648,14 +688,14 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		if (e is null)
 			return m.TryWriteBigEndian(destination, out bytesWritten);
 		var mLength = m.GetByteCount();
-		if (!m.TryWriteBigEndian(destination[^mLength..], out var bytesWritten2))
+		if (!m.TryWriteBigEndian(destination[^mLength..], out _))
 		{
 			bytesWritten = 0;
 			return false;
 		}
 		bytesWritten = MantissaByteLength;
 		destination[..(MantissaByteLength - mLength)].Clear();
-		if (!e.TryWriteBigEndian(destination[MantissaByteLength..], out bytesWritten2))
+		if (!e.TryWriteBigEndian(destination[MantissaByteLength..], out var bytesWritten2))
 		{
 			bytesWritten = 0;
 			return false;
@@ -674,14 +714,14 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		if (e is null)
 			return m.TryWriteLittleEndian(destination, out bytesWritten);
 		var mLength = m.GetByteCount();
-		if (!m.TryWriteLittleEndian(destination, out var bytesWritten2))
+		if (!m.TryWriteLittleEndian(destination, out _))
 		{
 			bytesWritten = 0;
 			return false;
 		}
 		bytesWritten = MantissaByteLength;
 		destination[mLength..MantissaByteLength].Clear();
-		if (!e.TryWriteLittleEndian(destination[MantissaByteLength..], out bytesWritten2))
+		if (!e.TryWriteLittleEndian(destination[MantissaByteLength..], out var bytesWritten2))
 		{
 			bytesWritten = 0;
 			return false;
@@ -716,8 +756,13 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public static explicit operator long(UnsignedLongReal value) => (long)(value & ulong.MaxValue).m;
 	public static explicit operator ulong(UnsignedLongReal value) => (ulong)(value & ulong.MaxValue).m;
 	public static explicit operator float(UnsignedLongReal value) => (float)(double)value;
-	public static explicit operator double(UnsignedLongReal value) => (double)(value & DoubleMaxValue).m;
-	public static explicit operator decimal(UnsignedLongReal value) => (decimal)(double)value;
+
+	public static explicit operator double(UnsignedLongReal value) =>
+		value.BitLength > 1024 ? double.PositiveInfinity : (double)value.m;
+
+	public static explicit operator decimal(UnsignedLongReal value) => (decimal)((double)value is var x
+		&& x is not (< (double)decimal.MinValue or > (double)decimal.MaxValue or double.NaN) ? x : 0);
+
 	public static explicit operator string?(UnsignedLongReal value) => value.ToString();
 
 	public static explicit operator MpzT(UnsignedLongReal value)
@@ -980,7 +1025,9 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		}
 	}
 
-	public static UnsignedLongReal operator %(UnsignedLongReal x, UnsignedLongReal y) => x.DivRem(y).Remainder;
+	public static UnsignedLongReal operator %(UnsignedLongReal x, MpuT y) => x.DivRem(y).Remainder;
+
+	public static UnsignedLongReal operator %(UnsignedLongReal x, UnsignedLongReal y) => throw new NotImplementedException();
 
 	public static int operator &(UnsignedLongReal x, int y)
 	{

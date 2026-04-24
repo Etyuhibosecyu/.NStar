@@ -39,6 +39,8 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	{
 		if (op < 0)
 			throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op));
+		if (op is double.PositiveInfinity or double.NaN)
+			op = 0;
 		val = Mpir.MpuInitSetD(op);
 	}
 
@@ -976,7 +978,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	{
 		var z = new MpuT();
 		a = new MpuT();
-		Mpir.MpuGcdext(z, a, default!, x, y);
+		Mpir.MpuGcdext(z, a, default, x, y);
 		return z;
 	}
 
@@ -1684,7 +1686,8 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static explicit operator double(MpuT value) => Mpir.MpuGetD(value);
 
-	public static explicit operator decimal(MpuT value) => (decimal)(double)value;
+	public static explicit operator decimal(MpuT value) => (decimal)((double)value is var x
+		&& x is not (< (double)decimal.MinValue or > (double)decimal.MaxValue or double.NaN) ? x : 0);
 
 	public static explicit operator string?(MpuT value) => value.ToString();
 

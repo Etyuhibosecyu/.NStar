@@ -804,7 +804,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		internal static Node GetNew(T value, NodeColor color)
 		{
 			lock (globalLockObj)
-				return nodePool.TryDequeue(out var node) ? node!.Reconstruct(value, color)
+				return nodePool.TryDequeue(out var node) ? node.Reconstruct(value, color)
 					: typeof(TCertain)?.GetNestedType("Node", BindingFlags.NonPublic)
 					?.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
 					?[0]?.Invoke([value, color]) as Node ?? throw new NullReferenceException();

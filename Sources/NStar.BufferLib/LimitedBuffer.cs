@@ -231,7 +231,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 
 	public override void Dispose()
 	{
-		_items = default!;
+		_items = default;
 		_size = 0;
 		Changed();
 		GC.SuppressFinalize(this);

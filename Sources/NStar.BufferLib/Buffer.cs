@@ -323,10 +323,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 	}
 
-	protected override void SetInternal(int index, T value)
-	{
-		_items[(_start + index) % Capacity] = value;
-	}
+	protected override void SetInternal(int index, T value) => _items[(_start + index) % Capacity] = value;
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]

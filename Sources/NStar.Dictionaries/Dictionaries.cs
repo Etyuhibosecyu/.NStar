@@ -821,7 +821,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low is not null)
 			return low.TryGetValue(key, out value);
 		else if (high is not null)
-			return high.TryGetValue(key, out value!);
+			return high.TryGetValue(key, out value);
 		else
 			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
 				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
@@ -1001,14 +1001,14 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		private readonly UnsortedDictionary<TKey, TValue> _dict = dictionary;
 		private int index = 0;
 
-		public G.KeyValuePair<TKey, TValue> Current { get; private set; } = default!;
+		public G.KeyValuePair<TKey, TValue> Current { get; private set; } = default;
 
 		readonly object IEnumerator.Current => Current;
 
 		public void Dispose()
 		{
 			index = 0;
-			Current = default!;
+			Current = default;
 		}
 
 		public bool MoveNext()
@@ -1021,7 +1021,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 			else
 			{
 				index = _dict.Length + 1;
-				Current = default!;
+				Current = default;
 				return false;
 			}
 		}
@@ -1029,7 +1029,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		public void Reset()
 		{
 			index = 0;
-			Current = default!;
+			Current = default;
 		}
 	}
 }

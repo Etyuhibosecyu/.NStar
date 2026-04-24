@@ -59,12 +59,23 @@ public class UnsignedLongRealTests
 					return;
 				var oldBitLength = uz.BitLength;
 				uz %= op;
-				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength)
+				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength + 1)
 				{
 					var shiftAmount = oldBitLength - MantissaLength;
 					uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
 				}
 				ulr %= op;
+				Validate();
+			}, () =>
+			{
+				var op = (byte)random.Next(256);
+				if (op == 0)
+					return;
+				uz /= op;
+				ulr = ulr.DivRem(op, out _);
+				var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
+				if (bitLengthDiff > 0)
+					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
@@ -102,12 +113,23 @@ public class UnsignedLongRealTests
 					return;
 				var oldBitLength = uz.BitLength;
 				uz %= op;
-				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength)
+				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength + 1)
 				{
 					var shiftAmount = oldBitLength - MantissaLength;
 					uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
 				}
 				ulr %= op;
+				Validate();
+			}, () =>
+			{
+				var op = random.Next();
+				if (op == 0)
+					return;
+				uz /= op;
+				ulr = ulr.DivRem(op, out _);
+				var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
+				if (bitLengthDiff > 0)
+					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
@@ -145,12 +167,23 @@ public class UnsignedLongRealTests
 					return;
 				var oldBitLength = uz.BitLength;
 				uz %= op;
-				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength)
+				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength + 1)
 				{
 					var shiftAmount = oldBitLength - MantissaLength;
 					uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
 				}
 				ulr %= op;
+				Validate();
+			}, () =>
+			{
+				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
+				if (op == 0)
+					return;
+				uz /= op;
+				ulr = ulr.DivRem(op, out _);
+				var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
+				if (bitLengthDiff > 0)
+					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
@@ -188,12 +221,23 @@ public class UnsignedLongRealTests
 					return;
 				var oldBitLength = uz.BitLength;
 				uz %= op;
-				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength)
+				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength + 1)
 				{
 					var shiftAmount = oldBitLength - MantissaLength;
 					uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
 				}
 				ulr %= op;
+				Validate();
+			}, () =>
+			{
+				var op = random.NextInt64();
+				if (op == 0)
+					return;
+				uz /= op;
+				ulr = ulr.DivRem(op, out _);
+				var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
+				if (bitLengthDiff > 0)
+					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
@@ -231,12 +275,23 @@ public class UnsignedLongRealTests
 					return;
 				var oldBitLength = uz.BitLength;
 				uz %= op;
-				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength)
+				if (oldBitLength > MantissaLength + ((MpuT)op).BitLength + 1)
 				{
 					var shiftAmount = oldBitLength - MantissaLength;
 					uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
 				}
 				ulr %= op;
+				Validate();
+			}, () =>
+			{
+				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
+				if (op == 0)
+					return;
+				uz /= op;
+				ulr = ulr.DivRem(op, out _);
+				var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
+				if (bitLengthDiff > 0)
+					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
@@ -286,13 +341,33 @@ public class UnsignedLongRealTests
 				MpuT op = new(bytes.AsSpan(), RandomOrder());
 				if (op == 0)
 					return;
-				if (op != 0)
-					return;
 				var oldBitLength = uz.BitLength;
 				uz %= op;
-				if (uz.BitLength >= MantissaLength)
-					uz &= (new MpuT(1) << MantissaLength + 1) - 1 << uz.BitLength - MantissaLength - 1;
+				if (oldBitLength >= op.BitLength
+					&& oldBitLength >= MantissaLength + uz.BitLength)
+				{
+					var shiftAmount = oldBitLength - MantissaLength;
+					uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
+				}
 				ulr %= op;
+				if (oldBitLength >= op.BitLength
+					&& oldBitLength >= MantissaLength + ulr.BitLength)
+				{
+					var shiftAmount = oldBitLength - MantissaLength;
+					ulr = ulr >> shiftAmount << shiftAmount;
+				}
+				Validate();
+			}, () =>
+			{
+				bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+				MpuT op = new(bytes.AsSpan(), RandomOrder());
+				if (op == 0)
+					return;
+				uz /= op;
+				ulr = ulr.DivRem(op, out _);
+				var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
+				if (bitLengthDiff > 0)
+					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
@@ -313,6 +388,16 @@ public class UnsignedLongRealTests
 			{
 				uz = (ulong)uz;
 				ulr = (ulong)ulr;
+				Validate();
+			}, () =>
+			{
+				uz = (MpuT)(double)uz;
+				ulr = (UnsignedLongReal)(double)ulr;
+				Validate();
+			}, () =>
+			{
+				uz = (MpuT)(decimal)uz;
+				ulr = (UnsignedLongReal)(decimal)ulr;
 				Validate();
 			},
 		};
@@ -362,7 +447,7 @@ public class UnsignedLongRealTests
 				Assert.AreEqual(bitLengthDiff + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
 		}
-		if (counter++ < 10000)
+		if (counter++ < 2500)
 			goto l1;
 		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
 	}

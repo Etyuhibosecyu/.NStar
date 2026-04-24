@@ -375,7 +375,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			value = values[i];
 			return true;
 		}
-		value = default!;
+		value = default;
 		return false;
 	}
 
@@ -438,7 +438,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
 					throw new InvalidOperationException("Указатель находится за границей коллекции.");
-				return key!;
+				return key;
 			}
 		}
 
@@ -449,7 +449,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 				if (index == 0 || index == _sortedDictionary.Length + 1)
 					throw new InvalidOperationException("Указатель находится за границей коллекции.");
 				if (getEnumeratorRetType == DictEntry)
-					return new DictionaryEntry(key!, value);
+					return new DictionaryEntry(key, value);
 				else
 					return new G.KeyValuePair<TKey, TValue>(key, value);
 			}
@@ -493,7 +493,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
 					throw new InvalidOperationException("Указатель находится за границей коллекции.");
-				return new(key!, value);
+				return new(key, value);
 			}
 		}
 
@@ -547,7 +547,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			{
 				if (index == 0 || index == _sortedDictionary.Length + 1)
 					throw new InvalidOperationException("Указатель находится за границей коллекции.");
-				return currentKey!;
+				return currentKey;
 			}
 		}
 

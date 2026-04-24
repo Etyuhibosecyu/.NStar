@@ -3,6 +3,11 @@
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> where TCertain : BaseSet<T, TCertain>, new()
 {
+	/// <summary>
+	/// Добавляет в конец данного множества указанный элемент, если его там еще нет.
+	/// </summary>
+	/// <param name="item">Элемент для добавления.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public override TCertain Add(T item)
 	{
 		TryAdd(item);
@@ -11,6 +16,11 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
+	/// <summary>
+	/// Для множеств является псевдонимом <see cref="UnionWith(IEnumerable{T})"/>.
+	/// </summary>
+	/// <param name="collection">Последовательность для добавления.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public override TCertain AddRange(IEnumerable<T> collection) => UnionWith(collection);
 
 	public override TCertain AddRange(T[] array) => UnionWith(array);
@@ -48,6 +58,11 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 			destination._size = destinationIndex + length;
 	}
 
+	/// <summary>
+	/// Удаляет из данного множества все элементы, <b>при</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain ExceptWith(IEnumerable<T> other)
 	{
 		if (other is ISet<T> set)
@@ -77,6 +92,11 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return (TCertain)this;
 	}
 
+	/// <summary>
+	/// Удаляет из данного множества все элементы, <b>от</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления <b>от</b>сутствующих в ней элементов.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
@@ -233,12 +253,30 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	void ISet<T>.SymmetricExceptWith(IEnumerable<T> other) => SymmetricExceptWith(other);
 
+	/// <summary>
+	/// Добавляет в конец данного множества указанный элемент, если его там еще нет.
+	/// </summary>
+	/// <param name="item">Элемент для добавления.</param>
+	/// <returns>В отличие от <see cref="Add(T)"/>, возвращает НЕ данную коллекцию, а флаг, удалось ли добавить элемент:
+	/// <see langword="true"/>, если он был добавлен, и <see langword="false"/>, если он уже был во множестве.</returns>
 	public virtual bool TryAdd(T item) => TryAdd(item, out _);
 
+	/// <summary>
+	/// Добавляет в конец данного множества указанный элемент, если его там еще нет, и позволяет получить его индекс.
+	/// </summary>
+	/// <param name="item">Элемент для добавления.</param>
+	/// <param name="index">Индекс элемента, существовавшего во множестве или добавленного.</param>
+	/// <returns>Флаг, удалось ли добавить элемент:
+	/// <see langword="true"/>, если он был добавлен, и <see langword="false"/>, если он уже был во множестве.</returns>
 	public abstract bool TryAdd(T item, out int index);
 
 	public virtual bool TryGetIndexOf(T item, out int index) => (index = IndexOf(item)) >= 0;
 
+	/// <summary>
+	/// Добавляет в конец данного множества все элементы, отсутствующие в нем, но присутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для добавления элементов.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain UnionWith(IEnumerable<T> other)
 	{
 		foreach (var item in other)
