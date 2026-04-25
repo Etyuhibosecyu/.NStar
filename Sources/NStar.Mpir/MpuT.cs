@@ -1750,7 +1750,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	readonly long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 
-	readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)this;
+	readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 
 	readonly float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 

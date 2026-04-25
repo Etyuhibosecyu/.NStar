@@ -486,9 +486,11 @@ public class ListHashSetTests
 		b = ["000"];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 101);
+		b = E.ToHashSet(E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), -1));
-		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 2));
-		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 101));
 		a.FillInPlace(0, index => (index ^ index >> 1).ToString("D3"));
 		b = [];
 		Assert.IsTrue(a.Equals(b));
@@ -497,9 +499,11 @@ public class ListHashSetTests
 		b = ["000"];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(101, index => (index ^ index >> 1).ToString("D3"));
+		b = E.ToHashSet(E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1).ToString("D3")));
-		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(2, index => (index ^ index >> 1).ToString("D3")));
-		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.FillInPlace(101, index => (index ^ index >> 1).ToString("D3")));
 	}
 
 	[TestMethod]

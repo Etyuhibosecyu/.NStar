@@ -23,6 +23,11 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public override TCertain AddRange(IEnumerable<T> collection) => UnionWith(collection);
 
+	/// <summary>
+	/// Для множеств является псевдонимом <see cref="UnionWith(IEnumerable{T})"/>.
+	/// </summary>
+	/// <param name="array">Последовательность для добавления в виде массива.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public override TCertain AddRange(T[] array) => UnionWith(array);
 
 	protected override void AddSeriesInternal(T item, int length)
@@ -31,8 +36,10 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 			Add(item);
 	}
 
+	/// <inheritdoc/>
 	public override Memory<T> AsMemory(int index, int length) => List<T>.ReturnOrConstruct(this).AsMemory(index, length);
 
+	/// <inheritdoc/>
 	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
 	/// <inheritdoc/>
@@ -44,6 +51,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 			SetInternal(i, default!);
 	}
 
+	/// <inheritdoc/>
 	public override bool Contains(T? item, int index, int length) => item is not null && IndexOf(item, index, length) >= 0;
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
@@ -73,12 +81,13 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	void ISet<T>.ExceptWith(IEnumerable<T> other) => ExceptWith(other);
 
-	public override TCertain FillInPlace(Func<int, T> function, int length)
-	{
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1);
-		return base.FillInPlace(function, length);
-	}
-
+	/// <summary>
+	/// Заменяет содержимое данного множества на пустое множество или множество из одного указанного элемента.
+	/// (Выдает ошибку, если <paramref name="length"/> больше 1.)
+	/// </summary>
+	/// <param name="item">Элемент для добавления (см. <see cref="RedStarLinq.Fill{T}(T, int)"/>).</param>
+	/// <param name="length">0 или 1 (иначе метод выдаст ошибку).</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public override TCertain FillInPlace(T item, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1);
@@ -108,10 +117,21 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
 
+	/// <summary>
+	/// Проверяет, содержит ли данное множество все элементы указанной последовательности
+	/// и хотя бы один элемент, <b>от</b>сутствующий в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для проверки, содержатся ли ее элементы в данном множестве.</param>
+	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
 	public virtual bool IsSubsetOf(IEnumerable<T> other) => (other is ISet<T> set ? set : CollectionCreator(other)).IsSupersetOf(this);
 
+	/// <summary>
+	/// Проверяет, содержит ли данное множество все элементы указанной последовательности и, возможно, какие-то еще.
+	/// </summary>
+	/// <param name="other">Последовательность для проверки, содержатся ли ее элементы в данном множестве.</param>
+	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool IsSupersetOf(IEnumerable<T> other)
 	{
 		foreach (var item in other)
