@@ -737,51 +737,51 @@ public class BigListTests
 #pragma warning disable IDE0301 // Упростите инициализацию коллекции
 			b = new List<string>();
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
-			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			Assert.AreEqual(E.SequenceEqual(a, b), a.Equals((object?)b));
 			(b as IDisposable)?.Dispose();
 			b = Array.Empty<string>();
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
-			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			Assert.AreEqual(E.SequenceEqual(a, b), a.Equals((object?)b));
 			(b as IDisposable)?.Dispose();
 			b = new G.List<string>();
 #pragma warning restore IDE0301 // Упростите инициализацию коллекции
 #pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
-			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			Assert.AreEqual(E.SequenceEqual(a, b), a.Equals((object?)b));
 			var list = new List<string>();
 			b = list.Insert(0, "XXX").GetSlice(1);
 			list.Dispose();
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
-			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			Assert.AreEqual(E.SequenceEqual(a, b), a.Equals((object?)b));
 			b = E.Select(E.Take(a, 0), x => x);
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
-			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			Assert.AreEqual(E.SequenceEqual(a, b), a.Equals((object?)b));
 			b = E.TakeWhile(a, _ => random.Next(10) == -1);
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
-			Assert.AreEqual(a.Equals((object?)b), E.SequenceEqual(a, b));
+			Assert.AreEqual(E.SequenceEqual(a, b), a.Equals((object?)b));
 		}
 		void ProcessB(CustomBigList<string> a, G.IEnumerable<string> b)
 		{
 			G.IEnumerable<string> c = RedStarLinq.ToList(b);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
-			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			Assert.AreEqual(E.SequenceEqual(a, c), a.Equals((object?)c));
 			c = E.ToArray(b);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
-			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			Assert.AreEqual(E.SequenceEqual(a, c), a.Equals((object?)c));
 			c = E.ToList(b);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
-			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			Assert.AreEqual(E.SequenceEqual(a, c), a.Equals((object?)c));
 			var list = new List<string>();
 			c = list.Insert(0, "XXX").GetSlice(1);
 			list.Dispose();
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
-			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			Assert.AreEqual(E.SequenceEqual(a, c), a.Equals((object?)c));
 			c = E.Select(b, x => x);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
-			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			Assert.AreEqual(E.SequenceEqual(a, c), a.Equals((object?)c));
 			c = E.SkipWhile(b, _ => random.Next(10) != -1);
 			Assert.AreEqual(a.Equals(c), E.SequenceEqual(a, c));
-			Assert.AreEqual(a.Equals((object?)c), E.SequenceEqual(a, c));
+			Assert.AreEqual(E.SequenceEqual(a, c), a.Equals((object?)c));
 		}
 	}
 

@@ -14,7 +14,6 @@
 		<OutputType>Library</OutputType>
 		<AppDesignerFolder>Properties</AppDesignerFolder>
 		<RootNamespace>Mpir</RootNamespace>
-		<AssemblyName>Mpir.NET</AssemblyName>
 		<FileAlignment>512</FileAlignment>
 		<TargetFrameworkProfile />
 	</PropertyGroup>

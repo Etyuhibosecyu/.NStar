@@ -1401,6 +1401,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		ushort usi => this == usi,
 		byte y => this == y,
 		sbyte sy => this == sy,
+		IConvertible ic => ic.Equals(this),
 		_ => false
 	};
 
@@ -1515,6 +1516,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		byte y => CompareTo(y),
 		sbyte sy => CompareTo(sy),
 		string s => CompareTo(new MpzT(s)),
+		IComparable ic => -ic.CompareTo(this),
 		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
 	};
 
@@ -1753,15 +1755,15 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	readonly TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => ((IConvertible)this).ToBoolean(provider);
+	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpzCmpSi(this, 1) >= 0;
 
 	readonly byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
-	readonly char IConvertible.ToChar(IFormatProvider? provider) => ((IConvertible)this).ToChar(provider);
+	readonly char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
 
-	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => ((IConvertible)this).ToDateTime(provider);
+	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
 
-	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => ((IConvertible)this).ToDecimal(provider);
+	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
 
 	readonly double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
 
@@ -1771,7 +1773,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	readonly long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 
-	readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)this;
+	readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 
 	readonly float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 

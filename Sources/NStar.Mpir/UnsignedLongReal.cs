@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NStar.Mpir;
 
+[DebuggerDisplay("{ToShortString()}")]
 public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IComparable<UnsignedLongReal>,
 	IDisposable, IBinaryInteger<UnsignedLongReal>, IFloatingPoint<UnsignedLongReal>
 {
@@ -102,15 +103,18 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 
 	public UnsignedLongReal(ReadOnlySpan<byte> bytes, int order)
 	{
-		if (bytes.Length < MantissaByteLength)
+		if (bytes.Length <= MantissaByteLength)
 		{
 			m = new(bytes, order);
 			e = null;
 		}
 		else
 		{
-			m = new(bytes[..MantissaByteLength], order);
-			e = new(bytes[MantissaByteLength..], order);
+			var mStart = Math.Max(order, 0) * (bytes.Length - MantissaByteLength);
+			var eStart = Math.Max(-order, 0) * MantissaByteLength;
+			m = new(bytes.Slice(mStart, MantissaByteLength), order);
+			e = new UnsignedLongReal(bytes.Slice(eStart, bytes.Length - MantissaByteLength), order) is var num && num > 0
+				? num : null;
 		}
 	}
 
@@ -198,6 +202,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		MpuT uz => CompareTo(uz),
 		UnsignedLongReal ulr => CompareTo(ulr),
 		BigInteger bi => CompareTo(new MpzT(bi)),
+		IComparable ic => -ic.CompareTo(this),
 		_ => 0,
 	};
 
@@ -330,6 +335,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		MpuT uz => CompareTo(uz) == 0,
 		UnsignedLongReal ulr => CompareTo(ulr) == 0,
 		BigInteger bi => CompareTo(new MpzT(bi)) == 0,
+		IConvertible ic => ic.Equals(this),
 		_ => false,
 	};
 
@@ -409,7 +415,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			return new((MantissaOverflow + m << MantissaLength + 1).Sqrt() & MantissaMask, e >> 1);
 	}
 
-	bool IConvertible.ToBoolean(IFormatProvider? provider) => ((IConvertible)this).ToBoolean(provider);
+	bool IConvertible.ToBoolean(IFormatProvider? provider) => CompareTo(1) >= 0;
 
 	byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
@@ -427,23 +433,26 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		if (order < 0)
 			e.TryWriteLittleEndian(bytes.AsSpan(MantissaByteLength), out _);
 		else
-			e.TryWriteBigEndian(bytes.AsSpan(MantissaByteLength), out _);
+			e.TryWriteBigEndian(bytes.AsSpan(..^MantissaByteLength), out _);
 		return bytes;
 	}
 
-	char IConvertible.ToChar(IFormatProvider? provider) => ((IConvertible)this).ToChar(provider);
-	DateTime IConvertible.ToDateTime(IFormatProvider? provider) => ((IConvertible)this).ToDateTime(provider);
-	decimal IConvertible.ToDecimal(IFormatProvider? provider) => ((IConvertible)this).ToDecimal(provider);
+	char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
+	DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
+	decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
 	double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
 	short IConvertible.ToInt16(IFormatProvider? provider) => (short)this;
 	int IConvertible.ToInt32(IFormatProvider? provider) => (int)this;
 	long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
+	public string? ToShortString() =>
+		BitLength >= 65536 ? "Too large for short string, use ToString() instead." : ((MpuT)this).ToString();
 	public override string? ToString() => ((MpuT)this).ToString();
 	public string ToString(IFormatProvider? provider) => ToString() ?? "";
 	public string ToString(string? format, IFormatProvider? formatProvider) =>
 		string.Format(formatProvider, format ?? "{0:N0}", ToString());
+	public string? ToString(uint @base) => ((MpuT)this).ToString(@base);
 
 	object IConvertible.ToType(Type targetType, IFormatProvider? provider)
 	{
@@ -698,7 +707,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		}
 		bytesWritten = MantissaByteLength;
 		destination[..(MantissaByteLength - mLength)].Clear();
-		if (!e.TryWriteBigEndian(destination[MantissaByteLength..], out var bytesWritten2))
+		if (!e.TryWriteBigEndian(destination[..^MantissaByteLength], out var bytesWritten2))
 		{
 			bytesWritten = 0;
 			return false;
@@ -775,7 +784,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		else if (value.e <= int.MaxValue)
 			return new MpzT(MantissaOverflow + value.m) << (int)value.e - 1;
 		else
-			throw new OverflowException("Ошибка, слишком большое число для преобразования в целое.");
+			return 0;
 	}
 
 	public static explicit operator MpuT(UnsignedLongReal value)
@@ -785,7 +794,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		else if (value.e <= int.MaxValue)
 			return new MpuT(MantissaOverflow + value.m) << (int)value.e - 1;
 		else
-			throw new OverflowException("Ошибка, слишком большое число для преобразования в целое.");
+			return 0;
 	}
 
 	public static UnsignedLongReal operator +(UnsignedLongReal value) => new(value);

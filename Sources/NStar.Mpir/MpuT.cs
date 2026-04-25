@@ -1392,6 +1392,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		ushort usi => this == usi,
 		byte y => this == y,
 		sbyte sy => this == sy,
+		IConvertible ic => ic.Equals(this),
 		_ => false
 	};
 
@@ -1494,7 +1495,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public readonly int CompareTo(object? obj) => obj switch
 	{
 		MpuT uz => CompareTo(uz),
-		MpzT z => CompareTo(z),
+		MpzT z => -z.CompareTo(this),
 		int i => CompareTo(i),
 		uint ui => CompareTo(ui),
 		long li => CompareTo(li),
@@ -1506,6 +1507,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		byte y => CompareTo(y),
 		sbyte sy => CompareTo(sy),
 		string s => CompareTo(new MpuT(s)),
+		IComparable ic => -ic.CompareTo(this),
 		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
 	};
 
@@ -1732,15 +1734,15 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	readonly TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => ((IConvertible)this).ToBoolean(provider);
+	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpuCmpSi(this, 1) >= 0;
 
 	readonly byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
-	readonly char IConvertible.ToChar(IFormatProvider? provider) => ((IConvertible)this).ToChar(provider);
+	readonly char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
 
-	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => ((IConvertible)this).ToDateTime(provider);
+	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
 
-	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => ((IConvertible)this).ToDecimal(provider);
+	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
 
 	readonly double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
 
@@ -1862,7 +1864,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		var bufSize = (int)Min(Mpir.MpuSizeinbase(this, 256), 2147483647);
 		if (destination.Length >= bufSize)
 		{
-			Mpir.MpirMpuExport(destination, 1, sizeof(byte), 0, 0u, this);
+			Mpir.MpirMpuExport(destination[^bufSize..], 1, sizeof(byte), 0, 0u, this);
 			bytesWritten = bufSize;
 			return true;
 		}
