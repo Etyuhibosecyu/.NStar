@@ -262,8 +262,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	{
 		var z = new MpuT();
 		Mpir.MpuAddUi(z, x, 1);
-		Mpir.MpuSet(x, z);
-		return x;
+		return z;
 	}
 
 	public static MpuT operator --(MpuT x)
@@ -272,8 +271,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var z = new MpuT();
 		Mpir.MpuSubUi(z, x, 1);
-		Mpir.MpuSet(x, z);
-		return x;
+		return z;
 	}
 
 	public static MpuT operator *(MpuT x, MpuT y)

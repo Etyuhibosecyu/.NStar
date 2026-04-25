@@ -1234,20 +1234,25 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 
 	public static UnsignedLongReal operator ++(UnsignedLongReal value)
 	{
-		if (value.e is not null)
+#pragma warning disable IDE0078 // Используйте сопоставление шаблонов
+		if (value.e is not null && value.e > 2)
 			return value.Copy();
 		else if (Mpir.MpuCmp(value.m, MantissaMask) == 0)
-			return new(0, null);
+			return new(0, value.e is not null ? 2 : 1);
 		else
-			return new(value.m + 1, null);
+			return new(value.m + 1, value.e);
+#pragma warning restore IDE0078 // Используйте сопоставление шаблонов
 	}
 
 	public static UnsignedLongReal operator --(UnsignedLongReal value)
 	{
 		if (value.e is null)
 			return new(value.m - 1, null);
-		else if (Mpir.MpuCmpSi(value.m, 0) == 0 && value.e.e is null && Mpir.MpuCmpSi(value.e.m, 1) == 0)
-			return new(MantissaMask, null);
+		var compTo2 = Mpir.MpuCmpSi(value.e.m, 2);
+		if (Mpir.MpuCmpSi(value.m, 0) == 0 && value.e.e is null && compTo2 <= 0)
+			return new(MantissaMask, compTo2 == 0 ? 1 : null);
+		else if (value.e.e is null && compTo2 <= 0)
+			return new(value.m - 1, value.e);
 		else
 			return value.Copy();
 	}

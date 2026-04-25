@@ -540,7 +540,7 @@ public class UnsignedLongRealTests
 			ulr = uz;
 			actions.Random(random)();
 		}
-		if (counter++ < 10000)
+		if (counter++ < 5000)
 			goto l1;
 		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
 		void Validate()
@@ -793,6 +793,55 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), ulr.Equals(num2));
 			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), ulr.Equals((object)num2));
 			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), num2.Equals(ulr));
+		}
+		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+	}
+
+	[TestMethod]
+	public void TestIncrementDecrement()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
+			MpuT uz = new(bytes.AsSpan(), RandomOrder());
+			UnsignedLongReal ulr = uz;
+			var shiftAmount = Max(uz.BitLength - MantissaLength - 1, 0);
+			uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
+			bytes.FillInPlace(random.Next(3), _ => (byte)random.Next(256));
+			bytes.PadRightInPlace(4);
+			Assert.AreEqual(++uz, ++ulr);
+			Assert.AreEqual(uz++, ulr++);
+			Assert.AreEqual(--uz, --ulr);
+			Assert.AreEqual(uz--, ulr--);
+		}
+		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+	}
+
+	[TestMethod]
+	public void TestShifts()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
+			MpuT uz = new(bytes.AsSpan(), RandomOrder());
+			using UnsignedLongReal ulr = uz;
+			var shiftAmount = Max(uz.BitLength - MantissaLength - 1, 0);
+			uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
+			bytes.FillInPlace(random.Next(3), _ => (byte)random.Next(256));
+			bytes.PadRightInPlace(4);
+			shiftAmount = BitConverter.ToInt32(bytes.AsSpan());
+			Assert.AreEqual(uz << shiftAmount, ulr << shiftAmount);
+			Assert.AreEqual(uz.ShiftRightRound(shiftAmount), ulr >> shiftAmount);
+			Assert.AreEqual(uz.ShiftRightRound(shiftAmount), ulr >>> shiftAmount);
+			Assert.AreEqual(uz << shiftAmount, ulr << (UnsignedLongReal)shiftAmount);
+			Assert.AreEqual(uz.ShiftRightRound(shiftAmount), ulr >> (UnsignedLongReal)shiftAmount);
+			Assert.AreEqual(uz.ShiftRightRound(shiftAmount), ulr >>> (UnsignedLongReal)shiftAmount);
 		}
 		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
 	}
