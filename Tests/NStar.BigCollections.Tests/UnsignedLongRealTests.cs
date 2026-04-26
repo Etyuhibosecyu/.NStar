@@ -617,70 +617,46 @@ public class UnsignedLongRealTests
 			num = ulr / 3;
 			ProcessB(ulr, num);
 			num = (byte)0;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = (short)0;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = (ushort)0;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = 0;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = 0u;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = 0L;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = 0uL;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Validate(ulr, num);
 			num = MpuT.Zero;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, -Sign(num.CompareTo(ulr)));
+			Validate2(ulr, num);
 			num = MpzT.Zero;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, -Sign(num.CompareTo(ulr)));
+			Validate2(ulr, num);
 			num = UnsignedLongReal.Zero;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, -Sign(num.CompareTo(ulr)));
+			Validate2(ulr, num);
 		}
 		void ProcessB(UnsignedLongReal ulr, dynamic num)
 		{
 			dynamic num2 = (byte)num;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (short)num is var si && si < 0 ? ~si : si;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (ushort)num;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (int)num is var i && i < 0 ? ~i : i;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (uint)num;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (long)num is var li && li < 0 ? ~li : li;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (ulong)num;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+			Validate(ulr, num2);
 			num2 = (MpuT)num;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, -Sign(num2.CompareTo(ulr)));
+			Validate2(ulr, num2);
 			num2 = (MpzT)num;
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
-			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, -Sign(num2.CompareTo(ulr)));
+			Validate2(ulr, num2);
 			num2 = (UnsignedLongReal)num;
 			var comp = num2.ToByteArray(1) is not byte[] rightArr
 				? 0 : ulr.ToByteArray(1) is var leftArr
@@ -693,6 +669,17 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(comp, -Sign(num2.CompareTo(ulr)));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
+		static void Validate(UnsignedLongReal ulr, dynamic num2)
+		{
+			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo(num2)));
+			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num2)) : 1, Sign(ulr.CompareTo((object)num2)));
+		}
+		static void Validate2(UnsignedLongReal ulr, dynamic num)
+		{
+			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo(num)));
+			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, Sign(ulr.CompareTo((object)num)));
+			Assert.AreEqual(ulr.Equals((MpuT)ulr) ? Sign(((MpuT)ulr).CompareTo(num)) : 1, -Sign(num.CompareTo(ulr)));
+		}
 	}
 
 	[TestMethod]

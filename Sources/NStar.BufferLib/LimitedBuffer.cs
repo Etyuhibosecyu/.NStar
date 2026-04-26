@@ -18,7 +18,8 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 	public LimitedBuffer(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
-		_items = arrayPool.GetAndRemove(capacity);
+		lock (globalLockObj)
+			_items = arrayPool.GetAndRemove(capacity);
 		_start = 0;
 	}
 
@@ -125,6 +126,8 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		span.Slice(span.Length - _size, _size).CopyTo(_items);
 	}
 
+	~LimitedBuffer() => Dispose();
+
 	public override int Capacity
 	{
 		get => _items?.Length ?? 0;
@@ -218,19 +221,29 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		Debug.Assert(_items is not null);
-		if (_start + index + length < _items.Length)
-			Array.Copy(_items, _start + index, array, arrayIndex, length);
-		else if (_start + index < _items.Length)
+		var start = _start + index;
+		if (start + length < Capacity)
+			Parallel.For(0, length, i => array[arrayIndex + i] = _items[start + i]);
+		else if (start < Capacity)
 		{
-			Array.Copy(_items, _start + index, array, arrayIndex, _items.Length - _start - index);
-			Array.Copy(_items, 0, array, arrayIndex + _items.Length - _start - index, length - (_items.Length - _start - index));
+			Parallel.For(0, Capacity - _start - index, i => array[arrayIndex + i] = _items[start + i]);
+			Parallel.For(0, length - (Capacity - start), i => array[arrayIndex + Capacity - start + i] = _items[i]);
 		}
 		else
-			Array.Copy(_items, (_start + index) % _items.Length, array, arrayIndex, length);
+			Parallel.For(0, length, i => array[arrayIndex + i] = _items[start - Capacity + i]);
 	}
 
 	public override void Dispose()
 	{
+		if (_items == null)
+			return;
+		lock (globalLockObj)
+		{
+			if (arrayPool.TryGetValue(_items.Length, out var list))
+				list.Add(_items);
+			else
+				arrayPool.Add(_items.Length, new(32) { _items });
+		}
 		_items = default;
 		_size = 0;
 		Changed();

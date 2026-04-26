@@ -132,7 +132,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
 
 	/// <summary>
-	/// Проверяет, содержит ли данное множество все элементы указанной последовательности
+	/// Проверяет, содержит ли данное множество все элементы указанной последовательности (без повторов)
 	/// и хотя бы один элемент, <b>от</b>сутствующий в указанной последовательности.
 	/// </summary>
 	/// <param name="other">Последовательность для проверки, содержатся ли ее элементы в данном множестве.</param>
@@ -140,14 +140,16 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
 	/// <summary>
-	/// Проверяет, содержит ли указанная последовательность все элементы данного множества и, возможно, какие-то еще.
+	/// Проверяет, содержит ли указанная последовательность все элементы данного множества
+	/// и, возможно, какие-то еще.
 	/// </summary>
 	/// <param name="other">Последовательность для проверки, содержатся ли в ней элементы данного множества.</param>
 	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool IsSubsetOf(IEnumerable<T> other) => (other is ISet<T> set ? set : CollectionCreator(other)).IsSupersetOf(this);
 
 	/// <summary>
-	/// Проверяет, содержит ли данное множество все элементы указанной последовательности и, возможно, какие-то еще.
+	/// Проверяет, содержит ли данное множество все элементы указанной последовательности (без повторов)
+	/// и, возможно, какие-то еще.
 	/// </summary>
 	/// <param name="other">Последовательность для проверки, содержатся ли ее элементы в данном множестве.</param>
 	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
@@ -159,12 +161,24 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return true;
 	}
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции. Используйте IndexOf() вместо него.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOf() вместо него.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции. Используйте IndexOfAny() вместо него.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override int LastIndexOfAny(IEnumerable<T> collection, int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOfAny() вместо него.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции. Используйте IndexOfAnyExcluding() вместо него.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 		+ " Используйте IndexOfAnyExcluding() вместо него.");
@@ -273,6 +287,14 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Проверяет, содержит ли указанная последовательность все элементы данного множества
+	/// по одному разу и никаких других
+	/// (другими словами, являются ли данное множество и указанная последовательность
+	/// перестановками одного и того же набора элементов).
+	/// </summary>
+	/// <param name="other">Последовательность для проверки, содержатся ли в ней элементы данного множества.</param>
+	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool SetEquals(IEnumerable<T> other)
 	{
 		if (other.TryGetLengthEasily(out var length))
@@ -286,12 +308,15 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		}
 		else
 		{
-			var set = CollectionCreator(other);
-			if (Length != set.Length)
-				return false;
-			foreach (var item in set)
+			length = 0;
+			foreach (var item in other)
+			{
 				if (!Contains(item))
 					return false;
+				length++;
+			}
+			if (Length != length)
+				return false;
 			return true;
 		}
 	}

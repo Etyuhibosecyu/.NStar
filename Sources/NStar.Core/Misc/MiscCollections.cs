@@ -1,9 +1,19 @@
 ﻿namespace NStar.Core;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public readonly record struct Chain(int Start, int Length) : IReadOnlyCollection<int>
+public readonly record struct Chain(int Start, int Length) : IReadOnlyList<int>
 {
 	public Chain(int length) : this(0, length) { }
+
+	public int this[int index]
+	{
+		get
+		{
+			if (index < 0 || index >= Length)
+				throw new IndexOutOfRangeException();
+			return Start + index;
+		}
+	}
 
 	public int Length { get; } = Max(Length, 0);
 
@@ -13,11 +23,19 @@ public readonly record struct Chain(int Start, int Length) : IReadOnlyCollection
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+	public readonly List<int> ToArray()
+	{
+		var start = Start;
+		var array = GC.AllocateUninitializedArray<int>(Length);
+		Parallel.For(0, Length, i => array[i] = start + i);
+		return array;
+	}
+
 	public readonly List<int> ToList()
 	{
-		List<int> list = new(Length);
-		for (var i = 0; i < Length; i++)
-			list.Add(Start + i);
+		var start = Start;
+		var list = RedStarLinq.EmptyList<int>(Length);
+		Parallel.For(0, Length, i => list[i] = start + i);
 		return list;
 	}
 

@@ -2,8 +2,9 @@
 global using System;
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
-global using G = System.Collections.Generic;
+global using System.Threading.Tasks;
 global using static System.Math;
+global using G = System.Collections.Generic;
 
 namespace NStar.BufferLib;
 
@@ -180,15 +181,16 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
-		if (_start + index + length < Capacity)
-			Array.Copy(_items, _start + index, array, arrayIndex, length);
-		else if (_start + index < Capacity)
+		var start = _start + index;
+		if (start + length < Capacity)
+			Parallel.For(0, length, i => array[arrayIndex + i] = _items[start + i]);
+		else if (start < Capacity)
 		{
-			Array.Copy(_items, _start + index, array, arrayIndex, Capacity - _start - index);
-			Array.Copy(_items, 0, array, arrayIndex + Capacity - _start - index, length - (Capacity - _start - index));
+			Parallel.For(0, Capacity - _start - index, i => array[arrayIndex + i] = _items[start + i]);
+			Parallel.For(0, length - (Capacity - start), i => array[arrayIndex + Capacity - start + i] = _items[i]);
 		}
 		else
-			Array.Copy(_items, (_start + index) % Capacity, array, arrayIndex, length);
+			Parallel.For(0, length, i => array[arrayIndex + i] = _items[start - Capacity + i]);
 	}
 
 	public override void Dispose()

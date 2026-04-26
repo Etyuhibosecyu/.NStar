@@ -14,14 +14,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 {
 	private protected T[]? _items;
 
-	private protected static readonly SortedDictionary<int, G.List<T[]>> arrayPool = [];
+	private protected static readonly Dictionary<int, G.List<T[]>> arrayPool = [];
 	private protected static readonly object globalLockObj = new();
 
 	protected List() => _items = null;
 
-	protected List(int capacity) : this(capacity, false) { }
-
-	protected List(int capacity, bool exact)
+	protected List(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity == 0)
@@ -29,8 +27,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			_items = null;
 			return;
 		}
-		lock (globalLockObj)
-			_items = arrayPool.GetAndRemove(capacity, exact);
+		_items = ArrayPool<T>.Shared.Rent(capacity);
 	}
 
 	protected List(IEnumerable<T> collection)
@@ -41,105 +38,96 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			length = c.Count;
 			if (length == 0)
-				_items = null;
-			else
 			{
-				lock (globalLockObj)
-					_items = arrayPool.GetAndRemove(length);
-				c.CopyTo(_items, 0);
-				_size = length;
+				_items = null;
+				return;
 			}
+			_items = ArrayPool<T>.Shared.Rent(length);
+			if (c is T[] array && length >= 2048)
+				Parallel.For(0, length, i => _items[i] = array[i]);
+			else
+				c.CopyTo(_items, 0);
+			_size = length;
+			return;
+		}
+		_size = 0;
+		if (collection.TryGetLengthEasily(out length))
+			_items = ArrayPool<T>.Shared.Rent(length);
+		else
+			_items = null;
+		using var en = collection.GetEnumerator();
+		while (en.MoveNext())
+			Add(en.Current);
+	}
+
+	protected List(int capacity, IEnumerable<T> collection)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
+		ArgumentNullException.ThrowIfNull(collection);
+		if (collection is G.ICollection<T> c)
+		{
+			var length = c.Count;
+			if (length == 0)
+				return;
+			var arrayLength = Max(capacity, length);
+			_items = ArrayPool<T>.Shared.Rent(arrayLength);
+			Debug.Assert(_items is not null);
+			if (c is T[] array && length >= 2048)
+				Parallel.For(0, length, i => _items[i] = array[i]);
+			else
+				c.CopyTo(_items, 0);
+			_size = length;
 		}
 		else
 		{
-			_size = 0;
-			if (collection.TryGetLengthEasily(out length))
-				lock (globalLockObj)
-					_items = arrayPool.GetAndRemove(length);
-			else
-				_items = null;
-			using var en = collection.GetEnumerator();
-			while (en.MoveNext())
-				Add(en.Current);
-		}
-	}
-
-	protected List(int capacity, IEnumerable<T> collection) : this(capacity, collection, false) { }
-
-	protected List(int capacity, IEnumerable<T> collection, bool exact) : this(capacity, exact)
-	{
-		ArgumentNullException.ThrowIfNull(collection);
-		if (collection is not G.ICollection<T> c)
-		{
+			_items = ArrayPool<T>.Shared.Rent(capacity == 0 ? DefaultCapacity : capacity);
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 			return;
 		}
-		var length = c.Count;
-		if (length == 0)
-			return;
-		if (length > capacity)
-			lock (globalLockObj)
-				_items = arrayPool.GetAndRemove(length, exact);
-		Debug.Assert(_items is not null);
-		c.CopyTo(_items, 0);
-		_size = length;
 	}
 
 	protected List(params T[] array)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
-		lock (globalLockObj)
-			_items = arrayPool.GetAndRemove(array.Length);
-		array.CopyTo(_items, 0);
+		_items = ArrayPool<T>.Shared.Rent(array.Length);
+		Parallel.For(0, array.Length, i => _items[i] = array[i]);
 	}
 
 	protected List(int capacity, params T[] array)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
-		if (array.Length > capacity)
-		{
-			lock (globalLockObj)
-				_items = arrayPool.GetAndRemove(array.Length);
-			array.CopyTo(_items, 0);
-		}
-		else
-		{
-			lock (globalLockObj)
-				_items = arrayPool.GetAndRemove(capacity);
-			Array.Copy(array, _items, array.Length);
-		}
+		var arrayLength = Max(capacity, array.Length);
+		_items = ArrayPool<T>.Shared.Rent(arrayLength);
+		Parallel.For(0, array.Length, i => _items[i] = array[i]);
 	}
 
 	protected List(ReadOnlySpan<T> span)
 	{
 		_size = span.Length;
-		lock (globalLockObj)
-			_items = arrayPool.GetAndRemove(span.Length);
+		_items = ArrayPool<T>.Shared.Rent(span.Length);
 		span.CopyTo(_items);
 	}
 
-	protected List(int capacity, ReadOnlySpan<T> span) : this(capacity, span, false) { }
-
-	protected List(int capacity, ReadOnlySpan<T> span, bool exact)
+	protected List(int capacity, ReadOnlySpan<T> span)
 	{
 		_size = span.Length;
 		if (span.Length > capacity)
 		{
-			lock (globalLockObj)
-				_items = arrayPool.GetAndRemove(span.Length, exact);
+			_items = ArrayPool<T>.Shared.Rent(span.Length);
 			span.CopyTo(_items);
 		}
 		else
 		{
-			lock (globalLockObj)
-				_items = arrayPool.GetAndRemove(capacity, exact);
+			_items = ArrayPool<T>.Shared.Rent(capacity);
 			span.CopyTo(_items);
 		}
 	}
+
+	~List() => Dispose();
 
 	/// <summary>
 	/// Представляет максимальное количество элементов, под которое в данный момент выделена память.
@@ -159,8 +147,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (value > 0)
 			{
 				T[] newItems;
-				lock (globalLockObj)
-					newItems = arrayPool.GetAndRemove(value, true);
+				newItems = ArrayPool<T>.Shared.Rent(value);
 				if (_size > 0 && _items is not null)
 					Array.Copy(_items, 0, newItems, 0, _size);
 				_items = newItems;
@@ -237,20 +224,14 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (_items is null)
 			return;
-		Array.Copy(_items, index, array, arrayIndex, length);
+		Parallel.For(0, length, i => array[arrayIndex + i] = _items[index + i]);
 	}
 
 	public override void Dispose()
 	{
 		if (_items is null)
 			return;
-		lock (globalLockObj)
-		{
-			if (arrayPool.TryGetValue(_items.Length, out var list))
-				list.Add(_items);
-			else
-				arrayPool.Add(_items.Length, new(32) { _items });
-		}
+		ArrayPool<T>.Shared.Return(_items);
 		_items = null;
 		_size = 0;
 		Changed();
@@ -265,8 +246,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentNullException(nameof(ptr));
 		TCertain list = [];
 		list._size = capacity;
-		lock (globalLockObj)
-			list._items = arrayPool.GetAndRemove(capacity);
+		list._items = ArrayPool<T>.Shared.Rent(capacity);
 		new Span<T>(ptr, list._size).CopyTo(list._items);
 		return list;
 	}
@@ -297,8 +277,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (newCapacity < min)
 				newCapacity = min;
 			T[] newItems;
-			lock (globalLockObj)
-				newItems = arrayPool.GetAndRemove(newCapacity);
+			newItems = ArrayPool<T>.Shared.Rent(newCapacity);
 			if (index > 0 && _items is not null)
 				Array.Copy(_items, 0, newItems, 0, index);
 			if (index < _size && _items is not null)
@@ -320,40 +299,6 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
-	{
-		if ((uint)index > (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		var length = span.Length;
-		if (length == 0)
-			return;
-		if (Capacity < _size + length)
-		{
-			var min = _size + length;
-			var newCapacity = Max(DefaultCapacity, Capacity * 2);
-			if ((uint)newCapacity > int.MaxValue)
-				newCapacity = int.MaxValue;
-			if (newCapacity < min)
-				newCapacity = min;
-			T[] newItems;
-			lock (globalLockObj)
-				newItems = arrayPool.GetAndRemove(newCapacity);
-			if (index > 0 && _items is not null)
-				Array.Copy(_items, 0, newItems, 0, index);
-			if (index < _size && _items is not null)
-				Array.Copy(_items, index, newItems, index + length, _size - index);
-			span.CopyTo(MemoryExtensions.AsSpan(newItems, index));
-			_items = newItems;
-		}
-		else
-		{
-			if (index < _size && _items is not null)
-				Array.Copy(_items, index, _items, index + length, _size - index);
-			span.CopyTo(MemoryExtensions.AsSpan(_items, index));
-		}
-		_size += length;
-	}
-
 	protected override void InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (collection is List<T, TCertain> list)
@@ -363,21 +308,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				return;
 			if (Capacity < _size + length)
 			{
-				var min = _size + length;
-				var newCapacity = Max(DefaultCapacity, Capacity * 2);
-				if ((uint)newCapacity > int.MaxValue)
-					newCapacity = int.MaxValue;
-				if (newCapacity < min)
-					newCapacity = min;
-				T[] newItems;
-				lock (globalLockObj)
-					newItems = arrayPool.GetAndRemove(newCapacity);
-				if (index > 0 && _items is not null)
-					Array.Copy(_items, 0, newItems, 0, index);
-				if (index < _size && _items is not null)
-					Array.Copy(_items, index, newItems, index + length, _size - index);
+				var newItems = InsertInternalGetNewItems(index, length);
 				if (list._items is not null)
-					Array.Copy(list._items, 0, newItems, index, length);
+					Parallel.For(0, length, i => newItems[index + i] = list._items[i]);
 				_items = newItems;
 			}
 			else
@@ -392,7 +325,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				else if (list._items is not null)
 				{
 					Debug.Assert(_items is not null);
-					Array.Copy(list._items, 0, _items, index, length);
+					Parallel.For(0, length, i => _items[index + i] = list._items[i]);
 				}
 			}
 			_size += length;
@@ -404,20 +337,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				return;
 			if (Capacity < _size + length)
 			{
-				var min = _size + length;
-				var newCapacity = Max(DefaultCapacity, Capacity * 2);
-				if ((uint)newCapacity > int.MaxValue)
-					newCapacity = int.MaxValue;
-				if (newCapacity < min)
-					newCapacity = min;
-				T[] newItems;
-				lock (globalLockObj)
-					newItems = arrayPool.GetAndRemove(newCapacity);
-				if (index > 0 && _items is not null)
-					Array.Copy(_items, 0, newItems, 0, index);
-				if (index < _size && _items is not null)
-					Array.Copy(_items, index, newItems, index + length, _size - index);
-				Array.Copy(array, 0, newItems, index, length);
+				var newItems = InsertInternalGetNewItems(index, length);
+				Parallel.For(0, length, i => newItems[index + i] = array[i]);
 				_items = newItems;
 			}
 			else
@@ -425,7 +346,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				if (index < _size && _items is not null)
 					Array.Copy(_items, index, _items, index + length, _size - index);
 				Debug.Assert(_items is not null);
-				Array.Copy(array, 0, _items, index, length);
+				Parallel.For(0, length, i => _items[index + i] = array[i]);
 			}
 			_size += length;
 		}
@@ -436,19 +357,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				return;
 			if (Capacity < _size + length)
 			{
-				var min = _size + length;
-				var newCapacity = Max(DefaultCapacity, Capacity * 2);
-				if ((uint)newCapacity > int.MaxValue)
-					newCapacity = int.MaxValue;
-				if (newCapacity < min)
-					newCapacity = min;
-				T[] newItems;
-				lock (globalLockObj)
-					newItems = arrayPool.GetAndRemove(newCapacity);
-				if (index > 0 && _items is not null)
-					Array.Copy(_items, 0, newItems, 0, index);
-				if (index < _size && _items is not null)
-					Array.Copy(_items, index, newItems, index + length, _size - index);
+				var newItems = InsertInternalGetNewItems(index, length);
 				list2.CopyTo(newItems, index);
 				_items = newItems;
 			}
@@ -463,6 +372,44 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		else
 			InsertInternal(index, CollectionCreator(collection));
+	}
+
+	protected override void InsertInternal(int index, ReadOnlySpan<T> span)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var length = span.Length;
+		if (length == 0)
+			return;
+		if (Capacity < _size + length)
+		{
+			var newItems = InsertInternalGetNewItems(index, length);
+			span.CopyTo(MemoryExtensions.AsSpan(newItems, index));
+			_items = newItems;
+		}
+		else
+		{
+			if (index < _size && _items is not null)
+				Array.Copy(_items, index, _items, index + length, _size - index);
+			span.CopyTo(MemoryExtensions.AsSpan(_items, index));
+		}
+		_size += length;
+	}
+	private T[] InsertInternalGetNewItems(int index, int length)
+	{
+		var min = _size + length;
+		var newCapacity = Max(DefaultCapacity, Capacity * 2);
+		if ((uint)newCapacity > int.MaxValue)
+			newCapacity = int.MaxValue;
+		if (newCapacity < min)
+			newCapacity = min;
+		T[] newItems;
+		newItems = ArrayPool<T>.Shared.Rent(newCapacity);
+		if (index > 0 && _items is not null)
+			Parallel.For(0, index, i => newItems[i] = _items[i]);
+		if (index < _size && _items is not null)
+			Parallel.For(index, _size, i => newItems[i + length] = _items[i]);
+		return newItems;
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int length)
@@ -624,19 +571,13 @@ public class List<T> : List<T, List<T>>
 
 	public List(int capacity) : base(capacity) { }
 
-	public List(int capacity, bool exact) : base(capacity, exact) { }
-
 	public List(IEnumerable<T> collection) : base(collection) { }
 
 	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public List(int capacity, IEnumerable<T> collection, bool exact) : base(capacity, collection, exact) { }
-
 	public List(int capacity, params T[] array) : base(capacity, array) { }
 
 	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
-
-	public List(int capacity, ReadOnlySpan<T> span, bool exact) : base(capacity, span, exact) { }
 
 	public List(params T[] array) : base(array) { }
 

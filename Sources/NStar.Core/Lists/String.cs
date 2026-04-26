@@ -225,7 +225,7 @@ public unsafe class String : List<char, String>, IComparable, IComparable<char[]
 				newCapacity = int.MaxValue;
 			if (newCapacity < min)
 				newCapacity = min;
-			var newItems = new char[newCapacity];
+			var newItems = ArrayPool<char>.Shared.Rent(newCapacity);
 			if (_items is not null)
 			{
 				if (index > 0)

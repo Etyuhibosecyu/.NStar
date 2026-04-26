@@ -439,51 +439,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		var foundMatch = false;
 		while (current is not null)
 		{
-			if (current.Is2Node)
-			{
-				// Fix up 2-node
-				if (parent is null)
-					current.ColorRed();
-				else
-				{
-					var sibling = parent.GetSibling(current);
-					if (sibling.IsRed)
-					{
-						// If parent is a 3-node, flip the orientation of the red link.
-						// We can achieve this by a single rotation.
-						// This case is converted to one of the other cases below.
-						Debug.Assert(parent.IsBlack);
-						if (parent.Right == sibling)
-							parent.RotateLeft();
-						else
-							parent.RotateRight();
-						parent.ColorRed();
-						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
-						ReplaceChildOrRoot(grandParent, parent, sibling);
-						// `sibling` will become the grandparent of `current`.
-						grandParent = sibling;
-						if (parent == match)
-							parentOfMatch = sibling;
-						sibling = parent.GetSibling(current);
-					}
-					Debug.Assert(Node.IsNonNullBlack(sibling));
-					if (sibling.Is2Node)
-						parent.Merge2Nodes();
-					else
-					{
-						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
-						// We can change the color of `current` to red by some rotation.
-						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
-						newGrandParent.Color = parent.Color;
-						parent.ColorBlack();
-						current.ColorRed();
-						ReplaceChildOrRoot(grandParent, parent, newGrandParent);
-						if (parent == match)
-							parentOfMatch = newGrandParent;
-					}
-				}
-			}
+			FindMatchIteration(current, parent, ref grandParent, match, ref parentOfMatch);
 			grandParent = parent;
 			parent = current;
 			if (foundMatch)
@@ -507,6 +463,55 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			{
 				index2 -= current.Left.LeavesCount + 1;
 				current = current.Right;
+			}
+		}
+	}
+
+	private void FindMatchIteration(Node current, Node? parent, ref Node? grandParent, Node? match, ref Node? parentOfMatch)
+	{
+		if (current.Is2Node)
+		{
+			// Fix up 2-node
+			if (parent is null)
+				current.ColorRed();
+			else
+			{
+				var sibling = parent.GetSibling(current);
+				if (sibling.IsRed)
+				{
+					// If parent is a 3-node, flip the orientation of the red link.
+					// We can achieve this by a single rotation.
+					// This case is converted to one of the other cases below.
+					Debug.Assert(parent.IsBlack);
+					if (parent.Right == sibling)
+						parent.RotateLeft();
+					else
+						parent.RotateRight();
+					parent.ColorRed();
+					sibling.ColorBlack(); // The red parent can't have black children.
+										  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+					ReplaceChildOrRoot(grandParent, parent, sibling);
+					// `sibling` will become the grandparent of `current`.
+					grandParent = sibling;
+					if (parent == match)
+						parentOfMatch = sibling;
+					sibling = parent.GetSibling(current);
+				}
+				Debug.Assert(Node.IsNonNullBlack(sibling));
+				if (sibling.Is2Node)
+					parent.Merge2Nodes();
+				else
+				{
+					// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
+					// We can change the color of `current` to red by some rotation.
+					var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+					newGrandParent.Color = parent.Color;
+					parent.ColorBlack();
+					current.ColorRed();
+					ReplaceChildOrRoot(grandParent, parent, newGrandParent);
+					if (parent == match)
+						parentOfMatch = newGrandParent;
+				}
 			}
 		}
 	}
@@ -937,51 +942,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		var foundMatch = false;
 		while (current is not null)
 		{
-			if (current.Is2Node)
-			{
-				// Fix up 2-node
-				if (parent is null)
-					current.ColorRed();
-				else
-				{
-					var sibling = parent.GetSibling(current);
-					if (sibling.IsRed)
-					{
-						// If parent is a 3-node, flip the orientation of the red link.
-						// We can achieve this by a single rotation.
-						// This case is converted to one of the other cases below.
-						Debug.Assert(parent.IsBlack);
-						if (parent.Right == sibling)
-							parent.RotateLeft();
-						else
-							parent.RotateRight();
-						parent.ColorRed();
-						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
-						ReplaceChildOrRoot(grandParent, parent, sibling);
-						// `sibling` will become the grandparent of `current`.
-						grandParent = sibling;
-						if (parent == match)
-							parentOfMatch = sibling;
-						sibling = parent.GetSibling(current);
-					}
-					Debug.Assert(Node.IsNonNullBlack(sibling));
-					if (sibling.Is2Node)
-						parent.Merge2Nodes();
-					else
-					{
-						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
-						// We can change the color of `current` to red by some rotation.
-						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
-						newGrandParent.Color = parent.Color;
-						parent.ColorBlack();
-						current.ColorRed();
-						ReplaceChildOrRoot(grandParent, parent, newGrandParent);
-						if (parent == match)
-							parentOfMatch = newGrandParent;
-					}
-				}
-			}
+			FindMatchIteration(current, parent, ref grandParent, match, ref parentOfMatch);
 			// We don't need to compare after we find the match.
 			var order = foundMatch ? -1 : Comparer.Compare(item, current.Item);
 			if (order == 0)

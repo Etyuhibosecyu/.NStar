@@ -580,29 +580,21 @@ public static class RedStarLinq
 		else if (source is T[] array)
 		{
 			var result = new T[array.Length];
-			Array.Copy(array, result, array.Length);
+			Parallel.For(0, array.Length, i => result[i] = array[i]);
 			return result;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var result = new T[length];
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result[i] = item;
-			}
+			Parallel.For(0, length, i => result[i] = list2[i]);
 			return result;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var result = new T[length];
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result[i] = item;
-			}
+			Parallel.For(0, length, i => result[i] = list3[i]);
 			return result;
 		}
 		else if (source.TryGetLengthEasily(out var length))

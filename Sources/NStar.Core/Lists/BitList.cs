@@ -694,45 +694,6 @@ public unsafe class BitList : BaseList<bool, BitList>
 				return true;
 			return en.MoveNext() && (_items[quotient] & CreateVar((1 << remainder) - 1, out var mask)) == (en.Current & mask);
 		}
-		else if (obj is IEquatable<BitArray> iqba)
-		{
-			if (_items is null)
-				return iqba.Equals(new(0));
-			var (quotient, remainder) = DivRem(_size, BitsPerInt);
-			if (remainder != 0)
-				return false;
-			return iqba.Equals(new BitArray(Unsafe.As<int[]>(_items)[..quotient]));
-		}
-		else if (obj is IEquatable<IEnumerable<bool>> iqbe)
-			return iqbe.Equals(this);
-		else if (obj is IEquatable<IEnumerable<byte>> iqye)
-		{
-			if (_items is null)
-				return iqye.Equals([]);
-			var (quotient, remainder) = DivRem(_size, BitsPerInt);
-			if (remainder != 0)
-				return false;
-			fixed (uint* itemsPtr = _items)
-				return iqye.Equals(new Span<byte>(itemsPtr, quotient).ToArray());
-		}
-		else if (obj is IEquatable<IEnumerable<int>> iqie)
-		{
-			if (_items is null)
-				return iqie.Equals([]);
-			var (quotient, remainder) = DivRem(_size, BitsPerInt);
-			if (remainder != 0)
-				return false;
-			return iqie.Equals(Unsafe.As<int[]>(_items).GetSlice(0, quotient));
-		}
-		else if (obj is IEquatable<IEnumerable<uint>> iquie)
-		{
-			if (_items is null)
-				return iquie.Equals([]);
-			var (quotient, remainder) = DivRem(_size, BitsPerInt);
-			if (remainder != 0)
-				return false;
-			return iquie.Equals(_items.GetSlice(0, quotient));
-		}
 		else
 			return false;
 	}

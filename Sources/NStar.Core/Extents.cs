@@ -1,11 +1,12 @@
 ﻿global using NStar.Mpir;
 global using System;
+global using System.Buffers;
 global using System.Collections;
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
-global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static System.Math;
+global using G = System.Collections.Generic;
 
 namespace NStar.Core;
 
@@ -255,34 +256,6 @@ public static unsafe class Extents
 		// Возвращаем первый элемент, если он есть
 		var en = view.GetEnumerator();
 		return en.MoveNext() ? en.Current : default;
-	}
-
-	internal static T[] GetAndRemove<T>(this SortedDictionary<int, G.List<T[]>> dic, int value, bool exact = false)
-	{
-		if (dic.Count == 0)
-			return GC.AllocateUninitializedArray<T>(value);
-		if (exact)
-		{
-			if (!dic.TryGetValue(value, out var exactList))
-				return GC.AllocateUninitializedArray<T>(value);
-			var exactResult = exactList[^1];
-			exactList.RemoveAt(exactList.Count - 1);
-			if (exactList.Count == 0)
-				dic.Remove(value);
-			return exactResult;
-		}
-		if (dic.GetType().GetField("_set", System.Reflection.BindingFlags.Instance
-			| System.Reflection.BindingFlags.NonPublic)?.GetValue(dic) is not SortedSet<KeyValuePair<int, G.List<T[]>>> set)
-			return GC.AllocateUninitializedArray<T>(value);
-		if (set.FindMinGreaterOrEqual(value) is not KeyValuePair<int, G.List<T[]>> found)
-			return GC.AllocateUninitializedArray<T>(value);
-		var index = found.Key;
-		var list = dic[index];
-		var result = list[^1];
-		list.RemoveAt(list.Count - 1);
-		if (list.Count == 0)
-			dic.Remove(index);
-		return result;
 	}
 
 	/// <summary>

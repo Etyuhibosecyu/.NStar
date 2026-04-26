@@ -35,6 +35,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	private protected ValueCollection? _values;
 	private protected const int StartOfFreeList = -3;
 
+	protected const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
+
 	public Mirror() : this(0, (G.IEqualityComparer<TKey>?)null, null) { }
 
 	public Mirror(int capacity) : this(capacity, (G.IEqualityComparer<TKey>?)null, null) { }
@@ -448,10 +453,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = mirrored ? entries[current].next : entries[current].nextM;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - неизвестно, емкость - {entries?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -488,10 +490,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			} while (collisionCountM <= (uint)entries.Length);
 			// The chain of entries forms a loop; which means a concurrent update has happened.
 			// Break out of the loop and throw, rather than looping forever.
-		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-			+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-			+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -533,10 +532,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			} while (collisionCount <= (uint)entries.Length);
 			// The chain of entries forms a loop; which means a concurrent update has happened.
 			// Break out of the loop and throw, rather than looping forever.
-		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-			+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-			+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-			+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -681,10 +677,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -741,10 +734,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -798,10 +788,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -862,10 +849,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -1015,75 +999,43 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		Debug.Assert(entries is not null, "expected entries to be non-null");
 		var comparer = _comparer;
 		var comparerM = _comparerM;
-		var hashCode = (uint)(typeof(TKey).IsValueType && comparer is null ? key.GetHashCode() : comparer.GetHashCode(key));
+		var hashCode = (uint)comparer.GetHashCode(key);
 		uint collisionCount = 0;
 		ref var bucket = ref GetBucket(hashCode);
 		var current = bucket - 1; // Value in _buckets is 1-based
-		if (typeof(TKey).IsValueType && comparer is null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
-			while (true)
-			{
-				var a = TryInsertInternal(key, value, behavior, entries, G.EqualityComparer<TKey>.Default, comparerM, hashCode, ref collisionCount, ref current);
-				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
-				if (a == 0)
-					break;
-				else if (a == 1)
-					return true;
-				else if (a == 2)
-					return false;
-			}
-		else
+		Debug.Assert(comparer is not null);
+		while (true)
 		{
-			Debug.Assert(comparer is not null);
-			while (true)
-			{
-				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
-				// Test uint in if rather than loop condition to drop range check for following array access
-				var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCode, ref collisionCount, ref current);
-				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
-				if (a == 0)
-					break;
-				else if (a == 1)
-					return true;
-				else if (a == 2)
-					return false;
-			}
+			// Should be a while loop https://github.com/dotnet/runtime/issues/9422
+			// Test uint in if rather than loop condition to drop range check for following array access
+			var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCode, ref collisionCount, ref current);
+			Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+			Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+			if (a == 0)
+				break;
+			else if (a == 1)
+				return true;
+			else if (a == 2)
+				return false;
 		}
-		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparer is null ? value.GetHashCode() : comparerM.GetHashCode(value));
+		var hashCodeM = (uint)comparerM.GetHashCode(value);
 		uint collisionCountM = 0;
 		ref var bucketM = ref GetBucketM(hashCodeM);
 		var currentM = bucketM - 1; // Value in _bucketsM is 1-based
-		if (typeof(TValue).IsValueType && comparerM is null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
-			while (true)
-			{
-				var a = TryInsertInternal(key, value, behavior, entries, comparer ?? G.EqualityComparer<TKey>.Default, G.EqualityComparer<TValue>.Default, hashCodeM, ref collisionCountM, ref currentM, true);
-				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
-				if (a == 0)
-					break;
-				else if (a == 1)
-					return true;
-				else if (a == 2)
-					return false;
-			}
-		else
+		Debug.Assert(comparer is not null);
+		while (true)
 		{
-			Debug.Assert(comparer is not null);
-			while (true)
-			{
-				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
-				// Test uint in if rather than loop condition to drop range check for following array access
-				var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCodeM, ref collisionCountM, ref currentM, true);
-				Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
-				Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
-				if (a == 0)
-					break;
-				else if (a == 1)
-					return true;
-				else if (a == 2)
-					return false;
-			}
+			// Should be a while loop https://github.com/dotnet/runtime/issues/9422
+			// Test uint in if rather than loop condition to drop range check for following array access
+			var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCodeM, ref collisionCountM, ref currentM, true);
+			Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
+			Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
+			if (a == 0)
+				break;
+			else if (a == 1)
+				return true;
+			else if (a == 2)
+				return false;
 		}
 		int index, indexM;
 		if (_freeCount > 0)
@@ -1139,10 +1091,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = mirrored ? entries[current].nextM : entries[current].next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
@@ -1154,10 +1103,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				InsertionBehavior.None => 2,
 				InsertionBehavior.OverwriteExisting => 1,
 				InsertionBehavior.ThrowOnExisting => throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
-				_ => throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+				_ => throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
 					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),

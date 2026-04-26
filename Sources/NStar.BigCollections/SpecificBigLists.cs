@@ -673,8 +673,7 @@ namespace NStar.BigCollections.Common
 
 		protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x);
 
-		protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator =>
-			x => new(x);
+		protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x);
 
 		protected override Func<int, LimitedBuffer<T>> CapacityLowCreator => x => new(x);
 
@@ -721,8 +720,7 @@ namespace NStar.BigCollections.FastInsertion
 
 		protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x);
 
-		protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator =>
-			x => new(x);
+		protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x);
 
 		protected override Func<int, LimitedBuffer<T>> CapacityLowCreator => x => new(x);
 
@@ -769,8 +767,7 @@ namespace NStar.BigCollections.LowMemory
 
 		protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x);
 
-		protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator =>
-			x => new(x);
+		protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x);
 
 		protected override Func<int, LimitedBuffer<T>> CapacityLowCreator => x => new(x);
 

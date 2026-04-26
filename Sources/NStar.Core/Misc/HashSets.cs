@@ -374,11 +374,8 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 	}
 
-	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
-	{
-		for (var i = 0; i < length; i++)
-			array[arrayIndex++] = entries[index++].item;
-	}
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) =>
+		Parallel.For(0, length, i => array[arrayIndex + i] = entries[index + i].item);
 
 	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{

@@ -464,6 +464,139 @@ public class MirrorTests
 		if (counter++ < 1000)
 			goto l1;
 	}
+
+	[TestMethod]
+	public void ComplexTestString()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var counter = 0;
+	l1:
+		var arr = RedStarLinq.Fill(16, _ => (random.Next(16).ToString(), random.Next(1, 16).ToString())).RemoveDoubles(x => x.Item1).RemoveDoubles(x => x.Item2).ToArray();
+		Mirror<string, string> mir = new(arr);
+		var dic = E.ToDictionary(arr, x => x.Item1, x => x.Item2);
+		var dic2 = E.ToDictionary(arr, x => x.Item2, x => x.Item1);
+		var actions = new[] { () =>
+		{
+			if (random.Next(25) == 0)
+			{
+				mir.Clear();
+				dic.Clear();
+				dic2.Clear();
+			}
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
+		{
+			var index = random.Next(16).ToString();
+			var n = random.Next(16).ToString();
+			if (mir.TryAdd(index, n))
+			{
+				if (mir.TryGetValue(index, out var value))
+					dic2.Remove(value);
+				if (mir.TryGetKey(n, out var key))
+					dic.Remove(key);
+				dic.Add(index, n);
+				dic2.Add(n, index);
+			}
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
+		{
+			if (mir.Length == 0) return;
+			var index = random.Next(16).ToString();
+			var n = random.Next(16).ToString();
+			if (dic2.TryGetValue(n, out var key))
+				dic.Remove(key);
+			if (dic.TryGetValue(index, out var value))
+			{
+				dic2.Remove(n);
+				dic2.Remove(value);
+			}
+			if (random.Next(2) == 0)
+			{
+				mir.SetValue(index, n);
+				dic[index] = n;
+				dic2[n] = index;
+			}
+			else
+			{
+				mir.SetKey(n, index);
+				dic[index] = n;
+				dic2[n] = index;
+			}
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
+		{
+			if (mir.Length == 0) return;
+			if (random.Next(2) == 0)
+			{
+				var n = random.Next(16).ToString();
+				var b = mir.TryGetValue(n, out var value);
+				if (!b) return;
+				mir.RemoveKey(n);
+				dic.Remove(n);
+				dic2.Remove(value!);
+			}
+			else
+			{
+				var n = random.Next(16).ToString();
+				var b = mir.TryGetKey(n, out var key);
+				if (!b) return;
+				mir.RemoveValue(n);
+				dic.Remove(key!);
+				dic2.Remove(n);
+			}
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
+		{
+			if (mir.Length == 0) return;
+			if (random.Next(2) == 0)
+			{
+				var n = random.Next(16).ToString();
+				var b = mir.TryGetValue(n, out var value);
+				if (!b) return;
+				mir.RemoveKey(n, out var value2);
+				Assert.AreEqual(value, value2);
+				dic.Remove(n);
+				dic2.Remove(value!);
+			}
+			else
+			{
+				var n = random.Next(16).ToString();
+				var b = mir.TryGetKey(n, out var key);
+				if (!b) return;
+				mir.RemoveValue(n, out var key2);
+				Assert.AreEqual(key, key2);
+				dic.Remove(key!);
+				dic2.Remove(n);
+			}
+			Assert.HasCount(mir.Length, dic);
+			Assert.HasCount(mir.Length, dic2);
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic, (x, y) => x.Key == y.Key && x.Value == y.Value));
+			Assert.IsTrue(RedStarLinq.Equals(mir, dic2, (x, y) => x.Key == y.Value && x.Value == y.Key));
+		}, () =>
+		{
+			if (mir.Length == 0) return;
+			var n = random.Next(mir.Length);
+			Assert.AreEqual(mir.IndexOf(mir.ElementAt(n)), n);
+			Assert.AreEqual(mir.ElementAt(n).Key, dic2.ElementAt(n).Value);
+			Assert.AreEqual(mir.ElementAt(n).Value, dic2.ElementAt(n).Key);
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
+	}
 }
 
 [TestClass]
