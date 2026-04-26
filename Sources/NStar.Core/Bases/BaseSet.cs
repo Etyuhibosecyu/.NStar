@@ -94,6 +94,14 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return base.FillInPlace(item, length);
 	}
 
+	/// <summary>
+	/// Если указанного элемента нет в данной коллекции, вставляет внутрь нее указанный элемент,
+	/// так что он оказывается под указанным индексом (все следующие элементы сдвигаются вправо).
+	/// В противном случае ничего не делает.
+	/// </summary>
+	/// <param name="index">Индекс, под которым оказывается элемент.</param>
+	/// <param name="item">Элемент для вставки.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public override TCertain Insert(int index, T item)
 	{
 		if (!Contains(item))
@@ -115,6 +123,12 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	void ISet<T>.IntersectWith(IEnumerable<T> other) => IntersectWith(other);
 
+	/// <summary>
+	/// Проверяет, содержит ли указанная последовательность все элементы данного множества
+	/// и хотя бы один элемент, <b>от</b>сутствующий в данном множестве (дубликаты не считаются).
+	/// </summary>
+	/// <param name="other">Последовательность для проверки, содержатся ли в ней элементы данного множества.</param>
+	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
 
 	/// <summary>
@@ -125,6 +139,11 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
+	/// <summary>
+	/// Проверяет, содержит ли указанная последовательность все элементы данного множества и, возможно, какие-то еще.
+	/// </summary>
+	/// <param name="other">Последовательность для проверки, содержатся ли в ней элементы данного множества.</param>
+	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool IsSubsetOf(IEnumerable<T> other) => (other is ISet<T> set ? set : CollectionCreator(other)).IsSupersetOf(this);
 
 	/// <summary>
@@ -161,30 +180,65 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return false;
 	}
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain Pad(int length, T value) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain PadInPlace(int length, T value) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain PadLeft(int length, T value) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain PadLeftInPlace(int length, T value) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain PadRight(int length, T value) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain PadRightInPlace(int length, T value) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
+	/// <summary>
+	/// Этот метод не поддерживается в этой коллекции.
+	/// Если он нужен вам, используйте один из видов списков, а не множеств.
+	/// (Выбрасывает исключение NotSupportedException.)
+	/// </summary>
 	public override TCertain Repeat(int length) => length switch
 	{
 		0 => new(),

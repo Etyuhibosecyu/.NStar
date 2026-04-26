@@ -1,13 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-// Disable warning about missing XML comments.
+﻿// Disable warning about missing XML comments.
 
 namespace NStar.Mpir;
 
 public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, IDisposable, IBinaryInteger<MpzT>
 {
 	#region Data
-	private const uint sDefaultStringBase = 10u;
+	internal const uint DefaultStringBase = 10u;
 	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
 		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
@@ -31,7 +29,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	/// Initializes a new MpzT to string s, parsed as an integer in the specified base.
 	public MpzT(string? s, uint @base) => val = Mpir.MpzInitSetStr(s ?? "0", @base);
 	/// Initializes a new MpzT to string s, parsed as an integer in base 10.
-	public MpzT(string? s) : this(s, sDefaultStringBase) { }
+	public MpzT(string? s) : this(s, DefaultStringBase) { }
 	/// Initializes a new MpzT to the BigInteger op.
 	public MpzT(BigInteger op) : this(op.ToByteArray(), -1) { }
 
@@ -533,42 +531,29 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return result;
 	}
 
-	public readonly MpzT Negate() => -this;
-
-	public readonly MpzT Complement() => ~this;
-
-	public readonly MpzT Add(MpzT x) => this + x;
-
 	public readonly MpzT Add(int x) => this + x;
-
+	public readonly MpzT Add(MpzT x) => this + x;
 	public readonly MpzT Add(uint x) => this + x;
-
-	public readonly MpzT Subtract(MpzT x) => this - x;
-
-	public readonly MpzT Subtract(int x) => this - x;
-
-	public readonly MpzT Subtract(uint x) => this - x;
-
-	public readonly MpzT Multiply(MpzT x) => this * x;
-
-	public readonly MpzT Multiply(int x) => this * x;
-
-	public readonly MpzT Multiply(uint x) => this * x;
-
-	public readonly MpzT Square() => this * this;
-
-	public readonly MpzT Divide(MpzT x) => this / x;
+	public readonly MpzT Complement() => ~this;
 
 	public readonly MpzT Divide(int x) => this / x;
 
 	public readonly MpzT Divide(uint x) => this / x;
 
-	public readonly MpzT Divide(MpzT x, out MpzT remainder)
+	public readonly MpzT Divide(int x, out int remainder)
 	{
 		var quotient = new MpzT();
-		remainder = new MpzT();
-		Mpir.MpzTdivQr(quotient, remainder, this, x);
-		return quotient;
+		if (x >= 0)
+		{
+			remainder = (int)Mpir.MpzTdivQUi(quotient, this, (uint)x);
+			return quotient;
+		}
+		else
+		{
+			remainder = -(int)Mpir.MpzTdivQUi(quotient, this, (uint)-x);
+			var res = -quotient;
+			return res;
+		}
 	}
 
 	public readonly MpzT Divide(int x, out MpzT remainder)
@@ -588,20 +573,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly MpzT Divide(int x, out int remainder)
+	public readonly MpzT Divide(MpzT x) => this / x;
+
+	public readonly MpzT Divide(MpzT x, out MpzT remainder)
 	{
 		var quotient = new MpzT();
-		if (x >= 0)
-		{
-			remainder = (int)Mpir.MpzTdivQUi(quotient, this, (uint)x);
-			return quotient;
-		}
-		else
-		{
-			remainder = -(int)Mpir.MpzTdivQUi(quotient, this, (uint)-x);
-			var res = -quotient;
-			return res;
-		}
+		remainder = new MpzT();
+		Mpir.MpzTdivQr(quotient, remainder, this, x);
+		return quotient;
 	}
 
 	public readonly MpzT Divide(uint x, out MpzT remainder)
@@ -637,25 +616,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return quotient;
 	}
 
-	public readonly MpzT Remainder(MpzT x)
-	{
-		var z = new MpzT();
-		Mpir.MpzTdivR(z, this, x);
-		return z;
-	}
-
-	public readonly bool IsDivisibleBy(MpzT x) => Mpir.MpzDivisibleP(this, x) != 0;
-
-	public readonly bool IsDivisibleBy(int x)
-	{
-		if (x >= 0)
-			return Mpir.MpzDivisibleUiP(this, (uint)x) != 0;
-		else
-			return Mpir.MpzDivisibleUiP(this, (uint)-x) != 0;
-	}
-
-	public readonly bool IsDivisibleBy(uint x) => Mpir.MpzDivisibleUiP(this, x) != 0;
-
 	/// <summary>
 	/// Divides exactly. Only works when the division is gauranteed to be exact (there is no remainder).
 	/// </summary>
@@ -689,6 +649,35 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	}
 
 	public readonly MpzT DivideMod(MpzT x, MpzT mod) => this * x.InvertMod(mod) % mod;
+
+	public readonly bool IsDivisibleBy(int x)
+	{
+		if (x >= 0)
+			return Mpir.MpzDivisibleUiP(this, (uint)x) != 0;
+		else
+			return Mpir.MpzDivisibleUiP(this, (uint)-x) != 0;
+	}
+
+	public readonly bool IsDivisibleBy(MpzT x) => Mpir.MpzDivisibleP(this, x) != 0;
+
+	public readonly bool IsDivisibleBy(uint x) => Mpir.MpzDivisibleUiP(this, x) != 0;
+
+	public readonly MpzT Multiply(MpzT x) => this * x;
+	public readonly MpzT Multiply(int x) => this * x;
+	public readonly MpzT Multiply(uint x) => this * x;
+	public readonly MpzT Negate() => -this;
+
+	public readonly MpzT Remainder(MpzT x)
+	{
+		var z = new MpzT();
+		Mpir.MpzTdivR(z, this, x);
+		return z;
+	}
+
+	public readonly MpzT Square() => this * this;
+	public readonly MpzT Subtract(MpzT x) => this - x;
+	public readonly MpzT Subtract(int x) => this - x;
+	public readonly MpzT Subtract(uint x) => this - x;
 
 	public readonly MpzT And(MpzT x) => this & x;
 
@@ -1209,8 +1198,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public readonly int CountOnes() => (int)Mpir.MpzPopcount(this);
 
-	public readonly int PopCount() => (int)Mpir.MpzPopcount(this);
-
 	public static int HammingDistance(MpzT x, MpzT y) => (int)Mpir.MpzHamdist(x, y);
 
 	public readonly int IndexOfZero(int startingIndex)
@@ -1232,6 +1219,17 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 			return (int)Mpir.MpzScan1(this, (uint)startingIndex);
 		}
 	}
+
+	public static bool IsPow2(MpzT value) => value.PopCount() == 1;
+
+	public static MpzT Log2(MpzT value)
+	{
+		var bitLength = value.BitLength;
+		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
+		return value >= sqrt ? bitLength : bitLength - 1;
+	}
+
+	public readonly int PopCount() => (int)Mpir.MpzPopcount(this);
 
 	public static MpzT PopCount(MpzT value) => value.PopCount();
 
@@ -1255,15 +1253,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {value.BitLength}, значение - {value}"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
-
-	public static bool IsPow2(MpzT value) => value.PopCount() == 1;
-
-	public static MpzT Log2(MpzT value)
-	{
-		var bitLength = value.BitLength;
-		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
-		return value >= sqrt ? bitLength : bitLength - 1;
 	}
 
 	#endregion
@@ -1672,7 +1661,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static explicit operator MpzT(decimal value) => new(value);
 
-	public static explicit operator MpzT(string value) => new(value, sDefaultStringBase);
+	public static explicit operator MpzT(string value) => new(value, DefaultStringBase);
 
 	public static explicit operator byte(MpzT value) => (byte)(uint)value;
 
@@ -1728,7 +1717,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public readonly BigInteger ToBigInteger() => new(ToByteArray(-1));
 
-	public override readonly string? ToString() => ToString((int)sDefaultStringBase);
+	public override readonly string? ToString() => ToString((int)DefaultStringBase);
 
 	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
 

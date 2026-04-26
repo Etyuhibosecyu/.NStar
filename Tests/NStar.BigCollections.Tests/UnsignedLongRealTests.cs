@@ -1,13 +1,14 @@
 ﻿using System.Globalization;
 
-namespace NStar.Core.Tests;
+namespace NStar.BigCollections.Tests;
 
 [TestClass]
 public class UnsignedLongRealTests
 {
-	private static readonly int MantissaLength = typeof(UnsignedLongReal)
-		.GetField(nameof(MantissaLength), BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null)
-		is int n ? n : throw new MissingFieldException(), MantissaByteLength = MantissaLength / 8;
+	private static readonly int MantissaByteLength = typeof(UnsignedLongReal)
+		.GetField(nameof(MantissaByteLength), BindingFlags.Instance | BindingFlags.NonPublic)
+		?.GetValue(UnsignedLongReal.Zero)
+		is int n ? n : throw new MissingFieldException(), MantissaLength = MantissaByteLength * 8;
 	private static readonly MpuT MantissaOverflow = new MpuT(1) << MantissaLength;
 	private static readonly MpuT MantissaMask = MantissaOverflow - 1;
 
@@ -336,12 +337,12 @@ public class UnsignedLongRealTests
 		}
 		if (counter++ < 10000)
 			goto l1;
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
 			var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
 			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & MantissaMask;
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten);
+			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
 			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
 			Assert.IsLessThanOrEqualTo((MpuT)1 << bitLengthDiff, (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
@@ -540,14 +541,14 @@ public class UnsignedLongRealTests
 			ulr = uz;
 			actions.Random(random)();
 		}
-		if (counter++ < 5000)
+		if (counter++ < 10000)
 			goto l1;
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
 			var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
 			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & MantissaMask;
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten);
+			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
 			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
 			Assert.IsLessThanOrEqualTo((MpuT)1 << bitLengthDiff, (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
@@ -573,7 +574,7 @@ public class UnsignedLongRealTests
 			if (bitLengthDiff > 0)
 				uz = uz.ShiftRightRound(bitLengthDiff) << bitLengthDiff;
 			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & MantissaMask;
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten);
+			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
 			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
 			Assert.AreEqual(expected, actual);
 			if (bytesWritten > MantissaByteLength)
@@ -582,7 +583,7 @@ public class UnsignedLongRealTests
 		}
 		if (counter++ < 2500)
 			goto l1;
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -593,7 +594,7 @@ public class UnsignedLongRealTests
 		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), RandomOrder());
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), RandomOrder(), UnsignedLongReal.DefaultMantissaByteLength);
 			ProcessA(ulr);
 		}
 		void ProcessA(UnsignedLongReal ulr)
@@ -691,7 +692,7 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(comp, Sign(ulr.CompareTo((object)num2)));
 			Assert.AreEqual(comp, -Sign(num2.CompareTo(ulr)));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -702,7 +703,7 @@ public class UnsignedLongRealTests
 		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), RandomOrder());
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), RandomOrder(), UnsignedLongReal.DefaultMantissaByteLength);
 			ProcessA(ulr);
 		}
 		void ProcessA(UnsignedLongReal ulr)
@@ -794,7 +795,7 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), ulr.Equals((object)num2));
 			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), num2.Equals(ulr));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -817,7 +818,7 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(--uz, --ulr);
 			Assert.AreEqual(uz--, ulr--);
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -843,7 +844,7 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(uz.ShiftRightRound(shiftAmount), ulr >> (UnsignedLongReal)shiftAmount);
 			Assert.AreEqual(uz.ShiftRightRound(shiftAmount), ulr >>> (UnsignedLongReal)shiftAmount);
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -860,12 +861,12 @@ public class UnsignedLongRealTests
 				bytes.Resize(Max(bytes.FindLastIndex(x => x != 0), 0) + 1);
 			else
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), order);
-			var bytes2 = ulr.ToByteArray(order);
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, random.Next(32, Max(bytes.Length, 32)));
+			var bytes2 = ulr.ToByteArray(order, false);
 			Assert.IsTrue(bytes.Equals(bytes2));
 			Assert.IsTrue(E.SequenceEqual(bytes2, bytes));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -878,12 +879,12 @@ public class UnsignedLongRealTests
 		{
 			bytes.FillInPlace(random.Next(260), _ => (byte)random.Next(256));
 			var order = RandomOrder();
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), order);
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, UnsignedLongReal.DefaultMantissaByteLength);
 			var @base = (uint)random.Next(2, 37);
 			Assert.IsTrue(ulr.Equals(new UnsignedLongReal(ulr.ToString())));
 			Assert.IsTrue(ulr.Equals(new UnsignedLongReal(ulr.ToString(@base), @base)));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -921,7 +922,7 @@ public class UnsignedLongRealTests
 			Assert.ThrowsExactly<InvalidCastException>(() =>
 				((IConvertible)ulr).ToType(typeof(byte[]), new CultureInfo("zh-Hant-CN")));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -930,11 +931,11 @@ public class UnsignedLongRealTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
-		for (var i = 0; i < 1000; i++)
+		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(260), _ => (byte)random.Next(256));
 			var order = RandomOrder();
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), order);
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, UnsignedLongReal.DefaultMantissaByteLength);
 			var @base = (uint)random.Next(2, 37);
 			Assert.IsTrue(UnsignedLongReal.TryParse(ulr.ToString(), out var @string) && ulr.Equals(@string));
 			Assert.IsTrue(UnsignedLongReal.TryParse(ulr.ToString(),
@@ -958,7 +959,7 @@ public class UnsignedLongRealTests
 			Assert.IsTrue(UnsignedLongReal.TryParse((ulr.ToString() ?? "0").AsSpan(), NumberStyles.BinaryNumber,
 				CultureInfo.InvariantCulture, out @string) && ulr.Equals(@string));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
@@ -971,15 +972,15 @@ public class UnsignedLongRealTests
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
 			var order = RandomOrder();
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), order);
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, random.Next(32, Max(bytes.Length, 32)));
 			bytes2.FillInPlace(0, bytes.Length);
 			if (order < 0)
-				ulr.TryWriteLittleEndian(bytes2.AsSpan(), out _);
+				ulr.TryWriteLittleEndian(bytes2.AsSpan(), out _, false);
 			else
-				ulr.TryWriteBigEndian(bytes2.AsSpan(), out _);
+				ulr.TryWriteBigEndian(bytes2.AsSpan(), out _, false);
 			Assert.IsTrue(bytes.Equals(bytes2));
 			Assert.IsTrue(E.SequenceEqual(bytes2, bytes));
 		}
-		int RandomOrder() => random.Next(2) == 0 ? 1 : -1;
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 }

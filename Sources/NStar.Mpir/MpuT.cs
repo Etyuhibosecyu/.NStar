@@ -1,21 +1,14 @@
-﻿// WARNING!!! This file is NOT a part of the original Mpir.NET library, it has been created by Red-Star-Soft!
-
-using System.Diagnostics.CodeAnalysis;
-
-// Disable warning about missing XML comments.
-
-namespace NStar.Mpir;
+﻿namespace NStar.Mpir;
 
 public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, IDisposable, IBinaryInteger<MpuT>
 {
 	#region Data
-	private const uint sDefaultStringBase = 10u;
 	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
 		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
 		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
 
-	public nint val;
+	internal nint val;
 	#endregion
 
 	#region Creation and destruction
@@ -54,7 +47,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	}
 
 	/// Initializes a new MpuT to string s, parsed as an integer in base 10.
-	public MpuT(string? s) : this(s, sDefaultStringBase) { }
+	public MpuT(string? s) : this(s, DefaultStringBase) { }
 	/// Initializes a new MpuT to the BigInteger op.
 	public MpuT(BigInteger op) : this(op < 0
 		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : op.ToByteArray(), -1) { }
@@ -556,41 +549,19 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return result;
 	}
 
-	public readonly MpzT Negate() => -this;
-
-	public readonly MpzT Complement() => ~this;
-
-	public readonly MpuT Add(MpuT x) => this + x;
-
 	public readonly MpuT Add(int x) => this + x;
-
+	public readonly MpuT Add(MpuT x) => this + x;
 	public readonly MpuT Add(uint x) => this + x;
-
-	public readonly MpuT Subtract(MpuT x) => this - x;
-
-	public readonly MpuT Subtract(int x) => this - x;
-
-	public readonly MpuT Subtract(uint x) => this - x;
-
-	public readonly MpuT Multiply(MpuT x) => this * x;
-
-	public readonly MpuT Multiply(int x) => this * x;
-
-	public readonly MpuT Multiply(uint x) => this * x;
-
-	public readonly MpuT Square() => this * this;
-
-	public readonly MpuT Divide(MpuT x) => this / x;
-
+	public readonly MpzT Complement() => ~this;
+	public readonly int DecLength() => ToString()?.Length ?? 1;
 	public readonly MpuT Divide(int x) => this / x;
 
-	public readonly MpuT Divide(uint x) => this / x;
-
-	public readonly MpuT Divide(MpuT x, out MpuT remainder)
+	public readonly MpuT Divide(int x, out int remainder)
 	{
+		if (x < 0)
+			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var quotient = new MpuT();
-		remainder = new MpuT();
-		Mpir.MpuTdivQr(quotient, remainder, this, x);
+		remainder = (int)Mpir.MpuTdivQUi(quotient, this, (uint)x);
 		return quotient;
 	}
 
@@ -604,12 +575,25 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(int x, out int remainder)
+	public readonly MpuT Divide(MpuT x) => this / x;
+
+	public readonly MpuT Divide(MpuT x, out MpuT remainder)
 	{
-		if (x < 0)
-			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var quotient = new MpuT();
-		remainder = (int)Mpir.MpuTdivQUi(quotient, this, (uint)x);
+		remainder = new MpuT();
+		Mpir.MpuTdivQr(quotient, remainder, this, x);
+		return quotient;
+	}
+
+	public readonly MpuT Divide(uint x) => this / x;
+
+	public readonly MpuT Divide(uint x, out int remainder)
+	{
+		var quotient = new MpuT();
+		var uintRemainder = Mpir.MpuTdivQUi(quotient, this, x);
+		if (uintRemainder > int.MaxValue)
+			throw new OverflowException();
+		remainder = (int)uintRemainder;
 		return quotient;
 	}
 
@@ -633,33 +617,14 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(uint x, out int remainder)
-	{
-		var quotient = new MpuT();
-		var uintRemainder = Mpir.MpuTdivQUi(quotient, this, x);
-		if (uintRemainder > int.MaxValue)
-			throw new OverflowException();
-		remainder = (int)uintRemainder;
-		return quotient;
-	}
-
-	public readonly MpuT Remainder(MpuT x)
-	{
-		var z = new MpuT();
-		Mpir.MpuTdivR(z, this, x);
-		return z;
-	}
-
-	public readonly bool IsDivisibleBy(MpuT x) => Mpir.MpuDivisibleP(this, x) != 0;
-
-	public readonly bool IsDivisibleBy(int x)
+	public readonly MpuT DivideExactly(int x)
 	{
 		if (x < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
-		return Mpir.MpuDivisibleUiP(this, (uint)x) != 0;
+		var z = new MpuT();
+		Mpir.MpuDivexactUi(z, this, (uint)x);
+		return z;
 	}
-
-	public readonly bool IsDivisibleBy(uint x) => Mpir.MpuDivisibleUiP(this, x) != 0;
 
 	/// <summary>
 	/// Divides exactly. Only works when the division is gauranteed to be exact (there is no remainder).
@@ -673,15 +638,6 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT DivideExactly(int x)
-	{
-		if (x < 0)
-			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
-		var z = new MpuT();
-		Mpir.MpuDivexactUi(z, this, (uint)x);
-		return z;
-	}
-
 	public readonly MpuT DivideExactly(uint x)
 	{
 		var z = new MpuT();
@@ -690,6 +646,32 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	}
 
 	public readonly MpuT DivideMod(MpuT x, MpuT mod) => this * x.InvertMod(mod) % mod;
+
+	public readonly bool IsDivisibleBy(int x)
+	{
+		if (x < 0)
+			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
+		return Mpir.MpuDivisibleUiP(this, (uint)x) != 0;
+	}
+
+	public readonly bool IsDivisibleBy(MpuT x) => Mpir.MpuDivisibleP(this, x) != 0;
+	public readonly bool IsDivisibleBy(uint x) => Mpir.MpuDivisibleUiP(this, x) != 0;
+	public readonly MpuT Multiply(int x) => this * x;
+	public readonly MpuT Multiply(MpuT x) => this * x;
+	public readonly MpuT Multiply(uint x) => this * x;
+	public readonly MpzT Negate() => -this;
+
+	public readonly MpuT Remainder(MpuT x)
+	{
+		var z = new MpuT();
+		Mpir.MpuTdivR(z, this, x);
+		return z;
+	}
+
+	public readonly MpuT Subtract(int x) => this - x;
+	public readonly MpuT Subtract(MpuT x) => this - x;
+	public readonly MpuT Subtract(uint x) => this - x;
+	public readonly MpuT Square() => this * this;
 
 	public readonly MpuT And(MpuT x) => this & x;
 
@@ -1200,8 +1182,6 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public readonly int CountOnes() => (int)Mpir.MpuPopcount(this);
 
-	public readonly int PopCount() => (int)Mpir.MpuPopcount(this);
-
 	public static int HammingDistance(MpuT x, MpuT y) => (int)Mpir.MpuHamdist(x, y);
 
 	public readonly int IndexOfZero(int startingIndex)
@@ -1224,6 +1204,17 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		}
 	}
 
+	public static bool IsPow2(MpuT value) => value.PopCount() == 1;
+
+	public static MpuT Log2(MpuT value)
+	{
+		var bitLength = value.BitLength;
+		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
+		return value >= sqrt ? bitLength : bitLength - 1;
+	}
+
+	public readonly int PopCount() => (int)Mpir.MpuPopcount(this);
+
 	public static MpuT PopCount(MpuT value) => value.PopCount();
 
 	public static MpuT TrailingZeroCount(MpuT value)
@@ -1244,15 +1235,6 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {value.BitLength}, значение - {value}"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
-
-	public static bool IsPow2(MpuT value) => value.PopCount() == 1;
-
-	public static MpuT Log2(MpuT value)
-	{
-		var bitLength = value.BitLength;
-		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
-		return value >= sqrt ? bitLength : bitLength - 1;
 	}
 
 	#endregion
@@ -1658,7 +1640,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static explicit operator MpuT(MpzT value) => new(value);
 
-	public static explicit operator MpuT(string value) => new(value, sDefaultStringBase);
+	public static explicit operator MpuT(string value) => new(value, DefaultStringBase);
 
 	public static explicit operator byte(MpuT value) => (byte)(uint)value;
 
@@ -1705,7 +1687,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public readonly BigInteger ToBigInteger() => new([.. ToByteArray(-1), 0]);
 
-	public override readonly string? ToString() => ToString((int)sDefaultStringBase);
+	public override readonly string? ToString() => ToString((int)DefaultStringBase);
 
 	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpuGetString(@base, this);
 

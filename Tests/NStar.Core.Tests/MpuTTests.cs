@@ -460,6 +460,20 @@ public class MpuTTests
 	}
 
 	[TestMethod]
+	public void SizeInBase()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			MpuT uz = new(bytes.AsSpan(), RandomOrder());
+			Assert.IsTrue((int)Mpir.Mpir.MpuSizeinbase(uz, 10) - (uz.ToString()?.Length ?? 1) is 0 or 1);
+		}
+		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
 	public void TrailingZeroCount()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
@@ -467,8 +481,8 @@ public class MpuTTests
 		{
 			var @long = random.NextInt64(1L << (random.Next(1, 16) << 2));
 			var shift = random.Next(1025);
-			var u = (MpuT)@long << shift;
-			Assert.AreEqual(@long == 0 ? 0 : long.TrailingZeroCount(@long) + shift, MpuT.TrailingZeroCount(u));
+			var uz = (MpuT)@long << shift;
+			Assert.AreEqual(@long == 0 ? 0 : long.TrailingZeroCount(@long) + shift, MpuT.TrailingZeroCount(uz));
 			var z = (MpzT)@long << shift;
 			Assert.AreEqual(@long == 0 ? 0 : long.TrailingZeroCount(@long) + shift, MpzT.TrailingZeroCount(z));
 			var z2 = (MpzT)~@long << shift;

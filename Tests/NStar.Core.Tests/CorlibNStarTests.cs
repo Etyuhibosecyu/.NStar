@@ -4,7 +4,6 @@ global using System;
 global using System.Collections;
 global using System.Collections.Immutable;
 global using System.Numerics;
-global using System.Reflection;
 global using static NStar.Core.Extents;
 global using static NStar.Core.Tests.Global;
 global using static System.Math;
