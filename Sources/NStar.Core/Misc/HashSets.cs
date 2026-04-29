@@ -13,6 +13,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	protected int[] buckets = default!;
 	protected Entry[] entries = default!;
 
+	/// <inheritdoc/>
 	public override int Capacity
 	{
 		get => buckets?.Length ?? 0;
@@ -43,6 +44,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		for (var i = 0; i < length; i++)
 			SetNull(index + i);
 	}
+
+	public override bool Contains(T item, out int index) =>
+		item is not null ? Contains(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF)
+		: throw new ArgumentNullException(nameof(item));
+
+	protected virtual bool Contains(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
@@ -87,13 +94,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 				length++;
 	}
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		buckets = default!;
 		entries = default!;
 		_size = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	protected override T GetInternal(int index) => entries[index].item;
@@ -288,18 +294,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		if (TryGetIndexOf(item, out index, hashCode))
+		if (Contains(item, out index, hashCode))
 			return false;
 		Insert(item, out index, hashCode);
 		Changed();
 		return true;
 	}
-
-	public override bool TryGetIndexOf(T item, out int index) =>
-		item is not null ? TryGetIndexOf(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF)
-		: throw new ArgumentNullException(nameof(item));
-
-	protected virtual bool TryGetIndexOf(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 }
 
 /// <summary>

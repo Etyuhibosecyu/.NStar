@@ -11,6 +11,10 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	private protected static readonly Queue<Node> nodePool = new(256);
 	private protected static readonly object globalLockObj = new();
 
+	/// <summary>
+	/// Это свойство, пришедшее из базового класса, в данном классе не несет смысловой нагрузки.
+	/// Получение возвращает длину, установка ничего не делает.
+	/// </summary>
 	public override int Capacity
 	{
 		get => _size;
@@ -153,13 +157,12 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public virtual bool Decrease(int index) => Update(index, (dynamic?)GetInternal(index) - 1);
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		root = null;
 		_size = 0;
 		version = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)

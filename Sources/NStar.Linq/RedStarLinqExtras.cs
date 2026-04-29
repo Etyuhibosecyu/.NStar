@@ -469,7 +469,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override T GetInternal(int index) => index == source.Count ? element : source[index];
 
@@ -1051,7 +1051,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override TResult GetInternal(int index) => function(source[index], source2[index]);
 
@@ -1111,7 +1111,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override TResult GetInternal(int index) => function(source[index], source2[index], index);
 
@@ -1167,7 +1167,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override (T, T2) GetInternal(int index) => (source[index], source2[index]);
 
@@ -1231,7 +1231,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override TResult GetInternal(int index) => function(source[index], source2[index], source3[index]);
 
@@ -1295,7 +1295,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override TResult GetInternal(int index) => function(source[index], source2[index], source3[index], index);
 
@@ -1355,7 +1355,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override (T, T2, T3) GetInternal(int index) => (source[index], source2[index], source3[index]);
 
@@ -3609,7 +3609,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override T GetInternal(int index) => index == 0 ? element : source[index - 1];
 
@@ -3900,7 +3900,7 @@ public static class RedStarLinqExtras
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override T GetInternal(int index) => source[_size - 1 - index];
 

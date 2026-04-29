@@ -145,6 +145,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
+	/// <inheritdoc/>
 	public override int Capacity { get => items.Capacity; set => items.Capacity = value; }
 
 	public override G.IComparer<T> Comparer { get; }
@@ -164,11 +165,10 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => items.CopyTo(index, array, arrayIndex, length);
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		items.Dispose();
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	protected override T GetInternal(int index) =>

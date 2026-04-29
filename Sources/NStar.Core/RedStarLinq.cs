@@ -168,7 +168,7 @@ public static class RedStarLinq
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override TResult GetInternal(int index) => function(source[index]);
 
@@ -224,7 +224,7 @@ public static class RedStarLinq
 				array[arrayIndex++] = GetInternal(index++);
 		}
 
-		public override void Dispose() => GC.SuppressFinalize(this);
+		protected override void DisposeInternal() { }
 
 		protected override TResult GetInternal(int index) => function(source[index], index);
 

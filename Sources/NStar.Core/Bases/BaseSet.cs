@@ -54,6 +54,14 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	/// <inheritdoc/>
 	public override bool Contains(T? item, int index, int length) => item is not null && IndexOf(item, index, length) >= 0;
 
+	/// <summary>
+	/// Проверяет, содержит ли данная коллекция указанный элемент, и возвращает его индекс в out-параметре.
+	/// </summary>
+	/// <param name="item">Элемент для поиска в данной коллекции.</param>
+	/// <param name="index">Индекс найденного элемента или отрицательное число, если элемент не найден.</param>
+	/// <returns></returns>
+	public virtual bool Contains(T item, out int index) => (index = IndexOf(item)) >= 0;
+
 	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
@@ -368,8 +376,6 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	/// <returns>Флаг, удалось ли добавить элемент:
 	/// <see langword="true"/>, если он был добавлен, и <see langword="false"/>, если он уже был во множестве.</returns>
 	public abstract bool TryAdd(T item, out int index);
-
-	public virtual bool TryGetIndexOf(T item, out int index) => (index = IndexOf(item)) >= 0;
 
 	/// <summary>
 	/// Добавляет в конец данного множества все элементы, отсутствующие в нем, но присутствующие в указанной последовательности.

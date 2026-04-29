@@ -40,11 +40,11 @@ namespace NStar.BigCollections
 			else
 			{
 				low = null;
-				fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1)
+				fragment = MpzT.One << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1)
 					* SubbranchesBitLength + LeafSizeBitLength;
 				high = new((int)GetArrayLength(length, fragment));
 				highLength = high.Capacity >= 1 << 6 ? [] : null;
-				for (MpzT i = 0; i < high.Capacity - 1; i++)
+				for (var i = MpzT.Zero; i < high.Capacity - 1; i++)
 				{
 					high.Add(new(fragment, defaultValue, SubbranchesBitLength, LeafSizeBitLength));
 					high[^1].parent = this;
@@ -400,7 +400,7 @@ namespace NStar.BigCollections
 			Debug.Assert(low is null && high is not null && fragment != 1);
 			var uintsFragment = fragment / BitsPerInt;
 			var i = 0;
-			MpzT index = 0;
+			var index = MpzT.Zero;
 			for (; index < length - uintsFragment; index += uintsFragment)
 			{
 				high[i++].ConstructFromUIntList(bigUIntList.GetRange(index, uintsFragment));
@@ -445,7 +445,7 @@ namespace NStar.BigCollections
 			var uintsFragment = fragment / BitsPerInt;
 			high = new((int)GetArrayLength(length, uintsFragment));
 			highLength = SubbranchesBitLength >= 8 ? [] : null;
-			MpzT index = 0;
+			var index = MpzT.Zero;
 			for (; index < length - uintsFragment; index += uintsFragment)
 			{
 				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));

@@ -1,8 +1,11 @@
 ﻿namespace NStar.Mpir;
 
-public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, IDisposable, IBinaryInteger<MpuT>
+public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, IDisposable, IBinaryInteger<MpuT>
 {
 	#region Data
+	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
+	private static byte[] exportBytes = GC.AllocateUninitializedArray<byte>(1024);
+	private static readonly Lock lockObj = new();
 	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
 		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
@@ -51,7 +54,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	/// Initializes a new MpuT to the BigInteger op.
 	public MpuT(BigInteger op) : this(op < 0
 		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : op.ToByteArray(), -1) { }
-	public MpuT(MpzT op) : this(op < 0
+	public MpuT(MpzT op) : this(Mpir.MpzCmpSi(op, 0) < 0
 		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : op.ToByteArray(-1), -1) { }
 
 	/// Initializes a new MpuT to using MPIR MpuInit2. Only use if you need to
@@ -65,7 +68,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	private MpuT(Init2Type _, ulong n) => val = Mpir.MpuInit2(n);
 
 	/// Initializes a new MpuT to the long op.
-	public MpuT(long op) : this()
+	public MpuT(long op)
 	{
 		if (op < 0)
 			throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op));
@@ -75,7 +78,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	}
 
 	/// Initializes a new MpuT to the unsigned long op.
-	public MpuT(ulong op) : this()
+	public MpuT(ulong op)
 	{
 		val = Mpir.MpuInitSetUi(unchecked((uint)(op >> sizeof(uint) * 8)));
 		Mpir.MpuMul2exp(this, this, sizeof(uint) * 8);
@@ -90,7 +93,27 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	/// for little endian.
 	public MpuT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
 
-	public void Dispose() => val = 0;
+	~MpuT() => Dispose(false);
+
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	public void Dispose(bool disposing)
+	{
+		if (val == 0 || ReferenceEquals(this, Zero) || ReferenceEquals(this, One))
+			return;
+		try
+		{
+			Mpir.MpuClear(this);
+		}
+		catch (Exception) when (!disposing)
+		{
+		}
+		val = 0;
+	}
 
 	#endregion
 
@@ -99,18 +122,18 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	/// Import the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public readonly void FromByteArray(ReadOnlySpan<byte> source, int order) => Mpir.MpirMpuImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
+	public void FromByteArray(ReadOnlySpan<byte> source, int order) => Mpir.MpirMpuImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
 
 	/// Import the integer in the byte array bytes, starting at startOffset
 	/// and ending at endOffset.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public readonly void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpuImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
+	public void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpuImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
 
 	/// Export to the value to a byte array.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public readonly byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpuExport(order, sizeof(byte), 0, 0u, this);
+	public byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpuExport(order, sizeof(byte), 0, 0u, this);
 	#endregion
 
 	// Almost everything below is copied from Emil Stefanov's BigInt
@@ -124,11 +147,8 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	#region Predefined Values
 
-	public static MpuT Zero => new(0);
-	public static MpuT One => new(1);
-	public static MpuT Two => new(2);
-	public static MpuT Three => new(3);
-	public static MpuT Ten => new(10);
+	public static MpuT Zero { get; } = new(0);
+	public static MpuT One { get; } = new(1);
 	public static MpuT AdditiveIdentity => Zero;
 	public static MpuT MultiplicativeIdentity => One;
 	public static int Radix => 2;
@@ -285,7 +305,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static MpuT operator *(MpuT x, int y)
 	{
-		if (y < 0)
+		if (Mpir.MpzCmpSi(y, 0) < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var z = new MpuT();
 		Mpir.MpuMulSi(z, x, y);
@@ -315,7 +335,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static MpuT operator /(MpuT x, int y)
 	{
-		if (y < 0)
+		if (Mpir.MpzCmpSi(y, 0) < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var quotient = new MpuT();
 		Mpir.MpuTdivQUi(quotient, x, (uint)y);
@@ -385,13 +405,13 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static bool operator <(MpuT x, uint y) => x.CompareTo(y) < 0;
 
-	public static bool operator <(long x, MpuT y) => (MpuT)x < y;
+	public static bool operator <(long x, MpuT y) => x.CompareTo(y) < 0;
 
-	public static bool operator <(MpuT x, long y) => x < (MpuT)y;
+	public static bool operator <(MpuT x, long y) => y.CompareTo(x) > 0;
 
-	public static bool operator <(ulong x, MpuT y) => (MpuT)x < y;
+	public static bool operator <(ulong x, MpuT y) => x.CompareTo(y) < 0;
 
-	public static bool operator <(MpuT x, ulong y) => x < (MpuT)y;
+	public static bool operator <(MpuT x, ulong y) => y.CompareTo(x) > 0;
 
 	public static bool operator <(float x, MpuT y) => y.CompareTo(x) > 0;
 
@@ -416,13 +436,13 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public static bool operator <=(MpuT x, uint y) => x.CompareTo(y) <= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator <=(long x, MpuT y) => (MpuT)x <= y;
+	public static bool operator <=(long x, MpuT y) => x.CompareTo(y) <= 0;
 
-	public static bool operator <=(MpuT x, long y) => x <= (MpuT)y;
+	public static bool operator <=(MpuT x, long y) => y.CompareTo(x) >= 0;
 
-	public static bool operator <=(ulong x, MpuT y) => (MpuT)x <= y;
+	public static bool operator <=(ulong x, MpuT y) => x.CompareTo(y) <= 0;
 
-	public static bool operator <=(MpuT x, ulong y) => x <= (MpuT)y;
+	public static bool operator <=(MpuT x, ulong y) => y.CompareTo(x) >= 0;
 
 	public static bool operator <=(float x, MpuT y) => y.CompareTo(x) >= 0;
 
@@ -447,16 +467,16 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public static bool operator >(MpuT x, uint y) => x.CompareTo(y) > 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(long x, MpuT y) => (MpuT)x > y;
+	public static bool operator >(long x, MpuT y) => y.CompareTo(x) < 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(MpuT x, long y) => x > (MpuT)y;
+	public static bool operator >(MpuT x, long y) => x.CompareTo(y) > 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(ulong x, MpuT y) => (MpuT)x > y;
+	public static bool operator >(ulong x, MpuT y) => y.CompareTo(x) < 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(MpuT x, ulong y) => x > (MpuT)y;
+	public static bool operator >(MpuT x, ulong y) => x.CompareTo(y) > 0;
 
 	public static bool operator >(float x, MpuT y) => y.CompareTo(x) < 0;
 
@@ -481,16 +501,16 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public static bool operator >=(MpuT x, uint y) => x.CompareTo(y) >= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(long x, MpuT y) => (MpuT)x >= y;
+	public static bool operator >=(long x, MpuT y) => x.CompareTo(y) >= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(MpuT x, long y) => x >= (MpuT)y;
+	public static bool operator >=(MpuT x, long y) => y.CompareTo(x) <= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(ulong x, MpuT y) => (MpuT)x >= y;
+	public static bool operator >=(ulong x, MpuT y) => x.CompareTo(y) >= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(MpuT x, ulong y) => x >= (MpuT)y;
+	public static bool operator >=(MpuT x, ulong y) => y.CompareTo(x) <= 0;
 
 	public static bool operator >=(float x, MpuT y) => y.CompareTo(x) <= 0;
 
@@ -520,14 +540,14 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static MpuT operator >>>(MpuT x, int shiftAmount)
 	{
-		if (x >= 0)
+		if (Mpir.MpuCmpSi(x, 0) >= 0)
 			return x >> shiftAmount;
 		throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 	}
 
-	public readonly int this[int bitIndex] => Mpir.MpuTstbit(this, (uint)bitIndex);
+	public int this[int bitIndex] => Mpir.MpuTstbit(this, (uint)bitIndex);
 
-	public readonly MpuT ChangeBit(int bitIndex, int value)
+	public MpuT ChangeBit(int bitIndex, int value)
 	{
 		var z = new MpuT(this);
 		if (value == 0)
@@ -542,21 +562,21 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	#region Basic Arithmetic
 
 	/// Returns a new MpuT which is the absolute value of this value.
-	public readonly MpuT Abs()
+	public MpuT Abs()
 	{
 		var result = new MpuT();
 		Mpir.MpuAbs(result, this);
 		return result;
 	}
 
-	public readonly MpuT Add(int x) => this + x;
-	public readonly MpuT Add(MpuT x) => this + x;
-	public readonly MpuT Add(uint x) => this + x;
-	public readonly MpzT Complement() => ~this;
-	public readonly int DecLength() => ToString()?.Length ?? 1;
-	public readonly MpuT Divide(int x) => this / x;
+	public MpuT Add(int x) => this + x;
+	public MpuT Add(MpuT x) => this + x;
+	public MpuT Add(uint x) => this + x;
+	public MpzT Complement() => ~this;
+	public int DecLength() => ToString()?.Length ?? 1;
+	public MpuT Divide(int x) => this / x;
 
-	public readonly MpuT Divide(int x, out int remainder)
+	public MpuT Divide(int x, out int remainder)
 	{
 		if (x < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
@@ -565,7 +585,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(int x, out MpuT remainder)
+	public MpuT Divide(int x, out MpuT remainder)
 	{
 		if (x < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
@@ -575,9 +595,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(MpuT x) => this / x;
+	public MpuT Divide(MpuT x) => this / x;
 
-	public readonly MpuT Divide(MpuT x, out MpuT remainder)
+	public MpuT Divide(MpuT x, out MpuT remainder)
 	{
 		var quotient = new MpuT();
 		remainder = new MpuT();
@@ -585,9 +605,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(uint x) => this / x;
+	public MpuT Divide(uint x) => this / x;
 
-	public readonly MpuT Divide(uint x, out int remainder)
+	public MpuT Divide(uint x, out int remainder)
 	{
 		var quotient = new MpuT();
 		var uintRemainder = Mpir.MpuTdivQUi(quotient, this, x);
@@ -597,7 +617,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(uint x, out MpuT remainder)
+	public MpuT Divide(uint x, out MpuT remainder)
 	{
 		var quotient = new MpuT();
 		remainder = new MpuT();
@@ -605,7 +625,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT Divide(uint x, out uint remainder)
+	public MpuT Divide(uint x, out uint remainder)
 	{
 		// Unsure about the below exception for negative numbers. It's in Stefanov's
 		// original code, but that limitation isn't mentioned in
@@ -617,7 +637,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return quotient;
 	}
 
-	public readonly MpuT DivideExactly(int x)
+	public MpuT DivideExactly(int x)
 	{
 		if (x < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
@@ -631,94 +651,109 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	/// </summary>
 	/// <param name="x"></param>
 	/// <returns></returns>
-	public readonly MpuT DivideExactly(MpuT x)
+	public MpuT DivideExactly(MpuT x)
 	{
 		var z = new MpuT();
 		Mpir.MpuDivexact(z, this, x);
 		return z;
 	}
 
-	public readonly MpuT DivideExactly(uint x)
+	public MpuT DivideExactly(uint x)
 	{
 		var z = new MpuT();
 		Mpir.MpuDivexactUi(z, this, x);
 		return z;
 	}
 
-	public readonly MpuT DivideMod(MpuT x, MpuT mod) => this * x.InvertMod(mod) % mod;
+	public MpuT DivideMod(MpuT x, MpuT mod) => this * x.InvertMod(mod) % mod;
 
-	public readonly bool IsDivisibleBy(int x)
+	public bool IsDivisibleBy(int x)
 	{
 		if (x < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		return Mpir.MpuDivisibleUiP(this, (uint)x) != 0;
 	}
 
-	public readonly bool IsDivisibleBy(MpuT x) => Mpir.MpuDivisibleP(this, x) != 0;
-	public readonly bool IsDivisibleBy(uint x) => Mpir.MpuDivisibleUiP(this, x) != 0;
-	public readonly MpuT Multiply(int x) => this * x;
-	public readonly MpuT Multiply(MpuT x) => this * x;
-	public readonly MpuT Multiply(uint x) => this * x;
-	public readonly MpzT Negate() => -this;
+	public bool IsDivisibleBy(MpuT x) => Mpir.MpuDivisibleP(this, x) != 0;
+	public bool IsDivisibleBy(uint x) => Mpir.MpuDivisibleUiP(this, x) != 0;
+	public MpuT Multiply(int x) => this * x;
+	public MpuT Multiply(MpuT x) => this * x;
+	public MpuT Multiply(uint x) => this * x;
+	public MpzT Negate() => -this;
 
-	public readonly MpuT Remainder(MpuT x)
+	public MpuT Remainder(MpuT x)
 	{
 		var z = new MpuT();
 		Mpir.MpuTdivR(z, this, x);
 		return z;
 	}
 
-	public readonly MpuT Subtract(int x) => this - x;
-	public readonly MpuT Subtract(MpuT x) => this - x;
-	public readonly MpuT Subtract(uint x) => this - x;
-	public readonly MpuT Square() => this * this;
+	public MpuT Subtract(int x) => this - x;
+	public MpuT Subtract(MpuT x) => this - x;
+	public MpuT Subtract(uint x) => this - x;
+	public MpuT Square() => this * this;
 
-	public readonly MpuT And(MpuT x) => this & x;
+	public MpuT And(MpuT x) => this & x;
 
-	public readonly MpuT Or(MpuT x) => this | x;
+	public MpuT Or(MpuT x) => this | x;
 
-	public readonly MpuT Xor(MpuT x) => this ^ x;
+	public MpuT Xor(MpuT x) => this ^ x;
 
-	public readonly MpuT Mod(MpuT mod) => this % mod;
+	public MpuT Mod(MpuT mod) => this % mod;
 
-	public readonly MpuT Mod(int mod) => this % mod;
+	public MpuT Mod(int mod) => this % mod;
 
-	public readonly MpuT Mod(uint mod) => this % mod;
+	public MpuT Mod(uint mod) => this % mod;
 
-	public readonly int ModAsInt32(int mod)
+	public int ModAsInt32(int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		return (int)Mpir.MpuFdivUi(this, (uint)mod);
 	}
 
-	public readonly uint ModAsUInt32(uint mod) => Mpir.MpuFdivUi(this, mod);
+	public uint ModAsUInt32(uint mod) => Mpir.MpuFdivUi(this, mod);
 
-	public readonly MpuT ShiftLeft(int shiftAmount) => this << shiftAmount;
+	public MpuT ShiftLeft(int shiftAmount) => this << shiftAmount;
 
-	public readonly MpuT ShiftRight(int shiftAmount) => this >> shiftAmount;
+	public MpuT ShiftRight(int shiftAmount) => this >> shiftAmount;
 
-	public readonly MpuT ShiftRightRound(int shiftAmount)
+	public MpuT ShiftRightRound(int shiftAmount)
 	{
+		if (shiftAmount <= 0)
+			return new(this);
 		var result = this >> shiftAmount;
-		result += this - (result << shiftAmount) >> shiftAmount - 1;
+		if (shiftAmount <= 32)
+		{
+			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount) >= 1u << shiftAmount - 1)
+				result++.Dispose();
+		}
+		else
+		{
+			using var left = One << shiftAmount;
+			Mpir.MpuSubUi(left, left, 1);
+			Mpir.MpuAnd(left, left, this);
+			using var right = One << shiftAmount - 1;
+			if (Mpir.MpuCmp(left, right) >= 0)
+				result++.Dispose();
+		}
 		return result;
 	}
 
-	public readonly MpuT PowerMod(MpuT exponent, MpuT mod)
+	public MpuT PowerMod(MpuT exponent, MpuT mod)
 	{
 		var z = new MpuT();
 		Mpir.MpuPowm(z, this, exponent, mod);
 		return z;
 	}
 
-	public readonly MpuT PowerMod(int exponent, MpuT mod)
+	public MpuT PowerMod(int exponent, MpuT mod)
 	{
 		var z = new MpuT();
 		Mpir.MpuPowm(z, this, exponent, mod);
 		return z;
 	}
 
-	public readonly MpuT PowerMod(uint exponent, MpuT mod)
+	public MpuT PowerMod(uint exponent, MpuT mod)
 	{
 		var z = new MpuT();
 		if (exponent >= 0)
@@ -733,7 +768,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Power(int exponent)
+	public MpuT Power(int exponent)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
 		var z = new MpuT();
@@ -741,7 +776,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Power(uint exponent)
+	public MpuT Power(uint exponent)
 	{
 		var z = new MpuT();
 		Mpir.MpuPowUi(z, this, exponent);
@@ -763,7 +798,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT InvertMod(MpuT mod)
+	public MpuT InvertMod(MpuT mod)
 	{
 		var z = new MpuT();
 		var status = Mpir.MpuInvert(z, this, mod);
@@ -772,7 +807,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly bool TryInvertMod(MpuT mod, out MpuT result)
+	public bool TryInvertMod(MpuT mod, [MaybeNullWhen(false)] out MpuT result)
 	{
 		var z = new MpuT();
 		var status = Mpir.MpuInvert(z, this, mod);
@@ -788,36 +823,36 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		}
 	}
 
-	public readonly bool InverseModExists(MpuT mod)
+	public bool InverseModExists(MpuT mod)
 	{
 		TryInvertMod(mod, out _);
 		return true;
 	}
 
-	public readonly int GetByteCount() => (BitLength + 7) / 8;
+	public int GetByteCount() => (BitLength + 7) / 8;
 
-	public readonly int GetShortestBitLength() => BitLength;
+	public int GetShortestBitLength() => BitLength;
 
-	public readonly int BitLength => val == 0 ? 0 : (int)Mpir.MpuSizeinbase(this, 2);
+	public int BitLength => val == 0 ? 0 : (int)Mpir.MpuSizeinbase(this, 2);
 
-	public readonly int Sign =>
+	public int Sign =>
 		IsPositive(this) ? 1 : IsZero(this) ? 0 : IsNegative(this) ? -1
 		: throw new ArithmeticException("Произошла ошибка при  вычислении знака.");
 
-	public readonly MpuT GetFullBitLength() => Mpir.MpuSizeinbase(this, 2);
+	public MpuT GetFullBitLength() => Mpir.MpuSizeinbase(this, 2);
 
 	#endregion
 
 	#region Roots
 
-	public readonly MpuT Sqrt()
+	public MpuT Sqrt()
 	{
 		var z = new MpuT();
 		Mpir.MpuSqrt(z, this);
 		return z;
 	}
 
-	public readonly MpuT Sqrt(out MpuT remainder)
+	public MpuT Sqrt(out MpuT remainder)
 	{
 		var z = new MpuT();
 		remainder = new MpuT();
@@ -825,7 +860,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Sqrt(out bool isExact)
+	public MpuT Sqrt(out bool isExact)
 	{
 		var z = new MpuT();
 		var result = Mpir.MpuRoot(z, this, 2);
@@ -833,7 +868,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Root(int n)
+	public MpuT Root(int n)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpuT();
@@ -841,14 +876,14 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Root(uint n)
+	public MpuT Root(uint n)
 	{
 		var z = new MpuT();
 		Mpir.MpuRoot(z, this, n);
 		return z;
 	}
 
-	public readonly MpuT Root(int n, out bool isExact)
+	public MpuT Root(int n, out bool isExact)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpuT();
@@ -857,7 +892,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Root(uint n, out bool isExact)
+	public MpuT Root(uint n, out bool isExact)
 	{
 		var z = new MpuT();
 		var result = Mpir.MpuRoot(z, this, n);
@@ -865,7 +900,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Root(int n, out MpuT remainder)
+	public MpuT Root(int n, out MpuT remainder)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpuT();
@@ -874,7 +909,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly MpuT Root(uint n, out MpuT remainder)
+	public MpuT Root(uint n, out MpuT remainder)
 	{
 		var z = new MpuT();
 		remainder = new MpuT();
@@ -882,9 +917,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return z;
 	}
 
-	public readonly bool IsPerfectSquare() => Mpir.MpuPerfectSquareP(this) != 0;
+	public bool IsPerfectSquare() => Mpir.MpuPerfectSquareP(this) != 0;
 
-	public readonly bool IsPerfectPower() =>
+	public bool IsPerfectPower() =>
 		// There is a known issue with this function for negative inputs in GMP 4.2.4.
 		// Haven't heard of any issues in MPIR 5.x though.
 		Mpir.MpuPerfectPowerP(this) != 0;
@@ -892,14 +927,14 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	#region Number Theoretic Functions
 
-	public readonly bool IsProbablyPrimeRabinMiller(uint repetitions)
+	public bool IsProbablyPrimeRabinMiller(uint repetitions)
 	{
 		var result = Mpir.MpuProbabPrimeP(this, repetitions);
 		return result != 0;
 	}
 
 	// TODO: Create a version of this method which takes in a parameter to represent how well tested the prime should be.
-	public readonly MpuT NextPrimeGMP()
+	public MpuT NextPrimeGMP()
 	{
 		var z = new MpuT();
 		Mpir.MpuNextprime(z, this);
@@ -915,7 +950,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static MpuT Gcd(MpuT x, int y)
 	{
-		if (y < 0)
+		if (Mpir.MpzCmpSi(y, 0) < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var z = new MpuT();
 		Mpir.MpuGcdUi(z, x, (uint)y);
@@ -958,7 +993,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	{
 		var z = new MpuT();
 		a = new MpuT();
-		Mpir.MpuGcdext(z, a, default, x, y);
+		Mpir.MpuGcdext(z, a, default!, x, y);
 		return z;
 	}
 
@@ -971,7 +1006,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static MpuT Lcm(MpuT x, int y)
 	{
-		if (y < 0)
+		if (Mpir.MpzCmpSi(y, 0) < 0)
 			throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
 		var z = new MpuT();
 		Mpir.MpuLcmUi(z, x, (uint)y);
@@ -1003,28 +1038,28 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static int LegendreSymbol(MpuT x, MpuT primeY)
 	{
-		System.Diagnostics.Debug.Assert(primeY != 2); // Not defined for 2
+		Debug.Assert(primeY != 2); // Not defined for 2
 
 		return Mpir.MpuJacobi(x, primeY);
 	}
 
 	public static int JacobiSymbol(MpuT x, MpuT y)
 	{
-		if(IsEvenInteger(y) || y < 0)
+		if(IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuJacobi(x, y);
 	}
 
 	public static int JacobiSymbol(MpuT x, int y)
 	{
-		if ((y & 1) == 0 || y < 0)
+		if ((y & 1) == 0 || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(null, nameof(y));
 		return Mpir.MpuKroneckerSi(x, y);
 	}
 
 	public static int JacobiSymbol(int x, MpuT y)
 	{
-		if (IsEvenInteger(y) || y < 0)
+		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuSiKronecker(x, y);
 	}
@@ -1037,7 +1072,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	}
 
 	public static int JacobiSymbol(uint x, MpuT y) {
-		if (IsEvenInteger(y) || y < 0)
+		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuUiKronecker(x, y);
 	}
@@ -1051,14 +1086,14 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static int KroneckerSymbol(uint x, MpuT y) => Mpir.MpuUiKronecker(x, y);
 
-	public readonly MpuT RemoveFactor(MpuT factor)
+	public MpuT RemoveFactor(MpuT factor)
 	{
 		var z = new MpuT();
 		Mpir.MpuRemove(z, this, factor);
 		return z;
 	}
 
-	public readonly MpuT RemoveFactor(MpuT factor, out int count)
+	public MpuT RemoveFactor(MpuT factor, out int count)
 	{
 		var z = new MpuT();
 		count = (int)Mpir.MpuRemove(z, this, factor);
@@ -1180,11 +1215,11 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	#region Bitwise Functions
 
-	public readonly int CountOnes() => (int)Mpir.MpuPopcount(this);
+	public int CountOnes() => (int)Mpir.MpuPopcount(this);
 
 	public static int HammingDistance(MpuT x, MpuT y) => (int)Mpir.MpuHamdist(x, y);
 
-	public readonly int IndexOfZero(int startingIndex)
+	public int IndexOfZero(int startingIndex)
 	{
 		unchecked
 		{
@@ -1194,7 +1229,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		}
 	}
 
-	public readonly int IndexOfOne(int startingIndex)
+	public int IndexOfOne(int startingIndex)
 	{
 		unchecked
 		{
@@ -1210,10 +1245,10 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	{
 		var bitLength = value.BitLength;
 		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
-		return value >= sqrt ? bitLength : bitLength - 1;
+		return Mpir.MpuCmp(value, sqrt) >= 0 ? bitLength : bitLength - 1;
 	}
 
-	public readonly int PopCount() => (int)Mpir.MpuPopcount(this);
+	public int PopCount() => (int)Mpir.MpuPopcount(this);
 
 	public static MpuT PopCount(MpuT value) => value.PopCount();
 
@@ -1225,12 +1260,13 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		const int ulongBits = sizeof(ulong) * 8;
 		var value2 = value << ulongBits;
 		MpuT mask = ulong.MaxValue;
-		for (; mask < value2; mask <<= ulongBits)
+		for (; Mpir.MpuCmp(mask, value2) < 0; mask <<= ulongBits)
 		{
-			if (Mpir.MpuCmpSi(value & mask, 0) == 0)
+			var maskedValue = value & mask;
+			if (Mpir.MpuCmpSi(maskedValue, 0) == 0)
 				result += ulongBits;
 			else
-				return result + (int)ulong.TrailingZeroCount((ulong)((value & mask) >> result));
+				return result + (int)ulong.TrailingZeroCount((ulong)(maskedValue >> result));
 		}
 		throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {value.BitLength}, значение - {value}"
@@ -1259,10 +1295,10 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public static bool IsRealNumber(MpuT value) => true;
 	public static bool IsSubnormal(MpuT value) => true;
 	public static bool IsZero(MpuT value) => Mpir.MpuCmpSi(value, 0) == 0;
-	public static MpuT Max(MpuT x, MpuT y) => x > y ? x : y;
+	public static MpuT Max(MpuT x, MpuT y) => Mpir.MpuCmp(x, y) < 0 ? x : y;
 	public static MpuT MaxMagnitude(MpuT x, MpuT y) => Max(x, y);
 	public static MpuT MaxMagnitudeNumber(MpuT x, MpuT y) => Max(x, y);
-	public static MpuT Min(MpuT x, MpuT y) => x < y ? x : y;
+	public static MpuT Min(MpuT x, MpuT y) => Mpir.MpuCmp(x, y) < 0 ? x : y;
 	public static MpuT MinMagnitude(MpuT x, MpuT y) => Min(x, y);
 	public static MpuT MinMagnitudeNumber(MpuT x, MpuT y) => Min(x, y);
 	public static MpuT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
@@ -1271,7 +1307,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public static MpuT Parse(string s, IFormatProvider? provider) => new(s);
 	public static MpuT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
 
-	private static bool TryConvertFromChecked<TOther>(TOther value, out MpuT result)
+	private static bool TryConvertFromChecked<TOther>(TOther value, [MaybeNullWhen(false)] out MpuT result)
 	{
 		try
 		{
@@ -1340,10 +1376,12 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	#region Comparing
 
-	public override readonly int GetHashCode()
+	public override int GetHashCode()
 	{
 		uint hash = 0;
-		var bytes = ToByteArray(-1);
+		Span<byte> bytes;
+		lock (lockObj)
+			bytes = ProcessToByteArray(this, false);
 		var len = bytes.Length; // Make sure it's only evaluated once.
 		var shift = 0;
 		for (var i = 0; i < len; i++)
@@ -1351,13 +1389,12 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 			hash ^= (uint)bytes[i] << shift;
 			shift = (shift + 8) & 0x1F;
 		}
-
 		return (int)hash;
 	}
 
-	public readonly bool Equals(MpuT other) => Compare(this, other) == 0;
+	public bool Equals(MpuT? other) => Compare(this, other) == 0;
 
-	public override readonly bool Equals(object? obj) => obj switch
+	public override bool Equals(object? obj) => obj switch
 	{
 		null => false,
 		MpuT uz => CompareTo(uz) == 0,
@@ -1376,21 +1413,21 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		_ => false
 	};
 
-	public readonly bool Equals(int other) => CompareTo(other) == 0;
+	public bool Equals(int other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(uint other) => CompareTo(other) == 0;
+	public bool Equals(uint other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(long other) => CompareTo(other) == 0;
+	public bool Equals(long other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(ulong other) => CompareTo(other) == 0;
+	public bool Equals(ulong other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(double other) => CompareTo(other) == 0;
+	public bool Equals(double other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(decimal other) => CompareTo(other) == 0;
+	public bool Equals(decimal other) => CompareTo(other) == 0;
 
-	public readonly bool EqualsMod(MpuT x, MpuT mod) => Mpir.MpuCongruentP(this, x, mod) != 0;
+	public bool EqualsMod(MpuT x, MpuT mod) => Mpir.MpuCongruentP(this, x, mod) != 0;
 
-	public readonly bool EqualsMod(int x, int mod)
+	public bool EqualsMod(int x, int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		if (x >= 0)
@@ -1402,9 +1439,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		}
 	}
 
-	public readonly bool EqualsMod(uint x, uint mod) => Mpir.MpuCongruentUiP(this, x, mod) != 0;
+	public bool EqualsMod(uint x, uint mod) => Mpir.MpuCongruentUiP(this, x, mod) != 0;
 
-	public static bool operator ==(MpuT x, MpuT y) => x.CompareTo(y) == 0;
+	public static bool operator ==(MpuT? x, MpuT? y) => (x ?? Zero).CompareTo(y) == 0;
 
 	public static bool operator ==(int x, MpuT y) => y.CompareTo(x) == 0;
 
@@ -1438,7 +1475,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static bool operator ==(MpuT x, decimal y) => x.CompareTo(y) == 0;
 
-	public static bool operator !=(MpuT x, MpuT y) => x.CompareTo(y) != 0;
+	public static bool operator !=(MpuT? x, MpuT? y) => (x ?? Zero).CompareTo(y) != 0;
 
 	public static bool operator !=(int x, MpuT y) => y.CompareTo(x) != 0;
 
@@ -1472,7 +1509,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static bool operator !=(MpuT x, decimal y) => x.CompareTo(y) != 0;
 
-	public readonly int CompareTo(object? obj) => obj switch
+	public int CompareTo(object? obj) => obj switch
 	{
 		MpuT uz => CompareTo(uz),
 		MpzT z => -z.CompareTo(this),
@@ -1491,14 +1528,14 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
 	};
 
-	public readonly int CompareTo(MpuT other) => Mpir.MpuCmp(this, other);
+	public int CompareTo(MpuT? other) => Mpir.MpuCmp(this, other);
 
-	public readonly int CompareTo(int other) => Mpir.MpuCmpSi(this, other);
+	public int CompareTo(int other) => Mpir.MpuCmpSi(this, other);
 
-	public readonly int CompareTo(uint other) => Mpir.MpuCmpUi(this, other);
+	public int CompareTo(uint other) => Mpir.MpuCmpUi(this, other);
 
 	// TODO: Optimize by accessing the memory directly
-	public readonly int CompareTo(long other)
+	public int CompareTo(long other)
 	{
 		var otherMpu = new MpuT(other);
 		var ret = CompareTo(otherMpu);
@@ -1506,20 +1543,20 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	}
 
 	// TODO: Optimize by accessing the memory directly
-	public readonly int CompareTo(ulong other)
+	public int CompareTo(ulong other)
 	{
 		var otherMpu = new MpuT(other);
 		var ret = CompareTo(otherMpu);
 		return ret;
 	}
 
-	public readonly int CompareTo(float other) => Mpir.MpuCmpD(this, (double)other);
+	public int CompareTo(float other) => Mpir.MpuCmpD(this, (double)other);
 
-	public readonly int CompareTo(double other) => Mpir.MpuCmpD(this, other);
+	public int CompareTo(double other) => Mpir.MpuCmpD(this, other);
 
-	public readonly int CompareTo(decimal other) => Mpir.MpuCmpD(this, (double)other);
+	public int CompareTo(decimal other) => Mpir.MpuCmpD(this, (double)other);
 
-	public readonly int CompareAbsTo(object obj) => obj switch
+	public int CompareAbsTo(object obj) => obj switch
 	{
 		MpuT uz => CompareAbsTo(uz),
 		MpzT z => CompareAbsTo(z),
@@ -1538,25 +1575,25 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		_ => throw new ArgumentException("Cannot compare to " + obj.GetType()),
 	};
 
-	public readonly int CompareAbsTo(MpuT other) => Mpir.MpuCmpabs(this, other);
+	public int CompareAbsTo(MpuT other) => Mpir.MpuCmpabs(this, other);
 
-	public readonly int CompareAbsTo(int other) => Mpir.MpuCmpabsUi(this, (uint)other);
+	public int CompareAbsTo(int other) => Mpir.MpuCmpabsUi(this, (uint)other);
 
-	public readonly int CompareAbsTo(uint other) => Mpir.MpuCmpabsUi(this, other);
+	public int CompareAbsTo(uint other) => Mpir.MpuCmpabsUi(this, other);
 
-	public readonly int CompareAbsTo(long other) => CompareAbsTo((MpuT)other);
+	public int CompareAbsTo(long other) => CompareAbsTo((MpuT)other);
 
-	public readonly int CompareAbsTo(ulong other) => CompareAbsTo((MpuT)other);
+	public int CompareAbsTo(ulong other) => CompareAbsTo((MpuT)other);
 
-	public readonly int CompareAbsTo(double other) => Mpir.MpuCmpabsD(this, other);
+	public int CompareAbsTo(double other) => Mpir.MpuCmpabsD(this, other);
 
-	public readonly int CompareAbsTo(decimal other) => Mpir.MpuCmpabsD(this, (double)other);
+	public int CompareAbsTo(decimal other) => Mpir.MpuCmpabsD(this, (double)other);
 
 	public static int Compare(MpuT x, object? y) => x.CompareTo(y);
 
 	public static int Compare(object x, MpuT y) => -y.CompareTo(x);
 
-	public static int Compare(MpuT x, MpuT y) => x.CompareTo(y);
+	public static int Compare(MpuT x, MpuT? y) => x.CompareTo(y);
 
 	public static int Compare(MpuT x, int y) => x.CompareTo(y);
 
@@ -1612,7 +1649,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static int CompareAbs(decimal x, MpuT y) => -y.CompareAbsTo(x);
 
-	readonly int IComparable.CompareTo(object? obj) => Compare(this, obj);
+	int IComparable.CompareTo(object? obj) => Compare(this, obj);
 
 	#endregion
 
@@ -1649,7 +1686,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 	public static explicit operator uint(MpuT value)
 	{
 		var result = Mpir.MpuGetUi(value);
-		if (value < 0)
+		if (Mpir.MpzCmpSi(value, 0) < 0)
 			result = ~result + 1;
 		return result;
 	}
@@ -1658,11 +1695,23 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	public static explicit operator ushort(MpuT value) => (ushort)(uint)value;
 
-	public static explicit operator long(MpuT value) =>
-		((long)Mpir.MpuGetSi(value >> sizeof(uint) * 8) << sizeof(uint) * 8) + Mpir.MpuGetUi(value);
+	public static explicit operator long(MpuT value)
+	{
+		lock (lockObj)
+		{
+			ProcessLongConversion(value);
+			return BitConverter.ToInt64(convertToLongBytes, 0);
+		}
+	}
 
-	public static explicit operator ulong(MpuT value) =>
-		((ulong)Mpir.MpuGetUi(value >> sizeof(uint) * 8) << sizeof(uint) * 8) + Mpir.MpuGetUi(value);
+	public static explicit operator ulong(MpuT value)
+	{
+		lock (lockObj)
+		{
+			ProcessLongConversion(value);
+			return BitConverter.ToUInt64(convertToLongBytes, 0);
+		}
+	}
 
 	public static explicit operator float(MpuT value) => (float)(double)value;
 
@@ -1677,21 +1726,50 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 
 	#region Cloning
 
-	readonly object ICloneable.Clone() => Clone();
+	object ICloneable.Clone() => Clone();
 
-	public readonly MpuT Clone() => new(this);
+	public MpuT Clone() => new(this);
 
 	#endregion
 
 	#region Conversions
 
-	public readonly BigInteger ToBigInteger() => new([.. ToByteArray(-1), 0]);
+	private static void ProcessLongConversion(MpuT value)
+	{
+		var exportBytesSpan = ProcessToByteArray(value, BitConverter.IsLittleEndian);
+		var length = Math.Min(exportBytesSpan.Length, convertToLongBytes.Length);
+		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
+		convertToLongBytes.AsSpan(BitConverter.IsLittleEndian ? length.. : ..destOffset).Clear();
+		exportBytesSpan[BitConverter.IsLittleEndian ? 0..length : ^length..].CopyTo(convertToLongBytes.AsSpan(destOffset));
+	}
 
-	public override readonly string? ToString() => ToString((int)DefaultStringBase);
+	private static Span<byte> ProcessToByteArray(MpuT value, bool bLittleEndian)
+	{
+		var exportLength = (int)Math.Min(Mpir.MpuSizeinbase(value, 256), 2147483647);
+		if (exportLength > exportBytes.Length)
+		{
+			var newCapacity = Math.Max(1024, exportBytes.Length * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
+			if (newCapacity < exportLength)
+				newCapacity = exportLength;
+			exportBytes = GC.AllocateUninitializedArray<byte>(newCapacity);
+		}
+		var exportBytesSpan = exportBytes.AsSpan(..exportLength);
+		if (bLittleEndian)
+			value.TryWriteLittleEndian(exportBytesSpan, out _);
+		else
+			value.TryWriteBigEndian(exportBytesSpan, out _);
+		return exportBytesSpan;
+	}
 
-	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpuGetString(@base, this);
+	public BigInteger ToBigInteger() => new([.. ToByteArray(-1), 0]);
 
-	public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+	public override string? ToString() => ToString((int)DefaultStringBase);
+
+	public string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpuGetString(@base, this);
+
+	public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
 	{
 		try
 		{
@@ -1708,37 +1786,37 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		}
 	}
 
-	public readonly string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "{0:N0}", ToString());
+	public string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "{0:N0}", ToString());
 
 	#region IConvertible Members
 
-	readonly TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
+	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpuCmpSi(this, 1) >= 0;
+	bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpuCmpSi(this, 1) >= 0;
 
-	readonly byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
+	byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
-	readonly char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
+	char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
 
-	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
+	DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
 
-	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
+	decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
 
-	readonly double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
+	double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
 
-	readonly short IConvertible.ToInt16(IFormatProvider? provider) => (short)this;
+	short IConvertible.ToInt16(IFormatProvider? provider) => (short)this;
 
-	readonly int IConvertible.ToInt32(IFormatProvider? provider) => (int)this;
+	int IConvertible.ToInt32(IFormatProvider? provider) => (int)this;
 
-	readonly long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
+	long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 
-	readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
+	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 
-	readonly float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
+	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 
-	readonly string IConvertible.ToString(IFormatProvider? provider) => ToString() ?? "";
+	string IConvertible.ToString(IFormatProvider? provider) => ToString() ?? "";
 
-	readonly object IConvertible.ToType(Type targetType, IFormatProvider? provider)
+	object IConvertible.ToType(Type targetType, IFormatProvider? provider)
 	{
 		ArgumentNullException.ThrowIfNull(targetType);
 		if (targetType == typeof(MpuT))
@@ -1778,17 +1856,17 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
 	}
 
-	readonly ushort IConvertible.ToUInt16(IFormatProvider? provider) => (ushort)this;
+	ushort IConvertible.ToUInt16(IFormatProvider? provider) => (ushort)this;
 
-	readonly uint IConvertible.ToUInt32(IFormatProvider? provider) => (uint)this;
+	uint IConvertible.ToUInt32(IFormatProvider? provider) => (uint)this;
 
-	readonly ulong IConvertible.ToUInt64(IFormatProvider? provider) => (ulong)this;
+	ulong IConvertible.ToUInt64(IFormatProvider? provider) => (ulong)this;
 
 	#endregion
 
-	static bool INumberBase<MpuT>.TryConvertFromChecked<TOther>(TOther value, out MpuT result) => TryConvertFromChecked(value, out result);
+	static bool INumberBase<MpuT>.TryConvertFromChecked<TOther>(TOther value, [MaybeNullWhen(false)] out MpuT result) => TryConvertFromChecked(value, out result);
 
-	static bool INumberBase<MpuT>.TryConvertFromSaturating<TOther>(TOther value, out MpuT result)
+	static bool INumberBase<MpuT>.TryConvertFromSaturating<TOther>(TOther value, [MaybeNullWhen(false)] out MpuT result)
 	{
 		try
 		{
@@ -1819,7 +1897,7 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		}
 	}
 
-	static bool INumberBase<MpuT>.TryConvertFromTruncating<TOther>(TOther value, out MpuT result) => TryConvertFromChecked(value, out result);
+	static bool INumberBase<MpuT>.TryConvertFromTruncating<TOther>(TOther value, [MaybeNullWhen(false)] out MpuT result) => TryConvertFromChecked(value, out result);
 
 	static bool INumberBase<MpuT>.TryConvertToChecked<TOther>(MpuT value, out TOther result) => TryConvertToChecked(value, out result);
 
@@ -1839,9 +1917,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return true;
 	}
 
-	public readonly bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
+	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
 	{
-		var bufSize = (int)Min(Mpir.MpuSizeinbase(this, 256), 2147483647);
+		var bufSize = (int)Math.Min(Mpir.MpuSizeinbase(this, 256), 2147483647);
 		if (destination.Length >= bufSize)
 		{
 			Mpir.MpirMpuExport(destination[^bufSize..], 1, sizeof(byte), 0, 0u, this);
@@ -1852,9 +1930,9 @@ public struct MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, I
 		return false;
 	}
 
-	public readonly bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
+	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
 	{
-		var bufSize = (int)Min(Mpir.MpuSizeinbase(this, 256), 2147483647);
+		var bufSize = (int)Math.Min(Mpir.MpuSizeinbase(this, 256), 2147483647);
 		if (destination.Length >= bufSize)
 		{
 			destination[0] = 0;

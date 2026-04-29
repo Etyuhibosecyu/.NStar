@@ -46,12 +46,6 @@ public static partial class Mpir
 
 	#region Static MpzT functions.
 
-	/// Returns the largest number of a and b.
-	public static MpzT Max(MpzT a, MpzT b) => a > b ? a : b;
-
-	/// Returns the smallest number of a and b.
-	public static MpzT Min(MpzT a, MpzT b) => a < b ? a : b;
-
 	#endregion
 
 	#region Wrappers for dynamic loading functions
@@ -165,20 +159,17 @@ public static partial class Mpir
 	private static readonly __Mpir_internal_mpz_export Mpir_internal_mpz_export = Marshal.GetDelegateForFunctionPointer<__Mpir_internal_mpz_export>(__ptr__Mpir_internal_mpz_export);
 	public static unsafe byte[] MpirMpzExport(int order, uint size, int endian, uint nails, MpzT op)
 	{
-		var bufSize = (int)Min(MpzSizeinbase(op, 256), 2147483647);
+		var negative = MpzCmpSi(op, 0) < 0;
+		if (negative)
+			op += One << (op.BitLength + 7) / 8 * 8;
+		var bufSize = (int)Math.Min(MpzSizeinbase(op, 256), 2147483647);
 		var destBuf = new byte[bufSize];
-		var op2 = op;
-		if (op < 0)
-		{
-			op = new(op);
-			op += (MpzT)1 << bufSize * 8;
-		}
 		fixed (void* destPtr = destBuf)
 		{
 			// null countp argument, because we already know how large the result will be.
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
-		return destBuf[order == 1 ? 0 : ^1] < 128 || op2 < 0 ? destBuf : order == 1 ? [0, .. destBuf] : [.. destBuf, 0];
+		return destBuf[order == 1 ? 0 : ^1] < 128 || negative ? destBuf : order == 1 ? [0, .. destBuf] : [.. destBuf, 0];
 	}
 	#endregion
 }

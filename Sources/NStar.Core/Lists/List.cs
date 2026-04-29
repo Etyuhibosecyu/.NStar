@@ -127,15 +127,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
-	~List() => Dispose();
+	~List() => DisposeInternal();
 
-	/// <summary>
-	/// Представляет максимальное количество элементов, под которое в данный момент выделена память.
-	/// Это НЕ длина списка и НЕ максимальное количество элементов, которое вообще в принципе можно добавить
-	/// (которое постоянно и равно количеству элементов, умещающемуся в 2 ГБ минус 1 байт)
-	/// - емкость автоматически увеличивается при попытке добавить/вставить элемент, когда она равна длине,
-	/// но это происходит редко, также можно в любой момент вручную изменить ее на любое число не меньше длины.
-	/// </summary>
+	/// <inheritdoc/>
 	public override int Capacity
 	{
 		get => _items?.Length ?? 0;
@@ -227,7 +221,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Parallel.For(0, length, i => array[arrayIndex + i] = _items[index + i]);
 	}
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		if (_items is null)
 			return;
@@ -235,7 +229,6 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		_items = null;
 		_size = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	internal static List<T> EmptyList(int length) => new(length) { _size = length };

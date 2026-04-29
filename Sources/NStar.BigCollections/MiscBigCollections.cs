@@ -57,10 +57,10 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 		{
-			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
+			fragment = MpzT.One << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
 				SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			high = new((int)GetArrayLength(capacity, fragment));
-			for (MpzT i = 0; i < high.Capacity; i++)
+			for (var i = MpzT.Zero; i < high.Capacity; i++)
 				high.Add(new(fragment, SubbranchesBitLength, LeafSizeBitLength));
 		}
 	}
@@ -274,7 +274,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 					low = null,
 					high = temp,
 					fragment = fragment,
-					Length = Length
+					Length = new(Length)
 				});
 				fragment <<= SubbranchesBitLength;
 				BigQueue<T> tempQueue = new(fragment, SubbranchesBitLength, LeafSizeBitLength);
@@ -300,7 +300,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		Length += 1;
+		Length++;
 #if VERIFY
 		Verify();
 #endif

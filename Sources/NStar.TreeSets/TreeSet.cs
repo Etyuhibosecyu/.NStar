@@ -78,6 +78,10 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public TreeSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
+	/// <summary>
+	/// Это свойство, пришедшее из базового класса, в данном классе не несет смысловой нагрузки.
+	/// Получение возвращает длину, установка ничего не делает.
+	/// </summary>
 	public override int Capacity
 	{
 		get => _size;
@@ -377,13 +381,12 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// </summary>
 	public static G.IEqualityComparer<TreeSet<T>> CreateSetComparer(G.IEqualityComparer<T>? memberEqualityComparer) => new TreeSetEqualityComparer<T>(memberEqualityComparer);
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		root = null;
 		_size = 0;
 		version = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	public override TreeSet<T> ExceptWith(G.IEnumerable<T> other)

@@ -658,7 +658,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	protected virtual void RemoveAtInternal(MpzT index)
 	{
 		var this2 = (TCertain)this;
-		Length -= 1;
+		Length--;
 		if (index < Length)
 			CopyToInternal(index + 1, this2, index, Length - index);
 		SetInternal(Length, default!);
@@ -716,7 +716,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		}
 		else
 		{
-			MpzT i = 0;
+			var i = MpzT.Zero;
 			foreach (var item in collection)
 			{
 				SetInternal(i, item);

@@ -470,7 +470,7 @@ public class TreeHashSetTests
 			if (ths[index] == n)
 				return;
 			gs.Remove(ths[index]);
-			if (ths.TryGetIndexOf(n, out var index2) && index2 < index)
+			if (ths.Contains(n, out var index2) && index2 < index)
 				index--;
 			ths.RemoveValue(n);
 			ths[index] = n;

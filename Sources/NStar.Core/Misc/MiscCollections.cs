@@ -506,7 +506,7 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 			throw new InvalidOperationException("Невозможно выполнить эту операцию, так как срез пуст.");
 	}
 
-	public override void Dispose() => GC.SuppressFinalize(this);
+	protected override void DisposeInternal() { }
 
 	protected override T GetInternal(int index)
 	{

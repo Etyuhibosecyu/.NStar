@@ -388,7 +388,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -414,7 +414,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -428,7 +428,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			var i = 0;
 			foreach (var item in source)
@@ -460,7 +460,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -486,7 +486,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -500,7 +500,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			var i = 0;
 			foreach (var item in source)
@@ -531,7 +531,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -556,7 +556,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, array.Length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -582,7 +582,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "максимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -596,7 +596,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			var i = 0;
 			foreach (var item in source)
@@ -647,7 +647,7 @@ public static class RedStarLinqMath
 
 	public static double Mean(this G.IEnumerable<MpzT> source) => MeanInternal<MpzT, MpzT, double>(source);
 
-	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, TFunction> function) where TFunction : INumber<TFunction> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -667,7 +667,7 @@ public static class RedStarLinqMath
 		return TResult.CreateChecked(sum) / TResult.CreateChecked(count);
 	}
 
-	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, int, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, int, TFunction> function) where TFunction : INumber<TFunction> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -687,7 +687,7 @@ public static class RedStarLinqMath
 		return TResult.CreateChecked(sum) / TResult.CreateChecked(count);
 	}
 
-	private static TResult MeanInternal<TSource, TAccumulator, TResult>(G.IEnumerable<TSource> source) where TSource : struct, INumber<TSource> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult MeanInternal<TSource, TAccumulator, TResult>(G.IEnumerable<TSource> source) where TSource : INumber<TSource> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		using var e = source.GetEnumerator();
@@ -1411,7 +1411,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -1437,7 +1437,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -1451,7 +1451,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			var i = 0;
 			foreach (var item in source)
@@ -1483,7 +1483,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -1509,7 +1509,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -1523,7 +1523,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			var i = 0;
 			foreach (var item in source)
@@ -1554,7 +1554,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -1579,7 +1579,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, array.Length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -1605,7 +1605,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "минимум")
 				};
 			}
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
@@ -1619,7 +1619,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT indicator = 0;
+			var indicator = MpzT.Zero;
 			MpzT f;
 			var i = 0;
 			foreach (var item in source)
@@ -2342,7 +2342,7 @@ public static class RedStarLinqMath
 
 	public static MpzT Sum<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function) => SumInternal<T, MpzT, MpzT, MpzT>(source, function);
 
-	private static TResult SumInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult SumInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, TFunction> function) where TFunction : INumber<TFunction> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -2362,7 +2362,7 @@ public static class RedStarLinqMath
 		return TResult.CreateTruncating(sum);
 	}
 
-	private static TResult SumInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, int, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult SumInternal<TSource, TFunction, TAccumulator, TResult>(G.IEnumerable<TSource> source, Func<TSource, int, TFunction> function) where TFunction : INumber<TFunction> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(function);
@@ -2666,7 +2666,7 @@ public static class RedStarLinqMath
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -2683,7 +2683,7 @@ public static class RedStarLinqMath
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -2845,7 +2845,7 @@ public static class RedStarLinqMath
 				_ => ZZZInvalidOperation(source, length, "максимум")
 			};
 		}
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -2882,7 +2882,7 @@ public static class RedStarLinqMath
 
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => MeanInternal<T, MpzT, MpzT, double>(source, function);
 
-	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TFunction> function) where TFunction : INumber<TFunction> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length == 0)
@@ -2898,7 +2898,7 @@ public static class RedStarLinqMath
 		return TResult.CreateChecked(sum) / TResult.CreateChecked(source.Length);
 	}
 
-	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TFunction> function) where TFunction : struct, INumber<TFunction> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult MeanInternal<TSource, TFunction, TAccumulator, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TFunction> function) where TFunction : INumber<TFunction> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length == 0)
@@ -2926,7 +2926,7 @@ public static class RedStarLinqMath
 
 	public static double Mean(this ReadOnlySpan<MpzT> source) => MeanInternal<MpzT, MpzT, double>(source);
 
-	private static TResult MeanInternal<TSource, TAccumulator, TResult>(ReadOnlySpan<TSource> source) where TSource : struct, INumber<TSource> where TAccumulator : struct, INumber<TAccumulator> where TResult : struct, INumber<TResult>
+	private static TResult MeanInternal<TSource, TAccumulator, TResult>(ReadOnlySpan<TSource> source) where TSource : INumber<TSource> where TAccumulator : INumber<TAccumulator> where TResult : INumber<TResult>
 	{
 		if (source.Length == 0)
 			return TResult.Zero;
@@ -3287,7 +3287,7 @@ public static class RedStarLinqMath
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -3304,7 +3304,7 @@ public static class RedStarLinqMath
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -3466,7 +3466,7 @@ public static class RedStarLinqMath
 				_ => ZZZInvalidOperation(source, source.Length, "минимум")
 			};
 		}
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -4353,7 +4353,7 @@ public static class RedStarLinqMath
 		if (source is List<MpzT> list)
 		{
 			var length = list.Length;
-			MpzT result = 0;
+			var result = MpzT.Zero;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
@@ -4363,7 +4363,7 @@ public static class RedStarLinqMath
 		}
 		else if (source is MpzT[] array)
 		{
-			MpzT result = 0;
+			var result = MpzT.Zero;
 			if (array.Length <= 3)
 			{
 				return array.Length switch
@@ -4396,7 +4396,7 @@ public static class RedStarLinqMath
 					_ => ZZZInvalidOperation(source, length, "сумму")
 				};
 			}
-			MpzT result = 0;
+			var result = MpzT.Zero;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -4406,7 +4406,7 @@ public static class RedStarLinqMath
 		}
 		else
 		{
-			MpzT result = 0;
+			var result = MpzT.Zero;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -4521,7 +4521,7 @@ public static class RedStarLinqMath
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		MpzT result = 0;
+		var result = MpzT.Zero;
 		for (var i = 0; i < length; i++)
 			result += function(source[i]);
 		return result;
@@ -4531,7 +4531,7 @@ public static class RedStarLinqMath
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		MpzT result = 0;
+		var result = MpzT.Zero;
 		for (var i = 0; i < length; i++)
 			result += function(source[i], i);
 		return result;
@@ -4600,7 +4600,7 @@ public static class RedStarLinqMath
 	public static MpzT Sum(this ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
-		MpzT result = 0;
+		var result = MpzT.Zero;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];

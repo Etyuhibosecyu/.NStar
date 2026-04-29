@@ -2,16 +2,19 @@
 
 namespace NStar.Mpir;
 
-public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, IDisposable, IBinaryInteger<MpzT>
+public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, IDisposable, IBinaryInteger<MpzT>
 {
 	#region Data
 	internal const uint DefaultStringBase = 10u;
+	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
+	private static byte[] exportBytes = GC.AllocateUninitializedArray<byte>(1024);
+	private static readonly Lock lockObj = new();
 	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
 		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
 		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
 
-	public nint val;
+	internal nint val;
 	#endregion
 
 	#region Creation and destruction
@@ -68,7 +71,27 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	/// for little endian.
 	public MpzT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
 
-	public void Dispose() => val = 0;
+	~MpzT() => Dispose(false);
+
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	public void Dispose(bool disposing)
+	{
+		if (val == 0 || ReferenceEquals(this, Zero) || ReferenceEquals(this, One))
+			return;
+		try
+		{
+			Mpir.MpzClear(this);
+		}
+		catch (Exception) when (!disposing)
+		{
+		}
+		val = 0;
+	}
 
 	#endregion
 
@@ -77,23 +100,23 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	/// Import the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public readonly void FromByteArray(ReadOnlySpan<byte> source, int order)
+	public void FromByteArray(ReadOnlySpan<byte> source, int order)
 	{
 		Mpir.MpirMpzImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
 		if (source[order == 1 ? 0 : ^1] >= 128)
-			Mpir.MpzSet(this, Subtract((MpzT)1 << source.Length * 8));
+			Mpir.MpzSub(this, this, One << source.Length * 8);
 	}
 
 	/// Import the integer in the byte array bytes, starting at startOffset
 	/// and ending at endOffset.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public readonly void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpzImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
+	public void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpzImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
 
 	/// Export to the value to a byte array.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public readonly byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpzExport(order, sizeof(byte), 0, 0u, this);
+	public byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpzExport(order, sizeof(byte), 0, 0u, this);
 	#endregion
 
 	// Almost everything below is copied from Emil Stefanov's BigInt
@@ -107,15 +130,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	#region Predefined Values
 
-	public static MpzT NegativeTen => new(-10);
-	public static MpzT NegativeThree => new(-3);
-	public static MpzT NegativeTwo => new(-2);
-	public static MpzT NegativeOne => new(-1);
-	public static MpzT Zero => new(0);
-	public static MpzT One => new(1);
-	public static MpzT Two => new(2);
-	public static MpzT Three => new(3);
-	public static MpzT Ten => new(10);
+	public static MpzT Zero { get; } = new(0);
+	public static MpzT One { get; } = new(1);
 	public static MpzT AdditiveIdentity => Zero;
 	public static MpzT MultiplicativeIdentity => One;
 	public static int Radix => 2;
@@ -214,7 +230,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 			Mpir.MpzSubUi(z, x, (uint)y);
 		else
 			Mpir.MpzAddUi(z, x, (uint)-y);
-
 		return z;
 	}
 
@@ -234,18 +249,32 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static MpzT operator ++(MpzT x)
 	{
-		var z = new MpzT();
-		Mpir.MpzAddUi(z, x, 1);
-		Mpir.MpzSet(x, z);
-		return x;
+		if (ReferenceEquals(x, Zero) || ReferenceEquals(x, One))
+		{
+			var z = new MpzT();
+			Mpir.MpzAddUi(z, x, 1);
+			return z;
+		}
+		else
+		{
+			Mpir.MpzAddUi(x, x, 1);
+			return x;
+		}
 	}
 
 	public static MpzT operator --(MpzT x)
 	{
-		var z = new MpzT();
-		Mpir.MpzSubUi(z, x, 1);
-		Mpir.MpzSet(x, z);
-		return x;
+		if (ReferenceEquals(x, Zero) || ReferenceEquals(x, One))
+		{
+			var z = new MpzT();
+			Mpir.MpzSubUi(z, x, 1);
+			return z;
+		}
+		else
+		{
+			Mpir.MpzSubUi(x, x, 1);
+			return x;
+		}
 	}
 
 	public static MpzT operator *(MpzT x, MpzT y)
@@ -367,13 +396,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static bool operator <(MpzT x, uint y) => x.CompareTo(y) < 0;
 
-	public static bool operator <(long x, MpzT y) => (MpzT)x < y;
+	public static bool operator <(long x, MpzT y) => y.CompareTo(x) > 0;
 
-	public static bool operator <(MpzT x, long y) => x < (MpzT)y;
+	public static bool operator <(MpzT x, long y) => x.CompareTo(y) < 0;
 
-	public static bool operator <(ulong x, MpzT y) => (MpzT)x < y;
+	public static bool operator <(ulong x, MpzT y) => y.CompareTo(x) > 0;
 
-	public static bool operator <(MpzT x, ulong y) => x < (MpzT)y;
+	public static bool operator <(MpzT x, ulong y) => x.CompareTo(y) < 0;
 
 	public static bool operator <(float x, MpzT y) => y.CompareTo(x) > 0;
 
@@ -398,13 +427,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	public static bool operator <=(MpzT x, uint y) => x.CompareTo(y) <= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator <=(long x, MpzT y) => (MpzT)x <= y;
+	public static bool operator <=(long x, MpzT y) => y.CompareTo(x) >= 0;
 
-	public static bool operator <=(MpzT x, long y) => x <= (MpzT)y;
+	public static bool operator <=(MpzT x, long y) => x.CompareTo(y) <= 0;
 
-	public static bool operator <=(ulong x, MpzT y) => (MpzT)x <= y;
+	public static bool operator <=(ulong x, MpzT y) => y.CompareTo(x) >= 0;
 
-	public static bool operator <=(MpzT x, ulong y) => x <= (MpzT)y;
+	public static bool operator <=(MpzT x, ulong y) => x.CompareTo(y) <= 0;
 
 	public static bool operator <=(float x, MpzT y) => y.CompareTo(x) >= 0;
 
@@ -429,16 +458,16 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	public static bool operator >(MpzT x, uint y) => x.CompareTo(y) > 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(long x, MpzT y) => (MpzT)x > y;
+	public static bool operator >(long x, MpzT y) => y.CompareTo(x) < 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(MpzT x, long y) => x > (MpzT)y;
+	public static bool operator >(MpzT x, long y) => x.CompareTo(y) > 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(ulong x, MpzT y) => (MpzT)x > y;
+	public static bool operator >(ulong x, MpzT y) => y.CompareTo(x) < 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >(MpzT x, ulong y) => x > (MpzT)y;
+	public static bool operator >(MpzT x, ulong y) => x.CompareTo(y) > 0;
 
 	public static bool operator >(float x, MpzT y) => y.CompareTo(x) < 0;
 
@@ -463,16 +492,16 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	public static bool operator >=(MpzT x, uint y) => x.CompareTo(y) >= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(long x, MpzT y) => (MpzT)x >= y;
+	public static bool operator >=(long x, MpzT y) => y.CompareTo(x) <= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(MpzT x, long y) => x >= (MpzT)y;
+	public static bool operator >=(MpzT x, long y) => x.CompareTo(y) >= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(ulong x, MpzT y) => (MpzT)x >= y;
+	public static bool operator >=(ulong x, MpzT y) => y.CompareTo(x) <= 0;
 
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(MpzT x, ulong y) => x >= (MpzT)y;
+	public static bool operator >=(MpzT x, ulong y) => x.CompareTo(y) >= 0;
 
 	public static bool operator >=(float x, MpzT y) => y.CompareTo(x) <= 0;
 
@@ -502,14 +531,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static MpzT operator >>>(MpzT x, int shiftAmount)
 	{
-		if (x >= 0)
+		if (Mpir.MpzCmpSi(x, 0) >= 0)
 			return x >> shiftAmount;
 		return ~((~x) >> shiftAmount);
 	}
 
-	public readonly int this[int bitIndex] => Mpir.MpzTstbit(this, (uint)bitIndex);
+	public int this[int bitIndex] => Mpir.MpzTstbit(this, (uint)bitIndex);
 
-	public readonly MpzT ChangeBit(int bitIndex, int value)
+	public MpzT ChangeBit(int bitIndex, int value)
 	{
 		var z = new MpzT(this);
 		if (value == 0)
@@ -524,23 +553,23 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	#region Basic Arithmetic
 
 	/// Returns a new MpzT which is the absolute value of this value.
-	public readonly MpzT Abs()
+	public MpzT Abs()
 	{
 		var result = new MpzT();
 		Mpir.MpzAbs(result, this);
 		return result;
 	}
 
-	public readonly MpzT Add(int x) => this + x;
-	public readonly MpzT Add(MpzT x) => this + x;
-	public readonly MpzT Add(uint x) => this + x;
-	public readonly MpzT Complement() => ~this;
+	public MpzT Add(int x) => this + x;
+	public MpzT Add(MpzT x) => this + x;
+	public MpzT Add(uint x) => this + x;
+	public MpzT Complement() => ~this;
 
-	public readonly MpzT Divide(int x) => this / x;
+	public MpzT Divide(int x) => this / x;
 
-	public readonly MpzT Divide(uint x) => this / x;
+	public MpzT Divide(uint x) => this / x;
 
-	public readonly MpzT Divide(int x, out int remainder)
+	public MpzT Divide(int x, out int remainder)
 	{
 		var quotient = new MpzT();
 		if (x >= 0)
@@ -556,7 +585,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly MpzT Divide(int x, out MpzT remainder)
+	public MpzT Divide(int x, out MpzT remainder)
 	{
 		var quotient = new MpzT();
 		remainder = new MpzT();
@@ -573,9 +602,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly MpzT Divide(MpzT x) => this / x;
+	public MpzT Divide(MpzT x) => this / x;
 
-	public readonly MpzT Divide(MpzT x, out MpzT remainder)
+	public MpzT Divide(MpzT x, out MpzT remainder)
 	{
 		var quotient = new MpzT();
 		remainder = new MpzT();
@@ -583,7 +612,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return quotient;
 	}
 
-	public readonly MpzT Divide(uint x, out MpzT remainder)
+	public MpzT Divide(uint x, out MpzT remainder)
 	{
 		var quotient = new MpzT();
 		remainder = new MpzT();
@@ -591,7 +620,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return quotient;
 	}
 
-	public readonly MpzT Divide(uint x, out uint remainder)
+	public MpzT Divide(uint x, out uint remainder)
 	{
 		// Unsure about the below exception for negative numbers. It's in Stefanov's
 		// original code, but that limitation isn't mentioned in
@@ -603,13 +632,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return quotient;
 	}
 
-	public readonly MpzT Divide(uint x, out int remainder)
+	public MpzT Divide(uint x, out int remainder)
 	{
 		var quotient = new MpzT();
 		var uintRemainder = Mpir.MpzTdivQUi(quotient, this, x);
 		if (uintRemainder > int.MaxValue)
 			throw new OverflowException();
-		if (this >= 0)
+		if (Mpir.MpzCmpSi(this, 0) >= 0)
 			remainder = (int)uintRemainder;
 		else
 			remainder = -(int)uintRemainder;
@@ -621,14 +650,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	/// </summary>
 	/// <param name="x"></param>
 	/// <returns></returns>
-	public readonly MpzT DivideExactly(MpzT x)
+	public MpzT DivideExactly(MpzT x)
 	{
 		var z = new MpzT();
 		Mpir.MpzDivexact(z, this, x);
 		return z;
 	}
 
-	public readonly MpzT DivideExactly(int x)
+	public MpzT DivideExactly(int x)
 	{
 		var z = new MpzT();
 		Mpir.MpzDivexactUi(z, this, (uint)x);
@@ -641,16 +670,16 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 			return z;
 	}
 
-	public readonly MpzT DivideExactly(uint x)
+	public MpzT DivideExactly(uint x)
 	{
 		var z = new MpzT();
 		Mpir.MpzDivexactUi(z, this, x);
 		return z;
 	}
 
-	public readonly MpzT DivideMod(MpzT x, MpzT mod) => this * x.InvertMod(mod) % mod;
+	public MpzT DivideMod(MpzT x, MpzT mod) => this * x.InvertMod(mod) % mod;
 
-	public readonly bool IsDivisibleBy(int x)
+	public bool IsDivisibleBy(int x)
 	{
 		if (x >= 0)
 			return Mpir.MpzDivisibleUiP(this, (uint)x) != 0;
@@ -658,66 +687,66 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 			return Mpir.MpzDivisibleUiP(this, (uint)-x) != 0;
 	}
 
-	public readonly bool IsDivisibleBy(MpzT x) => Mpir.MpzDivisibleP(this, x) != 0;
+	public bool IsDivisibleBy(MpzT x) => Mpir.MpzDivisibleP(this, x) != 0;
 
-	public readonly bool IsDivisibleBy(uint x) => Mpir.MpzDivisibleUiP(this, x) != 0;
+	public bool IsDivisibleBy(uint x) => Mpir.MpzDivisibleUiP(this, x) != 0;
 
-	public readonly MpzT Multiply(MpzT x) => this * x;
-	public readonly MpzT Multiply(int x) => this * x;
-	public readonly MpzT Multiply(uint x) => this * x;
-	public readonly MpzT Negate() => -this;
+	public MpzT Multiply(MpzT x) => this * x;
+	public MpzT Multiply(int x) => this * x;
+	public MpzT Multiply(uint x) => this * x;
+	public MpzT Negate() => -this;
 
-	public readonly MpzT Remainder(MpzT x)
+	public MpzT Remainder(MpzT x)
 	{
 		var z = new MpzT();
 		Mpir.MpzTdivR(z, this, x);
 		return z;
 	}
 
-	public readonly MpzT Square() => this * this;
-	public readonly MpzT Subtract(MpzT x) => this - x;
-	public readonly MpzT Subtract(int x) => this - x;
-	public readonly MpzT Subtract(uint x) => this - x;
+	public MpzT Square() => this * this;
+	public MpzT Subtract(MpzT x) => this - x;
+	public MpzT Subtract(int x) => this - x;
+	public MpzT Subtract(uint x) => this - x;
 
-	public readonly MpzT And(MpzT x) => this & x;
+	public MpzT And(MpzT x) => this & x;
 
-	public readonly MpzT Or(MpzT x) => this | x;
+	public MpzT Or(MpzT x) => this | x;
 
-	public readonly MpzT Xor(MpzT x) => this ^ x;
+	public MpzT Xor(MpzT x) => this ^ x;
 
-	public readonly MpzT Mod(MpzT mod) => this % mod;
+	public MpzT Mod(MpzT mod) => this % mod;
 
-	public readonly MpzT Mod(int mod) => this % mod;
+	public MpzT Mod(int mod) => this % mod;
 
-	public readonly MpzT Mod(uint mod) => this % mod;
+	public MpzT Mod(uint mod) => this % mod;
 
-	public readonly int ModAsInt32(int mod)
+	public int ModAsInt32(int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		return (int)Mpir.MpzFdivUi(this, (uint)mod);
 	}
 
-	public readonly uint ModAsUInt32(uint mod) => Mpir.MpzFdivUi(this, mod);
+	public uint ModAsUInt32(uint mod) => Mpir.MpzFdivUi(this, mod);
 
-	public readonly MpzT ShiftLeft(int shiftAmount) => this << shiftAmount;
+	public MpzT ShiftLeft(int shiftAmount) => this << shiftAmount;
 
-	public readonly MpzT ShiftRight(int shiftAmount) => this >> shiftAmount;
+	public MpzT ShiftRight(int shiftAmount) => this >> shiftAmount;
 
-	public readonly MpzT PowerMod(MpzT exponent, MpzT mod)
+	public MpzT PowerMod(MpzT exponent, MpzT mod)
 	{
 		var z = new MpzT();
 		Mpir.MpzPowm(z, this, exponent, mod);
 		return z;
 	}
 
-	public readonly MpzT PowerMod(int exponent, MpzT mod)
+	public MpzT PowerMod(int exponent, MpzT mod)
 	{
 		var z = new MpzT();
 		Mpir.MpzPowm(z, this, exponent, mod);
 		return z;
 	}
 
-	public readonly MpzT PowerMod(uint exponent, MpzT mod)
+	public MpzT PowerMod(uint exponent, MpzT mod)
 	{
 		var z = new MpzT();
 		if (exponent >= 0)
@@ -732,7 +761,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Power(int exponent)
+	public MpzT Power(int exponent)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
 		var z = new MpzT();
@@ -740,7 +769,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Power(uint exponent)
+	public MpzT Power(uint exponent)
 	{
 		var z = new MpzT();
 		Mpir.MpzPowUi(z, this, exponent);
@@ -762,7 +791,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT InvertMod(MpzT mod)
+	public MpzT InvertMod(MpzT mod)
 	{
 		var z = new MpzT();
 		var status = Mpir.MpzInvert(z, this, mod);
@@ -771,7 +800,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly bool TryInvertMod(MpzT mod, out MpzT result)
+	public bool TryInvertMod(MpzT mod, [MaybeNullWhen(false)] out MpzT result)
 	{
 		var z = new MpzT();
 		var status = Mpir.MpzInvert(z, this, mod);
@@ -787,36 +816,36 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly bool InverseModExists(MpzT mod)
+	public bool InverseModExists(MpzT mod)
 	{
 		TryInvertMod(mod, out _);
 		return true;
 	}
 
-	public readonly int GetByteCount() => (BitLength + 7) / 8;
+	public int GetByteCount() => (BitLength + 7) / 8;
 
-	public readonly int GetShortestBitLength() => BitLength;
+	public int GetShortestBitLength() => BitLength;
 
-	public readonly int BitLength => (int)Mpir.MpzSizeinbase(this, 2);
+	public int BitLength => (int)Mpir.MpzSizeinbase(this, 2);
 
-	public readonly int Sign =>
+	public int Sign =>
 		IsPositive(this) ? 1 : IsZero(this) ? 0 : IsNegative(this) ? -1
 		: throw new ArithmeticException("Произошла ошибка при  вычислении знака.");
 
-	public readonly MpzT GetFullBitLength() => Mpir.MpzSizeinbase(this, 2);
+	public MpzT GetFullBitLength() => Mpir.MpzSizeinbase(this, 2);
 
 	#endregion
 
 	#region Roots
 
-	public readonly MpzT Sqrt()
+	public MpzT Sqrt()
 	{
 		var z = new MpzT();
 		Mpir.MpzSqrt(z, this);
 		return z;
 	}
 
-	public readonly MpzT Sqrt(out MpzT remainder)
+	public MpzT Sqrt(out MpzT remainder)
 	{
 		var z = new MpzT();
 		remainder = new MpzT();
@@ -824,7 +853,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Sqrt(out bool isExact)
+	public MpzT Sqrt(out bool isExact)
 	{
 		var z = new MpzT();
 		var result = Mpir.MpzRoot(z, this, 2);
@@ -832,7 +861,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Root(int n)
+	public MpzT Root(int n)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
@@ -840,14 +869,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Root(uint n)
+	public MpzT Root(uint n)
 	{
 		var z = new MpzT();
 		Mpir.MpzRoot(z, this, n);
 		return z;
 	}
 
-	public readonly MpzT Root(int n, out bool isExact)
+	public MpzT Root(int n, out bool isExact)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
@@ -856,7 +885,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Root(uint n, out bool isExact)
+	public MpzT Root(uint n, out bool isExact)
 	{
 		var z = new MpzT();
 		var result = Mpir.MpzRoot(z, this, n);
@@ -864,7 +893,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Root(int n, out MpzT remainder)
+	public MpzT Root(int n, out MpzT remainder)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
@@ -873,7 +902,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly MpzT Root(uint n, out MpzT remainder)
+	public MpzT Root(uint n, out MpzT remainder)
 	{
 		var z = new MpzT();
 		remainder = new MpzT();
@@ -881,9 +910,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return z;
 	}
 
-	public readonly bool IsPerfectSquare() => Mpir.MpzPerfectSquareP(this) != 0;
+	public bool IsPerfectSquare() => Mpir.MpzPerfectSquareP(this) != 0;
 
-	public readonly bool IsPerfectPower() =>
+	public bool IsPerfectPower() =>
 		// There is a known issue with this function for negative inputs in GMP 4.2.4.
 		// Haven't heard of any issues in MPIR 5.x though.
 		Mpir.MpzPerfectPowerP(this) != 0;
@@ -891,14 +920,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	#region Number Theoretic Functions
 
-	public readonly bool IsProbablyPrimeRabinMiller(uint repetitions)
+	public bool IsProbablyPrimeRabinMiller(uint repetitions)
 	{
 		var result = Mpir.MpzProbabPrimeP(this, repetitions);
 		return result != 0;
 	}
 
 	// TODO: Create a version of this method which takes in a parameter to represent how well tested the prime should be.
-	public readonly MpzT NextPrimeGMP()
+	public MpzT NextPrimeGMP()
 	{
 		var z = new MpzT();
 		Mpir.MpzNextprime(z, this);
@@ -959,7 +988,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	{
 		var z = new MpzT();
 		a = new MpzT();
-		Mpir.MpzGcdext(z, a, default, x, y);
+		Mpir.MpzGcdext(z, a, default!, x, y);
 		return z;
 	}
 
@@ -1006,28 +1035,28 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static int LegendreSymbol(MpzT x, MpzT primeY)
 	{
-		System.Diagnostics.Debug.Assert(primeY != 2); // Not defined for 2
+		Debug.Assert(primeY != 2); // Not defined for 2
 
 		return Mpir.MpzJacobi(x, primeY);
 	}
 
 	public static int JacobiSymbol(MpzT x, MpzT y)
 	{
-		if(IsEvenInteger(y) || y < 0)
+		if(IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpzJacobi(x, y);
 	}
 
 	public static int JacobiSymbol(MpzT x, int y)
 	{
-		if ((y & 1) == 0 || y < 0)
+		if ((y & 1) == 0 || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(null, nameof(y));
 		return Mpir.MpzKroneckerSi(x, y);
 	}
 
 	public static int JacobiSymbol(int x, MpzT y)
 	{
-		if (IsEvenInteger(y) || y < 0)
+		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpzSiKronecker(x, y);
 	}
@@ -1040,7 +1069,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	}
 
 	public static int JacobiSymbol(uint x, MpzT y) {
-		if (IsEvenInteger(y) || y < 0)
+		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpzUiKronecker(x, y);
 	}
@@ -1054,14 +1083,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static int KroneckerSymbol(uint x, MpzT y) => Mpir.MpzUiKronecker(x, y);
 
-	public readonly MpzT RemoveFactor(MpzT factor)
+	public MpzT RemoveFactor(MpzT factor)
 	{
 		var z = new MpzT();
 		Mpir.MpzRemove(z, this, factor);
 		return z;
 	}
 
-	public readonly MpzT RemoveFactor(MpzT factor, out int count)
+	public MpzT RemoveFactor(MpzT factor, out int count)
 	{
 		var z = new MpzT();
 		count = (int)Mpir.MpzRemove(z, this, factor);
@@ -1196,11 +1225,11 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	#region Bitwise Functions
 
-	public readonly int CountOnes() => (int)Mpir.MpzPopcount(this);
+	public int CountOnes() => (int)Mpir.MpzPopcount(this);
 
 	public static int HammingDistance(MpzT x, MpzT y) => (int)Mpir.MpzHamdist(x, y);
 
-	public readonly int IndexOfZero(int startingIndex)
+	public int IndexOfZero(int startingIndex)
 	{
 		unchecked
 		{
@@ -1210,7 +1239,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly int IndexOfOne(int startingIndex)
+	public int IndexOfOne(int startingIndex)
 	{
 		unchecked
 		{
@@ -1226,10 +1255,10 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	{
 		var bitLength = value.BitLength;
 		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
-		return value >= sqrt ? bitLength : bitLength - 1;
+		return Mpir.MpzCmp(value, sqrt) >= 0 ? bitLength : bitLength - 1;
 	}
 
-	public readonly int PopCount() => (int)Mpir.MpzPopcount(this);
+	public int PopCount() => (int)Mpir.MpzPopcount(this);
 
 	public static MpzT PopCount(MpzT value) => value.PopCount();
 
@@ -1237,18 +1266,19 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	{
 		if (value == Zero)
 			return Zero;
-		if (value < 0)
-			value += (MpzT)1 << value.BitLength;
+		if (Mpir.MpzCmpSi(value, 0) < 0)
+			value += One << value.BitLength;
 		var result = 0;
 		const int ulongBits = sizeof(ulong) * 8;
 		var value2 = value << ulongBits;
 		MpzT mask = ulong.MaxValue;
-		for (; mask < value2; mask <<= ulongBits)
+		for (; Mpir.MpzCmp(mask, value2) < 0; mask <<= ulongBits)
 		{
-			if (Mpir.MpzCmpSi(value & mask, 0) == 0)
+			var maskedValue = value & mask;
+			if (Mpir.MpzCmpSi(maskedValue, 0) == 0)
 				result += ulongBits;
 			else
-				return result + (int)ulong.TrailingZeroCount((ulong)((value & mask) >> result));
+				return result + (int)ulong.TrailingZeroCount((ulong)(maskedValue >> result));
 		}
 		throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {value.BitLength}, значение - {value}"
@@ -1277,10 +1307,10 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	public static bool IsRealNumber(MpzT value) => true;
 	public static bool IsSubnormal(MpzT value) => true;
 	public static bool IsZero(MpzT value) => Mpir.MpzCmpSi(value, 0) == 0;
-	public static MpzT Max(MpzT x, MpzT y) => x > y ? x : y;
+	public static MpzT Max(MpzT x, MpzT y) => x.CompareTo(y) > 0 ? x : y;
 	public static MpzT MaxMagnitude(MpzT x, MpzT y) => Max(x, y);
 	public static MpzT MaxMagnitudeNumber(MpzT x, MpzT y) => Max(x, y);
-	public static MpzT Min(MpzT x, MpzT y) => x < y ? x : y;
+	public static MpzT Min(MpzT x, MpzT y) => x.CompareTo(y) < 0 ? x : y;
 	public static MpzT MinMagnitude(MpzT x, MpzT y) => Min(x, y);
 	public static MpzT MinMagnitudeNumber(MpzT x, MpzT y) => Min(x, y);
 	public static MpzT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
@@ -1289,7 +1319,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	public static MpzT Parse(string s, IFormatProvider? provider) => new(s);
 	public static MpzT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
 
-	private static bool TryConvertFromChecked<TOther>(TOther value, out MpzT result)
+	private static bool TryConvertFromChecked<TOther>(TOther value, [MaybeNullWhen(false)] out MpzT result)
 	{
 		try
 		{
@@ -1358,10 +1388,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	#region Comparing
 
-	public override readonly int GetHashCode()
+	public override int GetHashCode()
 	{
 		uint hash = 0;
-		var bytes = ToByteArray(-1);
+		Span<byte> bytes;
+		lock (lockObj)
+			bytes = ProcessToByteArray(this, false);
 		var len = bytes.Length; // Make sure it's only evaluated once.
 		var shift = 0;
 		for (var i = 0; i < len; i++)
@@ -1373,9 +1405,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return (int)hash;
 	}
 
-	public readonly bool Equals(MpzT other) => Compare(this, other) == 0;
+	public bool Equals(MpzT? other) => Compare(this, other) == 0;
 
-	public override readonly bool Equals(object? obj) => obj switch
+	public override bool Equals(object? obj) => obj switch
 	{
 		null => false,
 		MpzT z => CompareTo(z) == 0,
@@ -1394,21 +1426,21 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		_ => false
 	};
 
-	public readonly bool Equals(int other) => CompareTo(other) == 0;
+	public bool Equals(int other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(uint other) => CompareTo(other) == 0;
+	public bool Equals(uint other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(long other) => CompareTo(other) == 0;
+	public bool Equals(long other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(ulong other) => CompareTo(other) == 0;
+	public bool Equals(ulong other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(double other) => CompareTo(other) == 0;
+	public bool Equals(double other) => CompareTo(other) == 0;
 
-	public readonly bool Equals(decimal other) => CompareTo(other) == 0;
+	public bool Equals(decimal other) => CompareTo(other) == 0;
 
-	public readonly bool EqualsMod(MpzT x, MpzT mod) => Mpir.MpzCongruentP(this, x, mod) != 0;
+	public bool EqualsMod(MpzT x, MpzT mod) => Mpir.MpzCongruentP(this, x, mod) != 0;
 
-	public readonly bool EqualsMod(int x, int mod)
+	public bool EqualsMod(int x, int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		if (x >= 0)
@@ -1420,9 +1452,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly bool EqualsMod(uint x, uint mod) => Mpir.MpzCongruentUiP(this, x, mod) != 0;
+	public bool EqualsMod(uint x, uint mod) => Mpir.MpzCongruentUiP(this, x, mod) != 0;
 
-	public static bool operator ==(MpzT x, MpzT y) => x.CompareTo(y) == 0;
+	public static bool operator ==(MpzT? x, MpzT? y) => (x ?? Zero).CompareTo(y) == 0;
 
 	public static bool operator ==(int x, MpzT y) => y.CompareTo(x) == 0;
 
@@ -1456,7 +1488,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static bool operator ==(MpzT x, decimal y) => x.CompareTo(y) == 0;
 
-	public static bool operator !=(MpzT x, MpzT y) => x.CompareTo(y) != 0;
+	public static bool operator !=(MpzT? x, MpzT? y) => (x ?? Zero).CompareTo(y) != 0;
 
 	public static bool operator !=(int x, MpzT y) => y.CompareTo(x) != 0;
 
@@ -1490,7 +1522,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static bool operator !=(MpzT x, decimal y) => x.CompareTo(y) != 0;
 
-	public readonly int CompareTo(object? obj) => obj switch
+	public int CompareTo(object? obj) => obj switch
 	{
 		MpzT z => CompareTo(z),
 		MpuT uz => CompareTo(uz),
@@ -1509,14 +1541,14 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
 	};
 
-	public readonly int CompareTo(MpzT other) => Mpir.MpzCmp(this, other);
+	public int CompareTo(MpzT? other) => Mpir.MpzCmp(this, other);
 
-	public readonly int CompareTo(int other) => Mpir.MpzCmpSi(this, other);
+	public int CompareTo(int other) => Mpir.MpzCmpSi(this, other);
 
-	public readonly int CompareTo(uint other) => Mpir.MpzCmpUi(this, other);
+	public int CompareTo(uint other) => Mpir.MpzCmpUi(this, other);
 
 	// TODO: Optimize by accessing the memory directly
-	public readonly int CompareTo(long other)
+	public int CompareTo(long other)
 	{
 		var otherMpz = new MpzT(other);
 		var ret = CompareTo(otherMpz);
@@ -1524,20 +1556,20 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	}
 
 	// TODO: Optimize by accessing the memory directly
-	public readonly int CompareTo(ulong other)
+	public int CompareTo(ulong other)
 	{
 		var otherMpz = new MpzT(other);
 		var ret = CompareTo(otherMpz);
 		return ret;
 	}
 
-	public readonly int CompareTo(float other) => Mpir.MpzCmpD(this, (double)other);
+	public int CompareTo(float other) => Mpir.MpzCmpD(this, (double)other);
 
-	public readonly int CompareTo(double other) => Mpir.MpzCmpD(this, other);
+	public int CompareTo(double other) => Mpir.MpzCmpD(this, other);
 
-	public readonly int CompareTo(decimal other) => Mpir.MpzCmpD(this, (double)other);
+	public int CompareTo(decimal other) => Mpir.MpzCmpD(this, (double)other);
 
-	public readonly int CompareAbsTo(object obj) => obj switch
+	public int CompareAbsTo(object obj) => obj switch
 	{
 		MpzT z => CompareAbsTo(z),
 		MpuT uz => CompareAbsTo(uz),
@@ -1556,17 +1588,17 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		_ => throw new ArgumentException("Cannot compare to " + obj.GetType())
 	};
 
-	public readonly int CompareAbsTo(MpzT other) => Mpir.MpzCmpabs(this, other);
+	public int CompareAbsTo(MpzT other) => Mpir.MpzCmpabs(this, other);
 
-	public readonly int CompareAbsTo(int other) => Mpir.MpzCmpabsUi(this, (uint)other);
+	public int CompareAbsTo(int other) => Mpir.MpzCmpabsUi(this, (uint)other);
 
-	public readonly int CompareAbsTo(uint other) => Mpir.MpzCmpabsUi(this, other);
+	public int CompareAbsTo(uint other) => Mpir.MpzCmpabsUi(this, other);
 
-	public readonly int CompareAbsTo(long other) => CompareAbsTo((MpzT)other);
+	public int CompareAbsTo(long other) => CompareAbsTo((MpzT)other);
 
-	public readonly int CompareAbsTo(ulong other) => CompareAbsTo((MpzT)other);
+	public int CompareAbsTo(ulong other) => CompareAbsTo((MpzT)other);
 
-	public readonly int CompareAbsTo(double other) => Mpir.MpzCmpabsD(this, other);
+	public int CompareAbsTo(double other) => Mpir.MpzCmpabsD(this, other);
 
 	//public int CompareAbsTo(decimal other)
 	//{
@@ -1577,7 +1609,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static int Compare(object x, MpzT y) => -y.CompareTo(x);
 
-	public static int Compare(MpzT x, MpzT y) => x.CompareTo(y);
+	public static int Compare(MpzT x, MpzT? y) => x.CompareTo(y);
 
 	public static int Compare(MpzT x, int y) => x.CompareTo(y);
 
@@ -1633,7 +1665,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static int CompareAbs(decimal x, MpzT y) => -y.CompareAbsTo(x);
 
-	readonly int IComparable.CompareTo(object? obj) => Compare(this, obj);
+	int IComparable.CompareTo(object? obj) => Compare(this, obj);
 
 	#endregion
 
@@ -1670,7 +1702,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 	public static explicit operator uint(MpzT value)
 	{
 		var result = Mpir.MpzGetUi(value);
-		if (value < 0)
+		if (Mpir.MpzCmpSi(value, 0) < 0)
 			result = ~result + 1;
 		return result;
 	}
@@ -1681,17 +1713,20 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	public static explicit operator long(MpzT value)
 	{
-		var upper = (long)Mpir.MpzGetSi(value >> sizeof(uint) * 8) << sizeof(uint) * 8;
-		return upper + Mpir.MpzGetUi(value) * (value < 0 ? -1 : 1);
+		lock (lockObj)
+		{
+			ProcessLongConversion(value);
+			return BitConverter.ToInt64(convertToLongBytes, 0);
+		}
 	}
 
 	public static explicit operator ulong(MpzT value)
 	{
-		var @uint = Mpir.MpzGetUi(value >>> sizeof(uint) * 8);
-		if (value < 0)
-			@uint = ~@uint + 1;
-		var lower = Mpir.MpzGetUi(value);
-		return ((ulong)@uint << sizeof(uint) * 8) + (value < 0 ? ~lower + 1 : lower);
+		lock (lockObj)
+		{
+			ProcessLongConversion(value);
+			return BitConverter.ToUInt64(convertToLongBytes, 0);
+		}
 	}
 
 	public static explicit operator float(MpzT value) => (float)(double)value;
@@ -1707,21 +1742,52 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 
 	#region Cloning
 
-	readonly object ICloneable.Clone() => Clone();
+	object ICloneable.Clone() => Clone();
 
-	public readonly MpzT Clone() => new(this);
+	public MpzT Clone() => new(this);
 
 	#endregion
 
 	#region Conversions
 
-	public readonly BigInteger ToBigInteger() => new(ToByteArray(-1));
+	private static void ProcessLongConversion(MpzT value)
+	{
+		if (Mpir.MpzCmpSi(value, 0) < 0)
+			value += One << Math.Max(sizeof(long), (value.BitLength + 7) / 8) * 8;
+		var exportBytesSpan = ProcessToByteArray(value, BitConverter.IsLittleEndian);
+		var length = Math.Min(exportBytesSpan.Length, convertToLongBytes.Length);
+		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
+		convertToLongBytes.AsSpan(BitConverter.IsLittleEndian ? length.. : ..destOffset).Clear();
+		exportBytesSpan[BitConverter.IsLittleEndian ? 0..length : ^length..].CopyTo(convertToLongBytes.AsSpan(destOffset));
+	}
 
-	public override readonly string? ToString() => ToString((int)DefaultStringBase);
+	private static Span<byte> ProcessToByteArray(MpzT value, bool bLittleEndian)
+	{
+		var exportLength = (int)Math.Min(Mpir.MpzSizeinbase(value, 256), 2147483647);
+		if (exportLength > exportBytes.Length)
+		{
+			var newCapacity = Math.Max(1024, exportBytes.Length * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
+			if (newCapacity < exportLength)
+				newCapacity = exportLength;
+			exportBytes = GC.AllocateUninitializedArray<byte>(newCapacity);
+		}
+		var exportBytesSpan = exportBytes.AsSpan(..exportLength);
+		if (bLittleEndian)
+			value.TryWriteLittleEndian(exportBytesSpan, out _);
+		else
+			value.TryWriteBigEndian(exportBytesSpan, out _);
+		return exportBytesSpan;
+	}
 
-	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
+	public BigInteger ToBigInteger() => new(ToByteArray(-1));
 
-	public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+	public override string? ToString() => ToString((int)DefaultStringBase);
+
+	public string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
+
+	public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
 	{
 		try
 		{
@@ -1738,37 +1804,37 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	public readonly string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "{0:N0}", ToString());
+	public string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "{0:N0}", ToString());
 
 	#region IConvertible Members
 
-	readonly TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
+	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	readonly bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpzCmpSi(this, 1) >= 0;
+	bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpzCmpSi(this, 1) >= 0;
 
-	readonly byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
+	byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
-	readonly char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
+	char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
 
-	readonly DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
+	DateTime IConvertible.ToDateTime(IFormatProvider? provider) => throw new InvalidCastException();
 
-	readonly decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
+	decimal IConvertible.ToDecimal(IFormatProvider? provider) => (decimal)this;
 
-	readonly double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
+	double IConvertible.ToDouble(IFormatProvider? provider) => (double)this;
 
-	readonly short IConvertible.ToInt16(IFormatProvider? provider) => (short)this;
+	short IConvertible.ToInt16(IFormatProvider? provider) => (short)this;
 
-	readonly int IConvertible.ToInt32(IFormatProvider? provider) => (int)this;
+	int IConvertible.ToInt32(IFormatProvider? provider) => (int)this;
 
-	readonly long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
+	long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 
-	readonly sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
+	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 
-	readonly float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
+	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 
-	readonly string IConvertible.ToString(IFormatProvider? provider) => ToString() ?? "";
+	string IConvertible.ToString(IFormatProvider? provider) => ToString() ?? "";
 
-	readonly object IConvertible.ToType(Type targetType, IFormatProvider? provider)
+	object IConvertible.ToType(Type targetType, IFormatProvider? provider)
 	{
 		ArgumentNullException.ThrowIfNull(targetType);
 		if (targetType == typeof(MpzT))
@@ -1808,17 +1874,17 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
 	}
 
-	readonly ushort IConvertible.ToUInt16(IFormatProvider? provider) => (ushort)this;
+	ushort IConvertible.ToUInt16(IFormatProvider? provider) => (ushort)this;
 
-	readonly uint IConvertible.ToUInt32(IFormatProvider? provider) => (uint)this;
+	uint IConvertible.ToUInt32(IFormatProvider? provider) => (uint)this;
 
-	readonly ulong IConvertible.ToUInt64(IFormatProvider? provider) => (ulong)this;
+	ulong IConvertible.ToUInt64(IFormatProvider? provider) => (ulong)this;
 
 	#endregion
 
-	static bool INumberBase<MpzT>.TryConvertFromChecked<TOther>(TOther value, out MpzT result) => TryConvertFromChecked(value, out result);
+	static bool INumberBase<MpzT>.TryConvertFromChecked<TOther>(TOther value, [MaybeNullWhen(false)] out MpzT result) => TryConvertFromChecked(value, out result);
 
-	static bool INumberBase<MpzT>.TryConvertFromSaturating<TOther>(TOther value, out MpzT result)
+	static bool INumberBase<MpzT>.TryConvertFromSaturating<TOther>(TOther value, [MaybeNullWhen(false)] out MpzT result)
 	{
 		try
 		{
@@ -1849,7 +1915,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		}
 	}
 
-	static bool INumberBase<MpzT>.TryConvertFromTruncating<TOther>(TOther value, out MpzT result) => TryConvertFromChecked(value, out result);
+	static bool INumberBase<MpzT>.TryConvertFromTruncating<TOther>(TOther value, [MaybeNullWhen(false)] out MpzT result) => TryConvertFromChecked(value, out result);
 
 	static bool INumberBase<MpzT>.TryConvertToChecked<TOther>(MpzT value, out TOther result) => TryConvertToChecked(value, out result);
 
@@ -1873,24 +1939,26 @@ public struct MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, I
 		return true;
 	}
 
-	public readonly bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
+	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten)
 	{
-		var bytes = ToByteArray(1);
-		if (bytes.AsSpan().TryCopyTo(destination))
+		var bufSize = (int)Math.Min(Mpir.MpzSizeinbase(this, 256), 2147483647);
+		if (destination.Length >= bufSize)
 		{
-			bytesWritten = bytes.Length;
+			Mpir.MpirMpzExport(destination[^bufSize..], 1, sizeof(byte), 0, 0u, this);
+			bytesWritten = bufSize;
 			return true;
 		}
 		bytesWritten = 0;
 		return false;
 	}
 
-	public readonly bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
+	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
 	{
-		var bytes = ToByteArray(-1);
-		if (bytes.AsSpan().TryCopyTo(destination))
+		var bufSize = (int)Math.Min(Mpir.MpzSizeinbase(this, 256), 2147483647);
+		if (destination.Length >= bufSize)
 		{
-			bytesWritten = bytes.Length;
+			Mpir.MpirMpzExport(destination, -1, sizeof(byte), 0, 0u, this);
+			bytesWritten = bufSize;
 			return true;
 		}
 		bytesWritten = 0;

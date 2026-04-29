@@ -100,6 +100,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		_start = 0;
 	}
 
+	/// <inheritdoc/>
 	public override int Capacity
 	{
 		get => _items.Length;
@@ -193,12 +194,11 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 			Parallel.For(0, length, i => array[arrayIndex + i] = _items[start - Capacity + i]);
 	}
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		_items = default!;
 		_size = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	protected override void EnsureCapacity(int min) =>

@@ -76,7 +76,7 @@ public class ListHashSetTests
 			if (lhs[index] == n)
 				return;
 			gs.Remove(lhs[index]);
-			if (lhs.TryGetIndexOf(n, out var index2) && index2 < index)
+			if (lhs.Contains(n, out var index2) && index2 < index)
 				index--;
 			lhs.RemoveValue(n);
 			lhs[index] = n;

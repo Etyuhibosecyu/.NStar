@@ -27,8 +27,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected LimitedBuffer<TCertain>? high;
 	private protected ListOfBigSums? highLength;
 	private protected TCertain? parent;
-	private protected MpzT _capacity = 0;
-	private protected MpzT fragment = 1;
+	private protected MpzT _capacity = MpzT.Zero;
+	private protected MpzT fragment = MpzT.One;
 	private protected Stack<(TCertain Branch, MpzT Start)>? accessCache;
 	private protected List<CopyRangeContext>? copyStack;
 	private protected List<MoveRangeContext>? moveStack;
@@ -125,6 +125,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
+	~BigList() => DisposeInternal();
+
 	public override MpzT Capacity
 	{
 		get => _capacity;
@@ -142,7 +144,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				else
 				{
 					low = new();
-					high?.ForEach(x => x?.Dispose());
+					high?.ForEach(x => x?.DisposeInternal());
 					high?.Dispose();
 					high = null;
 					highLength?.Dispose();
@@ -162,7 +164,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				// Ищем первый лист и разрушаем "лишние" ветки
 				while (first.high is not null)
 				{
-					first.high.Skip(1).ForEach(x => x.Dispose());
+					first.high.Skip(1).ForEach(x => x.DisposeInternal());
 					first.highLength?.Dispose();
 					first.highLength = null;
 					first = first.high[0];
@@ -190,7 +192,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				// GetArrayLength на SubbranchesBitLength - глубина дерева (количество уровней от корня до листьев).
 				// Минус 1 - глубина каждой подветки корня.
 				// Остальная часть выражения - вычисляет количество элементов в каждой подветке корня.
-				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
+				fragment = MpzT.One << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
 					SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				while (fragment << SubbranchesBitLength < value)
 					fragment <<= SubbranchesBitLength;
@@ -200,7 +202,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else if (high is not null) // Как старая, так и новая емкость определяет много листьев
 			{
 				// См. подробный разбор аналогичной строки в предыдущем разделе
-				var newFragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
+				var newFragment = MpzT.One << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
 					SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				while (newFragment << SubbranchesBitLength < value)
 					newFragment <<= SubbranchesBitLength;
@@ -436,7 +438,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
+			fragment = MpzT.One << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
 				SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			while (fragment << SubbranchesBitLength < capacity)
 				fragment <<= SubbranchesBitLength;
@@ -444,7 +446,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var highCount = (int)GetArrayLength(capacity, fragment);
 			high = new(highCount);
 			highLength = highCount >= 1 << 6 ? [] : null;
-			for (MpzT i = 0; i < intIndex; i++)
+			for (var i = MpzT.Zero; i < intIndex; i++)
 			{
 				high.Add(CapacityCreator(fragment));
 				high[^1].parent = this2;
@@ -673,24 +675,22 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	public override void Dispose()
 	{
-		low?.Dispose();
+		DisposeInternal();
+		GC.SuppressFinalize(this);
+	}
+
+	private void DisposeInternal()
+	{
 		low = null;
-		if (high is not null)
-		{
-			foreach (var x in high)
-				x.Dispose();
-			high.Dispose();
-		}
 		high = null;
 		highLength?.Dispose();
 		highLength = null;
 		parent = null;
 		_capacity = 0;
-		fragment = 1;
+		fragment = default!;
 		//Length = 0;
 		Root.accessCache?.Clear();
 		bReversed = false;
-		GC.SuppressFinalize(this);
 	}
 
 	protected int EffectiveHighLength()
@@ -731,7 +731,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (highLength is not null)
 			return highLength.GetLeftValuesSum(index, out actualValue);
 		Debug.Assert(high is not null);
-		MpzT sum = 0;
+		var sum = MpzT.Zero;
 		var i = 0;
 		for (; i < index && i < high.Length; i++)
 			sum += high[i].Length;
@@ -930,7 +930,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var highCount = (int)GetArrayLength(value, fragment);
 		high = new(highCount);
 		// Создаем подветки
-		for (MpzT i = 0; i < value / fragment; i++)
+		for (var i = MpzT.Zero; i < value / fragment; i++)
 		{
 			high.Add(CapacityCreator(i == 0 && fragment == LeafSize ? 0 : fragment));
 			high[^1].parent = this2;
@@ -1858,7 +1858,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			for (var i = iSource; i < iSource + destinationIntLength; i++)
 				destination.Length += source.high[i].Length;
 			for (var i = iDestination; i < iDestination + destinationIntLength; i++)
-				destination.high[i].Dispose();
+				destination.high[i].DisposeInternal();
 			source.high.CopyRangeTo(iSource, destination.high, iDestination, destinationIntLength);
 			for (var i = iDestination; i < iDestination + destinationIntLength; i++)
 				destination.highLength?.SetOrAdd(i, destination.high[i].Length);
@@ -1903,7 +1903,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (currentDestination.Length == 0)
 				destination.Length += currentSource.Length;
-			currentDestination.Dispose();
+			currentDestination.DisposeInternal();
 			destination.high[iDestination] = currentSource;
 			if (destination.highLength is not null && destination.highLength[iDestination] < currentSource.Length)
 				destination.highLength[iDestination] = currentSource.Length;
@@ -2361,12 +2361,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var (source, _, destination, _, length, mode) = context;
 		Debug.Assert(source.high is not null && destination.high is not null);
 		var sourceCurrentRestIndex = sourceIndexes.End.RestIndex + 1;
-		MpzT sourceCurrentRestIndexOffset = 0;
+		var sourceCurrentRestIndexOffset = MpzT.Zero;
 		var destinationCurrentRestIndex = destinationIndexes.Start.RestIndex;
 		var iSource = sourceIndexes.End.IntIndex;
 		var iDestination = destinationIndexes.Start.IntIndex;
 		using ListHashSet<int> hs = [];
-		MpzT step = 0;
+		var step = MpzT.Zero;
 		TCertain currentSource, currentDestination;
 		var leftLength = length;
 		while (leftLength > 0)
@@ -2451,14 +2451,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Dictionary<int, MpzT> highLengthPool = [];
 		var toEnd = sourceIndexes.End.Index + 1 == source.Length && destinationIndexes.End.Index + 1 >= destination.Length;
 		var sourceCurrentRestIndex = sourceIndexes.Start.RestIndex;
-		MpzT sourceCurrentRestIndexOffset = 0;
+		var sourceCurrentRestIndexOffset = MpzT.Zero;
 		var destinationCurrentRestIndex = destinationIndexes.Start.RestIndex;
 		bool skipRest = false, skipRestNext = false;
 		var iSource = sourceIndexes.Start.IntIndex;
 		var iSourceOffset = 0;
 		var iDestination = destinationIndexes.Start.IntIndex;
 		using ListHashSet<int> hs = [];
-		MpzT step = 0, sourceEffectiveLength;
+		MpzT step = MpzT.Zero, sourceEffectiveLength;
 		TCertain currentSource, currentDestination;
 		var leftLength = length;
 		while (leftLength > 0)
@@ -2603,7 +2603,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var destinationCurrentRestIndex = destinationIndexes.End.RestIndex + 1;
 		var iSource = sourceIndexes.End.IntIndex;
 		var iDestination = destinationIndexes.End.IntIndex;
-		MpzT step = 0, newSize, oldSize;
+		MpzT step = MpzT.Zero, newSize, oldSize;
 		using ListHashSet<int> hs = [];
 		for (var i = destinationIndexes.Start.IntIndex; i < destinationIndexes.End.IntIndex; i++)
 		{
@@ -2722,16 +2722,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	protected static MpzT ProcessReverse(TCertain source, MpzT sourceIndex, MpzT length, MpzT bound = default)
+	protected static MpzT ProcessReverse(TCertain source, MpzT sourceIndex, MpzT length, MpzT? bound = null)
 	{
-		if (bound.val == default || bound < source.Length)
+		if (bound is null || bound < source.Length)
 			bound = source.Length;
 		return source.bReversed ? bound - length - sourceIndex : sourceIndex;
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	protected static MoveRangeContext ProcessReverseContext(MoveRangeContext context,
-		MpzT destinationBound = default, bool processSource = true,
+		MpzT? destinationBound = null, bool processSource = true,
 		bool processDestination = true) =>
 		(context.Source, processSource ? ProcessReverse(context.Source, context.SourceIndex,
 		context.Length, context.Source.Length) : context.SourceIndex, context.Destination, processDestination
@@ -2752,7 +2752,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var oldHigh = high;
 			var oldHighLength = highLength;
 			for (var i = 1; i < oldHigh.Length; i++)
-				oldHigh[i].Dispose();
+				oldHigh[i].DisposeInternal();
 			highLength?.Dispose();
 			low = oldHigh[0].low;
 			high = oldHigh[0].high;
@@ -2787,7 +2787,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		for (var i = high.Length - 1; !HasSufficientLength(i); i--)
 		{
 			AddCapacity(-high[i].Capacity);
-			high[i].Dispose();
+			high[i].DisposeInternal();
 		}
 		high.RemoveEnd(EffectiveHighLength());
 		var leftCapacity = value % fragment;
@@ -3194,7 +3194,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (highLength is not null)
 			return highLength.ValuesSum;
 		Debug.Assert(high is not null);
-		MpzT sum = 0;
+		var sum = MpzT.Zero;
 		for (var i = 0; i < high.Length; i++)
 			if (high[i].Length == 0)
 				return sum;

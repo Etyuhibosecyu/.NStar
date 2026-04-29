@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection;
 
 namespace NStar.BigCollections.Tests;
 
@@ -9,7 +10,7 @@ public class UnsignedLongRealTests
 		.GetField(nameof(MantissaByteLength), BindingFlags.Instance | BindingFlags.NonPublic)
 		?.GetValue(UnsignedLongReal.Zero)
 		is int n ? n : throw new MissingFieldException(), MantissaLength = MantissaByteLength * 8;
-	private static readonly MpuT MantissaOverflow = new MpuT(1) << MantissaLength;
+	private static readonly MpuT MantissaOverflow = MpuT.One << MantissaLength;
 	private static readonly MpuT MantissaMask = MantissaOverflow - 1;
 
 	[TestMethod]
@@ -281,7 +282,7 @@ public class UnsignedLongRealTests
 			}, () =>
 			{
 				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				if (op > uz)
+				if (Mpir.Mpir.MpuCmp(op, uz) > 0)
 					return;
 				if (uz.BitLength <= MantissaLength + ((MpuT)op).BitLength)
 					uz -= op;

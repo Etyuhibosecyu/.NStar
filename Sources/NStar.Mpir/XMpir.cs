@@ -705,8 +705,10 @@ public static partial class Mpir
 		var __retval = xmpir_mpz_lucnum2_ui(ln.val, lnsub1.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
-	public static int MpzCmp(MpzT op1, MpzT op2)
+	public static int MpzCmp(MpzT op1, MpzT? op2)
 	{
+		if (op2 is null)
+			return 1;
 		var __retval = xmpir_mpz_cmp(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;

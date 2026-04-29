@@ -317,6 +317,7 @@ public unsafe class BitList : BaseList<bool, BitList>
 		}
 	}
 
+	/// <inheritdoc/>
 	public override int Capacity
 	{
 		get => (_items?.Length ?? 0) * BitsPerInt;
@@ -632,12 +633,11 @@ public unsafe class BitList : BaseList<bool, BitList>
 			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
 	}
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		_items = null;
 		_size = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	/// <inheritdoc/>

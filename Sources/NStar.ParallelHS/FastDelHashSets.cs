@@ -148,12 +148,11 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		freeCount = 0;
 		freeList = 0;
-		base.Dispose();
-		GC.SuppressFinalize(this);
+		base.DisposeInternal();
 	}
 
 	protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd = false)

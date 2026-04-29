@@ -110,6 +110,14 @@ type ``MpzT - import and export`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (int64)z
         Assert.That(long1, Is.EqualTo(t))
+        Array.Clear byteArray
+        z <- new MpzT(byteArray, -1)
+        t <- (int64)z
+        Assert.That(BitConverter.ToInt64(byteArray), Is.EqualTo(t))
+        byteArray.[0] <- (byte)1;
+        z <- new MpzT(byteArray, -1)
+        t <- (int64)z
+        Assert.That(BitConverter.ToInt64(byteArray), Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
@@ -121,6 +129,14 @@ type ``MpzT - import and export`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (uint64)z
         Assert.That(ulong1, Is.EqualTo(t))
+        Array.Clear byteArray
+        z <- new MpzT(byteArray, -1)
+        t <- (uint64)z
+        Assert.That(BitConverter.ToInt64(byteArray), Is.EqualTo(t))
+        byteArray.[0] <- (byte)1;
+        z <- new MpzT(byteArray, -1)
+        t <- (uint64)z
+        Assert.That(BitConverter.ToInt64(byteArray), Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
@@ -190,6 +206,7 @@ type ``MpzT - import and export`` () =
     [<TestCase(9223372036854775807UL)>] 
     [<TestCase(4887567363547568832UL)>] 
     [<TestCase(0UL)>] 
+    [<TestCase(1UL)>] 
     static member ``Importing uint64, big endian`` (n : uint64) = 
         let bytes = BitConverter.GetBytes(n)
         let bigEndianBytes =
@@ -204,6 +221,7 @@ type ``MpzT - import and export`` () =
     [<TestCase(9223372036854775807UL)>] 
     [<TestCase(4887567363547568832UL)>] 
     [<TestCase(0UL)>] 
+    [<TestCase(1UL)>] 
     static member ``Importing uint64, little endian`` (n : uint64) = 
         let bytes = BitConverter.GetBytes(n)
         let littleEndianBytes =
@@ -247,7 +265,7 @@ type ``MpzT - operations`` () =
     static member ``Mpir.Max``(a: string, b: string) =
         let za = new MpzT(a)
         let zb = new MpzT(b)
-        let max = Mpir.Max(za, zb)
+        let max = MpzT.Max(za, zb)
         Assert.That(za, Is.EqualTo(max))
 
     [<TestCase("43967907490790576908375907590346925623895", "67907490790576908375907590346925623895")>]
@@ -256,7 +274,7 @@ type ``MpzT - operations`` () =
     static member ``Mpir.Min``(a: string, b: string) =
         let za = new MpzT(a)
         let zb = new MpzT(b)
-        let min = Mpir.Min(za, zb)
+        let min = MpzT.Min(za, zb)
         Assert.That(zb, Is.EqualTo(min))
 
     [<Test>]

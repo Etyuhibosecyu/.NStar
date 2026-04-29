@@ -5,7 +5,6 @@ global using NStar.Linq;
 global using NStar.Mpir;
 global using System;
 global using System.Collections;
-global using System.Reflection;
 global using System.Threading;
 global using static NStar.Core.Extents;
 global using static NStar.Core.Tests.Global;
@@ -43,7 +42,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		}, () =>
 		{
 			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 5 + 1), _ => newValueFunc());
-			var toInsert2 = (TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!;
+			using var toInsert2 = (TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!;
 			var bl2 = bl.AddRange(toInsert2);
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -52,7 +51,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		}, () =>
 		{
 			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 5 + 1), _ => newValueFunc());
-			var toInsert2 = ((TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!).Reverse();
+			using var toInsert2 = ((TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!).Reverse();
 			var bl2 = bl.AddRange(toInsert2);
 			gl.AddRange(toInsert.Reverse());
 			Assert.IsTrue(bl.Equals(gl));
@@ -96,7 +95,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		{
 			var index = random.Next((int)bl.Length);
 			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 5 + 1), _ => newValueFunc());
-			var toInsert2 = (TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!;
+			using var toInsert2 = (TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!;
 			var bl2 = bl.Insert(index, toInsert2);
 			gl.InsertRange(index, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
@@ -106,7 +105,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		{
 			var index = random.Next((int)bl.Length);
 			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 5 + 1), _ => newValueFunc());
-			var toInsert2 = ((TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!).Reverse();
+			using var toInsert2 = ((TCertain)bl.GetType().GetConstructor([typeof(G.IEnumerable<T>), typeof(int), typeof(int)])?.Invoke([toInsert, -1, -1])!).Reverse();
 			var bl2 = bl.Insert(index, toInsert2);
 			gl.InsertRange(index, toInsert.Reverse());
 			Assert.IsTrue(bl.Equals(gl));
@@ -317,6 +316,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BaseBig
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		bl.Dispose();
 		if (counter++ < repeats)
 			goto l1;
 	}

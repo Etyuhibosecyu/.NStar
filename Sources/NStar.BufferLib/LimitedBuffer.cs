@@ -126,8 +126,9 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 		span.Slice(span.Length - _size, _size).CopyTo(_items);
 	}
 
-	~LimitedBuffer() => Dispose();
+	~LimitedBuffer() => DisposeInternal();
 
+	/// <inheritdoc/>
 	public override int Capacity
 	{
 		get => _items?.Length ?? 0;
@@ -233,7 +234,7 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 			Parallel.For(0, length, i => array[arrayIndex + i] = _items[start - Capacity + i]);
 	}
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		if (_items == null)
 			return;
@@ -243,11 +244,10 @@ public abstract partial class LimitedBuffer<T, TCertain> : BaseList<T, TCertain>
 				list.Add(_items);
 			else
 				arrayPool.Add(_items.Length, new(32) { _items });
+			_items = default;
 		}
-		_items = default;
 		_size = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	protected override void EnsureCapacity(int min) =>

@@ -17,6 +17,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	[NonSerialized]
 	private protected object _syncRoot = new();
 
+	~BaseIndexable() => DisposeInternal();
+
 	/// <inheritdoc cref="G.IReadOnlyList{T}.this[int]"/>
 	public virtual T this[Index index, bool invoke = false]
 	{
@@ -374,10 +376,16 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int length);
 
+	public void Dispose()
+	{
+		DisposeInternal();
+		GC.SuppressFinalize(this);
+	}
+
 	/// <summary>
 	/// Уничтожает данную коллекцию, позволяя ОС освободить ресурсы.
 	/// </summary>
-	public abstract void Dispose();
+	protected abstract void DisposeInternal();
 
 	/// <summary>
 	/// Проверяет, является ли указанный элемент последним в данной коллекции.

@@ -66,6 +66,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public SumSet(ReadOnlySpan<(T Key, int Value)> span) : this((G.IEnumerable<(T Key, int Value)>)span.ToArray()) { }
 
+	/// <summary>
+	/// Это свойство, пришедшее из базового класса, в данном классе не несет смысловой нагрузки.
+	/// Получение возвращает длину, установка ничего не делает.
+	/// </summary>
 	public override int Capacity
 	{
 		get => _size;
@@ -395,14 +399,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual bool Decrease(T key) => TryGetValue(key, out var value) && Update(key, value - 1);
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		root?.Dispose();
 		root = null;
 		_size = 0;
 		version = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	public override SumSet<T> ExceptWith(G.IEnumerable<(T Key, int Value)> other)

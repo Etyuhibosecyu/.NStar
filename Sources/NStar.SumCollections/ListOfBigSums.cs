@@ -114,13 +114,12 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		});
 	}
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		root = null;
 		_size = 0;
 		version = 0;
 		Changed();
-		GC.SuppressFinalize(this);
 	}
 
 	public override G.IEnumerator<MpzT> GetEnumerator() => new Enumerator(this);
@@ -151,7 +150,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 	public virtual MpzT GetLeftValuesSum(int index, out MpzT actualValue)
 	{
 		var current = root as Node;
-		MpzT sum = 0;
+		var sum = MpzT.Zero;
 		while (current is not null)
 		{
 			var order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
@@ -192,7 +191,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		}
 		sum = new(sum);
 		var current = root as Node;
-		sumExceedsBy = MpzT.Zero;
+		sumExceedsBy = 0;
 		var index = 0;
 		while (current is not null)
 		{
@@ -402,7 +401,7 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			{
 				if (_current is not null)
 					return _current.Value;
-				return default; // Should only happen when accessing Current is undefined behavior
+				return default!; // Should only happen when accessing Current is undefined behavior
 			}
 		}
 

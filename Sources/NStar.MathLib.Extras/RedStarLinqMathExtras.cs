@@ -2877,7 +2877,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -2900,7 +2900,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -2923,7 +2923,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, double> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -2946,7 +2946,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, double> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -2969,30 +2969,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int> function) where T : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is G.IList<T> list2)
-		{
-			var list_ = list2.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return list_.IndexesOf(value);
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var list_ = list3.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return list_.IndexesOf(value);
-		}
-		else
-		{
-			var list_ = source.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
-			return list_.IndexesOf(value);
-		}
-	}
-
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, int> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3015,7 +2992,30 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is G.IList<T> list2)
+		{
+			var list_ = list2.ToList(function);
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
+			return list_.IndexesOf(value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var list_ = list3.ToList(function);
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
+			return list_.IndexesOf(value);
+		}
+		else
+		{
+			var list_ = source.ToList(function);
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
+			return list_.IndexesOf(value);
+		}
+	}
+
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3038,7 +3038,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3061,7 +3061,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, long> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3084,7 +3084,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, long> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3107,7 +3107,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3139,7 +3139,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3330,7 +3330,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3350,7 +3350,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3370,7 +3370,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, double> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3390,7 +3390,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, double> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3410,7 +3410,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3430,7 +3430,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, int> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3450,7 +3450,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3470,7 +3470,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3490,7 +3490,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, long> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3510,7 +3510,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, long> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3530,7 +3530,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -3550,7 +3550,7 @@ public static class RedStarLinqMathExtras
 		}
 	}
 
-	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this G.IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2)
@@ -6912,7 +6912,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -6940,7 +6940,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -7248,7 +7248,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -7276,7 +7276,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -7544,7 +7544,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -7568,7 +7568,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -7832,7 +7832,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -7856,7 +7856,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -8120,7 +8120,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -8144,7 +8144,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -8408,7 +8408,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -8432,7 +8432,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -8696,7 +8696,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -8720,7 +8720,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -8984,7 +8984,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9008,7 +9008,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9272,7 +9272,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9296,7 +9296,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9560,7 +9560,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9584,7 +9584,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9848,7 +9848,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -9872,7 +9872,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -10010,7 +10010,7 @@ public static class RedStarLinqMathExtras
 	{
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -10508,7 +10508,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -10532,7 +10532,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -10670,7 +10670,7 @@ public static class RedStarLinqMathExtras
 	{
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
@@ -10934,7 +10934,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -10958,7 +10958,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -11096,7 +11096,7 @@ public static class RedStarLinqMathExtras
 	{
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -11594,7 +11594,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -11618,7 +11618,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -11756,7 +11756,7 @@ public static class RedStarLinqMathExtras
 	{
 		var length = source.Length;
 		var result = -1;
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -12800,7 +12800,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -12830,7 +12830,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -13004,7 +13004,7 @@ public static class RedStarLinqMathExtras
 	{
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -13029,7 +13029,7 @@ public static class RedStarLinqMathExtras
 		return result;
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13037,7 +13037,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13045,7 +13045,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13053,7 +13053,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13061,7 +13061,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13069,7 +13069,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13077,7 +13077,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13085,7 +13085,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13093,7 +13093,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13101,7 +13101,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13109,7 +13109,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13117,7 +13117,7 @@ public static class RedStarLinqMathExtras
 		return list_.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13161,84 +13161,84 @@ public static class RedStarLinqMathExtras
 		return source.IndexesOf(value);
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
 		return list_.IndexesOf(list_.Median());
 	}
 
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) where T : unmanaged
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var list_ = source.ToList(function);
@@ -13562,7 +13562,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -13592,7 +13592,7 @@ public static class RedStarLinqMathExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)
@@ -13766,7 +13766,7 @@ public static class RedStarLinqMathExtras
 	{
 		var length = source.Length;
 		var result = RedStarLinq.EmptyList<int>(length);
-		MpzT indicator = 0;
+		var indicator = MpzT.Zero;
 		var j = 0;
 		MpzT f;
 		for (var i = 0; i < length; i++)

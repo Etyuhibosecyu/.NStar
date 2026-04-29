@@ -102,11 +102,10 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(IndexGetDirect(index), array, arrayIndex, length);
 
-	public override void Dispose()
+	protected override void DisposeInternal()
 	{
 		deleted.Dispose();
-		base.Dispose();
-		GC.SuppressFinalize(this);
+		base.DisposeInternal();
 	}
 
 	public override TCertain FilterInPlace(Func<T, bool> match)

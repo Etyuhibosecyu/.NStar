@@ -24,16 +24,13 @@ public static partial class Mpir
 	}
 	public static unsafe byte[] MpirMpuExport(int order, uint size, int endian, uint nails, MpuT op)
 	{
-		var bufSize = (int)Min(MpuSizeinbase(op, 256), 2147483647);
+		var bufSize = (int)Math.Min(MpuSizeinbase(op, 256), 2147483647);
 		var destBuf = new byte[bufSize];
 		var op2 = op;
-		if (op < 0)
+		fixed (byte* destPtr = destBuf)
 		{
-			op = new(op);
-			op += (MpuT)1 << bufSize * 8;
-		}
-		fixed (void* destPtr = destBuf)
-		{
+			if (MpuCmpSi(op, 0) == 0)
+				destPtr[0] = 0;
 			// null countp argument, because we already know how large the result will be.
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
@@ -41,15 +38,26 @@ public static partial class Mpir
 	}
 	public static unsafe void MpirMpuExport(ReadOnlySpan<byte> destBuf, int order, uint size, int endian, uint nails, MpuT op)
 	{
-		var bufSize = (int)Min(MpuSizeinbase(op, 256), 2147483647);
+		var bufSize = (int)Math.Min(MpuSizeinbase(op, 256), 2147483647);
 		var op2 = op;
-		if (op < 0)
+		fixed (byte* destPtr = destBuf)
 		{
-			op = new(op);
-			op += (MpuT)1 << bufSize * 8;
+			if (MpuCmpSi(op, 0) == 0)
+				destPtr[0] = 0;
+			// null countp argument, because we already know how large the result will be.
+			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
-		fixed (void* destPtr = destBuf)
+	}
+	public static unsafe void MpirMpzExport(ReadOnlySpan<byte> destBuf, int order, uint size, int endian, uint nails, MpzT op)
+	{
+		if (MpzCmpSi(op, 0) < 0)
+			op += One << (op.BitLength + 7) / 8 * 8;
+		var bufSize = (int)Math.Min(MpzSizeinbase(op, 256), 2147483647);
+		var op2 = op;
+		fixed (byte* destPtr = destBuf)
 		{
+			if (MpzCmpSi(op, 0) == 0)
+				destPtr[0] = 0;
 			// null countp argument, because we already know how large the result will be.
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
@@ -666,8 +674,10 @@ public static partial class Mpir
 		var __retval = xmpir_mpz_lucnum2_ui(ln.val, lnsub1.val, n);
 		if (__retval != 0) HandleError(__retval);
 	}
-	public static int MpuCmp(MpuT op1, MpuT op2)
+	public static int MpuCmp(MpuT op1, MpuT? op2)
 	{
+		if (op2 is null)
+			return 1;
 		var __retval = xmpir_mpz_cmp(out var result, op1.val, op2.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;

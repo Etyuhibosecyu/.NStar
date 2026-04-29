@@ -1,9 +1,11 @@
-﻿global using System.Diagnostics;
+﻿global using System.Collections.Concurrent;
+global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Numerics;
 global using System.Runtime.InteropServices;
 global using static NStar.Mpir.MpzT;
+using System.Runtime.CompilerServices;
 
 namespace NStar.Mpir;
 
@@ -11,10 +13,11 @@ namespace NStar.Mpir;
 public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IComparable<UnsignedLongReal>,
 	IDisposable, IBinaryInteger<UnsignedLongReal>, IFloatingPoint<UnsignedLongReal>
 {
+	private static readonly ConcurrentDictionary<int, MpuT> MantissaMasks = [], MantissaOverflows = [];
 	private readonly int MantissaByteLength = 0;
 	private readonly int MantissaLength = 0;
-	private readonly MpuT MantissaMask = 0;
-	private readonly MpuT MantissaOverflow = 0;
+	private readonly MpuT MantissaMask = MpuT.Zero;
+	private readonly MpuT MantissaOverflow = MpuT.Zero;
 
 	private readonly MpuT m;
 	private readonly UnsignedLongReal? e;
@@ -22,12 +25,13 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 
 	private UnsignedLongReal(int mantissaByteLength = DefaultMantissaByteLength)
 	{
+		m = MpuT.Zero;
 		if (mantissaByteLength is < 8 or > int.MaxValue / 8)
 			mantissaByteLength = DefaultMantissaByteLength;
 		MantissaByteLength = mantissaByteLength;
 		MantissaLength = MantissaByteLength * 8;
-		MantissaOverflow = new MpuT(1) << MantissaLength;
-		MantissaMask = MantissaOverflow - 1;
+		MantissaOverflow = MantissaOverflows.GetOrAdd(MantissaLength, x => MpuT.One << x);
+		MantissaMask = MantissaMasks.GetOrAdd(MantissaLength, x => MantissaOverflows[x] - 1);
 	}
 
 	private UnsignedLongReal(MpuT m, UnsignedLongReal? e, int mantissaByteLength = DefaultMantissaByteLength)
@@ -73,19 +77,19 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		e = null;
 	}
 
-	public unsafe UnsignedLongReal(MpzT op, int mantissaByteLength = DefaultMantissaByteLength) : this(mantissaByteLength)
+	public UnsignedLongReal(MpzT op, int mantissaByteLength = DefaultMantissaByteLength) : this(mantissaByteLength)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(op);
 		var bitLength = op.BitLength;
 		if (bitLength <= MantissaLength)
 		{
-			m = new(op);
+			m = Unsafe.As<MpuT>(op);
 			e = null;
 		}
 		else
 		{
 			var eDiff = bitLength - MantissaLength - 1;
-			m = new((*(MpuT*)&op).ShiftRightRound(eDiff) & MantissaMask);
+			m = Unsafe.As<MpuT>(op).ShiftRightRound(eDiff) & MantissaMask;
 			e = new(eDiff + 1, mantissaByteLength);
 		}
 	}
@@ -95,13 +99,13 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		var bitLength = op.BitLength;
 		if (bitLength <= MantissaLength)
 		{
-			m = new(op);
+			m = op;
 			e = null;
 		}
 		else
 		{
 			var eDiff = bitLength - MantissaLength - 1;
-			m = new(op.ShiftRightRound(eDiff) & MantissaMask);
+			m = op.ShiftRightRound(eDiff) & MantissaMask;
 			e = new(eDiff + 1, mantissaByteLength);
 		}
 	}
@@ -136,7 +140,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			mantissaByteLength = DefaultMantissaByteLength;
 		MantissaByteLength = mantissaByteLength;
 		MantissaLength = MantissaByteLength * 8;
-		MantissaOverflow = new MpuT(1) << MantissaLength;
+		MantissaOverflow = MpuT.One << MantissaLength;
 		MantissaMask = MantissaOverflow - 1;
 		if (bytes.Length <= MantissaByteLength)
 		{
@@ -262,7 +266,6 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 
 	public void Dispose()
 	{
-		m.Dispose();
 		e?.Dispose();
 		GC.SuppressFinalize(this);
 	}
@@ -306,7 +309,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(this.MantissaByteLength, x.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (e is null && x.e is null)
 		{
@@ -872,7 +875,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		if (value.e is null)
 			return new(value.m);
 		else if (value.e <= int.MaxValue)
-			return new MpuT(value.MantissaOverflow + value.m) << (int)value.e - 1;
+			return value.MantissaOverflow + value.m << (int)value.e - 1;
 		else
 			return 0;
 	}
@@ -887,12 +890,12 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null && y.e is null)
 		{
 			var mSum = x.m + y.m;
-			if (mSum >= MantissaOverflow)
+			if (Mpir.MpuCmp(mSum, MantissaOverflow) >= 0)
 				return new(mSum & MantissaMask, 1, MantissaByteLength);
 			return new(mSum, null, MantissaByteLength);
 		}
@@ -902,7 +905,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (x.e >= MantissaLength + 1)
 				return x.Copy();
 			var mSum = x.m + y.m.ShiftRightRound((int)x.e - 1);
-			if (mSum >= MantissaOverflow)
+			if (Mpir.MpuCmp(mSum, MantissaOverflow) >= 0)
 				return new((mSum & MantissaMask).ShiftRightRound(1), x.e + 1, MantissaByteLength);
 			return new(mSum, x.e?.Copy(), MantissaByteLength);
 		}
@@ -911,7 +914,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (y.e >= MantissaLength + 1)
 				return y.Copy();
 			var mSum = x.m.ShiftRightRound((int)y.e - 1) + y.m;
-			if (mSum >= MantissaOverflow)
+			if (Mpir.MpuCmp(mSum, MantissaOverflow) >= 0)
 				return new((mSum & MantissaMask).ShiftRightRound(1), y.e + 1, MantissaByteLength);
 			return new(mSum, y.e?.Copy(), MantissaByteLength);
 		}
@@ -923,7 +926,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (eDiff > MantissaLength)
 				return x.Copy();
 			var mSum = x.m + (MantissaOverflow + y.m).ShiftRightRound((int)eDiff);
-			if (mSum >= MantissaOverflow)
+			if (Mpir.MpuCmp(mSum, MantissaOverflow) >= 0)
 				return new((mSum & MantissaMask).ShiftRightRound(1), x.e + 1, MantissaByteLength);
 			return new(mSum, x.e?.Copy(), MantissaByteLength);
 		}
@@ -933,7 +936,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (eDiff > MantissaLength)
 				return y.Copy();
 			var mSum = (MantissaOverflow + x.m).ShiftRightRound((int)eDiff) + y.m;
-			if (mSum >= MantissaOverflow)
+			if (Mpir.MpuCmp(mSum, MantissaOverflow) >= 0)
 				return new((mSum & MantissaMask).ShiftRightRound(1), y.e + 1, MantissaByteLength);
 			return new(mSum, y.e?.Copy(), MantissaByteLength);
 		}
@@ -943,7 +946,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null && y.e is null)
 			return new(x.m - y.m, null, MantissaByteLength);
@@ -953,7 +956,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (x.e >= MantissaLength + 1)
 				return x.Copy();
 			var mDiff = MantissaOverflow + x.m - y.m.ShiftRightRound((int)x.e - 1);
-			if (mDiff >= MantissaOverflow)
+			if (Mpir.MpuCmp(mDiff, MantissaOverflow) >= 0)
 				return new(mDiff & MantissaMask, x.e?.Copy(), MantissaByteLength);
 			else if (x.e == 1)
 				return new(mDiff, null, MantissaByteLength);
@@ -968,7 +971,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (eDiff > MantissaLength)
 				return x.Copy();
 			var mDiff = MantissaOverflow + x.m - (MantissaOverflow + y.m).ShiftRightRound((int)eDiff);
-			if (mDiff >= MantissaOverflow)
+			if (Mpir.MpuCmp(mDiff, MantissaOverflow) >= 0)
 				return new(mDiff & MantissaMask, x.e?.Copy(), MantissaByteLength);
 			else if (x.e == 1)
 				return new(mDiff, null, MantissaByteLength);
@@ -1002,7 +1005,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = x.MantissaByteLength;
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null)
 			return new(x.m * y, MantissaByteLength);
@@ -1022,7 +1025,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = x.MantissaByteLength;
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null)
 			return new(x.m * y, MantissaByteLength);
@@ -1042,7 +1045,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null && y.e is null)
 			return new(x.m * y.m, MantissaByteLength);
@@ -1062,7 +1065,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			if (Mpir.MpuCmpSi(x.m, 0) == 0)
 				return new(0, MantissaByteLength);
 			else if (Mpir.MpuCmpSi(x.m, 1) == 0)
-				return y;
+				return y.Copy();
 			var product = x.m * (MantissaOverflow + y.m);
 			var shiftAmount = product.BitLength - MantissaLength - 1;
 			return new(product.ShiftRightRound(shiftAmount) & MantissaMask, y.e + shiftAmount, MantissaByteLength);
@@ -1079,7 +1082,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = x.MantissaByteLength;
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null)
 			return new(x.m / y, null, MantissaByteLength);
@@ -1102,7 +1105,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = x.MantissaByteLength;
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null)
 			return new(x.m / y, null, MantissaByteLength);
@@ -1125,7 +1128,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null && y.e is null)
 			return new(x.m / y.m, null, MantissaByteLength);
@@ -1188,7 +1191,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null && y.e is null)
 			return new(x.m & y.m, null, MantissaByteLength);
@@ -1226,7 +1229,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		if (x.e is null && y.e is null)
 			return new(x.m | y.m, null, MantissaByteLength);
 		else if (y.e is null)
@@ -1264,7 +1267,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	{
 		var MantissaByteLength = Math.Max(x.MantissaByteLength, y.MantissaByteLength);
 		var MantissaLength = MantissaByteLength * 8;
-		var MantissaOverflow = new MpuT(1) << MantissaLength;
+		var MantissaOverflow = MpuT.One << MantissaLength;
 		var MantissaMask = MantissaOverflow - 1;
 		if (x.e is null && y.e is null)
 			return new(x.m ^ y.m, null, MantissaByteLength);

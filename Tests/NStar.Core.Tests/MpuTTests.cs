@@ -41,7 +41,7 @@ public class MpuTTests
 	[TestMethod]
 	public void Constructor_FromNegativeBigInteger()
 	{
-		BigInteger negative = BigInteger.Parse("-12345");
+		var negative = BigInteger.Parse("-12345");
 		Assert.ThrowsExactly<ArgumentException>(() => new MpuT(negative));
 	}
 
@@ -427,14 +427,14 @@ public class MpuTTests
 	{
 		MpuT a = new(50U);
 		MpuT b = new(30U);
-		Assert.IsTrue(a > b);
-		Assert.IsTrue(a >= b);
+		Assert.IsGreaterThan(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
 		b = new(50U);
-		Assert.IsFalse(a > b);
-		Assert.IsTrue(a >= b);
+		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
 		b = new(70U);
-		Assert.IsFalse(a > b);
-		Assert.IsFalse(a >= b);
+		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsLessThan(0, Mpir.Mpir.MpuCmp(a, b));
 	}
 
 	[TestMethod]
@@ -442,21 +442,14 @@ public class MpuTTests
 	{
 		MpuT a = new(15U);
 		MpuT b = new(25U);
-		Assert.IsTrue(a < b);
-		Assert.IsTrue(a <= b);
+		Assert.IsLessThan(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
 		b = new(15U);
-		Assert.IsFalse(a < b);
-		Assert.IsTrue(a <= b);
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
 		b = new(5U);
-		Assert.IsFalse(a < b);
-		Assert.IsFalse(a <= b);
-	}
-
-	[TestMethod]
-	public void VeryBigBitLength()
-	{
-		MpuT z = 3;
-		Assert.AreEqual(3403681052, z.Power(2147483647).GetFullBitLength());
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThan(0, Mpir.Mpir.MpuCmp(a, b));
 	}
 
 	[TestMethod]
@@ -469,6 +462,21 @@ public class MpuTTests
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
 			Assert.IsTrue((int)Mpir.Mpir.MpuSizeinbase(uz, 10) - (uz.ToString()?.Length ?? 1) is 0 or 1);
+		}
+		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
+	public void ToLong()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			MpuT uz = new(bytes.AsSpan(), RandomOrder());
+			Assert.AreEqual(uz % (MpuT.One << 64), (ulong)(long)uz);
+			Assert.AreEqual(uz % (MpuT.One << 64), (ulong)uz);
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -488,5 +496,12 @@ public class MpuTTests
 			var z2 = (MpzT)~@long << shift;
 			Assert.AreEqual(long.TrailingZeroCount(~@long) + shift, MpzT.TrailingZeroCount(z2));
 		}
+	}
+
+	[TestMethod]
+	public void VeryBigBitLength()
+	{
+		MpuT z = 3;
+		Assert.AreEqual(3403681052, z.Power(2147483647).GetFullBitLength());
 	}
 }
