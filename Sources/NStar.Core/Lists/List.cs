@@ -152,6 +152,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
+	/// <inheritdoc/>
 	public override Memory<T> AsMemory(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -163,6 +164,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return MemoryExtensions.AsMemory(_items, index, length);
 	}
 
+	/// <inheritdoc/>
 	public override Span<T> AsSpan(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -174,8 +176,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return MemoryExtensions.AsSpan(_items, index, length);
 	}
 
+	/// <summary>
+	/// Описание этого метода в разработке.
+	/// </summary>
 	public virtual int BinarySearch(int index, int length, T item) => BinarySearch(index, length, item, G.Comparer<T>.Default);
 
+	/// <inheritdoc cref="G.List{T}.BinarySearch(int, int, T, IComparer{T}?)"/>
 	public virtual int BinarySearch(int index, int length, T item, IComparer<T> comparer)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -187,8 +193,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return Array.BinarySearch(_items, index, length, item, comparer);
 	}
 
+	/// <inheritdoc cref="G.List{T}.BinarySearch(T)"/>
 	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
 
+	/// <inheritdoc cref="G.List{T}.BinarySearch(T, IComparer{T}?)"/>
 	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
 	protected override void ClearInternal(int index, int length)
@@ -233,13 +241,20 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	internal static List<T> EmptyList(int length) => new(length) { _size = length };
 
-	public static unsafe TCertain FromPointer(int capacity, void* ptr)
+	/// <summary>
+	/// Создает список из указателя.
+	/// </summary>
+	/// <param name="length">Длина списка (так как указатель указывает только на начало,
+	/// приходится передавать длину явно).</param>
+	/// <param name="ptr">Указатель, из байт за которым нужно создать список.</param>
+	/// <returns>Созданный список длиной <paramref name="length"/>.</returns>
+	public static unsafe TCertain FromPointer(int length, void* ptr)
 	{
 		if (ptr is null)
 			throw new ArgumentNullException(nameof(ptr));
 		TCertain list = [];
-		list._size = capacity;
-		list._items = ArrayPool<T>.Shared.Rent(capacity);
+		list._size = length;
+		list._items = ArrayPool<T>.Shared.Rent(length);
 		new Span<T>(ptr, list._size).CopyTo(list._items);
 		return list;
 	}
@@ -257,6 +272,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return Array.IndexOf(_items, item, index, length);
 	}
 
+	/// <inheritdoc/>
 	public override TCertain Insert(int index, T item)
 	{
 		if ((uint)index > (uint)_size)
@@ -412,8 +428,24 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return Array.LastIndexOf(_items, item, index, length);
 	}
 
+	/// <summary>
+	/// Производит нативную сортировку списка. Нативная сортировка на порядки быстрее обычной,
+	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong.
+	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain NSort() => NSort(0, _size);
 
+	/// <summary>
+	/// Производит нативную сортировку диапазона списка. Нативная сортировка на порядки быстрее обычной,
+	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong.
+	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// </summary>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain NSort(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -437,14 +469,37 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			Debug.Assert(uintList._items is not null);
 			uintList._items.NSort(index, length);
 		}
+		else if (this is List<ulong> ulongList)
+		{
+			Debug.Assert(ulongList._items is not null);
+			ulongList._items.NSort(index, length);
+		}
 		else
 			return Sort(index, length, G.Comparer<T>.Default);
 		Changed();
 		return (TCertain)this;
 	}
 
+	/// <summary>
+	/// Производит нативную сортировку списка по ключу типа uint. Нативная сортировка на порядки быстрее обычной,
+	/// но требует явного указания алгоритма преобразования каждого элемента в uint.
+	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <param name="function">Алгоритм преобразования каждого элемента в uint (функция или лямбда-выражение).</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
 
+	/// <summary>
+	/// Производит нативную сортировку диапазона списка по ключу типа uint. Нативная сортировка на порядки быстрее обычной,
+	/// но требует явного указания алгоритма преобразования каждого элемента в uint.
+	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <param name="function">Алгоритм преобразования каждого элемента в uint (функция или лямбда-выражение).</param>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain NSort(Func<T, uint> function, int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
