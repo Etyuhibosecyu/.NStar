@@ -1290,6 +1290,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	#region Static Methods
 
 	public static MpzT Abs(MpzT value) => value.Abs();
+	internal static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 	public static bool IsCanonical(MpzT value) => true;
 	public static bool IsComplexNumber(MpzT value) => true;
 	public static bool IsEvenInteger(MpzT value) => (value & 1) == 0;

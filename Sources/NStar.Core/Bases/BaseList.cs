@@ -298,6 +298,11 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 		Changed();
 	}
 
+	/// <summary>
+	/// Заполняет диапазон данной коллекции элементами "по умолчанию" (null, ноль и т. д.).
+	/// </summary>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
 	public virtual void Clear(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -312,6 +317,7 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 
 	protected abstract void ClearInternal(int index, int length);
 
+	/// <inheritdoc/>
 	public virtual object Clone() => Copy();
 
 	/// <summary>

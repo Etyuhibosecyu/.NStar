@@ -194,6 +194,12 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	protected override int LastIndexOfInternal(T item, int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOf() вместо него.");
 
+	/// <summary>
+	/// Проверяет, содержат ли данное множество и указанная последовательность хотя бы один общий элемент
+	/// (присутствующий и там, и там).
+	/// </summary>
+	/// <param name="other">Последовательность для проверки, содержатся ли в ней элементы данного множества.</param>
+	/// <returns>Результат проверки - <see langword="true"/> или <see langword="false"/>.</returns>
 	public virtual bool Overlaps(IEnumerable<T> other)
 	{
 		foreach (var item in other)
@@ -331,6 +337,12 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	protected override void SetRangeInternal(int index, int length, TCertain list) => base.SetRangeInternal(index, CreateVar(CollectionCreator(list).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)), out var list2).Length, list2);
 
+	/// <summary>
+	/// Для каждого элемента указанной последовательности инвертирует статус его присутствия в данном множестве
+	/// (добавляет, если его не было в данном множестве, и удаляет, если был).
+	/// </summary>
+	/// <param name="other">Последовательность для выполнения операций с данным мнежеством.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain SymmetricExceptWith(IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
