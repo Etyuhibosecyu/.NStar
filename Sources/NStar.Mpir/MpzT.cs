@@ -564,10 +564,8 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public MpzT Add(MpzT x) => this + x;
 	public MpzT Add(uint x) => this + x;
 	public MpzT Complement() => ~this;
-
+	public int DecLength => ToString() is var s && s is not null ? s.Length - (s.StartsWith('-') ? 1 : 0) : 1;
 	public MpzT Divide(int x) => this / x;
-
-	public MpzT Divide(uint x) => this / x;
 
 	public MpzT Divide(int x, out int remainder)
 	{
@@ -611,6 +609,8 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		Mpir.MpzTdivQr(quotient, remainder, this, x);
 		return quotient;
 	}
+
+	public MpzT Divide(uint x) => this / x;
 
 	public MpzT Divide(uint x, out MpzT remainder)
 	{

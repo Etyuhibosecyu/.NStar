@@ -430,7 +430,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	/// <summary>
 	/// Производит нативную сортировку списка. Нативная сортировка на порядки быстрее обычной,
-	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong.
+	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong
+	/// (иначе просто вызывает обычную сортировку).
 	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
 	/// </summary>
@@ -439,7 +440,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	/// <summary>
 	/// Производит нативную сортировку диапазона списка. Нативная сортировка на порядки быстрее обычной,
-	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong.
+	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong
+	/// (иначе просто вызывает обычную сортировку).
 	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
 	/// <param name="index">Индекс начала диапазона.</param>
@@ -513,7 +515,14 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : [.. collection];
+	/// <summary>
+	/// Проверяет, является ли указанная последовательность списком,
+	/// и если да, то просто возвращает ее, если же нет, возвращает сконструированный из нее список.
+	/// </summary>
+	/// <param name="collection">Последовательность для проверки, является ли она списком.</param>
+	/// <returns>См. общее описание.</returns>
+	public static List<T> ReturnOrConstruct(IEnumerable<T> collection) =>
+		collection is List<T> list ? list : [.. collection];
 
 	protected override void ReverseInternal(int index, int length)
 	{
@@ -546,11 +555,14 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	public virtual TCertain Sort<TValue>(Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(0, _size, function, fasterButMoreMemory);
+	public virtual TCertain Sort<TValue>(Func<T, TValue> function, bool fasterButMoreMemory = true) =>
+		Sort(0, _size, function, fasterButMoreMemory);
 
-	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(index, length, function, G.Comparer<TValue>.Default, fasterButMoreMemory);
+	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function, bool fasterButMoreMemory = true) =>
+		Sort(index, length, function, G.Comparer<TValue>.Default, fasterButMoreMemory);
 
-	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function, IComparer<TValue> comparer, bool fasterButMoreMemory = true)
+	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function,
+		IComparer<TValue> comparer, bool fasterButMoreMemory = true)
 	{
 		if (fasterButMoreMemory)
 		{
@@ -562,11 +574,14 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			return Sort(index, length, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
 	}
 
-	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values) where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, G.Comparer<T>.Default);
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values)
+		where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, G.Comparer<T>.Default);
 
-	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, comparer);
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, IComparer<T>? comparer)
+		where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, comparer);
 
-	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int length, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new()
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int length, IComparer<T>? comparer)
+		where TValueCertain : List<TValue, TValueCertain>, new()
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -651,53 +666,111 @@ public class List<T> : List<T, List<T>>
 
 	public static implicit operator List<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
+	public static implicit operator List<T>((T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9,
+		x.Item10, x.Item11, x.Item12, x.Item13];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9,
+		x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9,
+		x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
 
-	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) =>
+		[x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9,
+		x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
-	public static explicit operator (T, T)(List<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException("Список должен иметь 2 элемента.");
+	public static explicit operator (T, T)(List<T> x) =>
+		x._size == 2 ? (x.GetInternal(0), x.GetInternal(1))
+		: throw new InvalidOperationException("Список должен иметь 2 элемента.");
 
-	public static explicit operator (T, T, T)(List<T> x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException("Список должен иметь 3 элемента.");
+	public static explicit operator (T, T, T)(List<T> x) =>
+		x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2))
+		: throw new InvalidOperationException("Список должен иметь 3 элемента.");
 
-	public static explicit operator (T, T, T, T)(List<T> x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException("Список должен иметь 4 элемента.");
+	public static explicit operator (T, T, T, T)(List<T> x) =>
+		x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3))
+		: throw new InvalidOperationException("Список должен иметь 4 элемента.");
 
-	public static explicit operator (T, T, T, T, T)(List<T> x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException("Список должен иметь 5 элементов.");
+	public static explicit operator (T, T, T, T, T)(List<T> x) =>
+		x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4))
+		: throw new InvalidOperationException("Список должен иметь 5 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T)(List<T> x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException("Список должен иметь 6 элементов.");
+	public static explicit operator (T, T, T, T, T, T)(List<T> x) =>
+		x._size == 6
+		? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5))
+		: throw new InvalidOperationException("Список должен иметь 6 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T)(List<T> x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException("Список должен иметь 7 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException("Список должен иметь 7 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T)(List<T> x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException("Список должен иметь 8 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7))
+		: throw new InvalidOperationException("Список должен иметь 8 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException("Список должен иметь 9 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8))
+		: throw new InvalidOperationException("Список должен иметь 9 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException("Список должен иметь 10 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9))
+		: throw new InvalidOperationException("Список должен иметь 10 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException("Список должен иметь 11 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10))
+		: throw new InvalidOperationException("Список должен иметь 11 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException("Список должен иметь 12 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9),
+		x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException("Список должен иметь 12 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException("Список должен иметь 13 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9),
+		x.GetInternal(10), x.GetInternal(11), x.GetInternal(12))
+		: throw new InvalidOperationException("Список должен иметь 13 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException("Список должен иметь 14 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9),
+		x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13))
+		: throw new InvalidOperationException("Список должен иметь 14 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException("Список должен иметь 15 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9),
+		x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14))
+		: throw new InvalidOperationException("Список должен иметь 15 элементов.");
 
-	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException("Список должен иметь 16 элементов.");
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) =>
+		x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4),
+		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10),
+		x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15))
+		: throw new InvalidOperationException("Список должен иметь 16 элементов.");
 }

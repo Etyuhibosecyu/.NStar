@@ -3271,7 +3271,7 @@ public static class RedStarLinqMathExtras
 		}
 		else
 		{
-			var list_ = List<int>.ReturnOrConstruct(source);
+			var list_ = List<uint>.ReturnOrConstruct(source);
 			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return list_.IndexesOf(value);
 		}

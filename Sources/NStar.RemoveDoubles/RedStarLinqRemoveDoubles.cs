@@ -442,7 +442,7 @@ public static class RedStarLinqRemoveDoubles
 			return (result, result2);
 		}
 		else
-			return RemoveDoublesInternal(List<T>.ReturnOrConstruct(source), List<T>.ReturnOrConstruct(source2), function, hs);
+			return RemoveDoublesInternal(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), function, hs);
 	}
 
 	private static (List<T>, List<T2>) RemoveDoublesInternal<T, T2, TResult>(G.IEnumerable<T> source, G.IEnumerable<T2> source2,
@@ -487,7 +487,7 @@ public static class RedStarLinqRemoveDoubles
 			return (result, result2);
 		}
 		else
-			return RemoveDoublesInternal(List<T>.ReturnOrConstruct(source), List<T>.ReturnOrConstruct(source2), function, hs);
+			return RemoveDoublesInternal(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), function, hs);
 	}
 
 	private static (List<T>, List<T2>) RemoveDoublesInternal<T, T2>(G.IEnumerable<T> source, G.IEnumerable<T2> source2,
@@ -532,7 +532,7 @@ public static class RedStarLinqRemoveDoubles
 			return (result, result2);
 		}
 		else
-			return RemoveDoublesInternal(List<T>.ReturnOrConstruct(source), List<T>.ReturnOrConstruct(source2), hs);
+			return RemoveDoublesInternal(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), hs);
 	}
 
 	public static List<T> RemoveDoubles<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function)

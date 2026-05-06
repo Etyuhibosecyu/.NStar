@@ -1,4 +1,6 @@
-﻿namespace NStar.Mpir;
+﻿using System.Collections.Immutable;
+
+namespace NStar.Mpir;
 
 public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, IDisposable, IBinaryInteger<MpuT>
 {
@@ -6,6 +8,10 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
 	private static byte[] exportBytes = GC.AllocateUninitializedArray<byte>(1024);
 	private static readonly Lock lockObj = new();
+	private static readonly MpuT ten = new(10);
+	private static readonly ImmutableArray<uint> smallPowersOfTen = [1, 10, 100, 1000, 10_000, 100_000,
+		1000_000, 10_000_000, 100_000_000, 1000_000_000];
+	private static readonly Dictionary<int, MpuT> PowersOfTen = [];
 	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
 		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
 		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
@@ -103,7 +109,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public void Dispose(bool disposing)
 	{
-		if (val == 0 || ReferenceEquals(this, Zero) || ReferenceEquals(this, One))
+		if (val == 0 || ReferenceEquals(this, Zero) || ReferenceEquals(this, One) || IsInPowersOfTenDictionary())
 			return;
 		try
 		{
@@ -115,6 +121,20 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		val = 0;
 	}
 
+	private bool IsInPowersOfTenDictionary()
+	{
+		if (BitLength > 99658 || PowersOfTen.Count == 0)
+			return false;
+		MpuT? powerOfTen;
+		lock (lockObj)
+			if (!PowersOfTen.TryGetValue((int)Mpir.MpuSizeinbase(this, 10), out powerOfTen)
+				&& !PowersOfTen.TryGetValue((int)Mpir.MpuSizeinbase(this, 10) - 1, out powerOfTen))
+				return false;
+		if (!ReferenceEquals(powerOfTen, this))
+			return false;
+		return true;
+	}
+
 	#endregion
 
 	#region Import and export byte array
@@ -122,13 +142,15 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	/// Import the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public void FromByteArray(ReadOnlySpan<byte> source, int order) => Mpir.MpirMpuImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
+	public void FromByteArray(ReadOnlySpan<byte> source, int order) =>
+		Mpir.MpirMpuImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
 
 	/// Import the integer in the byte array bytes, starting at startOffset
 	/// and ending at endOffset.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
-	public void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) => Mpir.MpirMpuImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
+	public void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) =>
+		Mpir.MpirMpuImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
 
 	/// Export to the value to a byte array.
 	/// Endianess is specified by order, which is 1 for big endian or -1
@@ -573,7 +595,6 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public MpuT Add(MpuT x) => this + x;
 	public MpuT Add(uint x) => this + x;
 	public MpzT Complement() => ~this;
-	public int DecLength() => ToString()?.Length ?? 1;
 	public MpuT Divide(int x) => this / x;
 
 	public MpuT Divide(int x, out int remainder)
@@ -713,30 +734,34 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public uint ModAsUInt32(uint mod) => Mpir.MpuFdivUi(this, mod);
 
-	public MpuT ShiftLeft(int shiftAmount) => this << shiftAmount;
-
-	public MpuT ShiftRight(int shiftAmount) => this >> shiftAmount;
-
-	public MpuT ShiftRightRound(int shiftAmount)
+	public MpuT Power(int exponent)
 	{
-		if (shiftAmount <= 0)
-			return new(this);
-		var result = this >> shiftAmount;
-		if (shiftAmount <= 32)
-		{
-			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount) >= 1u << shiftAmount - 1)
-				result++.Dispose();
-		}
-		else
-		{
-			using var left = One << shiftAmount;
-			Mpir.MpuSubUi(left, left, 1);
-			Mpir.MpuAnd(left, left, this);
-			using var right = One << shiftAmount - 1;
-			if (Mpir.MpuCmp(left, right) >= 0)
-				result++.Dispose();
-		}
-		return result;
+		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
+		var z = new MpuT();
+		Mpir.MpuPowUi(z, this, (uint)exponent);
+		return z;
+	}
+
+	public static MpuT Power(int x, int exponent)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
+		var z = new MpuT();
+		Mpir.MpuUiPowUi(z, (uint)x, (uint)exponent);
+		return z;
+	}
+
+	public MpuT Power(uint exponent)
+	{
+		var z = new MpuT();
+		Mpir.MpuPowUi(z, this, exponent);
+		return z;
+	}
+
+	public static MpuT Power(uint x, uint exponent)
+	{
+		var z = new MpuT();
+		Mpir.MpuUiPowUi(z, x, exponent);
+		return z;
 	}
 
 	public MpuT PowerMod(MpuT exponent, MpuT mod)
@@ -764,38 +789,74 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 			var inverse = bigExponent.InvertMod(mod);
 			Mpir.MpuPowmUi(z, inverse, exponent, mod);
 		}
-
 		return z;
 	}
 
-	public MpuT Power(int exponent)
+	public static MpuT PowerOfTen(int exponent)
 	{
-		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
-		var z = new MpuT();
-		Mpir.MpuPowUi(z, this, (uint)exponent);
-		return z;
+		if ((int)Math.Ceiling(exponent * Math.Log(10, 2)) > 99658)
+			return ten.Power(exponent);
+		if (PowersOfTen.TryGetValue(exponent, out var power))
+			return power;
+		lock (lockObj)
+		{
+			if (PowersOfTen.TryGetValue(exponent, out power))
+				return power;
+			return PowersOfTen[exponent] = ten.Power(exponent);
+		}
 	}
 
-	public MpuT Power(uint exponent)
+	public MpuT ShiftLeft(int shiftAmount) => this << shiftAmount;
+	public MpuT ShiftLeftDec(int shiftAmount) => this * PowerOfTen(shiftAmount);
+	public MpuT ShiftRight(int shiftAmount) => this >> shiftAmount;
+	public MpuT ShiftRightDec(int shiftAmount) => this / PowerOfTen(shiftAmount);
+
+	public MpuT ShiftRightRound(int shiftAmount)
 	{
-		var z = new MpuT();
-		Mpir.MpuPowUi(z, this, exponent);
-		return z;
+		if (shiftAmount <= 0)
+			return new(this);
+		var result = this >> shiftAmount;
+		if (shiftAmount <= 32)
+		{
+			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount) >= 1u << shiftAmount - 1)
+				result++.Dispose();
+		}
+		else
+		{
+			using var left = One << shiftAmount;
+			Mpir.MpuSubUi(left, left, 1);
+			Mpir.MpuAnd(left, left, this);
+			using var right = One << shiftAmount - 1;
+			if (Mpir.MpuCmp(left, right) >= 0)
+				result++.Dispose();
+		}
+		return result;
 	}
 
-	public static MpuT Power(int x, int exponent)
+	public MpuT ShiftRightRoundDec(int shiftAmount)
 	{
-		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
-		var z = new MpuT();
-		Mpir.MpuUiPowUi(z, (uint)x, (uint)exponent);
-		return z;
+		if (shiftAmount <= 0)
+			return new(this);
+		var result = ShiftRightDec(shiftAmount);
+		if (shiftAmount <= 9)
+		{
+			if (this % smallPowersOfTen[shiftAmount] >= 5 * smallPowersOfTen[shiftAmount - 1])
+				result++.Dispose();
+		}
+		else
+		{
+			using var left = this % PowerOfTen(shiftAmount);
+			using var right = 5 * PowerOfTen(shiftAmount - 1);
+			if (Mpir.MpuCmp(left, right) >= 0)
+				result++.Dispose();
+		}
+		return result;
 	}
 
-	public static MpuT Power(uint x, uint exponent)
+	public bool InverseModExists(MpuT mod)
 	{
-		var z = new MpuT();
-		Mpir.MpuUiPowUi(z, x, exponent);
-		return z;
+		TryInvertMod(mod, out _);
+		return true;
 	}
 
 	public MpuT InvertMod(MpuT mod)
@@ -823,17 +884,12 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		}
 	}
 
-	public bool InverseModExists(MpuT mod)
-	{
-		TryInvertMod(mod, out _);
-		return true;
-	}
-
 	public int GetByteCount() => (BitLength + 7) / 8;
 
 	public int GetShortestBitLength() => BitLength;
 
 	public int BitLength => val == 0 ? 0 : (int)Mpir.MpuSizeinbase(this, 2);
+	public int DecLength => ToString()?.Length ?? 1;
 
 	public int Sign =>
 		IsPositive(this) ? 1 : IsZero(this) ? 0 : IsNegative(this) ? -1

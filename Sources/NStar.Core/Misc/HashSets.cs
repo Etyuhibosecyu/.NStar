@@ -24,6 +24,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			Changed();
 		}
 	}
+
+	/// <inheritdoc cref="G.HashSet{T}.Comparer"/>
 	public virtual IEqualityComparer<T> Comparer { get; protected set; } = EqualityComparer<T>.Default;
 
 	protected override void ClearInternal()
@@ -45,6 +47,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			SetNull(index + i);
 	}
 
+	/// <inheritdoc/>
 	public override bool Contains(T item, out int index) =>
 		item is not null ? Contains(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF)
 		: throw new ArgumentNullException(nameof(item));
@@ -289,6 +292,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		Debug.Assert(entries[index].hashCode >= 0);
 	}
 
+	/// <inheritdoc/>
 	public override bool TryAdd(T item, out int index)
 	{
 		if (item is null)
@@ -404,6 +408,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		return (TCertain)this;
 	}
 
+	/// <inheritdoc/>
 	public override TCertain RemoveAt(int index)
 	{
 		if ((uint)index >= (uint)_size)
