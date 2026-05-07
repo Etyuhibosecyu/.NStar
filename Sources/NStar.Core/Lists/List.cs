@@ -467,9 +467,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	/// если список имеет тип элементов byte, ushort, uint или ulong (иначе просто вызывает эту классическую сортировку).
 	/// Может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <param name="length">Длина диапазона.</param>
-	/// </summary>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort(int index, int length)
 	{
@@ -517,7 +517,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	public virtual TCertain Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
 	/// <summary>
-	/// Производит нативную сортировку диапазона списка по ключу типа uint.
+	/// Производит сортировку диапазона списка по ключу типа uint.
 	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
 	/// но требует явного указания алгоритма преобразования каждого элемента в uint.
 	/// Может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
@@ -540,12 +540,44 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
+	/// <summary>
+	/// Производит сортировку списка по ключу произвольного типа.
+	/// Эта сортировка существенно медленнее <see cref="Sort(Func{T, uint})"> сортировки по ключу типа uint</see>,
+	/// но позволяет иметь ключ любого типа. Сортировка не является устойчивой.
+	/// </summary>
+	/// <typeparam name="TValue">Тип ключа, в который преобразуется каждый элемент.</typeparam>
+	/// <param name="function">Функция или лямбда-выражение для преобразования элемента в ключ.</param>
+	/// <param name="fasterButMoreMemory">Больше, чем написано в названии параметра, написать нечего.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort<TValue>(Func<T, TValue> function, bool fasterButMoreMemory = true) =>
 		Sort(0, _size, function, fasterButMoreMemory);
 
+	/// <summary>
+	/// Производит сортировку диапазона списка по ключу произвольного типа.
+	/// Эта сортировка существенно медленнее <see cref="Sort(Func{T, uint})"> сортировки по ключу типа uint</see>,
+	/// но позволяет иметь ключ любого типа. Сортировка не является устойчивой.
+	/// </summary>
+	/// <typeparam name="TValue">Тип ключа, в который преобразуется каждый элемент.</typeparam>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// <param name="function">Функция или лямбда-выражение для преобразования элемента в ключ.</param>
+	/// <param name="fasterButMoreMemory">Больше, чем написано в названии параметра, написать нечего.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function, bool fasterButMoreMemory = true) =>
 		Sort(index, length, function, G.Comparer<TValue>.Default, fasterButMoreMemory);
 
+	/// <summary>
+	/// Производит сортировку диапазона списка по ключу произвольного типа с применением <see cref="IComparer{T}"/>.
+	/// Эта сортировка существенно медленнее <see cref="Sort(Func{T, uint})"> сортировки по ключу типа uint</see>,
+	/// но позволяет иметь ключ любого типа. Сортировка не является устойчивой.
+	/// </summary>
+	/// <typeparam name="TValue">Тип ключа, в который преобразуется каждый элемент.</typeparam>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// <param name="function">Функция или лямбда-выражение для преобразования элемента в ключ.</param>
+	/// <param name="comparer">Компаратор для сравнения элементов (см. <see cref="IComparer{T}"/>).</param>
+	/// <param name="fasterButMoreMemory">Больше, чем написано в названии параметра, написать нечего.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function,
 		IComparer<TValue> comparer, bool fasterButMoreMemory = true)
 	{
@@ -597,6 +629,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	/// в остальных случаях лучше использовать <see cref="Sort()"/>,
 	/// который все равно вызовет Array.Sort(), если тип элементов списка не подходит для быстрой и устойчивой сортировки.
 	/// </summary>
+	/// <param name="comparer">Компаратор для сравнения элементов (см. <see cref="IComparer{T}"/>).</param>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain SortOld(IComparer<T> comparer) => SortOld(0, _size, comparer);
 
@@ -607,6 +640,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	/// в остальных случаях лучше использовать <see cref="Sort()"/>,
 	/// который все равно вызовет Array.Sort(), если тип элементов списка не подходит для быстрой и устойчивой сортировки.
 	/// </summary>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// <param name="comparer">Компаратор для сравнения элементов (см. <see cref="IComparer{T}"/>).</param>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain SortOld(int index, int length, IComparer<T> comparer)
 	{

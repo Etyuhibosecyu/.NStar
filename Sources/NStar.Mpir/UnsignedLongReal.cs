@@ -45,17 +45,9 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		this.e = e;
 	}
 
-	public UnsignedLongReal(decimal op, int mantissaLength = DefaultMantissaLength) : this(mantissaLength)
-	{
-		m = new(op);
-		e = null;
-	}
+	public UnsignedLongReal(decimal op, int mantissaLength = DefaultMantissaLength) : this(new MpuT(op), mantissaLength) { }
 
-	public UnsignedLongReal(double op, int mantissaLength = DefaultMantissaLength) : this(mantissaLength)
-	{
-		m = new(op);
-		e = null;
-	}
+	public UnsignedLongReal(double op, int mantissaLength = DefaultMantissaLength) : this(new MpuT(op), mantissaLength) { }
 
 	public UnsignedLongReal(int op, int mantissaLength = MinMantissaLength) : this(mantissaLength)
 	{
@@ -1286,7 +1278,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		}
 	}
 
-	public static UnsignedLongReal operator %(UnsignedLongReal x, MpuT y) => x.DivRem(y).Remainder;
+	public static UnsignedLongReal operator %(UnsignedLongReal x, MpuT y) => new(x.DivRem(y).Remainder, x.MantissaLength);
 
 	public static UnsignedLongReal operator %(UnsignedLongReal x, UnsignedLongReal y) => x.DivRem(y).Remainder;
 
