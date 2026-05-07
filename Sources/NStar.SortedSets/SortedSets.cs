@@ -123,10 +123,13 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(G.IEnumerable<T> collection) : this(collection, null) { }
 
-	public SortedSet(G.IEnumerable<T> collection, G.IComparer<T>? comparer) : this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public SortedSet(G.IEnumerable<T> collection, G.IComparer<T>? comparer)
+		: this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte
+		: collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
-		items.AddRange(new ListHashSet<T>(collection, new EComparer<T>((x, y) => Comparer.Compare(x, y) == 0))).Sort(Comparer);
+		items.AddRange(new ListHashSet<T>(collection, new EComparer<T>((x, y) => Comparer.Compare(x, y) == 0)))
+			.SortOld(Comparer);
 	}
 
 	public SortedSet(int capacity, G.IEnumerable<T> collection) : this(capacity, collection, null) { }
@@ -134,7 +137,8 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 	public SortedSet(int capacity, G.IEnumerable<T> collection, G.IComparer<T>? comparer) : this(capacity, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
-		items.AddRange(new ListHashSet<T>(collection, new EComparer<T>((x, y) => Comparer.Compare(x, y) == 0))).Sort(Comparer);
+		items.AddRange(new ListHashSet<T>(collection, new EComparer<T>((x, y) => Comparer.Compare(x, y) == 0)))
+			.SortOld(Comparer);
 	}
 
 	public SortedSet(params T[] array) : this((G.IEnumerable<T>)array) { }
@@ -181,8 +185,9 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public override int Search(T item) => items.BinarySearch(item, Comparer);
 
-	protected override void SetInternal(int index, T value) => items.GetType().GetMethod("SetInternal", System.Reflection.BindingFlags.Instance
-			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, value]);
+	protected override void SetInternal(int index, T value) =>
+		items.GetType().GetMethod("SetInternal", System.Reflection.BindingFlags.Instance
+		| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, value]);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -214,7 +219,8 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 
 	public SortedSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public SortedSet(int capacity, G.IEnumerable<T> collection, G.IComparer<T>? comparer) : base(capacity, collection, comparer) { }
+	public SortedSet(int capacity, G.IEnumerable<T> collection, G.IComparer<T>? comparer)
+		: base(capacity, collection, comparer) { }
 
 	protected override Func<int, SortedSet<T>> CapacityCreator { get; } = x => new(x);
 

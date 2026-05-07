@@ -329,6 +329,8 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			}
 			else if (y.e is null || Compute(yBitLength, mantissaLength, ComputeOperation.Compare).m <= 1)
 			{
+				if (xBitLength.e is not null)
+					return Compute(x, mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var blDiff = (xBitLength & -1) - Math.Max(y.MantissaLength + 1, yBitLength & -1);
 				if (blDiff > mantissaLength)
 					return Compute(x, mantissaLength << 1 | 1, ComputeOperation.ChangeML);
@@ -1091,7 +1093,8 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public static explicit operator float(UnsignedLongReal value) => (float)(double)value;
 
 	public static explicit operator double(UnsignedLongReal value) =>
-		value.BitLength > 1024 ? double.PositiveInfinity : (double)value.m;
+		value.BitLength > 1024 ? double.PositiveInfinity
+		: (double)(value.e is null ? value.m : value.MantissaOverflow + value.m << (value.e & -1) - 1);
 
 	public static explicit operator decimal(UnsignedLongReal value) => (decimal)((double)value is var x
 		&& x is not (< (double)decimal.MinValue or > (double)decimal.MaxValue or double.NaN) ? x : 0);

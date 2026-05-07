@@ -794,7 +794,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public static MpuT PowerOfTen(int exponent)
 	{
-		if ((int)Math.Ceiling(exponent * Math.Log(10, 2)) > 99658)
+		if ((int)Math.Ceiling(exponent * Math.Log2(10)) > 99658)
 			return ten.Power(exponent);
 		if (PowersOfTen.TryGetValue(exponent, out var power))
 			return power;

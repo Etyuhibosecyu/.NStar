@@ -429,26 +429,49 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	}
 
 	/// <summary>
-	/// Производит нативную сортировку списка. Нативная сортировка на порядки быстрее обычной,
-	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong
-	/// (иначе просто вызывает обычную сортировку).
-	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// Проверяет, является ли указанная последовательность списком,
+	/// и если да, то просто возвращает ее, если же нет, возвращает сконструированный из нее список.
+	/// </summary>
+	/// <param name="collection">Последовательность для проверки, является ли она списком.</param>
+	/// <returns>См. общее описание.</returns>
+	public static List<T> ReturnOrConstruct(IEnumerable<T> collection) =>
+		collection is List<T> list ? list : [.. collection];
+
+	protected override void ReverseInternal(int index, int length)
+	{
+		if (_items is null)
+			return;
+		Array.Reverse(_items, index, length);
+	}
+
+	protected override void SetInternal(int index, T value)
+	{
+		if (_items is null)
+			return;
+		_items[index] = value;
+	}
+
+	/// <summary>
+	/// Производит сортировку списка.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
+	/// если список имеет тип элементов byte, ushort, uint или ulong (иначе просто вызывает эту классическую сортировку).
+	/// Может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
 	/// </summary>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
-	public virtual TCertain NSort() => NSort(0, _size);
+	public virtual TCertain Sort() => Sort(0, _size);
 
 	/// <summary>
-	/// Производит нативную сортировку диапазона списка. Нативная сортировка на порядки быстрее обычной,
-	/// но работает только, если список имеет тип элементов byte, ushort, uint или ulong
-	/// (иначе просто вызывает обычную сортировку).
-	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// Производит сортировку диапазона списка.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
+	/// если список имеет тип элементов byte, ushort, uint или ulong (иначе просто вызывает эту классическую сортировку).
+	/// Может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <param name="length">Длина диапазона.</param>
 	/// </summary>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
-	public virtual TCertain NSort(int index, int length)
+	public virtual TCertain Sort(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -477,32 +500,34 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			ulongList._items.NSort(index, length);
 		}
 		else
-			return Sort(index, length, G.Comparer<T>.Default);
+			return SortOld(index, length, G.Comparer<T>.Default);
 		Changed();
 		return (TCertain)this;
 	}
 
 	/// <summary>
-	/// Производит нативную сортировку списка по ключу типа uint. Нативная сортировка на порядки быстрее обычной,
+	/// Производит сортировку списка по ключу типа uint.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
 	/// но требует явного указания алгоритма преобразования каждого элемента в uint.
-	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// Может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
 	/// </summary>
 	/// <param name="function">Алгоритм преобразования каждого элемента в uint (функция или лямбда-выражение).</param>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
-	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
+	public virtual TCertain Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
 	/// <summary>
-	/// Производит нативную сортировку диапазона списка по ключу типа uint. Нативная сортировка на порядки быстрее обычной,
+	/// Производит нативную сортировку диапазона списка по ключу типа uint.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
 	/// но требует явного указания алгоритма преобразования каждого элемента в uint.
-	/// Также может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// Может не сработать, если список очень большой, на компьютере переполнена память и нет файла подкачки,
 	/// но это экстремально редкая ситуация, логично?
 	/// </summary>
 	/// <param name="function">Алгоритм преобразования каждого элемента в uint (функция или лямбда-выражение).</param>
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
-	public virtual TCertain NSort(Func<T, uint> function, int index, int length)
+	public virtual TCertain Sort(Func<T, uint> function, int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -511,46 +536,6 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (_items is null)
 			return (TCertain)this;
 		_items.NSort(function, index, length);
-		Changed();
-		return (TCertain)this;
-	}
-
-	/// <summary>
-	/// Проверяет, является ли указанная последовательность списком,
-	/// и если да, то просто возвращает ее, если же нет, возвращает сконструированный из нее список.
-	/// </summary>
-	/// <param name="collection">Последовательность для проверки, является ли она списком.</param>
-	/// <returns>См. общее описание.</returns>
-	public static List<T> ReturnOrConstruct(IEnumerable<T> collection) =>
-		collection is List<T> list ? list : [.. collection];
-
-	protected override void ReverseInternal(int index, int length)
-	{
-		if (_items is null)
-			return;
-		Array.Reverse(_items, index, length);
-	}
-
-	protected override void SetInternal(int index, T value)
-	{
-		if (_items is null)
-			return;
-		_items[index] = value;
-	}
-
-	public virtual TCertain Sort() => Sort(0, _size, G.Comparer<T>.Default);
-
-	public virtual TCertain Sort(IComparer<T> comparer) => Sort(0, _size, comparer);
-
-	public virtual TCertain Sort(int index, int length, IComparer<T> comparer)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > _size)
-			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
-		if (_items is null)
-			return (TCertain)this;
-		Array.Sort(_items, index, length, comparer);
 		Changed();
 		return (TCertain)this;
 	}
@@ -571,7 +556,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			return (TCertain)this;
 		}
 		else
-			return Sort(index, length, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
+			return SortOld(index, length, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
 	}
 
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values)
@@ -592,6 +577,46 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (_items is null)
 			return (TCertain)this;
 		Array.Sort(_items, values._items, index, length, comparer);
+		Changed();
+		return (TCertain)this;
+	}
+
+	/// <summary>
+	/// Сортирует список медленной и неустойчивой сортировкой
+	/// на основе классического <see cref="Array.Sort{T}(T[])"/>.
+	/// Не рекомендуется к прямому использованию - лучше использовать <see cref="Sort()"/>,
+	/// который все равно вызовет Array.Sort(), если тип элементов списка не подходит для быстрой и устойчивой сортировки.
+	/// </summary>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
+	public virtual TCertain SortOld() => SortOld(0, _size, G.Comparer<T>.Default);
+
+	/// <summary>
+	/// Сортирует список медленной и неустойчивой сортировкой с применением <see cref="IComparer{T}"/>
+	/// на основе классического <see cref="Array.Sort{T}(T[])"/>.
+	/// Рекомендуется к прямому использованию только, если вам необходима соритровка именно с компаратором -
+	/// в остальных случаях лучше использовать <see cref="Sort()"/>,
+	/// который все равно вызовет Array.Sort(), если тип элементов списка не подходит для быстрой и устойчивой сортировки.
+	/// </summary>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
+	public virtual TCertain SortOld(IComparer<T> comparer) => SortOld(0, _size, comparer);
+
+	/// <summary>
+	/// Сортирует диапазон списка медленной и неустойчивой сортировкой с применением <see cref="IComparer{T}"/>
+	/// на основе классического <see cref="Array.Sort{T}(T[])"/>.
+	/// Рекомендуется к прямому использованию только, если вам необходима соритровка именно с компаратором -
+	/// в остальных случаях лучше использовать <see cref="Sort()"/>,
+	/// который все равно вызовет Array.Sort(), если тип элементов списка не подходит для быстрой и устойчивой сортировки.
+	/// </summary>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
+	public virtual TCertain SortOld(int index, int length, IComparer<T> comparer)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
+		if (_items is null)
+			return (TCertain)this;
+		Array.Sort(_items, index, length, comparer);
 		Changed();
 		return (TCertain)this;
 	}
@@ -653,8 +678,6 @@ public class List<T> : List<T, List<T>>
 	protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator { get; } = x => new(x);
 
 	public static implicit operator List<T>(T x) => new(x);
-
-	public static implicit operator List<T>(T[] x) => new(x);
 
 	public static implicit operator List<T>((T, T) x) => [x.Item1, x.Item2];
 

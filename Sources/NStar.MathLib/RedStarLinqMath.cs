@@ -2989,19 +2989,19 @@ public static class RedStarLinqMath
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? 0 : source.ToList(function).Sort()[(source.Length - 1) / 2];
 
-	public static decimal Median(this ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new List<decimal>(source).NSort()[(source.Length - 1) / 2];
+	public static decimal Median(this ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new List<decimal>(source).Sort()[(source.Length - 1) / 2];
 
-	public static double Median(this ReadOnlySpan<double> source) => source.Length == 0 ? default : new List<double>(source).NSort()[(source.Length - 1) / 2];
+	public static double Median(this ReadOnlySpan<double> source) => source.Length == 0 ? default : new List<double>(source).Sort()[(source.Length - 1) / 2];
 
-	public static int Median(this ReadOnlySpan<int> source) => source.Length == 0 ? default : new List<int>(source).NSort()[(source.Length - 1) / 2];
+	public static int Median(this ReadOnlySpan<int> source) => source.Length == 0 ? default : new List<int>(source).Sort()[(source.Length - 1) / 2];
 
-	public static uint Median(this ReadOnlySpan<uint> source) => source.Length == 0 ? default : new List<uint>(source).NSort()[(source.Length - 1) / 2];
+	public static uint Median(this ReadOnlySpan<uint> source) => source.Length == 0 ? default : new List<uint>(source).Sort()[(source.Length - 1) / 2];
 
-	public static long Median(this ReadOnlySpan<long> source) => source.Length == 0 ? default : new List<long>(source).NSort()[(source.Length - 1) / 2];
+	public static long Median(this ReadOnlySpan<long> source) => source.Length == 0 ? default : new List<long>(source).Sort()[(source.Length - 1) / 2];
 
-	public static MpzT Median(this ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new List<MpzT>(source).NSort()[(source.Length - 1) / 2];
+	public static MpzT Median(this ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new List<MpzT>(source).Sort()[(source.Length - 1) / 2];
 
-	public static T? Median<T>(this ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).NSort()[(source.Length - 1) / 2];
+	public static T? Median<T>(this ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).Sort()[(source.Length - 1) / 2];
 
 	public static decimal Min<T>(this ReadOnlySpan<T> source, Func<T, decimal> function)
 	{

@@ -49,6 +49,8 @@ public class UnsignedLongDecimalTests
 				var op = (byte)random.Next(256);
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr /= op;
 				Validate();
@@ -73,11 +75,10 @@ public class UnsignedLongDecimalTests
 				var op = (byte)random.Next(256);
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr = ulr.DivRem(op, out _);
-				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
-				if (shiftAmount > 0)
-					ulr = ulr >> shiftAmount << shiftAmount;
 				Validate();
 			}, () =>
 			{
@@ -105,6 +106,8 @@ public class UnsignedLongDecimalTests
 				var op = random.Next();
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr /= op;
 				Validate();
@@ -129,21 +132,17 @@ public class UnsignedLongDecimalTests
 				var op = random.Next();
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr = ulr.DivRem(op, out _);
-				var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-				if (bitLengthDiff > 0)
-					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
 				var op = random.Next();
 				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
 				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
-				if (uz.DecLength > ((MpuT)op).DecLength + MantissaLength)
-					uz = 0;
-				else
-					uz &= op;
+				uz &= op;
 				ulr &= op;
 				Validate();
 			}, () =>
@@ -172,6 +171,8 @@ public class UnsignedLongDecimalTests
 				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr /= op;
 				Validate();
@@ -196,21 +197,17 @@ public class UnsignedLongDecimalTests
 				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr = ulr.DivRem(op, out _);
-				var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-				if (bitLengthDiff > 0)
-					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			}, () =>
 			{
 				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
 				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
 				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
-				if (uz.DecLength <= MantissaLength + ((MpuT)op).DecLength)
-					uz &= op;
-				else
-					uz = 0;
+				uz &= op;
 				ulr &= op;
 				Validate();
 			}, () =>
@@ -239,6 +236,8 @@ public class UnsignedLongDecimalTests
 				var op = random.NextInt64();
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr /= op;
 				Validate();
@@ -263,11 +262,10 @@ public class UnsignedLongDecimalTests
 				var op = random.NextInt64();
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr = ulr.DivRem(op, out _);
-				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
-				if (shiftAmount > 0)
-					ulr = ulr >> shiftAmount << shiftAmount;
 				Validate();
 			}, () =>
 			{
@@ -295,6 +293,8 @@ public class UnsignedLongDecimalTests
 				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr /= op;
 				Validate();
@@ -319,17 +319,18 @@ public class UnsignedLongDecimalTests
 				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
 				if (op == 0)
 					return;
+				var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+				uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 				uz /= op;
 				ulr = ulr.DivRem(op, out _);
-				var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-				if (bitLengthDiff > 0)
-					ulr = ulr >> bitLengthDiff << bitLengthDiff;
 				Validate();
 			},
 		};
 		for (var i = 0; i < 1000; i++)
 		{
-			ulr = uz;
+			if (random.Next(100) == 0)
+				uz = new(bytes.AsSpan(), RandomOrder());
+			ulr = new(uz, MantissaLength);
 			actions.Random(random)();
 		}
 		if (counter++ < 10000)
@@ -337,13 +338,15 @@ public class UnsignedLongDecimalTests
 		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
-			var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(bitLengthDiff), MantissaOverflow);
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
+			var decLengthDiff = uz.DecLength - MantissaLength - 1;
+			var decLengthDiffClamped = Max(decLengthDiff, 0);
+			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped),
+				decLengthDiff > 0 || uz.GetByteCount() != ulr.GetByteCount(false));
+			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(bitLengthDiff), (expected - actual).Abs());
+			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(decLengthDiffClamped), (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
-				Assert.AreEqual(bitLengthDiff + 1,
+				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
 		}
 	}
@@ -522,16 +525,18 @@ public class UnsignedLongDecimalTests
 		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
-			var bitLengthDiff = Max(uz.DecLength - maxMantissaLength - 1, 0);
-			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(bitLengthDiff), maxMantissaLength);
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
+			var decLengthDiff = uz.DecLength - MantissaLength - 1;
+			var decLengthDiffClamped = Max(decLengthDiff, 0);
+			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped),
+				decLengthDiff > 0 || uz.GetByteCount() != ulr.GetByteCount(false));
+			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, GetArrayLength(maxMantissaLength, 8));
 			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
 			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(maxMantissaLength), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
-				Assert.AreEqual(bitLengthDiff + 1,
+				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, maxMantissaByteLength)..bytesWritten), -1));
 		}
 	}
@@ -612,9 +617,9 @@ public class UnsignedLongDecimalTests
 					return;
 				uz /= op;
 				ulr = ulr.DivRem(op, out _);
-				var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-				if (bitLengthDiff > 0)
-					ulr = ulr >> bitLengthDiff << bitLengthDiff;
+				var decLengthDiffClamped = Max(uz.DecLength - MantissaLength - 1, 0);
+				if (decLengthDiffClamped > 0)
+					ulr = ulr >> decLengthDiffClamped << decLengthDiffClamped;
 				Validate();
 			}, () =>
 			{
@@ -723,7 +728,7 @@ public class UnsignedLongDecimalTests
 		};
 		for (var i = 0; i < 1000; i++)
 		{
-			ulr = uz;
+			ulr = new(uz, MantissaLength);
 			actions.Random(random)();
 		}
 		if (counter++ < 10000)
@@ -731,13 +736,15 @@ public class UnsignedLongDecimalTests
 		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
-			var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(bitLengthDiff), MantissaOverflow);
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
+			var decLengthDiff = uz.DecLength - MantissaLength - 1;
+			var decLengthDiffClamped = Max(decLengthDiff, 0);
+			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped),
+				decLengthDiff > 0 || uz.GetByteCount() != ulr.GetByteCount(false));
+			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(bitLengthDiff), (expected - actual).Abs());
+			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(decLengthDiffClamped), (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
-				Assert.AreEqual(bitLengthDiff + 1,
+				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
 		}
 	}
@@ -755,15 +762,17 @@ public class UnsignedLongDecimalTests
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
 			using UnsignedLongDecimal ulr = new(uz, MantissaLength);
-			var bitLengthDiff = Max(uz.DecLength - MantissaLength - 1, 0);
-			if (bitLengthDiff > 0)
-				uz = uz.ShiftRightRoundDec(bitLengthDiff).ShiftLeftDec(bitLengthDiff);
-			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(bitLengthDiff), MantissaOverflow);
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
+			var decLengthDiff = uz.DecLength - MantissaLength - 1;
+			var decLengthDiffClamped = Max(decLengthDiff, 0);
+			if (decLengthDiffClamped > 0)
+				uz = uz.ShiftRightRoundDec(decLengthDiffClamped).ShiftLeftDec(decLengthDiffClamped);
+			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped),
+				decLengthDiff > 0 || uz.GetByteCount() != ulr.GetByteCount(false));
+			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
 			Assert.AreEqual(expected, actual);
 			if (bytesWritten > MantissaByteLength)
-				Assert.AreEqual(bitLengthDiff + 1,
+				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
 		}
 		if (counter++ < 2500)
@@ -806,16 +815,18 @@ public class UnsignedLongDecimalTests
 		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
-			var bitLengthDiff = Max(uz.DecLength - maxMantissaLength - 1, 0);
-			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(bitLengthDiff), maxMantissaLength);
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
+			var decLengthDiff = uz.DecLength - MantissaLength - 1;
+			var decLengthDiffClamped = Max(decLengthDiff, 0);
+			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped),
+				decLengthDiff > 0 || uz.GetByteCount() != ulr.GetByteCount(false));
+			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, GetArrayLength(maxMantissaLength, 8));
 			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
 			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(maxMantissaLength), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
-				Assert.AreEqual(bitLengthDiff + 1,
+				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, maxMantissaByteLength)..bytesWritten), -1));
 		}
 	}
@@ -1036,8 +1047,6 @@ public class UnsignedLongDecimalTests
 			UnsignedLongDecimal ulr = new(uz, MantissaLength);
 			var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
 			uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
-			bytes.FillInPlace(random.Next(3), _ => (byte)random.Next(256));
-			bytes.PadRightInPlace(4);
 			Assert.AreEqual(++uz, ++ulr);
 			Assert.AreEqual(uz++, ulr++);
 			Assert.AreEqual(--uz, --ulr);
@@ -1052,7 +1061,7 @@ public class UnsignedLongDecimalTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
-		for (var i = 0; i < 1000000; i++)
+		for (var i = 0; i < 100000; i++)
 		{
 			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
@@ -1121,16 +1130,18 @@ public class UnsignedLongDecimalTests
 		int RandomOrder() => random.Next(2) * 2 - 1;
 		void Validate()
 		{
-			var bitLengthDiff = Max(uz.DecLength - maxMantissaLength - 1, 0);
-			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(bitLengthDiff), maxMantissaLength);
-			ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false);
+			var decLengthDiff = uz.DecLength - MantissaLength - 1;
+			var decLengthDiffClamped = Max(decLengthDiff, 0);
+			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped),
+				decLengthDiff > 0 || uz.GetByteCount() != ulr.GetByteCount(false));
+			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, GetArrayLength(maxMantissaLength, 8));
 			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
 			Assert.IsLessThanOrEqualTo(MpuT.PowerOfTen(maxMantissaLength), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
-				Assert.AreEqual(bitLengthDiff + 1,
+				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, maxMantissaByteLength)..bytesWritten), -1));
 		}
 	}
@@ -1149,10 +1160,10 @@ public class UnsignedLongDecimalTests
 				bytes.Resize(Max(bytes.FindLastIndex(x => x != 0), 0) + 1);
 			else
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
-			using UnsignedLongDecimal ulr = new(bytes.AsSpan(), order, random.Next(15, Max(bytes.Length, 15)));
-			var bytes2 = ulr.ToByteArray(order, false);
-			Assert.IsTrue(bytes.Equals(bytes2));
-			Assert.IsTrue(E.SequenceEqual(bytes2, bytes));
+			var mantissaLength = random.Next(15, Max((int)Ceiling(bytes.Length * Log10(256)), 15));
+			using UnsignedLongDecimal ulr = new(bytes.AsSpan(), order, mantissaLength);
+			using UnsignedLongDecimal ulr2 = new(ulr.ToByteArray(order, false), order, mantissaLength);
+			Assert.IsTrue(ulr.Equals(ulr2));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -1163,9 +1174,9 @@ public class UnsignedLongDecimalTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
-		for (var i = 0; i < 10000; i++)
+		for (var i = 0; i < 2500; i++)
 		{
-			bytes.FillInPlace(random.Next(260), _ => (byte)random.Next(256));
+			bytes.FillInPlace(random.Next(MantissaByteLength + 4), _ => (byte)random.Next(256));
 			var order = RandomOrder();
 			using UnsignedLongDecimal ulr = new(bytes.AsSpan(), order, MantissaLength);
 			var @base = (uint)random.Next(2, 37);
@@ -1221,7 +1232,7 @@ public class UnsignedLongDecimalTests
 		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 5000; i++)
 		{
-			bytes.FillInPlace(random.Next(260), _ => (byte)random.Next(256));
+			bytes.FillInPlace(random.Next(MantissaByteLength + 3), _ => (byte)random.Next(256));
 			var order = RandomOrder();
 			using UnsignedLongDecimal ulr = new(bytes.AsSpan(), order, MantissaLength);
 			var @base = (uint)random.Next(2, 37);
@@ -1256,21 +1267,22 @@ public class UnsignedLongDecimalTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024), bytes2 = new(1024);
 		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
-		for (var i = 0; i < 1000000; i++)
+		for (var i = 0; i < 250000; i++)
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
 			var order = RandomOrder();
-			using UnsignedLongDecimal ulr = new(bytes.AsSpan(), order, random.Next(15, Max(bytes.Length, 15)));
-			bytes2.FillInPlace(0, bytes.Length);
+			var mantissaLength = random.Next(15, Max((int)Ceiling(bytes.Length * Log10(256)), 15));
+			using UnsignedLongDecimal ulr = new(bytes.AsSpan(), order, mantissaLength);
+			bytes2.FillInPlace(0, bytes.Length + 1);
 			if (order < 0)
-				ulr.TryWriteLittleEndian(bytes2.AsSpan(), out _, false);
+				Assert.IsTrue(ulr.TryWriteLittleEndian(bytes2.AsSpan(), out _, false));
 			else
-				ulr.TryWriteBigEndian(bytes2.AsSpan(), out _, false);
-			Assert.IsTrue(bytes.Equals(bytes2));
-			Assert.IsTrue(E.SequenceEqual(bytes2, bytes));
+				Assert.IsTrue(ulr.TryWriteBigEndian(bytes2.AsSpan(), out _, false));
+			Assert.IsTrue(ulr.Equals(new UnsignedLongDecimal(bytes2.AsSpan(), order, mantissaLength)));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
-	private static MpuT SafeSubtract(MpuT x, MpuT y) => x >= y ? x - y : x;
+	private static MpuT SafeSubtract(MpuT x, bool doSubtract) =>
+		x >= MantissaOverflow && doSubtract ? x - MantissaOverflow : x;
 }

@@ -2358,17 +2358,17 @@ public class RedStarLinqTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var b = a.Shuffle(x => x[1..], random);
-		var c = b.NSort();
+		var c = b.Sort();
 		var d = E.Order(E.Select(a, x => x[1..]));
 		Assert.IsTrue(E.SequenceEqual(b, d));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.Shuffle((Func<string, string>)null!));
 		b = a.Shuffle((x, index) => x[1..] + index.ToString("D2"), random);
-		c = b.NSort();
+		c = b.Sort();
 		d = E.Order(E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
 		Assert.IsTrue(E.SequenceEqual(b, d));
 		Assert.ThrowsExactly<ArgumentNullException>(() => a.Shuffle((Func<string, int, string>)null!));
 		var b2 = a.Shuffle(random);
-		var c2 = b2.NSort();
+		var c2 = b2.Sort();
 		var d2 = E.Order(a);
 		Assert.IsTrue(E.SequenceEqual(b2, d2));
 	});

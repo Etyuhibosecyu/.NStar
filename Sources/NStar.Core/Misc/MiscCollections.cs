@@ -23,7 +23,7 @@ public readonly record struct Chain(int Start, int Length) : IReadOnlyList<int>
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public readonly List<int> ToArray()
+	public readonly int[] ToArray()
 	{
 		var start = Start;
 		var array = GC.AllocateUninitializedArray<int>(Length);
@@ -375,7 +375,7 @@ public class Slice<T> : BaseMutableIndexable<T, Slice<T>>
 	private protected readonly G.IReadOnlyList<T>? _base2;
 	private protected readonly int _start;
 
-	public Slice() : this([]) { }
+	public Slice() : this(Array.Empty<T>()) { }
 
 	public Slice(G.IList<T> @base) : this(@base, 0, @base.Count) { }
 

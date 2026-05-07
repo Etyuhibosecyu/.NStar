@@ -57,7 +57,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			// If `comparer` is null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.G.IComparer<T> constructor.
 			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
 			comparer = Comparer;
-			elements.Sort(0, length, Comparer);
+			elements.SortOld(0, length, Comparer);
 			// Overwrite duplicates while shifting the distinct elements towards
 			// the front of the array.
 			var index = 1;

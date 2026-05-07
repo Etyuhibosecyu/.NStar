@@ -671,7 +671,7 @@ public class ListTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var c = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 		var a = new List<string>(c);
-		var b = new List<string>(a).NSort(x => x[^1]);
+		var b = new List<string>(a).Sort((Func<string, uint>)(x => x[^1]));
 		c = E.ToList(E.OrderBy(c, x => x[^1]));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
@@ -1321,12 +1321,12 @@ public class ListTests
 		c.Sort();
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Sort(new Comparer<string>((x, y) => y.CompareTo(x)));
+		b = new List<string>(a).SortOld(new Comparer<string>((x, y) => y.CompareTo(x)));
 		c = [.. a];
 		c.Sort(new Comparer<string>((x, y) => y.CompareTo(x)));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Sort(2, 4, new Comparer<string>((x, y) => y.CompareTo(x)));
+		b = new List<string>(a).SortOld(2, 4, new Comparer<string>((x, y) => y.CompareTo(x)));
 		c = [.. a];
 		c.Sort(2, 4, new Comparer<string>((x, y) => y.CompareTo(x)));
 		Assert.IsTrue(b.Equals(c));
