@@ -428,6 +428,22 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return Array.LastIndexOf(_items, item, index, length);
 	}
 
+	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	public virtual TCertain NSort() =>
+		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+
+	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	public virtual TCertain NSort(int index, int length) =>
+		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+
+	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	public virtual TCertain NSort(Func<T, uint> function) =>
+		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+
+	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	public virtual TCertain NSort(Func<T, uint> function, int index, int length) =>
+		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+
 	/// <summary>
 	/// Проверяет, является ли указанная последовательность списком,
 	/// и если да, то просто возвращает ее, если же нет, возвращает сконструированный из нее список.
