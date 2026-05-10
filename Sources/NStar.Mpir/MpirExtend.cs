@@ -8,14 +8,14 @@ namespace NStar.Mpir;
 
 public static partial class Mpir
 {
-	public static unsafe void MpirMpuImport(MpuT rop, uint count, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
+	internal static unsafe void MpirMpuImport(MpuT rop, uint count, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
 	{
 		fixed (void* srcPtr = op)
 		{
 			Mpir_internal_mpz_import(rop.val, count, order, size, endian, nails, srcPtr);
 		}
 	}
-	public static unsafe void MpirMpuImportByOffset(MpuT rop, int startOffset, int endOffset, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
+	internal static unsafe void MpirMpuImportByOffset(MpuT rop, int startOffset, int endOffset, int order, uint size, int endian, uint nails, ReadOnlySpan<byte> op)
 	{
 		fixed (byte* srcPtr = op)
 		{
@@ -62,49 +62,49 @@ public static partial class Mpir
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
 	}
-	public static mpz_intptr MpzInitSet(MpuT op)
+	internal static mpz_intptr MpzInitSet(MpuT op)
 	{
 		var __retval = xmpir_mpz_init_set(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInit()
+	internal static mpz_intptr MpuInit()
 	{
 		var __retval = xmpir_mpz_init(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInit2(ulong n)
+	internal static mpz_intptr MpuInit2(ulong n)
 	{
 		var __retval = xmpir_mpz_init2(out var result, n);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInitSet(MpuT op)
+	internal static mpz_intptr MpuInitSet(MpuT op)
 	{
 		var __retval = xmpir_mpz_init_set(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInitSetUi(uint op)
+	internal static mpz_intptr MpuInitSetUi(uint op)
 	{
 		var __retval = xmpir_mpz_init_set_ui(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInitSetSi(int op)
+	internal static mpz_intptr MpuInitSetSi(int op)
 	{
 		var __retval = xmpir_mpz_init_set_si(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInitSetD(double op)
+	internal static mpz_intptr MpuInitSetD(double op)
 	{
 		var __retval = xmpir_mpz_init_set_d(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpuInitSetStr(string str, uint Base)
+	internal static mpz_intptr MpuInitSetStr(string str, uint Base)
 	{
 		int __retval;
 		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
@@ -117,7 +117,7 @@ public static partial class Mpir
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static void MpuClear(MpuT v)
+	internal static void MpuClear(MpuT v)
 	{
 		var __retval = xmpir_mpz_clear(v.val);
 		if (__retval != 0) HandleError(__retval);

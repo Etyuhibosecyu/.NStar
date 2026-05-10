@@ -6,10 +6,8 @@ namespace NStar.BigCollections.Tests;
 [TestClass]
 public class UnsignedLongRealTests
 {
-	private static readonly int MantissaLength = typeof(UnsignedLongReal)
-		.GetField(nameof(MantissaLength), BindingFlags.Instance | BindingFlags.NonPublic)
-		?.GetValue(UnsignedLongReal.Zero)
-		is int n ? n : throw new MissingFieldException(), MantissaByteLength = GetArrayLength(MantissaLength, 8);
+	private static readonly int MantissaLength = UnsignedLongReal.DefaultMantissaLength;
+	private static readonly int MantissaByteLength = GetArrayLength(MantissaLength, 8);
 	private static readonly MpuT MantissaOverflow = MpuT.One << MantissaLength;
 	private static readonly MpuT MantissaMask = MantissaOverflow - 1;
 

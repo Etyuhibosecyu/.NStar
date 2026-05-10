@@ -13,7 +13,7 @@ namespace NStar.Mpir;
 public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IComparable<UnsignedLongReal>,
 	IDisposable, IBinaryInteger<UnsignedLongReal>, IFloatingPoint<UnsignedLongReal>
 {
-	private enum ComputeOperation
+	private enum ComputeOperation : byte
 	{
 		Identity,
 		BitLength,
@@ -24,23 +24,16 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	}
 
 	private static readonly ConcurrentDictionary<int, MpuT> MantissaMasks = [], MantissaOverflows = [];
-	private readonly int MantissaLength = 0;
-
 	private readonly MpuT m;
 	private readonly UnsignedLongReal? e;
+	private readonly int MantissaLength = 0;
 	public const int AutoMantissaLength = -1, DefaultMantissaLength = 2048, MinMantissaLength = 64;
 
-	private UnsignedLongReal(int mantissaLength = DefaultMantissaLength)
+	private UnsignedLongReal(MpuT m, UnsignedLongReal? e, int mantissaLength = DefaultMantissaLength)
 	{
-		m = MpuT.Zero;
 		if (mantissaLength is < MinMantissaLength or > int.MaxValue)
 			mantissaLength = DefaultMantissaLength;
 		MantissaLength = mantissaLength;
-	}
-
-	private UnsignedLongReal(MpuT m, UnsignedLongReal? e, int mantissaLength = DefaultMantissaLength)
-		: this(mantissaLength)
-	{
 		this.m = m;
 		this.e = e;
 	}
@@ -49,49 +42,23 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 
 	public UnsignedLongReal(double op, int mantissaLength = DefaultMantissaLength) : this(new MpuT(op), mantissaLength) { }
 
-	public UnsignedLongReal(int op, int mantissaLength = MinMantissaLength) : this(mantissaLength)
-	{
-		m = new(op);
-		e = null;
-	}
+	public UnsignedLongReal(int op, int mantissaLength = MinMantissaLength) : this(new MpuT(op), null, mantissaLength) { }
 
-	public UnsignedLongReal(uint op, int mantissaLength = MinMantissaLength) : this(mantissaLength)
-	{
-		m = new(op);
-		e = null;
-	}
+	public UnsignedLongReal(uint op, int mantissaLength = MinMantissaLength) : this(new MpuT(op), null, mantissaLength) { }
 
-	public UnsignedLongReal(long op, int mantissaLength = MinMantissaLength) : this(mantissaLength)
-	{
-		m = new(op);
-		e = null;
-	}
+	public UnsignedLongReal(long op, int mantissaLength = MinMantissaLength) : this(new MpuT(op), null, mantissaLength) { }
 
-	public UnsignedLongReal(ulong op, int mantissaLength = MinMantissaLength) : this(mantissaLength)
-	{
-		m = new(op);
-		e = null;
-	}
+	public UnsignedLongReal(ulong op, int mantissaLength = MinMantissaLength) : this(new MpuT(op), null, mantissaLength) { }
 
-	public UnsignedLongReal(MpzT op, int mantissaLength = DefaultMantissaLength) : this(mantissaLength)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(op);
-		var bitLength = op.BitLength;
-		if (bitLength <= MantissaLength)
-		{
-			m = Unsafe.As<MpuT>(op);
-			e = null;
-		}
-		else
-		{
-			var eDiff = bitLength - MantissaLength - 1;
-			m = Unsafe.As<MpuT>(op).ShiftRightRound(eDiff) & MantissaMask;
-			e = new(eDiff + 1, mantissaLength);
-		}
-	}
+	public UnsignedLongReal(MpzT op, int mantissaLength = DefaultMantissaLength) : this(op < 0
+		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op))
+		: Unsafe.As<MpuT>(op), mantissaLength) { }
 
-	public UnsignedLongReal(MpuT op, int mantissaLength = DefaultMantissaLength) : this(mantissaLength)
+	public UnsignedLongReal(MpuT op, int mantissaLength = DefaultMantissaLength)
 	{
+		if (mantissaLength is < MinMantissaLength or > int.MaxValue)
+			mantissaLength = DefaultMantissaLength;
+		MantissaLength = mantissaLength;
 		var bitLength = op.BitLength;
 		if (bitLength <= MantissaLength)
 		{
@@ -162,15 +129,15 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public static UnsignedLongReal AdditiveIdentity => Zero;
 	static UnsignedLongReal IFloatingPointConstants<UnsignedLongReal>.E => throw new NotSupportedException();
 	private int MantissaByteLength => GetArrayLength(MantissaLength, 8);
-	private MpuT MantissaOverflow => MantissaOverflows.GetOrAdd(MantissaLength, x => MpuT.One << x);
 	private MpuT MantissaMask => MantissaMasks.GetOrAdd(MantissaLength, x => MantissaOverflow - 1);
+	private MpuT MantissaOverflow => MantissaOverflows.GetOrAdd(MantissaLength, x => MpuT.One << x);
 	public static UnsignedLongReal MultiplicativeIdentity => One;
 	static UnsignedLongReal ISignedNumber<UnsignedLongReal>.NegativeOne => throw new NotSupportedException();
-	public static UnsignedLongReal One => new(1, DefaultMantissaLength);
+	public static UnsignedLongReal One { get; } = new(1, MinMantissaLength);
 	static UnsignedLongReal IFloatingPointConstants<UnsignedLongReal>.Pi => throw new NotSupportedException();
 	public static int Radix => 2;
 	static UnsignedLongReal IFloatingPointConstants<UnsignedLongReal>.Tau => throw new NotSupportedException();
-	public static UnsignedLongReal Zero => new(0, DefaultMantissaLength);
+	public static UnsignedLongReal Zero { get; } = new(0, MinMantissaLength);
 
 	public UnsignedLongReal BitLength => Compute(this, null!, ComputeOperation.BitLength);
 
@@ -206,18 +173,6 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		return m.CompareTo(other);
 	}
 
-	public int CompareTo(MpzT other)
-	{
-		if (e is null)
-			return m.CompareTo(other);
-		var bitLength = other.BitLength;
-		var eDiff = bitLength - MantissaLength;
-		var eComparison = e.CompareTo(eDiff);
-		if (eComparison != 0)
-			return eComparison;
-		return (MantissaOverflow + m << eDiff - 1).CompareTo(other);
-	}
-
 	public int CompareTo(MpuT other)
 	{
 		if (e is null)
@@ -229,6 +184,22 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 			return eComparison;
 		return (MantissaOverflow + m << eDiff - 1).CompareTo(other);
 	}
+
+	public int CompareTo(MpzT other)
+	{
+		if (Mpir.MpzCmpSi(other, 0) < 0)
+			return 1;
+		if (e is null)
+			return m.CompareTo(other);
+		var bitLength = other.BitLength;
+		var eDiff = bitLength - MantissaLength;
+		var eComparison = e.CompareTo(eDiff);
+		if (eComparison != 0)
+			return eComparison;
+		return (MantissaOverflow + m << eDiff - 1).CompareTo(other);
+	}
+
+	public int CompareTo(UnsignedLongReal? other) => (int)Compute(this, other!, ComputeOperation.Compare).m - 1;
 
 	public int CompareTo(object? obj) => obj switch
 	{
@@ -247,8 +218,6 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		IComparable ic => -ic.CompareTo(this),
 		_ => 0,
 	};
-
-	public int CompareTo(UnsignedLongReal? other) => (int)Compute(this, other!, ComputeOperation.Compare).m - 1;
 
 	private static UnsignedLongReal Compute(UnsignedLongReal x, UnsignedLongReal y, ComputeOperation operation)
 	{
@@ -422,7 +391,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 					return new(0, null, mantissaLength);
 				var shiftAmount = mantissaLength - mDiff.BitLength + 1;
 				if (Compute(x.e, shiftAmount, ComputeOperation.Compare).m <= 1)
-					return new(mDiff << (x.e & -1) - 1, null);
+					return new(mDiff << (x.e & -1) - 1, null, mantissaLength);
 				return new((mDiff << shiftAmount) & mantissaMask,
 					Compute(x.e, shiftAmount, ComputeOperation.Subtract), mantissaLength);
 			}
@@ -568,6 +537,18 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		return m.Equals(other);
 	}
 
+	public bool Equals(MpuT other)
+	{
+		if (e is null)
+			return m.Equals(other);
+		var bitLength = other.BitLength;
+		var eDiff = bitLength - MantissaLength;
+		var eComparison = e.CompareTo(eDiff);
+		if (eComparison != 0)
+			return false;
+		return (MantissaOverflow + m << eDiff - 1).Equals(other);
+	}
+
 	public bool Equals(MpzT other)
 	{
 		if (e is null)
@@ -580,17 +561,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		return (MantissaOverflow + m << eDiff - 1).Equals(other);
 	}
 
-	public bool Equals(MpuT other)
-	{
-		if (e is null)
-			return m.Equals(other);
-		var bitLength = other.BitLength;
-		var eDiff = bitLength - MantissaLength;
-		var eComparison = e.CompareTo(eDiff);
-		if (eComparison != 0)
-			return false;
-		return (MantissaOverflow + m << eDiff - 1).Equals(other);
-	}
+	public bool Equals(UnsignedLongReal? other) => CompareTo(other) == 0;
 
 	public override bool Equals(object? obj) => obj switch
 	{
@@ -609,8 +580,6 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		IConvertible ic => ic.Equals(this),
 		_ => false,
 	};
-
-	public bool Equals(UnsignedLongReal? other) => CompareTo(other) == 0;
 
 	public int GetByteCount() => GetByteCount(true);
 	public int GetByteCount(bool saveMantissaLength) =>
@@ -632,7 +601,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public int GetSignificandByteCount() => m.GetByteCount();
 	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	private UnsignedLongReal GetWithOtherML(int mantissaLength, bool copy) =>
+	internal UnsignedLongReal GetWithOtherML(int mantissaLength, bool copy) =>
 		Compute(this, new((ulong)mantissaLength << 1 | (copy ? 1u : 0), null), ComputeOperation.ChangeML);
 
 	public static bool IsCanonical(UnsignedLongReal value) => true;
@@ -646,13 +615,13 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public static bool IsNaN(UnsignedLongReal value) => false;
 	public static bool IsNegative(UnsignedLongReal value) => false;
 	public static bool IsNegativeInfinity(UnsignedLongReal value) => false;
-	public static bool IsNormal(UnsignedLongReal value) => true;
+	public static bool IsNormal(UnsignedLongReal value) => value.e is not null;
 	public static bool IsOddInteger(UnsignedLongReal value) => !IsEvenInteger(value);
 	public static bool IsPositive(UnsignedLongReal value) => true;
 	public static bool IsPositiveInfinity(UnsignedLongReal value) => false;
 	public static bool IsPow2(UnsignedLongReal value) => value.PopCount() == 1;
 	public static bool IsRealNumber(UnsignedLongReal value) => true;
-	public static bool IsSubnormal(UnsignedLongReal value) => true;
+	public static bool IsSubnormal(UnsignedLongReal value) => value.e is null;
 	public static bool IsZero(UnsignedLongReal value) => Mpir.MpzCmpSi(value.m, 0) == 0 && value.e is null;
 
 	public static UnsignedLongReal Log2(UnsignedLongReal value)
@@ -675,10 +644,8 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public static UnsignedLongReal Parse(string? s) => new(s);
 	public static UnsignedLongReal Parse(string s, IFormatProvider? provider) => new(s);
 	public static UnsignedLongReal Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
-
 	public int PopCount() => m.PopCount() + (e is null ? 0 : 1);
 	public static UnsignedLongReal PopCount(UnsignedLongReal value) => value.PopCount();
-
 	static UnsignedLongReal IFloatingPoint<UnsignedLongReal>.Round(UnsignedLongReal x, int digits, MidpointRounding mode) => x;
 
 	public UnsignedLongReal Sqrt()
@@ -692,7 +659,6 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	}
 
 	bool IConvertible.ToBoolean(IFormatProvider? provider) => CompareTo(1) >= 0;
-
 	byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
 
 	public byte[] ToByteArray(int order, bool saveMantissaLength = true)
@@ -796,6 +762,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		{
 			result = value switch
 			{
+				UnsignedLongReal ulr => ulr,
 				MpzT z => z,
 				MpuT uz => uz,
 				byte y => y,
@@ -835,6 +802,7 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 		{
 			result = value switch
 			{
+				UnsignedLongReal ulr => ulr,
 				MpzT z => z,
 				MpuT uz => uz,
 				byte y => y,
@@ -1076,20 +1044,29 @@ public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IC
 	public static explicit operator UnsignedLongReal(decimal value) => new(value);
 	public static explicit operator UnsignedLongReal(string value) => new(value, DefaultStringBase);
 	public static explicit operator byte(UnsignedLongReal value) => (byte)(uint)value;
-	public static explicit operator int(UnsignedLongReal value) => value & -1;
-	public static explicit operator uint(UnsignedLongReal value) => value & uint.MaxValue;
 	public static explicit operator short(UnsignedLongReal value) => (short)(int)value;
 	public static explicit operator ushort(UnsignedLongReal value) => (ushort)(uint)value;
+	public static explicit operator int(UnsignedLongReal value) => value & -1;
+	public static explicit operator uint(UnsignedLongReal value) => value & uint.MaxValue;
 	public static explicit operator long(UnsignedLongReal value) => (long)(value & ulong.MaxValue).m;
 	public static explicit operator ulong(UnsignedLongReal value) => (ulong)(value & ulong.MaxValue).m;
 	public static explicit operator float(UnsignedLongReal value) => (float)(double)value;
 
-	public static explicit operator double(UnsignedLongReal value) =>
-		value.BitLength > 1024 ? double.PositiveInfinity
-		: (double)(value.e is null ? value.m : value.MantissaOverflow + value.m << (value.e & -1) - 1);
+	public static explicit operator double(UnsignedLongReal value)
+	{
+		if (value.BitLength > 1024)
+			return double.PositiveInfinity;
+		else if (value.e is null)
+			return (double)value.m;
+		return (double)(value.MantissaOverflow + value.m << (value.e & -1) - 1);
+	}
 
-	public static explicit operator decimal(UnsignedLongReal value) => (decimal)((double)value is var x
-		&& x is not (< (double)decimal.MinValue or > (double)decimal.MaxValue or double.NaN) ? x : 0);
+	public static explicit operator decimal(UnsignedLongReal value)
+	{
+		if ((double)value is var x && x is not (< (double)decimal.MinValue or > (double)decimal.MaxValue or double.NaN))
+			return (decimal)x;
+		return 0m;
+	}
 
 	public static explicit operator string?(UnsignedLongReal value) => value.ToString();
 

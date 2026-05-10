@@ -37,43 +37,43 @@ public static partial class Mpir
 	//
 	// Automatically generated code: functions
 	//
-	public static mpz_intptr MpzInit()
+	internal static mpz_intptr MpzInit()
 	{
 		var __retval = xmpir_mpz_init(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpzInit2(ulong n)
+	internal static mpz_intptr MpzInit2(ulong n)
 	{
 		var __retval = xmpir_mpz_init2(out var result, n);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpzInitSet(MpzT op)
+	internal static mpz_intptr MpzInitSet(MpzT op)
 	{
 		var __retval = xmpir_mpz_init_set(out var result, op.val);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpzInitSetUi(uint op)
+	internal static mpz_intptr MpzInitSetUi(uint op)
 	{
 		var __retval = xmpir_mpz_init_set_ui(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpzInitSetSi(int op)
+	internal static mpz_intptr MpzInitSetSi(int op)
 	{
 		var __retval = xmpir_mpz_init_set_si(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpzInitSetD(double op)
+	internal static mpz_intptr MpzInitSetD(double op)
 	{
 		var __retval = xmpir_mpz_init_set_d(out var result, op);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpz_intptr MpzInitSetStr(string str, uint Base)
+	internal static mpz_intptr MpzInitSetStr(string str, uint Base)
 	{
 		int __retval;
 		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
@@ -86,18 +86,18 @@ public static partial class Mpir
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static mpq_intptr MpqInit()
+	internal static mpq_intptr MpqInit()
 	{
 		var __retval = xmpir_mpq_init(out var result);
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	public static void MpzClear(MpzT v)
+	internal static void MpzClear(MpzT v)
 	{
 		var __retval = xmpir_mpz_clear(v.val);
 		if (__retval != 0) HandleError(__retval);
 	}
-	public static void MpqClear(MpqT v)
+	internal static void MpqClear(MpqT v)
 	{
 		var __retval = xmpir_mpq_clear(v.val);
 		if (__retval != 0) HandleError(__retval);
