@@ -2,6 +2,7 @@
 
 namespace NStar.Mpir;
 
+/// <summary>Represents an arbitrarily large unsigned integer.</summary>
 public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, IDisposable, IBinaryInteger<MpuT>
 {
 	#region Data
@@ -22,13 +23,13 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	#region Creation and destruction
 
-	/// Initializes a new MpuT to 0.
+	/// <summary>Initializes a new MpuT to 0.</summary>
 	public MpuT() => val = Mpir.MpuInit();
-	/// Initializes a new MpuT to the same value as op.
+	/// <summary>Initializes a new MpuT to the same value as op.</summary>
 	public MpuT(MpuT op) => val = Mpir.MpuInitSet(op.val == 0 ? 0 : op);
-	/// Initializes a new MpuT to the unsigned int op.
+	/// <summary>Initializes a new MpuT to the unsigned int op.</summary>
 	public MpuT(uint op) => val = Mpir.MpuInitSetUi(op);
-	/// Initializes a new MpuT to the int op.
+	/// <summary>Initializes a new MpuT to the int op.</summary>
 	public MpuT(int op)
 	{
 		if (op < 0)
@@ -36,7 +37,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		val = Mpir.MpuInitSetSi(op);
 	}
 
-	/// Initializes a new MpuT to the double op.
+	/// <summary>Initializes a new MpuT to the double op.</summary>
 	public MpuT(double op)
 	{
 		if (op < 0)
@@ -46,7 +47,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		val = Mpir.MpuInitSetD(op);
 	}
 
-	/// Initializes a new MpuT to string s, parsed as an integer in the specified base.
+	/// <summary>Initializes a new MpuT to string s, parsed as an integer in the specified base.</summary>
 	public MpuT(string? s, uint @base)
 	{
 		var s2 = s ?? "0";
@@ -55,16 +56,15 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		val = Mpir.MpuInitSetStr(s2, @base);
 	}
 
-	/// Initializes a new MpuT to string s, parsed as an integer in base 10.
+	/// <summary>Initializes a new MpuT to string s, parsed as an integer in base 10.</summary>
 	public MpuT(string? s) : this(s, DefaultStringBase) { }
-	/// Initializes a new MpuT to the BigInteger op.
+	/// <summary>Initializes a new MpuT to the BigInteger op.</summary>
 	public MpuT(BigInteger op) : this(op < 0
 		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : op.ToByteArray(), -1) { }
 	public MpuT(MpzT op) : this(Mpir.MpzCmpSi(op, 0) < 0
 		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : op.ToByteArray(-1), -1) { }
 
-	/// Initializes a new MpuT to using MPIR MpuInit2. Only use if you need to
-	/// avoid reallocations.
+	/// <summary>Initializes a new MpuT to using MPIR MpuInit2. Only use if you need to avoid reallocations.</summary>
 	//
 	// Initialization with MpuInit2 should not be confused with MpuT construction
 	// from a ulong. Thus, so we use a static construction function instead, and add
@@ -73,7 +73,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	private enum Init2Type { init2 }
 	private MpuT(Init2Type _, ulong n) => val = Mpir.MpuInit2(n);
 
-	/// Initializes a new MpuT to the long op.
+	/// <summary>Initializes a new MpuT to the long op.</summary>
 	public MpuT(long op)
 	{
 		if (op < 0)
@@ -83,7 +83,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		Mpir.MpuAddUi(this, this, unchecked((uint)op));
 	}
 
-	/// Initializes a new MpuT to the unsigned long op.
+	/// <summary>Initializes a new MpuT to the unsigned long op.</summary>
 	public MpuT(ulong op)
 	{
 		val = Mpir.MpuInitSetUi(unchecked((uint)(op >> sizeof(uint) * 8)));
@@ -94,9 +94,10 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public MpuT(decimal op) : this(op < 0
 		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op)) : new BigInteger(op)) { }
 
+	/// <summary>
 	/// Initializes a new MpuT to the integer in the byte array bytes.
-	/// Endianess is specified by order, which is 1 for big endian or -1
-	/// for little endian.
+	/// Endianess is specified by order, which is 1 for big endian or -1 for little endian.
+	/// </summary>
 	public MpuT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
 
 	~MpuT() => Dispose(false);
@@ -139,22 +140,24 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	#region Import and export byte array
 
+	/// <summary>
 	/// Import the integer in the byte array bytes.
-	/// Endianess is specified by order, which is 1 for big endian or -1
-	/// for little endian.
+	/// Endianess is specified by order, which is 1 for big endian or -1 for little endian.
+	/// </summary>
 	public void FromByteArray(ReadOnlySpan<byte> source, int order) =>
 		Mpir.MpirMpuImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
 
-	/// Import the integer in the byte array bytes, starting at startOffset
-	/// and ending at endOffset.
-	/// Endianess is specified by order, which is 1 for big endian or -1
-	/// for little endian.
+	/// <summary>
+	/// Import the integer in the byte array bytes, starting at startOffset and ending at endOffset.
+	/// Endianess is specified by order, which is 1 for big endian or -1 for little endian.
+	/// </summary>
 	public void ImportByOffset(ReadOnlySpan<byte> source, int startOffset, int endOffset, int order) =>
 		Mpir.MpirMpuImportByOffset(this, startOffset, endOffset, order, sizeof(byte), 0, 0u, source);
 
+	/// <summary>
 	/// Export to the value to a byte array.
-	/// Endianess is specified by order, which is 1 for big endian or -1
-	/// for little endian.
+	/// Endianess is specified by order, which is 1 for big endian or -1 for little endian.
+	/// </summary>
 	public byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpuExport(order, sizeof(byte), 0, 0u, this);
 	#endregion
 
@@ -181,6 +184,11 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public static MpuT operator +(MpuT value) => new(value);
 
+	/// <summary>
+	/// Computes the unary negation of a value as a number of the type <see cref="MpzT"/>.
+	/// </summary>
+	/// <param name="value">The value for which to compute its unary negation.</param>
+	/// <returns>The unary negation of <paramref name="value" />.</returns>
 	public static MpzT operator -(MpuT x)
 	{
 		var z = new MpzT();
@@ -188,8 +196,14 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
-	static MpuT IUnaryNegationOperators<MpuT, MpuT>.operator -(MpuT value) => throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+	static MpuT IUnaryNegationOperators<MpuT, MpuT>.operator -(MpuT value) =>
+		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
 
+	/// <summary>
+	/// Computes the ones-complement representation of a given value as a number of the type <see cref="MpzT"/>.
+	/// </summary>
+	/// <param name="x">The value for which to compute the ones-complement.</param>
+	/// <returns>The ones-complement of value.</returns>
 	public static MpzT operator ~(MpuT x)
 	{
 		var z = new MpzT();
@@ -197,7 +211,8 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
-	static MpuT IBitwiseOperators<MpuT, MpuT, MpuT>.operator ~(MpuT value) => throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+	static MpuT IBitwiseOperators<MpuT, MpuT, MpuT>.operator ~(MpuT value) =>
+		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
 
 	public static MpuT operator +(MpuT x, MpuT y)
 	{
@@ -206,6 +221,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
 	public static MpuT operator +(MpuT x, int y)
 	{
 		if (Mpir.MpuCmpSi(x, -y) < 0)
@@ -218,6 +234,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
 	public static MpuT operator +(int x, MpuT y)
 	{
 		if (Mpir.MpuCmpSi(y, -x) > 0)
@@ -230,6 +247,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
 	public static MpuT operator +(MpuT x, uint y)
 	{
 		var z = new MpuT();
@@ -237,6 +255,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
 	public static MpuT operator +(uint x, MpuT y)
 	{
 		var z = new MpuT();
@@ -253,6 +272,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
 	public static MpuT operator -(int x, MpuT y)
 	{
 		if (Mpir.MpuCmpSi(y, x) > 0)
@@ -262,6 +282,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
 	public static MpuT operator -(MpuT x, int y)
 	{
 		if (Mpir.MpuCmpSi(x, y) < 0)
@@ -275,6 +296,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
 	public static MpuT operator -(uint x, MpuT y)
 	{
 		if (Mpir.MpuCmpUi(y, x) > 0)
@@ -284,6 +306,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
 	public static MpuT operator -(MpuT x, uint y)
 	{
 		if (Mpir.MpuCmpUi(x, y) < 0)
@@ -316,6 +339,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
 	public static MpuT operator *(int x, MpuT y)
 	{
 		if (x < 0)
@@ -325,6 +349,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
 	public static MpuT operator *(MpuT x, int y)
 	{
 		if (Mpir.MpzCmpSi(y, 0) < 0)
@@ -334,6 +359,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
 	public static MpuT operator *(uint x, MpuT y)
 	{
 		var z = new MpuT();
@@ -341,6 +367,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
 	public static MpuT operator *(MpuT x, uint y)
 	{
 		var z = new MpuT();
@@ -355,6 +382,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return quotient;
 	}
 
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
 	public static MpuT operator /(MpuT x, int y)
 	{
 		if (Mpir.MpzCmpSi(y, 0) < 0)
@@ -364,6 +392,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return quotient;
 	}
 
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
 	public static MpuT operator /(MpuT x, uint y)
 	{
 		var quotient = new MpuT();
@@ -371,7 +400,9 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return quotient;
 	}
 
+	/// <inheritdoc cref="operator &(MpuT, MpuT)"/>
 	public static int operator &(MpuT x, int y) => Mpir.MpuGetSi(x) & y;
+	/// <inheritdoc cref="operator &(MpuT, MpuT)"/>
 	public static uint operator &(MpuT x, uint y) => Mpir.MpuGetUi(x) & y;
 
 	public static MpuT operator &(MpuT x, MpuT y)
@@ -402,6 +433,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
 	public static MpuT operator %(MpuT x, int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
@@ -410,6 +442,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
 	public static MpuT operator %(MpuT x, uint mod)
 	{
 		var z = new MpuT();
@@ -583,7 +616,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	#region Basic Arithmetic
 
-	/// Returns a new MpuT which is the absolute value of this value.
+	/// <summary>Returns a new MpuT which is the absolute value of this value.</summary>
 	public MpuT Abs()
 	{
 		var result = new MpuT();

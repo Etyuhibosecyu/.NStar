@@ -1,5 +1,6 @@
 ﻿namespace NStar.Mpir;
 
+/// <summary>Represents an arbitrarily large signed integer.</summary>
 public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, IDisposable, IBinaryInteger<MpzT>
 {
 	internal const uint DefaultStringBase = 10u;
@@ -13,25 +14,24 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	internal nint val;
 
-	/// Initializes a new MpzT to 0.
+	/// <summary>Initializes a new MpzT to 0.</summary>
 	public MpzT() => val = Mpir.MpzInit();
-	/// Initializes a new MpzT to the same value as op.
+	/// <summary>Initializes a new MpzT to the same value as op.</summary>
 	public MpzT(MpzT op) => val = Mpir.MpzInitSet(op);
-	/// Initializes a new MpzT to the unsigned int op.
+	/// <summary>Initializes a new MpzT to the unsigned int op.</summary>
 	public MpzT(uint op) => val = Mpir.MpzInitSetUi(op);
-	/// Initializes a new MpzT to the int op.
+	/// <summary>Initializes a new MpzT to the int op.</summary>
 	public MpzT(int op) => val = Mpir.MpzInitSetSi(op);
-	/// Initializes a new MpzT to the double op.
+	/// <summary>Initializes a new MpzT to the double op.</summary>
 	public MpzT(double op) => val = Mpir.MpzInitSetD(op);
-	/// Initializes a new MpzT to string s, parsed as an integer in the specified base.
+	/// <summary>Initializes a new MpzT to string s, parsed as an integer in the specified base.</summary>
 	public MpzT(string? s, uint @base) => val = Mpir.MpzInitSetStr(s ?? "0", @base);
-	/// Initializes a new MpzT to string s, parsed as an integer in base 10.
+	/// <summary>Initializes a new MpzT to string s, parsed as an integer in base 10.</summary>
 	public MpzT(string? s) : this(s, DefaultStringBase) { }
-	/// Initializes a new MpzT to the BigInteger op.
+	/// <summary>Initializes a new MpzT to the BigInteger op.</summary>
 	public MpzT(BigInteger op) : this(op.ToByteArray(), -1) { }
 
-	/// Initializes a new MpzT to using MPIR MpzInit2. Only use if you need to
-	/// avoid reallocations.
+	/// <summary>Initializes a new MpzT to using MPIR MpzInit2. Only use if you need to avoid reallocations.</summary>
 	//
 	// Initialization with MpzInit2 should not be confused with MpzT construction
 	// from a ulong. Thus, so we use a static construction function instead, and add
@@ -40,7 +40,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	private enum Init2Type { init2 }
 	private MpzT(Init2Type _, ulong n) => val = Mpir.MpzInit2(n);
 
-	/// Initializes a new MpzT to the long op.
+	/// <summary>Initializes a new MpzT to the long op.</summary>
 	public MpzT(long op) : this()
 	{
 		val = Mpir.MpzInitSetSi(unchecked((int)(op >> sizeof(int) * 8)));
@@ -48,7 +48,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		Mpir.MpzAddUi(this, this, unchecked((uint)op));
 	}
 
-	/// Initializes a new MpzT to the unsigned long op.
+	/// <summary>Initializes a new MpzT to the unsigned long op.</summary>
 	public MpzT(ulong op) : this()
 	{
 		val = Mpir.MpzInitSetUi(unchecked((uint)(op >> sizeof(uint) * 8)));
@@ -60,9 +60,11 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public MpzT(MpuT op) => val = Mpir.MpzInitSet(op);
 
+	/// <summary>
 	/// Initializes a new MpzT to the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1
 	/// for little endian.
+	/// </summary>
 	public MpzT(ReadOnlySpan<byte> bytes, int order) : this() => FromByteArray(bytes, order);
 
 	~MpzT() => Dispose(false);
@@ -93,10 +95,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	}
 
 	public static MpzT Abs(MpzT value) => value.Abs();
-	public MpzT Add(int x) => this + x;
-	public MpzT Add(MpzT x) => this + x;
-	public MpzT Add(uint x) => this + x;
-	public MpzT And(MpzT x) => this & x;
 
 	public static MpzT Binomial(int n, int k)
 	{
@@ -266,8 +264,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		val = 0;
 	}
 
-	public MpzT Divide(int x) => this / x;
-
 	public MpzT Divide(int x, out int remainder)
 	{
 		var quotient = new MpzT();
@@ -301,8 +297,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		}
 	}
 
-	public MpzT Divide(MpzT x) => this / x;
-
 	public MpzT Divide(MpzT x, out MpzT remainder)
 	{
 		var quotient = new MpzT();
@@ -310,8 +304,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		Mpir.MpzTdivQr(quotient, remainder, this, x);
 		return quotient;
 	}
-
-	public MpzT Divide(uint x) => this / x;
 
 	public MpzT Divide(uint x, out MpzT remainder)
 	{
@@ -783,9 +775,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public static MpzT Min(MpzT x, MpzT y) => x.CompareTo(y) < 0 ? x : y;
 	public static MpzT MinMagnitude(MpzT x, MpzT y) => Min(x, y);
 	public static MpzT MinMagnitudeNumber(MpzT x, MpzT y) => Min(x, y);
-	public MpzT Mod(int mod) => this % mod;
-	public MpzT Mod(MpzT mod) => this % mod;
-	public MpzT Mod(uint mod) => this % mod;
 
 	public int ModAsInt32(int mod)
 	{
@@ -794,10 +783,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	}
 
 	public uint ModAsUInt32(uint mod) => Mpir.MpzFdivUi(this, mod);
-
-	public MpzT Multiply(MpzT x) => this * x;
-	public MpzT Multiply(int x) => this * x;
-	public MpzT Multiply(uint x) => this * x;
 	public MpzT Negate() => -this;
 
 	// TODO: Create a version of this method which takes in a parameter to represent how well tested the prime should be.
@@ -808,7 +793,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
-	public MpzT Or(MpzT x) => this | x;
 	public static MpzT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
 	public static MpzT Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider) =>
 		Parse(s.ToString(), style, provider);
@@ -977,10 +961,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
-	public MpzT ShiftLeft(int shiftAmount) => this << shiftAmount;
-
-	public MpzT ShiftRight(int shiftAmount) => this >> shiftAmount;
-
 	public MpzT ShiftRightRound(int shiftAmount)
 	{
 		if (shiftAmount <= 0)
@@ -1029,10 +1009,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	}
 
 	public MpzT Square() => this * this;
-	public MpzT Subtract(MpzT x) => this - x;
-	public MpzT Subtract(int x) => this - x;
-	public MpzT Subtract(uint x) => this - x;
-
 	public BigInteger ToBigInteger() => new(ToByteArray(-1));
 	bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpzCmpSi(this, 1) >= 0;
 	byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
@@ -1313,8 +1289,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return false;
 	}
 
-	public MpzT Xor(MpzT x) => this ^ x;
-
 	public static implicit operator MpzT(byte value) => new((uint)value);
 	public static implicit operator MpzT(int value) => new(value);
 	public static implicit operator MpzT(uint value) => new(value);
@@ -1389,6 +1363,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
 	public static MpzT operator +(MpzT x, int y)
 	{
 		var z = new MpzT();
@@ -1400,6 +1375,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
 	public static MpzT operator +(int x, MpzT y)
 	{
 		var z = new MpzT();
@@ -1411,6 +1387,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
 	public static MpzT operator +(MpzT x, uint y)
 	{
 		var z = new MpzT();
@@ -1418,6 +1395,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
 	public static MpzT operator +(uint x, MpzT y)
 	{
 		var z = new MpzT();
@@ -1432,6 +1410,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
 	public static MpzT operator -(int x, MpzT y)
 	{
 		if (x >= 0)
@@ -1449,6 +1428,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		}
 	}
 
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
 	public static MpzT operator -(MpzT x, int y)
 	{
 		var z = new MpzT();
@@ -1459,6 +1439,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
 	public static MpzT operator -(uint x, MpzT y)
 	{
 		var z = new MpzT();
@@ -1466,11 +1447,155 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
 	public static MpzT operator -(MpzT x, uint y)
 	{
 		var z = new MpzT();
 		Mpir.MpzSubUi(z, x, y);
 		return z;
+	}
+
+	public static MpzT operator *(MpzT x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMul(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(int x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulSi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(MpzT x, int y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulSi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(uint x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(MpzT x, uint y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulUi(z, x, y);
+		return z;
+	}
+
+	public static MpzT operator /(MpzT x, MpzT y)
+	{
+		var quotient = new MpzT();
+		Mpir.MpzTdivQ(quotient, x, y);
+		return quotient;
+	}
+
+	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
+	public static MpzT operator /(MpzT x, int y)
+	{
+		if (y >= 0)
+		{
+			var quotient = new MpzT();
+			Mpir.MpzTdivQUi(quotient, x, (uint)y);
+			return quotient;
+		}
+		else
+		{
+			var quotient = new MpzT();
+			Mpir.MpzTdivQUi(quotient, x, (uint)-y);
+			var negQ = -quotient;
+			return negQ;
+		}
+	}
+
+	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
+	public static MpzT operator /(MpzT x, uint y)
+	{
+		var quotient = new MpzT();
+		Mpir.MpzTdivQUi(quotient, x, y);
+		return quotient;
+	}
+
+	public static MpzT operator %(MpzT x, MpzT mod)
+	{
+		var z = new MpzT();
+		Mpir.MpzMod(z, x, mod);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
+	public static MpzT operator %(MpzT x, int mod)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(mod);
+		var z = new MpzT();
+		Mpir.MpzFdivRUi(z, x, (uint)mod);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
+	public static MpzT operator %(MpzT x, uint mod)
+	{
+		var z = new MpzT();
+		Mpir.MpzFdivRUi(z, x, mod);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator &(MpzT, MpzT)"/>
+	public static int operator &(MpzT x, int y) => Mpir.MpzGetSi(x) & y;
+	/// <inheritdoc cref="operator &(MpzT, MpzT)"/>
+	public static uint operator &(MpzT x, uint y) => Mpir.MpzGetUi(x) & y;
+
+	public static MpzT operator &(MpzT x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAnd(z, x, y);
+		return z;
+	}
+
+	public static MpzT operator |(MpzT x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzIor(z, x, y);
+		return z;
+	}
+
+	public static MpzT operator ^(MpzT x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzXor(z, x, y);
+		return z;
+	}
+
+	public static MpzT operator <<(MpzT x, int shiftAmount)
+	{
+		var z = new MpzT();
+		Mpir.MpzMul2exp(z, x, (uint)shiftAmount);
+		return z;
+	}
+
+	public static MpzT operator >>(MpzT x, int shiftAmount)
+	{
+		var z = new MpzT();
+		Mpir.MpzTdivQ2exp(z, x, (uint)shiftAmount);
+		return z;
+	}
+
+	public static MpzT operator >>>(MpzT x, int shiftAmount)
+	{
+		if (Mpir.MpzCmpSi(x, 0) >= 0)
+			return x >> shiftAmount;
+		return ~((~x) >> shiftAmount);
 	}
 
 	public static MpzT operator ++(MpzT x)
@@ -1503,244 +1628,194 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		}
 	}
 
-	public static MpzT operator *(MpzT x, MpzT y)
-	{
-		var z = new MpzT();
-		Mpir.MpzMul(z, x, y);
-		return z;
-	}
-
-	public static MpzT operator *(int x, MpzT y)
-	{
-		var z = new MpzT();
-		Mpir.MpzMulSi(z, y, x);
-		return z;
-	}
-
-	public static MpzT operator *(MpzT x, int y)
-	{
-		var z = new MpzT();
-		Mpir.MpzMulSi(z, x, y);
-		return z;
-	}
-
-	public static MpzT operator *(uint x, MpzT y)
-	{
-		var z = new MpzT();
-		Mpir.MpzMulUi(z, y, x);
-		return z;
-	}
-
-	public static MpzT operator *(MpzT x, uint y)
-	{
-		var z = new MpzT();
-		Mpir.MpzMulUi(z, x, y);
-		return z;
-	}
-
-	public static MpzT operator /(MpzT x, MpzT y)
-	{
-		var quotient = new MpzT();
-		Mpir.MpzTdivQ(quotient, x, y);
-		return quotient;
-	}
-
-	public static MpzT operator /(MpzT x, int y)
-	{
-		if (y >= 0)
-		{
-			var quotient = new MpzT();
-			Mpir.MpzTdivQUi(quotient, x, (uint)y);
-			return quotient;
-		}
-		else
-		{
-			var quotient = new MpzT();
-			Mpir.MpzTdivQUi(quotient, x, (uint)-y);
-			var negQ = -quotient;
-			return negQ;
-		}
-	}
-
-	public static MpzT operator /(MpzT x, uint y)
-	{
-		var quotient = new MpzT();
-		Mpir.MpzTdivQUi(quotient, x, y);
-		return quotient;
-	}
-
-	public static int operator &(MpzT x, int y) => Mpir.MpzGetSi(x) & y;
-	public static uint operator &(MpzT x, uint y) => Mpir.MpzGetUi(x) & y;
-
-	public static MpzT operator &(MpzT x, MpzT y)
-	{
-		var z = new MpzT();
-		Mpir.MpzAnd(z, x, y);
-		return z;
-	}
-
-	public static MpzT operator |(MpzT x, MpzT y)
-	{
-		var z = new MpzT();
-		Mpir.MpzIor(z, x, y);
-		return z;
-	}
-
-	public static MpzT operator ^(MpzT x, MpzT y)
-	{
-		var z = new MpzT();
-		Mpir.MpzXor(z, x, y);
-		return z;
-	}
-
-	public static MpzT operator %(MpzT x, MpzT mod)
-	{
-		var z = new MpzT();
-		Mpir.MpzMod(z, x, mod);
-		return z;
-	}
-
-	public static MpzT operator %(MpzT x, int mod)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(mod);
-		var z = new MpzT();
-		Mpir.MpzFdivRUi(z, x, (uint)mod);
-		return z;
-	}
-
-	public static MpzT operator %(MpzT x, uint mod)
-	{
-		var z = new MpzT();
-		Mpir.MpzFdivRUi(z, x, mod);
-		return z;
-	}
-
-	public static MpzT operator <<(MpzT x, int shiftAmount)
-	{
-		var z = new MpzT();
-		Mpir.MpzMul2exp(z, x, (uint)shiftAmount);
-		return z;
-	}
-
-	public static MpzT operator >>(MpzT x, int shiftAmount)
-	{
-		var z = new MpzT();
-		Mpir.MpzTdivQ2exp(z, x, (uint)shiftAmount);
-		return z;
-	}
-
-	public static MpzT operator >>>(MpzT x, int shiftAmount)
-	{
-		if (Mpir.MpzCmpSi(x, 0) >= 0)
-			return x >> shiftAmount;
-		return ~((~x) >> shiftAmount);
-	}
-
 	public static bool operator ==(MpzT? x, MpzT? y) => (x ?? Zero).CompareTo(y) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(int x, MpzT y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, int y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(uint x, MpzT y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, uint y) => x.CompareTo(y) == 0;
 	// TODO: Optimize this by accessing memory directly.
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(long x, MpzT y) => y.CompareTo(x) == 0;
 	// TODO: Optimize this by accessing memory directly.
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, long y) => x.CompareTo(y) == 0;
 	// TODO: Optimize this by accessing memory directly.
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(ulong x, MpzT y) => y.CompareTo(x) == 0;
 	// TODO: Optimize this by accessing memory directly.
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, ulong y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(float x, MpzT y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, float y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(double x, MpzT y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, double y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(decimal x, MpzT y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator ==(MpzT, MpzT)"/>
 	public static bool operator ==(MpzT x, decimal y) => x.CompareTo(y) == 0;
 	public static bool operator !=(MpzT? x, MpzT? y) => (x ?? Zero).CompareTo(y) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(int x, MpzT y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, int y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(uint x, MpzT y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, uint y) => x.CompareTo(y) != 0;
 	// TODO: Optimize this by accessing memory directly
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(long x, MpzT y) => y.CompareTo((MpzT)x) != 0;
 	// TODO: Optimize this by accessing memory directly
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, long y) => x.CompareTo((MpzT)y) != 0;
 	// TODO: Optimize this by accessing memory directly
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(ulong x, MpzT y) => y.CompareTo((MpzT)x) != 0;
 	// TODO: Optimize this by accessing memory directly
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, ulong y) => x.CompareTo((MpzT)y) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(float x, MpzT y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, float y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(double x, MpzT y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, double y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(decimal x, MpzT y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator !=(MpzT, MpzT)"/>
 	public static bool operator !=(MpzT x, decimal y) => x.CompareTo(y) != 0;
 	public static bool operator <(MpzT x, MpzT y) => x.CompareTo(y) < 0;
 	public static bool operator <(int x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, int y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(uint x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, uint y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(long x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, long y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(ulong x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, ulong y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(float x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, float y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(double x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, double y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(decimal x, MpzT y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator {(MpzT, MpzT)"/>
 	public static bool operator <(MpzT x, decimal y) => x.CompareTo(y) < 0;
 	public static bool operator <=(MpzT x, MpzT y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(int x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, int y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(uint x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, uint y) => x.CompareTo(y) <= 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(long x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, long y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(ulong x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, ulong y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(float x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, float y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(double x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, double y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(decimal x, MpzT y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator {=(MpzT, MpzT)"/>
 	public static bool operator <=(MpzT x, decimal y) => x.CompareTo(y) <= 0;
 	public static bool operator >(MpzT x, MpzT y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(int x, MpzT y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, int y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(uint x, MpzT y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, uint y) => x.CompareTo(y) > 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(long x, MpzT y) => y.CompareTo(x) < 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, long y) => x.CompareTo(y) > 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(ulong x, MpzT y) => y.CompareTo(x) < 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, ulong y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(float x, MpzT y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, float y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(double x, MpzT y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, double y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(decimal x, MpzT y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator }(MpzT, MpzT)"/>
 	public static bool operator >(MpzT x, decimal y) => x.CompareTo(y) > 0;
 	public static bool operator >=(MpzT x, MpzT y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(int x, MpzT y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, int y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(uint x, MpzT y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, uint y) => x.CompareTo(y) >= 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(long x, MpzT y) => y.CompareTo(x) <= 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, long y) => x.CompareTo(y) >= 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(ulong x, MpzT y) => y.CompareTo(x) <= 0;
 	// TODO: Implement by accessing the data directly
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, ulong y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(float x, MpzT y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, float y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(double x, MpzT y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, double y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(decimal x, MpzT y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator }=(MpzT, MpzT)"/>
 	public static bool operator >=(MpzT x, decimal y) => x.CompareTo(y) >= 0;
 }

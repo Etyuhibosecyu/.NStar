@@ -9,6 +9,11 @@ global using static NStar.Mpir.MpzT;
 
 namespace NStar.Mpir;
 
+/// <summary>
+/// Представляет число с плавающей точкой, беззнаковое как по мантиссе - только неотрицательное - так и по экспоненте -
+/// только целое, но, в отличие от <see cref="MpuT"/>, которое также является целым неотрицательным числом,
+/// в данном типе очень большие числа тратят несравнимо меньше памяти, легко умещаются числа намного больше гуголплекса.
+/// </summary>
 [DebuggerDisplay("{ToShortString()}")]
 public sealed class UnsignedLongReal : ICloneable, IConvertible, IComparable, IComparable<UnsignedLongReal>,
 	IDisposable, IBinaryInteger<UnsignedLongReal>, IFloatingPoint<UnsignedLongReal>

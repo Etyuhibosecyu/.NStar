@@ -1,5 +1,10 @@
 ﻿namespace NStar.Mpir;
 
+/// <summary>
+/// Представляет число с плавающей точкой - как <see cref="UnsignedLongReal"/>,
+/// только с десятичной экспонентой вместо двоичной, что гарантирует точность при десятичных операциях
+/// (при достаточной длине мантиссы, разумеется!).
+/// </summary>
 [DebuggerDisplay("{ToShortString()}")]
 public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable, IComparable<UnsignedLongDecimal>,
 	IDisposable, IBinaryInteger<UnsignedLongDecimal>, IFloatingPoint<UnsignedLongDecimal>
