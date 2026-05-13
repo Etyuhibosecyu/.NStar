@@ -1,7 +1,7 @@
 ﻿namespace NStar.Mpir;
 
 /// <summary>Represents an arbitrarily large signed integer.</summary>
-public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<MpzT>, IDisposable, IBinaryInteger<MpzT>
+public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisposable
 {
 	internal const uint DefaultStringBase = 10u;
 	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
@@ -74,14 +74,39 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public static MpzT AdditiveIdentity => Zero;
 	/// <summary>Gets the count of bits in the binary representation of the number.</summary>
 	public int BitLength => (int)Mpir.MpzSizeinbase(this, 2);
+
 	/// <summary>Gets the count of digits in the decimal representation of the number.</summary>
-	public int DecLength => ToString() is var s && s is not null ? s.Length - (s.StartsWith('-') ? 1 : 0) : 1;
+	public int DecLength
+	{
+		get
+		{
+			if (ToString() is var s && s is not null)
+				return s.Length - (s.StartsWith('-') ? 1 : 0);
+			else
+				return 1;
+		}
+	}
+
 	public static MpzT MultiplicativeIdentity => One;
 	public static MpzT One { get; } = new(1);
 	public static int Radix => 2;
+
 	/// <summary>Gets the sign of the number (in the format of the integer number 1, 0 or -1).</summary>
-	public int Sign => IsPositive(this) ? 1 : IsZero(this) ? 0 : IsNegative(this) ? -1
-		: throw new ArithmeticException("Произошла ошибка при вычислении знака.");
+	public int Sign
+	{
+		get
+		{
+			if (IsZero(this))
+				return IsPositive(this) ? 1 : 0;
+			else if (IsPositive(this))
+				return 1;
+			else if (IsNegative(this))
+				return -1;
+			else
+				throw new ArithmeticException("Произошла ошибка при вычислении знака.");
+		}
+	}
+
 	public static MpzT Zero { get; } = new(0);
 
 	/// <summary>
@@ -266,32 +291,16 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public MpzT Divide(int x, out int remainder)
 	{
-		var quotient = new MpzT();
 		if (x >= 0)
 		{
-			remainder = (int)Mpir.MpzTdivQUi(quotient, this, (uint)x);
+			var quotient = Divide((uint)x, out var uintRemainder);
+			remainder = (int)uintRemainder;
 			return quotient;
 		}
 		else
 		{
+			var quotient = new MpzT();
 			remainder = -(int)Mpir.MpzTdivQUi(quotient, this, (uint)-x);
-			var res = -quotient;
-			return res;
-		}
-	}
-
-	public MpzT Divide(int x, out MpzT remainder)
-	{
-		var quotient = new MpzT();
-		remainder = new MpzT();
-		if (x >= 0)
-		{
-			Mpir.MpzTdivQrUi(quotient, remainder, this, (uint)x);
-			return quotient;
-		}
-		else
-		{
-			Mpir.MpzTdivQrUi(quotient, remainder, this, (uint)-x);
 			var res = -quotient;
 			return res;
 		}
@@ -305,14 +314,6 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return quotient;
 	}
 
-	public MpzT Divide(uint x, out MpzT remainder)
-	{
-		var quotient = new MpzT();
-		remainder = new MpzT();
-		Mpir.MpzTdivQrUi(quotient, remainder, this, x);
-		return quotient;
-	}
-
 	public MpzT Divide(uint x, out uint remainder)
 	{
 		// Unsure about the below exception for negative numbers. It's in Stefanov's
@@ -321,20 +322,18 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		//if(this.ChunkCount < 0)
 		//	throw new InvalidOperationException("This method may not be called when the instance represents a negative number.");
 		var quotient = new MpzT();
-		remainder = Mpir.MpzTdivQUi(quotient, this, x);
-		return quotient;
-	}
-
-	public MpzT Divide(uint x, out int remainder)
-	{
-		var quotient = new MpzT();
 		var uintRemainder = Mpir.MpzTdivQUi(quotient, this, x);
 		if (uintRemainder > int.MaxValue)
 			throw new OverflowException();
 		if (Mpir.MpzCmpSi(this, 0) >= 0)
-			remainder = (int)uintRemainder;
+			remainder = uintRemainder;
+		else if (uintRemainder != 0)
+		{
+			Mpir.MpzSubUi(quotient, quotient, 1);
+			remainder = x - uintRemainder;
+		}
 		else
-			remainder = -(int)uintRemainder;
+			remainder = 0;
 		return quotient;
 	}
 
@@ -469,7 +468,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public void FromByteArray(ReadOnlySpan<byte> source, int order)
 	{
 		Mpir.MpirMpzImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
-		if (source[order == 1 ? 0 : ^1] >= 128)
+		if (source.Length != 0 && source[order == 1 ? 0 : ^1] >= 128)
 			Mpir.MpzSub(this, this, One << source.Length * 8);
 	}
 
@@ -531,7 +530,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		return z;
 	}
 
-	public int GetByteCount() => (BitLength + 7) / 8;
+	public int GetByteCount() => BitLength / 8 + 1;
 	public MpzT GetFullBitLength() => Mpir.MpzSizeinbase(this, 2);
 
 	public override int GetHashCode()
@@ -970,8 +969,9 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		var result = this >> shiftAmount;
 		if (shiftAmount <= 32)
 		{
-			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount) >= 1u << shiftAmount - 1)
-				result++.Dispose();
+			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount).CompareTo(1u << shiftAmount - 1)
+				is var comp && (comp > 0 || comp == 0 && (result & 1) != 0))
+				result++;
 		}
 		else
 		{
@@ -979,8 +979,8 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 			Mpir.MpzSubUi(left, left, 1);
 			Mpir.MpzAnd(left, left, this);
 			using var right = One << shiftAmount - 1;
-			if (Mpir.MpzCmp(left, right) >= 0)
-				result++.Dispose();
+			if (Mpir.MpzCmp(left, right) is var comp && (comp > 0 || comp == 0 && (result & 1) != 0))
+				result++;
 		}
 		return result;
 	}
@@ -1030,7 +1030,14 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 	public override string? ToString() => ToString((int)DefaultStringBase);
+
+	/// <summary>
+	/// Возвращает строковую запись числа в указанной системе счисления.
+	/// </summary>
+	/// <param name="base">Система счисления, в которой нужно получить строковую запись числа (от 2 до 36).</param>
+	/// <returns>См. общее описание.</returns>
 	public string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
+
 	public string ToString(string? format, IFormatProvider? formatProvider) =>
 		string.Format(formatProvider, format ?? "{0:N0}", ToString());
 	string IConvertible.ToString(IFormatProvider? provider) => ToString() ?? "";
@@ -1268,7 +1275,7 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		var bufSize = (int)Math.Min(Mpir.MpzSizeinbase(this, 256), 2147483647);
 		if (destination.Length >= bufSize)
 		{
-			Mpir.MpirMpzExport(destination[^bufSize..], 1, sizeof(byte), 0, 0u, this);
+			Mpir.MpirMpzExport(destination, 1, sizeof(byte), 0, 0u, this);
 			bytesWritten = bufSize;
 			return true;
 		}
@@ -1535,20 +1542,20 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	}
 
 	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
-	public static MpzT operator %(MpzT x, int mod)
+	public static int operator %(MpzT x, int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		var z = new MpzT();
 		Mpir.MpzFdivRUi(z, x, (uint)mod);
-		return z;
+		return Mpir.MpzGetSi(z);
 	}
 
 	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
-	public static MpzT operator %(MpzT x, uint mod)
+	public static uint operator %(MpzT x, uint mod)
 	{
 		var z = new MpzT();
 		Mpir.MpzFdivRUi(z, x, mod);
-		return z;
+		return Mpir.MpzGetUi(z);
 	}
 
 	/// <inheritdoc cref="operator &(MpzT, MpzT)"/>
@@ -1587,8 +1594,16 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 	public static MpzT operator >>(MpzT x, int shiftAmount)
 	{
 		var z = new MpzT();
-		Mpir.MpzTdivQ2exp(z, x, (uint)shiftAmount);
-		return z;
+		if (Mpir.MpzCmpSi(x, 0) < 0)
+		{
+			Mpir.MpzTdivQ2exp(z, ~x, (uint)shiftAmount);
+			return ~z;
+		}
+		else
+		{
+			Mpir.MpzTdivQ2exp(z, x, (uint)shiftAmount);
+			return z;
+		}
 	}
 
 	public static MpzT operator >>>(MpzT x, int shiftAmount)
@@ -1600,32 +1615,16 @@ public sealed class MpzT : ICloneable, IConvertible, IComparable, IComparable<Mp
 
 	public static MpzT operator ++(MpzT x)
 	{
-		if (ReferenceEquals(x, Zero) || ReferenceEquals(x, One))
-		{
-			var z = new MpzT();
-			Mpir.MpzAddUi(z, x, 1);
-			return z;
-		}
-		else
-		{
-			Mpir.MpzAddUi(x, x, 1);
-			return x;
-		}
+		var z = new MpzT();
+		Mpir.MpzAddUi(z, x, 1);
+		return z;
 	}
 
 	public static MpzT operator --(MpzT x)
 	{
-		if (ReferenceEquals(x, Zero) || ReferenceEquals(x, One))
-		{
-			var z = new MpzT();
-			Mpir.MpzSubUi(z, x, 1);
-			return z;
-		}
-		else
-		{
-			Mpir.MpzSubUi(x, x, 1);
-			return x;
-		}
+		var z = new MpzT();
+		Mpir.MpzSubUi(z, x, 1);
+		return z;
 	}
 
 	public static bool operator ==(MpzT? x, MpzT? y) => (x ?? Zero).CompareTo(y) == 0;

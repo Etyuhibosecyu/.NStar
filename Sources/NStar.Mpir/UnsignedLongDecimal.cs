@@ -6,8 +6,7 @@
 /// (при достаточной длине мантиссы, разумеется!).
 /// </summary>
 [DebuggerDisplay("{ToShortString()}")]
-public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable, IComparable<UnsignedLongDecimal>,
-	IDisposable, IBinaryInteger<UnsignedLongDecimal>, IFloatingPoint<UnsignedLongDecimal>
+public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 {
 	private enum ComputeOperation : byte
 	{
@@ -79,7 +78,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 
 	public UnsignedLongDecimal(UnsignedLongDecimal op) : this(op.m, op.e?.Copy(), op.MantissaLength) { }
 
-	public UnsignedLongDecimal(UnsignedLongDecimal op, int mantissaLength = DefaultMantissaLength)
+	public UnsignedLongDecimal(UnsignedLongDecimal op, int mantissaLength)
 		: this(op.GetWithOtherML(mantissaLength, true) is var x ? x.m : MpuT.Zero, x.e, mantissaLength) { }
 
 	public UnsignedLongDecimal(BigInteger op, int mantissaLength = DefaultMantissaLength)
@@ -143,9 +142,14 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 
 	public static UnsignedLongDecimal AdditiveIdentity => Zero;
 	static UnsignedLongDecimal IFloatingPointConstants<UnsignedLongDecimal>.E => throw new NotSupportedException();
+	UnsignedLongDecimal? IUnsignedLongReal<UnsignedLongDecimal>.Exponent => e;
+	MpuT IUnsignedLongReal<UnsignedLongDecimal>.Mantissa => m;
 	private int MantissaByteLength => (int)Math.Ceiling((MantissaLength + Math.Log10(9)) * Math.Log(10, 256));
-	private MpuT MantissaMask => MantissaMasks.GetOrAdd(MantissaLength, x => MpuT.PowerOfTen(MantissaLength) * 9 - 1);
+	int IUnsignedLongReal<UnsignedLongDecimal>.MantissaByteLength => MantissaByteLength;
+	int IUnsignedLongReal<UnsignedLongDecimal>.MantissaLength => MantissaLength;
+	private MpuT MantissaMask => MantissaMasks.GetOrAdd(MantissaLength, x => MpuT.PowerOfTen(x) * 9 - 1);
 	private MpuT MantissaOverflow => MpuT.PowerOfTen(MantissaLength);
+	MpuT IUnsignedLongReal<UnsignedLongDecimal>.MantissaOverflow => MantissaOverflow;
 	public static UnsignedLongDecimal MultiplicativeIdentity => One;
 	static UnsignedLongDecimal ISignedNumber<UnsignedLongDecimal>.NegativeOne => throw new NotSupportedException();
 	public static UnsignedLongDecimal One { get; } = new(1, MinMantissaLength);
@@ -253,9 +257,9 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			if (y.e is null && x.e is not null && (x.e.e is not null || x.e.m + x.MantissaLength > y.m.DecLength))
 				return new(2, null);
 			if (x.e is null && y.e is not null && y.e.e is null)
-				return new(Math.Sign(x.m.ShiftRightDec((y.e.m & -1) - 1).CompareTo(y.MantissaOverflow + y.m)) + 1, null);
+				return new(Math.Sign(x.m.ShiftRightDec((int)y.e.m - 1).CompareTo(y.MantissaOverflow + y.m)) + 1, null);
 			if (y.e is null && x.e is not null && x.e.e is null)
-				return new(Math.Sign((x.MantissaOverflow + x.m).CompareTo(y.m.ShiftRightDec((x.e.m & -1) - 1))) + 1, null);
+				return new(Math.Sign((x.MantissaOverflow + x.m).CompareTo(y.m.ShiftRightDec((int)x.e.m - 1))) + 1, null);
 			var xDecLength = Compute(x, null!, ComputeOperation.DecLength);
 			var yDecLength = Compute(y, null!, ComputeOperation.DecLength);
 			var compared = Compute(xDecLength, yDecLength, ComputeOperation.Compare).m;
@@ -279,7 +283,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				if (x.e is null)
 					return new(x.m, mantissaLength);
 				else if (Compute(x.e, mlDiff, ComputeOperation.Compare).m <= 1)
-					return new((xMantissaOverfow + x.m).ShiftLeftDec((x.e & -1) - 1), mantissaLength);
+					return new((xMantissaOverfow + x.m).ShiftLeftDec((int)x.e - 1), mantissaLength);
 				newE = Compute(x.e, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				newE = Compute(newE, new(mlDiff, null, mantissaLength), ComputeOperation.Subtract);
 				return new(x.m.ShiftLeftDec(mlDiff), newE, mantissaLength);
@@ -320,11 +324,11 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			{
 				if (xDecLength.e is not null || xDecLength.m.BitLength >= sizeof(int) * 8)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
-				var blDiff = (xDecLength & -1) - Math.Max(y.MantissaLength + 1, yDecLength & -1);
+				var blDiff = (int)xDecLength - Math.Max(y.MantissaLength + 1, (int)yDecLength);
 				if (blDiff > mantissaLength)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var ym = (y.e is null ? 0 : yMantissaOverflow) + y.m;
-				var mSum = x.m.ShiftLeftDec(xmlDiff) + ym.ShiftLeftDec(ymlDiff).ShiftRightRoundDec(blDiff & -1);
+				var mSum = x.m.ShiftLeftDec(xmlDiff) + ym.ShiftLeftDec(ymlDiff).ShiftRightRoundDec(blDiff);
 				if (Mpir.MpuCmp(mSum, mantissaMask) > 0)
 				{
 					newE = Compute(xDecLength, mantissaLength - 1, ComputeOperation.Subtract);
@@ -351,7 +355,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				if (Compute(blDiff, mantissaLength + 1, ComputeOperation.Compare).m > 1)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				mSum = x.m.ShiftLeftDec(xmlDiff)
-					+ (yMantissaOverflow + y.m).ShiftLeftDec(ymlDiff).ShiftRightRoundDec(blDiff & -1);
+					+ (yMantissaOverflow + y.m).ShiftLeftDec(ymlDiff).ShiftRightRoundDec((int)blDiff);
 				if (Mpir.MpuCmp(mSum, mantissaMask) > 0)
 				{
 					newE = Compute(xDecLength, mantissaLength - 1, ComputeOperation.Subtract);
@@ -376,7 +380,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 					return new(newM, b ? Compute(newE, 1, ComputeOperation.Add) : newE, mantissaLength);
 				}
 				var eDiff = Compute(y.e, x.e, ComputeOperation.Subtract);
-				mSum = x.m + (yMantissaOverflow + y.m).ShiftLeftDec(eDiff & -1);
+				mSum = x.m + (yMantissaOverflow + y.m).ShiftLeftDec((int)eDiff);
 				if (Mpir.MpuCmp(mSum, mantissaMask) > 0)
 				{
 					newE = Compute(xDecLength, mantissaLength - 1, ComputeOperation.Subtract);
@@ -399,13 +403,13 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				Debug.Assert(x.e is not null);
 				if (Compute(x.e, mantissaLength + 1, ComputeOperation.Compare).m >= 1)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
-				var mDiff = mantissaOverflow + x.m - y.m.ShiftRightRoundDec((x.e & -1) - 1);
+				var mDiff = mantissaOverflow + x.m - y.m.ShiftRightRoundDec((int)x.e - 1);
 				if (Mpir.MpuCmp(mDiff, mantissaOverflow) >= 0)
 					return new(mDiff - mantissaOverflow, x.e?.Copy(), mantissaLength);
 				else if (x.e.e is null && x.e.m == 1)
 					return new(mDiff, null, mantissaLength);
 				else
-					return new(mDiff * 10 - mantissaOverflow, (x.e & -1) - 1, mantissaLength);
+					return new(mDiff * 10 - mantissaOverflow, (int)x.e - 1, mantissaLength);
 			}
 			else if (x.e is null || Compute(x.e, y.e, ComputeOperation.Compare).m < 1)
 				throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
@@ -414,7 +418,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				var eDiff = Compute(x.e, y.e, ComputeOperation.Subtract);
 				if (Compute(eDiff, mantissaLength, ComputeOperation.Compare).m > 1)
 					return x.Copy();
-				var mDiff = mantissaOverflow + x.m - (mantissaOverflow + y.m).ShiftRightRoundDec(eDiff & -1);
+				var mDiff = mantissaOverflow + x.m - (mantissaOverflow + y.m).ShiftRightRoundDec((int)eDiff);
 				if (Mpir.MpuCmp(mDiff, mantissaOverflow) >= 0)
 					return new(mDiff - mantissaOverflow, x.e?.Copy(), mantissaLength);
 				else if (x.e.e is null && x.e.m == 1)
@@ -429,7 +433,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 					return new(0, null, mantissaLength);
 				var shiftAmount = mantissaLength - mDiff.DecLength + 1;
 				if (Compute(x.e, shiftAmount, ComputeOperation.Compare).m <= 1)
-					return new(mDiff.ShiftLeftDec((x.e & -1) - 1), null);
+					return new(mDiff.ShiftLeftDec((int)x.e - 1), null);
 				return new(mDiff.ShiftLeftDec(shiftAmount) - mantissaOverflow,
 					Compute(x.e, shiftAmount, ComputeOperation.Subtract), mantissaLength);
 			}
@@ -471,7 +475,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			else if (Mpir.MpuCmpSi(x, 1) == 0)
 				return (this, MpuT.Zero);
 			else if (e <= x.DecLength + 1)
-				return (new((mantissaOverflow + m).ShiftLeftDec((e & -1) - 1).Divide(x, out var remainder),
+				return (new((mantissaOverflow + m).ShiftLeftDec((int)e - 1).Divide(x, out var remainder),
 					MantissaLength), remainder);
 			var quotient = (mantissaOverflow + m).ShiftLeftDec(MantissaLength + 1) / x;
 			var shiftAmount = quotient.DecLength - MantissaLength - 1;
@@ -481,11 +485,11 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		else if (e is null || e < x.DecLength - MantissaLength - 1)
 			return (new(0, null, MantissaLength), (MpuT)this);
 		else if (e <= x.DecLength + 1)
-			return (new((MantissaOverflow + m).ShiftLeftDec((e & -1) - 1).Divide(x, out var remainder), null,
+			return (new((MantissaOverflow + m).ShiftLeftDec((int)e - 1).Divide(x, out var remainder), null,
 				MantissaLength), remainder);
 		else
 		{
-			var quotient = (MantissaOverflow + m).ShiftLeftDec(e & -1) / (x * 10);
+			var quotient = (MantissaOverflow + m).ShiftLeftDec((int)e) / (x * 10);
 			var shiftAmount = quotient.DecLength - MantissaLength;
 			return (new(quotient.ShiftRightRoundDec(shiftAmount - 1) - MantissaOverflow, shiftAmount, MantissaLength), MpuT.Zero);
 		}
@@ -511,7 +515,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			else if (Mpir.MpuCmpSi(x.m, 1) == 0)
 				return (this2, new(0, mantissaLength));
 			else if (this2.e <= x.m.DecLength)
-				return (new((MantissaOverflow + this2.m).ShiftLeftDec((this2.e & -1) - 1).Divide(x.m, out var remainder),
+				return (new((MantissaOverflow + this2.m).ShiftLeftDec((int)this2.e - 1).Divide(x.m, out var remainder),
 					mantissaLength), new(remainder, mantissaLength));
 			var quotient = (MantissaOverflow + this2.m).ShiftLeftDec(mantissaLength + 1) / x.m;
 			var shiftAmount = quotient.DecLength - mantissaLength - 1;
@@ -522,9 +526,9 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			return (new(0, mantissaLength), this2);
 		else if (this2.e <= x.e + mantissaLength)
 		{
-			var eDiff = (this2.e - x.e) & -1;
+			var eDiff = (int)(this2.e - x.e);
 			var quotient = (MantissaOverflow + this2.m).ShiftLeftDec(eDiff).Divide(MantissaOverflow + x.m, out var remainder);
-			return (new(quotient, mantissaLength), new(remainder.ShiftLeftDec((x.e & -1) - 1), mantissaLength));
+			return (new(quotient, mantissaLength), new(remainder.ShiftLeftDec((int)x.e - 1), mantissaLength));
 		}
 		else
 		{
@@ -634,7 +638,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		return (hash * 16777619) ^ e.GetHashCode();
 	}
 
-	public int GetShortestBitLength() => e is null ? m.GetShortestBitLength() : (e + MantissaLength) & -1;
+	public int GetShortestBitLength() => e is null ? m.GetShortestBitLength() : (int)(e + MantissaLength);
 	public int GetSignificandBitLength() => m.GetShortestBitLength();
 	public int GetSignificandByteCount() => m.GetByteCount();
 	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
@@ -702,31 +706,12 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 	public byte[] ToByteArray(int order, bool saveMantissaLength = true)
 	{
 		var bytes = GC.AllocateUninitializedArray<byte>(GetByteCount(saveMantissaLength));
-		var indent = 0;
-		if (saveMantissaLength)
-		{
-			BitConverter.TryWriteBytes(bytes, MantissaByteLength);
-			indent = sizeof(int);
-		}
-		if (e is null)
-		{
-			if (order < 0)
-				m.TryWriteLittleEndian(bytes.AsSpan(indent), out _);
-			else
-				m.TryWriteBigEndian(bytes.AsSpan(indent), out _);
+		if (order < 0 && TryWriteLittleEndian(bytes, out var bytesWritten, saveMantissaLength) && bytesWritten == bytes.Length)
 			return bytes;
-		}
-		var mLength = m.GetByteCount();
-		if (order < 0)
-			m.TryWriteLittleEndian(bytes.AsSpan(indent), out _);
+		else if (order > 0 && TryWriteBigEndian(bytes, out bytesWritten, saveMantissaLength) && bytesWritten == bytes.Length)
+			return bytes;
 		else
-			m.TryWriteBigEndian(bytes.AsSpan(^mLength), out _);
-		Array.Fill<byte>(bytes, 0, order < 0 ? mLength : indent, MantissaByteLength - mLength);
-		if (order < 0)
-			e.TryWriteLittleEndian(bytes.AsSpan(indent + MantissaByteLength), out _, false);
-		else
-			e.TryWriteBigEndian(bytes.AsSpan(indent..^MantissaByteLength), out _, false);
-		return bytes;
+			throw new InvalidOperationException("Ошибка, не удалось преобразовать в массив байт.");
 	}
 
 	char IConvertible.ToChar(IFormatProvider? provider) => (char)(uint)this;
@@ -738,54 +723,22 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 	long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
-	public string? ToShortString() =>
-		m.val == 0 ? "0" : DecLength >= 65536 ? "Too large for short string, use ToString() instead." : ((MpuT)this).ToString();
+
+	public string? ToShortString()
+	{
+		if (m.val == 0)
+			return (string?)"0";
+		else if (DecLength >= 65536)
+			return (string?)"Too large for short string, use ToString() instead.";
+		else
+			return ((MpuT)this).ToString();
+	}
+
 	public override string? ToString() => ((MpuT)this).ToString(DefaultStringBase);
 	public string ToString(IFormatProvider? provider) => ToString(DefaultStringBase) ?? "";
 	public string ToString(string? format, IFormatProvider? formatProvider) =>
 		string.Format(formatProvider, format ?? "{0:N0}", ToString(DefaultStringBase));
 	public string? ToString(uint @base) => ((MpuT)this).ToString(@base);
-
-	object IConvertible.ToType(Type targetType, IFormatProvider? provider)
-	{
-		ArgumentNullException.ThrowIfNull(targetType);
-		if (targetType == typeof(UnsignedLongDecimal))
-			return Copy();
-		IConvertible value = this;
-		if (targetType == typeof(sbyte))
-			return value.ToSByte(provider);
-		else if (targetType == typeof(byte))
-			return value.ToByte(provider);
-		else if (targetType == typeof(short))
-			return value.ToInt16(provider);
-		else if (targetType == typeof(ushort))
-			return value.ToUInt16(provider);
-		else if (targetType == typeof(int))
-			return value.ToInt32(provider);
-		else if (targetType == typeof(uint))
-			return value.ToUInt32(provider);
-		else if (targetType == typeof(long))
-			return value.ToInt64(provider);
-		else if (targetType == typeof(ulong))
-			return value.ToUInt64(provider);
-		else if (targetType == typeof(float))
-			return value.ToSingle(provider);
-		else if (targetType == typeof(double))
-			return value.ToDouble(provider);
-		else if (targetType == typeof(decimal))
-			return value.ToDecimal(provider);
-		else if (targetType == typeof(MpzT))
-			return new MpzT(value.ToString(provider));
-		else if (targetType == typeof(MpuT))
-			return new MpuT(value.ToString(provider));
-		else if (targetType == typeof(string))
-			return value.ToString(provider);
-		else if (targetType == typeof(object))
-			return Copy();
-		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(UnsignedLongDecimal)
-			+ ", " + nameof(MpzT) + ", " + nameof(MpuT)
-			+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
-	}
 
 	ushort IConvertible.ToUInt16(IFormatProvider? provider) => (ushort)this;
 	uint IConvertible.ToUInt32(IFormatProvider? provider) => (uint)this;
@@ -801,7 +754,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			result = value switch
 			{
 				UnsignedLongDecimal uld => uld,
-				MpzT z => z,
+				MpzT z => (UnsignedLongDecimal)z,
 				MpuT uz => uz,
 				byte y => y,
 				sbyte sy => sy,
@@ -841,7 +794,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			result = value switch
 			{
 				UnsignedLongDecimal uld => uld,
-				MpzT z => z,
+				MpzT z => (UnsignedLongDecimal)z,
 				MpuT uz => uz,
 				byte y => y,
 				sbyte sy => sy,
@@ -999,33 +952,10 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten) =>
 		TryWriteBigEndian(destination, out bytesWritten, true);
 
-	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten, bool saveMantissaLength)
-	{
-		bytesWritten = 0;
-		if (saveMantissaLength)
-		{
-			BitConverter.TryWriteBytes(destination, MantissaByteLength);
-			destination = destination[sizeof(int)..];
-			bytesWritten += sizeof(int);
-		}
-		if (e is null)
-			return m.TryWriteBigEndian(destination, out bytesWritten);
-		var mLength = m.GetByteCount();
-		if (!m.TryWriteBigEndian(destination[^mLength..], out _))
-		{
-			bytesWritten = 0;
-			return false;
-		}
-		bytesWritten += MantissaByteLength;
-		destination[..(MantissaByteLength - mLength)].Clear();
-		if (!e.TryWriteBigEndian(destination[..^MantissaByteLength], out var bytesWritten2, saveMantissaLength))
-		{
-			bytesWritten = 0;
-			return false;
-		}
-		bytesWritten += bytesWritten2;
-		return true;
-	}
+	/// <inheritdoc cref="TryWriteBigEndian(Span{byte}, out int)"/>
+	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten, bool saveMantissaLength) =>
+		((IUnsignedLongReal<UnsignedLongDecimal>)this)
+		.TryWriteBigEndianInterface(destination, out bytesWritten, saveMantissaLength);
 
 	public bool TryWriteExponentBigEndian(Span<byte> destination, out int bytesWritten) =>
 		(e is null ? 0 : e).TryWriteBigEndian(destination, out bytesWritten);
@@ -1035,33 +965,9 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten) =>
 		TryWriteLittleEndian(destination, out bytesWritten, true);
 
-	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten, bool saveMantissaLength)
-	{
-		bytesWritten = 0;
-		if (saveMantissaLength)
-		{
-			BitConverter.TryWriteBytes(destination, MantissaByteLength);
-			destination = destination[sizeof(int)..];
-			bytesWritten += sizeof(int);
-		}
-		if (e is null)
-			return m.TryWriteLittleEndian(destination, out bytesWritten);
-		var mLength = m.GetByteCount();
-		if (!m.TryWriteLittleEndian(destination, out _))
-		{
-			bytesWritten = 0;
-			return false;
-		}
-		bytesWritten += MantissaByteLength;
-		destination[mLength..MantissaByteLength].Clear();
-		if (!e.TryWriteLittleEndian(destination[MantissaByteLength..], out var bytesWritten2, saveMantissaLength))
-		{
-			bytesWritten = 0;
-			return false;
-		}
-		bytesWritten += bytesWritten2;
-		return true;
-	}
+	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten, bool saveMantissaLength) =>
+		((IUnsignedLongReal<UnsignedLongDecimal>)this)
+		.TryWriteLittleEndianInterface(destination, out bytesWritten, saveMantissaLength);
 
 	public bool TryWriteSignificandBigEndian(Span<byte> destination, out int bytesWritten) =>
 		m.TryWriteBigEndian(destination, out bytesWritten);
@@ -1075,7 +981,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 	public static implicit operator UnsignedLongDecimal(uint value) => new(value);
 	public static implicit operator UnsignedLongDecimal(long value) => new(value);
 	public static implicit operator UnsignedLongDecimal(ulong value) => new(value);
-	public static implicit operator UnsignedLongDecimal(MpzT value) => new(value);
+	public static explicit operator UnsignedLongDecimal(MpzT value) => new(value);
 	public static implicit operator UnsignedLongDecimal(MpuT value) => new(value);
 	public static explicit operator UnsignedLongDecimal(float value) => new((double)value);
 	public static explicit operator UnsignedLongDecimal(double value) => new(value);
@@ -1084,7 +990,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 	public static explicit operator byte(UnsignedLongDecimal value) => (byte)(uint)value;
 	public static explicit operator short(UnsignedLongDecimal value) => (short)(int)value;
 	public static explicit operator ushort(UnsignedLongDecimal value) => (ushort)(uint)value;
-	public static explicit operator int(UnsignedLongDecimal value) => value & -1;
+	public static explicit operator int(UnsignedLongDecimal value) => (int)(uint)value;
 	public static explicit operator uint(UnsignedLongDecimal value) => value & uint.MaxValue;
 	public static explicit operator long(UnsignedLongDecimal value) => (long)(value & ulong.MaxValue).m;
 	public static explicit operator ulong(UnsignedLongDecimal value) => (ulong)(value & ulong.MaxValue).m;
@@ -1096,7 +1002,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			return double.PositiveInfinity;
 		else if (value.e is null)
 			return (double)value.m;
-		return (double)(value.MantissaOverflow + value.m).ShiftLeftDec((value.e & -1) - 1);
+		return (double)(value.MantissaOverflow + value.m).ShiftLeftDec((int)value.e - 1);
 	}
 
 	public static explicit operator decimal(UnsignedLongDecimal value)
@@ -1114,7 +1020,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		if (value.e is null)
 			return new(value.m);
 		else if (value.e <= int.MaxValue)
-			return new MpzT(value.MantissaOverflow + value.m) << (value.e & -1) - 1;
+			return new MpzT(value.MantissaOverflow + value.m) << (int)value.e - 1;
 		else
 			return 0;
 	}
@@ -1124,7 +1030,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		if (value.e is null)
 			return new(value.m);
 		else if (value.e <= int.MaxValue)
-			return (value.MantissaOverflow + value.m).ShiftLeftDec((value.e & -1) - 1);
+			return (value.MantissaOverflow + value.m).ShiftLeftDec((int)value.e - 1);
 		else
 			return 0;
 	}
@@ -1231,7 +1137,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		else if (y == 1)
 			return x.Copy();
 		else if (x.e <= sizeof(int) * 8 - int.LeadingZeroCount(y))
-			return new((MantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) / y, mantissaLength);
+			return new((MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) / y, mantissaLength);
 		var quotient = (MantissaOverflow + x.m).ShiftLeftDec(mantissaLength + 1) / y;
 		var shiftAmount = quotient.DecLength - mantissaLength - 1;
 		return new(quotient.ShiftRightRoundDec(shiftAmount) - MantissaOverflow,
@@ -1249,7 +1155,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		else if (y == 1)
 			return x.Copy();
 		else if (x.e <= sizeof(uint) * 8 - uint.LeadingZeroCount(y))
-			return new((MantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) / y, mantissaLength);
+			return new((MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) / y, mantissaLength);
 		var quotient = (MantissaOverflow + x.m).ShiftLeftDec(mantissaLength + 1) / y;
 		var shiftAmount = quotient.DecLength - mantissaLength - 1;
 		return new(quotient.ShiftRightRoundDec(shiftAmount) - MantissaOverflow,
@@ -1272,7 +1178,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			else if (Mpir.MpuCmpSi(y.m, 1) == 0)
 				return x.Copy();
 			else if (x.e <= y.m.DecLength)
-				return new((MantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) / y.m, mantissaLength);
+				return new((MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) / y.m, mantissaLength);
 			var quotient = (MantissaOverflow + x.m).ShiftLeftDec(mantissaLength + 1) / y.m;
 			var shiftAmount = quotient.DecLength - mantissaLength - 1;
 			return new(quotient.ShiftRightRoundDec(shiftAmount) - MantissaOverflow,
@@ -1304,7 +1210,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		else if (x.e > x.MantissaLength)
 			return 0;
 		else
-			return (x.MantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) & y;
+			return (x.MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) & y;
 	}
 
 	public static uint operator &(UnsignedLongDecimal x, uint y)
@@ -1316,7 +1222,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		else if (x.e > x.MantissaLength)
 			return 0;
 		else
-			return (x.MantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) & y;
+			return (x.MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) & y;
 	}
 
 	public static UnsignedLongDecimal operator &(UnsignedLongDecimal x, UnsignedLongDecimal y)
@@ -1332,13 +1238,13 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			Debug.Assert(x.e is not null);
 			if (x.e > mantissaLength)
 				return new(0, mantissaLength);
-			return new((mantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) & y.m, mantissaLength);
+			return new((mantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) & y.m, mantissaLength);
 		}
 		else if (x.e is null)
 		{
 			if (y.e > x.m.DecLength)
 				return new(0, mantissaLength);
-			return new(x.m & (mantissaOverflow + y.m).ShiftLeftDec((y.e & -1) - 1), mantissaLength);
+			return new(x.m & (mantissaOverflow + y.m).ShiftLeftDec((int)y.e - 1), mantissaLength);
 		}
 		else
 		{
@@ -1349,8 +1255,8 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				return new(0, mantissaLength);
 			if (x.DecLength > 300_000_000 || y.DecLength > 300_000_000)
 				throw new OverflowException("Ошибка, эти числа слишком большие для этой операции!");
-			return new((mantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1)
-				& (mantissaOverflow + y.m).ShiftLeftDec((y.e & -1) - 1), mantissaLength);
+			return new((mantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1)
+				& (mantissaOverflow + y.m).ShiftLeftDec((int)y.e - 1), mantissaLength);
 		}
 	}
 
@@ -1367,13 +1273,13 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			Debug.Assert(x.e is not null);
 			if (x.e >= mantissaLength + 1)
 				return x.Copy();
-			return new((mantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) | y.m, mantissaLength);
+			return new((mantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) | y.m, mantissaLength);
 		}
 		else if (x.e is null)
 		{
 			if (y.e >= mantissaLength + 1)
 				return y.Copy();
-			return new(x.m | (mantissaOverflow + y.m).ShiftLeftDec((y.e & -1) - 1), mantissaLength);
+			return new(x.m | (mantissaOverflow + y.m).ShiftLeftDec((int)y.e - 1), mantissaLength);
 		}
 		else
 		{
@@ -1384,8 +1290,8 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				return y.Copy();
 			if (x.DecLength > 300_000_000 || y.DecLength > 300_000_000)
 				throw new OverflowException("Ошибка, эти числа слишком большие для этой операции!");
-			return new((mantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1)
-				| (mantissaOverflow + y.m).ShiftLeftDec((y.e & -1) - 1), mantissaLength);
+			return new((mantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1)
+				| (mantissaOverflow + y.m).ShiftLeftDec((int)y.e - 1), mantissaLength);
 		}
 	}
 
@@ -1402,13 +1308,13 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 			Debug.Assert(x.e is not null);
 			if (x.e >= mantissaLength + 1)
 				return x.Copy();
-			return new((mantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1) ^ y.m, mantissaLength);
+			return new((mantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) ^ y.m, mantissaLength);
 		}
 		else if (x.e is null)
 		{
 			if (y.e >= mantissaLength + 1)
 				return y.Copy();
-			return new(x.m ^ (mantissaOverflow + y.m).ShiftLeftDec((y.e & -1) - 1), mantissaLength);
+			return new(x.m ^ (mantissaOverflow + y.m).ShiftLeftDec((int)y.e - 1), mantissaLength);
 		}
 		else
 		{
@@ -1419,8 +1325,8 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 				return y.Copy();
 			if (x.DecLength > 300_000_000 || y.DecLength > 300_000_000)
 				throw new OverflowException("Ошибка, эти числа слишком большие для этой операции!");
-			return new((mantissaOverflow + x.m).ShiftLeftDec((x.e & -1) - 1)
-				^ (mantissaOverflow + y.m).ShiftLeftDec((y.e & -1) - 1), mantissaLength);
+			return new((mantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1)
+				^ (mantissaOverflow + y.m).ShiftLeftDec((int)y.e - 1), mantissaLength);
 		}
 	}
 
@@ -1457,7 +1363,7 @@ public sealed class UnsignedLongDecimal : ICloneable, IConvertible, IComparable,
 		else if (x.e > shiftAmount)
 			return new(x.m, x.e - shiftAmount, x.MantissaLength);
 		else
-			return new((x.MantissaOverflow + x.m).ShiftRightRoundDec(shiftAmount - (x.e & -1) + 1), null, x.MantissaLength);
+			return new((x.MantissaOverflow + x.m).ShiftRightRoundDec(shiftAmount - (int)x.e + 1), null, x.MantissaLength);
 	}
 
 	public static UnsignedLongDecimal operator >>(UnsignedLongDecimal x, UnsignedLongDecimal shiftAmount)

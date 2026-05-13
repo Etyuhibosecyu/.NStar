@@ -1,5 +1,7 @@
 ﻿namespace NStar.SumCollections;
 
+internal delegate bool BigSumWalkPredicate(ListOfBigSums.Node node);
+
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 {
@@ -81,7 +83,8 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		using var en = list.GetEnumerator();
 		if (destinationIndex < destination._size)
 		{
-			using var destSubSet = new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true);
+			using var destSubSet = new TreeSubSet(destination, destinationIndex,
+				Min(destinationIndex + length, destination._size) - 1, true, true);
 			destSubSet.InOrderTreeWalk(node =>
 			{
 				var b = en.MoveNext();
@@ -270,7 +273,8 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			{
 				Parent?.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
-				if (Parent is null || Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
+				if (Parent is null
+					|| Parent.ValuesSum == (Parent.Left?.ValuesSum ?? 0) + (Parent.Right?.ValuesSum ?? 0) + Parent.Value)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -354,7 +358,9 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			Value = new(value);
 		}
 
-		internal override void UpdateValuesSum(BaseSumList<MpzT, ListOfBigSums>.Node? newNode, BaseSumList<MpzT, ListOfBigSums>.Node? oldNode) => ValuesSum += ((newNode as Node)?.ValuesSum ?? 0) - ((oldNode as Node)?.ValuesSum ?? 0);
+		internal override void UpdateValuesSum(BaseSumList<MpzT, ListOfBigSums>.Node? newNode,
+			BaseSumList<MpzT, ListOfBigSums>.Node? oldNode) =>
+			ValuesSum += ((newNode as Node)?.ValuesSum ?? 0) - ((oldNode as Node)?.ValuesSum ?? 0);
 
 #if VERIFY
 
@@ -368,127 +374,10 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 #endif
 	}
 
-	public new struct Enumerator : G.IEnumerator<MpzT>
-	{
-		private readonly ListOfBigSums _list;
-		private readonly int _version;
-
-		private readonly Stack<Node> _stack;
-		private Node? _current;
-
-		private readonly bool _reverse;
-
-		internal Enumerator(ListOfBigSums list) : this(list, reverse: false)
-		{
-		}
-
-		internal Enumerator(ListOfBigSums list, bool reverse)
-		{
-			_list = list;
-			list.VersionCheck();
-			_version = list.version;
-			// 2 log(n + 1) is the maximum height.
-			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(list.TotalCount() + 1)])!;
-			Debug.Assert(_stack is not null);
-			_current = null;
-			_reverse = reverse;
-			Initialize();
-		}
-
-		public readonly MpzT Current
-		{
-			get
-			{
-				if (_current is not null)
-					return _current.Value;
-				return default!; // Should only happen when accessing Current is undefined behavior
-			}
-		}
-
-		readonly object? IEnumerator.Current
-		{
-			get
-			{
-				if (_current is null)
-					throw new InvalidOperationException("Указатель находится за границей коллекции.");
-				return _current.Value;
-			}
-		}
-
-		internal readonly bool NotStartedOrEnded => _current is null;
-
-		public readonly void Dispose() => _stack?.Dispose();
-
-		private void Initialize()
-		{
-			_current = null;
-			var node = _list.root;
-			Node? next, other;
-			while (node is not null)
-			{
-				next = (_reverse ? node.Right : node.Left) as Node;
-				other = (_reverse ? node.Left : node.Right) as Node;
-				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
-				{
-					_stack.Push(node as Node
-						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
-						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
-					node = next;
-				}
-				else if (next is null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
-					node = other;
-				else
-					node = next;
-			}
-		}
-
-		public bool MoveNext()
-		{
-			// Make sure that the underlying subset has not been changed since
-			_list.VersionCheck();
-			if (_version != _list.version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
-			if (_stack.Length == 0)
-			{
-				_current = null;
-				return false;
-			}
-			_current = _stack.Pop();
-			var node = _reverse ? _current.Left : _current.Right;
-			Node? next, other;
-			while (node is not null)
-			{
-				next = _reverse ? node.Right : node.Left;
-				other = _reverse ? node.Left : node.Right;
-				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
-				{
-					_stack.Push(node);
-					node = next;
-				}
-				else if (other is null || !_list.IsWithinRange(other.Left?.LeavesCount ?? 0))
-					node = next;
-				else
-					node = other;
-			}
-			return true;
-		}
-
-		internal void Reset()
-		{
-			if (_version != _list.version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
-			_stack.Clear();
-			Initialize();
-		}
-
-		void IEnumerator.Reset() => Reset();
-	}
-
 	internal sealed class TreeSubSet : ListOfBigSums
 	{
 		private readonly ListOfBigSums _underlying;
-		private readonly int _min;
-		private readonly int _max;
+		internal readonly int _min, _max;
 		// keeps track of whether the length variable is up to date
 		// up to date -> _countVersion = _underlying.version
 		// not up to date -> _countVersion < _underlying.version
@@ -497,8 +386,21 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 		// for instance, you could allow this subset to be defined for i > 10. The list will throw if
 		// anything <= 10 is added, but there is no upper bound. These features Head(), Tail(), were punted
 		// in the spec, and are not available, but the framework is there to make them available at some point.
-		private readonly bool _lBoundActive, _uBoundActive;
+		internal readonly bool _lBoundActive, _uBoundActive;
 		// used to see if the length is out of date
+
+		public TreeSubSet() : base()
+		{
+			_underlying = default!;
+			version = 0;
+			_countVersion = 0;
+			_min = 0;
+			_max = 0;
+			_lBoundActive = false;
+			_uBoundActive = false;
+			root = default!;
+			_size = 0;
+		}
 
 		public TreeSubSet(ListOfBigSums Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
 		{
@@ -513,53 +415,8 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			_size = Max - Min + 1;
 		}
 
-		internal override int MaxInternal
-		{
-			get
-			{
-				VersionCheck();
-				var current = root;
-				int result = default;
-				while (current is not null)
-				{
-					var comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
-					if (comp < 0)
-						current = current.Left;
-					else
-					{
-						result = current.Left?.LeavesCount ?? 0;
-						if (comp == 0)
-							break;
-						current = current.Right;
-					}
-				}
-				return result;
-			}
-		}
-
-		internal override int MinInternal
-		{
-			get
-			{
-				VersionCheck();
-				var current = root;
-				int result = default;
-				while (current is not null)
-				{
-					var comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
-					if (comp > 0)
-						current = current.Right;
-					else
-					{
-						result = current.Left?.LeavesCount ?? 0;
-						if (comp == 0)
-							break;
-						current = current.Left;
-					}
-				}
-				return result;
-			}
-		}
+		internal override int MaxInternal => MaxInternalStatic(this);
+		internal override int MinInternal => MinInternalStatic(this);
 
 		internal override bool BreadthFirstTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action)
 		{
@@ -627,87 +484,8 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
 		}
 
-		internal override bool InOrderTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action)
-		{
-			VersionCheck();
-			if (root is null)
-				return true;
-			// The maximum height of a red-black tree is 2*lg(n+1).
-			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
-			Debug.Assert(stack is not null);
-			var current = root;
-			using var indexStack = (Stack<int>?)typeof(Stack<int>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
-			Debug.Assert(indexStack is not null);
-			var index = current.Left?.LeavesCount ?? 0;
-			using var flagStack = (Stack<bool>?)typeof(Stack<bool>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
-			Debug.Assert(flagStack is not null);
-			while (current is not null)
-			{
-				if (IsWithinRange(index))
-				{
-					stack.Push(current as Node
-						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
-						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
-					indexStack.Push(index);
-					flagStack.Push(true);
-					current = current.Left;
-					index -= (current?.Right?.LeavesCount ?? 0) + 1;
-				}
-				else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
-				{
-					current = current.Right;
-					index += (current?.Left?.LeavesCount ?? 0) + 1;
-				}
-				else
-				{
-					stack.Push(current as Node
-						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
-						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
-					indexStack.Push(index);
-					flagStack.Push(false);
-					current = current.Left;
-					index -= (current?.Right?.LeavesCount ?? 0) + 1;
-				}
-			}
-			while (stack.Length != 0)
-			{
-				current = stack.Pop();
-				if (flagStack.Pop() && !action(current))
-					return false;
-				var node = current.Right;
-				index = indexStack.Pop() + (node?.Left?.LeavesCount ?? 0) + 1;
-				while (node is not null)
-				{
-					if (IsWithinRange(index))
-					{
-						stack.Push(node as Node
-							?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
-							" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
-						indexStack.Push(index);
-						flagStack.Push(true);
-						node = node.Left;
-						index -= (node?.Right?.LeavesCount ?? 0) + 1;
-					}
-					else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
-					{
-						node = node.Right;
-						index += (node?.Left?.LeavesCount ?? 0) + 1;
-					}
-					else
-					{
-						stack.Push(node as Node
-							?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
-							" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
-						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
-						flagStack.Push(false);
-						node = node.Left;
-						index -= (node?.Right?.LeavesCount ?? 0) + 1;
-					}
-				}
-			}
-			return true;
-		}
+		internal override bool InOrderTreeWalk(BaseSumWalkPredicate<MpzT, ListOfBigSums> action) =>
+			InOrderTreeWalk(this, action);
 
 		public override ListOfBigSums Insert(int index, MpzT value)
 		{
@@ -768,5 +546,3 @@ public class ListOfBigSums : BaseSumList<MpzT, ListOfBigSums>
 #endif
 	}
 }
-
-internal delegate bool BigSumWalkPredicate(ListOfBigSums.Node node);

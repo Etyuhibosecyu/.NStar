@@ -1,10 +1,13 @@
-﻿using System.Numerics;
+﻿using System.Linq;
+using System.Numerics;
 
 namespace NStar.SumCollections;
 
-internal delegate bool BaseSumWalkPredicate<T, TCertain>(BaseSumList<T, TCertain>.Node node) where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new();
+internal delegate bool BaseSumWalkPredicate<T, TCertain>(BaseSumList<T, TCertain>.Node node)
+	where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new();
 
-public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new()
+public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain>
+	where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new()
 {
 	private protected Node? root;
 	private protected int version;
@@ -165,7 +168,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		Changed();
 	}
 
-	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent,
+		out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the value from the successor to the matching node, and delete the successor.
@@ -207,7 +211,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											  // `sibling` becomes the child of `grandParent` or `root` after rotation.
+											  // Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -351,7 +356,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		using var stack = (Stack<Node>?)typeof(Stack<Node>)
+			.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
 		Debug.Assert(stack is not null);
 		var current = root;
 		while (current is not null)
@@ -369,6 +375,92 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			{
 				stack.Push(node);
 				node = node.Left;
+			}
+		}
+		return true;
+	}
+
+	internal static bool InOrderTreeWalk<TSubset>(TSubset @this, BaseSumWalkPredicate<T, TCertain> action)
+		where TSubset : TCertain, new()
+	{
+		@this.VersionCheck();
+		if (@this.root is null)
+			return true;
+		// The maximum height of a red-black tree is 2*lg(n+1).
+		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
+		using var stack = (Stack<Node>?)typeof(Stack<Node>)
+			.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(@this._size + 1)]);
+		Debug.Assert(stack is not null);
+		var current = @this.root;
+		using var indexStack = (Stack<int>?)typeof(Stack<int>)
+			.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(@this._size + 1)]);
+		Debug.Assert(indexStack is not null);
+		var index = current.Left?.LeavesCount ?? 0;
+		using var flagStack = (Stack<bool>?)typeof(Stack<bool>)
+			.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(@this._size + 1)]);
+		Debug.Assert(flagStack is not null);
+		while (current is not null)
+		{
+			if (@this.IsWithinRange(index))
+			{
+				stack.Push(current as Node
+					?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
+				indexStack.Push(index);
+				flagStack.Push(true);
+				current = current.Left;
+				index -= (current?.Right?.LeavesCount ?? 0) + 1;
+			}
+			else if (((dynamic)@this)._lBoundActive && @this.Comparer.Compare(index, ((dynamic)@this)._max) < 0)
+			{
+				current = current.Right;
+				index += (current?.Left?.LeavesCount ?? 0) + 1;
+			}
+			else
+			{
+				stack.Push(current as Node
+					?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
+				indexStack.Push(index);
+				flagStack.Push(false);
+				current = current.Left;
+				index -= (current?.Right?.LeavesCount ?? 0) + 1;
+			}
+		}
+		while (stack.Length != 0)
+		{
+			current = stack.Pop();
+			if (flagStack.Pop() && !action(current))
+				return false;
+			var node = current.Right;
+			index = indexStack.Pop() + (node?.Left?.LeavesCount ?? 0) + 1;
+			while (node is not null)
+			{
+				if (@this.IsWithinRange(index))
+				{
+					stack.Push(node as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
+					indexStack.Push(index);
+					flagStack.Push(true);
+					node = node.Left;
+					index -= (node?.Right?.LeavesCount ?? 0) + 1;
+				}
+				else if (((dynamic)@this)._lBoundActive && @this.Comparer.Compare(index, ((dynamic)@this)._max) < 0)
+				{
+					node = node.Right;
+					index += (node?.Left?.LeavesCount ?? 0) + 1;
+				}
+				else
+				{
+					stack.Push(node as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
+					indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
+					flagStack.Push(false);
+					node = node.Left;
+					index -= (node?.Right?.LeavesCount ?? 0) + 1;
+				}
 			}
 		}
 		return true;
@@ -517,6 +609,50 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	// Used for set checking operations (using enumerables) that rely on counting
 	private protected static int Log2(int value) => BitOperations.Log2((uint)value);
 
+	internal static int MaxInternalStatic<TSubset>(TSubset @this) where TSubset : TCertain
+	{
+		@this.VersionCheck();
+		var current = @this.root;
+		int result = default;
+		while (current is not null)
+		{
+			var comp = ((dynamic)@this)._uBoundActive
+				? @this.Comparer.Compare(((dynamic)@this)._max, current.Left?.LeavesCount ?? 0) : 1;
+			if (comp < 0)
+				current = current.Left;
+			else
+			{
+				result = current.Left?.LeavesCount ?? 0;
+				if (comp == 0)
+					break;
+				current = current.Right;
+			}
+		}
+		return result;
+	}
+
+	internal static int MinInternalStatic<TSubset>(TSubset @this) where TSubset : TCertain
+	{
+		@this.VersionCheck();
+		var current = @this.root;
+		int result = default;
+		while (current is not null)
+		{
+			var comp = ((dynamic)@this)._lBoundActive
+				? @this.Comparer.Compare(((dynamic)@this)._min, current.Left?.LeavesCount ?? 0) : -1;
+			if (comp > 0)
+				current = current.Right;
+			else
+			{
+				result = current.Left?.LeavesCount ?? 0;
+				if (comp == 0)
+					break;
+				current = current.Left;
+			}
+		}
+		return result;
+	}
+
 	public override TCertain RemoveAt(int index)
 	{
 		var this2 = (TCertain)this;
@@ -610,7 +746,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	{
 		using List<Node> nodes = [];
 		var i = 0;
-		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		using var stack = (Stack<Node>?)typeof(Stack<Node>)
+			.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
 		Debug.Assert(stack is not null);
 		var current = root;
 		while (current is not null)
@@ -761,7 +898,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			{
 				Parent?.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
-				if (Parent is null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+				if (Parent is null
+					|| Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -1077,5 +1215,122 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
 #endif
+	}
+
+	public new struct Enumerator : G.IEnumerator<T>
+	{
+		private readonly TCertain _list;
+		private readonly int _version;
+
+		private readonly Stack<Node> _stack;
+		private Node? _current;
+
+		private readonly bool _reverse;
+
+		internal Enumerator(TCertain list) : this(list, reverse: false)
+		{
+		}
+
+		internal Enumerator(TCertain list, bool reverse)
+		{
+			_list = list;
+			list.VersionCheck();
+			_version = list.version;
+			// 2 log(n + 1) is the maximum height.
+			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)
+				?.Invoke(null, [2 * Log2(list.TotalCount() + 1)])!;
+			Debug.Assert(_stack is not null);
+			_current = null;
+			_reverse = reverse;
+			Initialize();
+		}
+
+		public readonly T Current
+		{
+			get
+			{
+				if (_current is not null)
+					return _current.Value;
+				return default!; // Should only happen when accessing Current is undefined behavior
+			}
+		}
+
+		readonly object? IEnumerator.Current
+		{
+			get
+			{
+				if (_current is null)
+					throw new InvalidOperationException("Указатель находится за границей коллекции.");
+				return _current.Value;
+			}
+		}
+
+		internal readonly bool NotStartedOrEnded => _current is null;
+
+		public readonly void Dispose() => _stack?.Dispose();
+
+		private void Initialize()
+		{
+			_current = null;
+			var node = _list.root;
+			Node? next, other;
+			while (node is not null)
+			{
+				next = (_reverse ? node.Right : node.Left) as Node;
+				other = (_reverse ? node.Left : node.Right) as Node;
+				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				{
+					_stack.Push(node as Node
+						?? throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
+						" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar."));
+					node = next;
+				}
+				else if (next is null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
+					node = other;
+				else
+					node = next;
+			}
+		}
+
+		public bool MoveNext()
+		{
+			// Make sure that the underlying subset has not been changed since
+			_list.VersionCheck();
+			if (_version != _list.version)
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+			if (_stack.Length == 0)
+			{
+				_current = null;
+				return false;
+			}
+			_current = _stack.Pop();
+			var node = _reverse ? _current.Left : _current.Right;
+			Node? next, other;
+			while (node is not null)
+			{
+				next = _reverse ? node.Right : node.Left;
+				other = _reverse ? node.Left : node.Right;
+				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				{
+					_stack.Push(node);
+					node = next;
+				}
+				else if (other is null || !_list.IsWithinRange(other.Left?.LeavesCount ?? 0))
+					node = next;
+				else
+					node = other;
+			}
+			return true;
+		}
+
+		internal void Reset()
+		{
+			if (_version != _list.version)
+				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+			_stack.Clear();
+			Initialize();
+		}
+
+		void IEnumerator.Reset() => Reset();
 	}
 }

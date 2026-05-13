@@ -1139,7 +1139,7 @@ public class UnsignedLongRealTests
 				bytes.Resize(Max(bytes.FindLastIndex(x => x != 0), 0) + 1);
 			else
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
-			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, random.Next(32, Max(bytes.Length, 32)));
+			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, random.Next(32, Max(bytes.Length * 8, 32)));
 			var bytes2 = ulr.ToByteArray(order, false);
 			Assert.IsTrue(bytes.Equals(bytes2));
 			Assert.IsTrue(E.SequenceEqual(bytes2, bytes));

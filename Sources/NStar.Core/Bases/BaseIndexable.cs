@@ -911,8 +911,9 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		}
 		for (int i = index, j = 0; i <= index + length - m && j >= 0; i += suffshift[j + 1])
 		{
-			for (j = m - 1; j >= 0 && comparer.Equals(list[j], GetInternal(i + j)); j--)
-				;
+			j = m - 1;
+			while (j >= 0 && comparer.Equals(list[j], GetInternal(i + j)))
+				j--;
 			if (j < 0)
 				return i;
 		}
@@ -1091,7 +1092,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return -1;
 		}
 		if (collection is not G.ICollection<T> c)
-			c = new List<T>(collection);
+			c = [.. collection];
 		collectionLength = c.Count;
 		var startIndex = index + 1 - length;
 		for (var i = length - collectionLength; i >= 0; i--)
@@ -1151,7 +1152,6 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// для которой данный метод вызывается.</param>
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <returns>Индекс последнего вхождения какого-либо из элементов, или -1, если такой элемент не был найден.</returns>
-
 	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index) => LastIndexOfAny(collection, index, index + 1);
 
 	/// <summary>
@@ -1263,7 +1263,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	public virtual Slice<T> SkipWhile(Func<T, bool> function)
 	{
 		var i = 0;
-		for (; i < _size && function(GetInternal(i)); i++) ;
+		while (i < _size && function(GetInternal(i)))
+			i++;
 		return GetSlice(i);
 	}
 
@@ -1276,7 +1277,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	public virtual Slice<T> SkipWhile(Func<T, int, bool> function)
 	{
 		var i = 0;
-		for (; i < _size && function(GetInternal(i), i); i++) ;
+		while (i < _size && function(GetInternal(i), i))
+			i++;
 		return GetSlice(i);
 	}
 
@@ -1312,7 +1314,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	public virtual Slice<T> TakeWhile(Func<T, bool> function)
 	{
 		var i = 0;
-		for (; i < _size && function(GetInternal(i)); i++) ;
+		while (i < _size && function(GetInternal(i)))
+			i++;
 		return GetSlice(0, i);
 	}
 
@@ -1325,7 +1328,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	public virtual Slice<T> TakeWhile(Func<T, int, bool> function)
 	{
 		var i = 0;
-		for (; i < _size && function(GetInternal(i), i); i++) ;
+		while (i < _size && function(GetInternal(i), i))
+			i++;
 		return GetSlice(0, i);
 	}
 

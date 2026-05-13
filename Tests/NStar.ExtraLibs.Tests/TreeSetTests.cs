@@ -1,9 +1,7 @@
-﻿using NStar.SortedSets;
-
-namespace NStar.ExtraLibs.Tests;
+﻿namespace NStar.ExtraLibs.Tests;
 
 [TestClass]
-public class SortedSetTests
+public class TreeSetTests
 {
 	[TestMethod]
 	public void ComplexTest()
@@ -12,61 +10,61 @@ public class SortedSetTests
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
-		SortedSet<int> ss = new(arr);
+		TreeSet<int> ts = new(arr);
 		G.SortedSet<int> gs = new(arr);
 		var collectionActions = new[] { (int[] arr) =>
 		{
-			ss.ExceptWith(arr);
+			ts.ExceptWith(arr);
 			gs.ExceptWith(arr);
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, arr =>
 		{
-			ss.IntersectWith(arr);
+			ts.IntersectWith(arr);
 			gs.IntersectWith(arr);
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, arr =>
 		{
-			ss.SymmetricExceptWith(arr);
+			ts.SymmetricExceptWith(arr);
 			gs.SymmetricExceptWith(arr);
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, arr =>
 		{
-			ss.UnionWith(arr);
+			ts.UnionWith(arr);
 			gs.UnionWith(arr);
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		} };
 		var actions = new[] { () =>
 		{
 			var n = random.Next(16);
-			ss.Add(n);
+			ts.Add(n);
 			gs.Add(n);
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, () =>
 		{
-			if (ss.Length == 0) return;
+			if (ts.Length == 0) return;
 			if (random.Next(2) == 0)
 			{
-				var n = random.Next(ss.Length);
-				gs.Remove(ss[n]);
-				ss.RemoveAt(n);
+				var n = random.Next(ts.Length);
+				gs.Remove(ts[n]);
+				ts.RemoveAt(n);
 			}
 			else
 			{
 				var n = random.Next(16);
-				ss.RemoveValue(n);
+				ts.RemoveValue(n);
 				gs.Remove(n);
 			}
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, () =>
 		{
 			var arr = RedStarLinq.FillArray(5, _ => random.Next(16));
 			collectionActions.Random(random)(arr);
-			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, () =>
 		{
-			if (ss.Length == 0) return;
-			var n = random.Next(ss.Length);
-			Assert.AreEqual(ss.IndexOf(ss[n]), n);
+			if (ts.Length == 0) return;
+			var n = random.Next(ts.Length);
+			Assert.AreEqual(ts.IndexOf(ts[n]), n);
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();

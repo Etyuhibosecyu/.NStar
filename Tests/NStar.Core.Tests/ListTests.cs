@@ -1203,6 +1203,8 @@ public class ListTests
 				b[index] = n;
 			else
 				b.Add(n);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
 		}
 	}
 

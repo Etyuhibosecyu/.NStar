@@ -36,25 +36,25 @@ public static partial class Mpir
 		}
 		return destBuf;
 	}
-	public static unsafe void MpirMpuExport(ReadOnlySpan<byte> destBuf, int order, uint size, int endian, uint nails, MpuT op)
+	public static unsafe void MpirMpuExport(Span<byte> destBuf, int order, uint size, int endian, uint nails, MpuT op)
 	{
 		var bufSize = (int)Math.Min(MpuSizeinbase(op, 256), 2147483647);
-		var op2 = op;
+		if (MpuCmpSi(op, 0) == 0)
+			destBuf[0] = 0;
 		fixed (byte* destPtr = destBuf)
 		{
-			if (MpuCmpSi(op, 0) == 0)
-				destPtr[0] = 0;
 			// null countp argument, because we already know how large the result will be.
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
 	}
-	public static unsafe void MpirMpzExport(ReadOnlySpan<byte> destBuf, int order, uint size, int endian, uint nails, MpzT op)
+	public static unsafe void MpirMpzExport(Span<byte> destBuf, int order, uint size, int endian, uint nails, MpzT op)
 	{
-		if (MpzCmpSi(op, 0) < 0)
-			op += One << (op.BitLength + 7) / 8 * 8;
+		var negative = MpzCmpSi(op, 0) < 0;
+		if (negative)
+			op += One << destBuf.Length * 8;
 		var bufSize = (int)Math.Min(MpzSizeinbase(op, 256), 2147483647);
-		var op2 = op;
-		fixed (byte* destPtr = destBuf)
+		destBuf[order < 0 ? bufSize.. : ..^bufSize].Fill((byte)(negative ? 255 : 0));
+		fixed (byte* destPtr = destBuf[order < 0 ? .. : ^bufSize..])
 		{
 			if (MpzCmpSi(op, 0) == 0)
 				destPtr[0] = 0;

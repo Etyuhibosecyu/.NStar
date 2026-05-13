@@ -309,7 +309,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	internal T GetElement(MpzT i)
 	{
 		if (low is not null)
-			return E.ElementAt(low, (int)(i % LeafSize));
+			return E.ElementAt(low, i % LeafSize);
 		else if (high is not null)
 		{
 			if (high[0].Length == 0 || i < high[0].Length)

@@ -1826,7 +1826,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var (source, indexes, destination, step, destinationCurrentRestIndex, mode) = context;
 		Debug.Assert(source.high is not null && destination.high is not null);
 		Debug.Assert((mode & MoveRangeMode.Copy) == 0);
-		var sourceIndex = indexes.Divide(1 << 30, out int iDestination);
+		var sourceIndex = indexes.Divide(1 << 30, out var iDestination);
 		var iSource = (int)sourceIndex;
 		var currentSource = source.high[iSource];
 		var currentDestination = destination.high[iDestination];

@@ -138,7 +138,7 @@ public static class RedStarLinq
 		}
 	}
 
-	private class ConvertList<T, TResult> : BaseIndexable<TResult, ConvertList<T, TResult>>
+	private sealed class ConvertList<T, TResult> : BaseIndexable<TResult, ConvertList<T, TResult>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly Func<T, TResult> function;
@@ -194,7 +194,7 @@ public static class RedStarLinq
 		}
 	}
 
-	private class ConvertListInt<T, TResult> : BaseIndexable<TResult, ConvertListInt<T, TResult>>
+	private sealed class ConvertListInt<T, TResult> : BaseIndexable<TResult, ConvertListInt<T, TResult>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly Func<T, int, TResult> function;
@@ -793,12 +793,14 @@ public static class RedStarLinq
 				length = n;
 				return length >= 0;
 			}
+			length = -1;
+			return false;
 		}
 		catch
 		{
+			length = -1;
+			return false;
 		}
-		length = -1;
-		return false;
 	}
 
 	public static bool TryGetLengthEasily(this IEnumerable source, out int length)
@@ -815,12 +817,14 @@ public static class RedStarLinq
 				length = s.Length;
 				return length >= 0;
 			}
+			length = -1;
+			return false;
 		}
 		catch
 		{
+			length = -1;
+			return false;
 		}
-		length = -1;
-		return false;
 	}
 
 	public static TResult Wrap<T, TResult>(this T source, Func<T, TResult> function) => function(source);

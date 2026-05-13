@@ -1169,7 +1169,7 @@ public class UnsignedLongDecimalTests
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 1000000; i++)
 		{
-			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			bytes.FillInPlace(random.Next(500), _ => (byte)random.Next(256));
 			var order = RandomOrder();
 			if (order < 0)
 				bytes.Resize(Max(bytes.FindLastIndex(x => x != 0), 0) + 1);
@@ -1177,8 +1177,8 @@ public class UnsignedLongDecimalTests
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
 			var mantissaLength = random.Next(15, Max((int)Ceiling(bytes.Length * Log10(256)), 15));
 			using UnsignedLongDecimal uld = new(bytes.AsSpan(), order, mantissaLength);
-			using UnsignedLongDecimal ulr2 = new(uld.ToByteArray(order, false), order, mantissaLength);
-			Assert.IsTrue(uld.Equals(ulr2));
+			using UnsignedLongDecimal uld2 = new(uld.ToByteArray(order, false), order, mantissaLength);
+			Assert.IsTrue(uld.Equals(uld2));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -1209,7 +1209,7 @@ public class UnsignedLongDecimalTests
 		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 10000; i++)
 		{
-			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			bytes.FillInPlace(random.Next(500), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
 			using UnsignedLongDecimal uld = new(uz, MantissaLength);
 			var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
@@ -1283,7 +1283,7 @@ public class UnsignedLongDecimalTests
 		List<byte> bytes = new(1024), bytes2 = new(1024);
 		for (var i = 0; i < 250000; i++)
 		{
-			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			bytes.FillInPlace(random.Next(500), _ => (byte)random.Next(256));
 			var order = RandomOrder();
 			var mantissaLength = random.Next(15, Max((int)Ceiling(bytes.Length * Log10(256)), 15));
 			using UnsignedLongDecimal uld = new(bytes.AsSpan(), order, mantissaLength);

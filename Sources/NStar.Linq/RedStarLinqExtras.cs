@@ -4435,10 +4435,11 @@ public static class RedStarLinqExtras
 			List<T> result = [];
 			using var en = source.GetEnumerator();
 			var b = false;
-			for (; (b = en.MoveNext()) && function(en.Current);) ;
+			while ((b = en.MoveNext()) && function(en.Current)) { }
 			if (b)
 				result.Add(en.Current);
-			for (; en.MoveNext();) result.Add(en.Current);
+			while (en.MoveNext())
+				result.Add(en.Current);
 			return result.GetSlice();
 		}
 	}
@@ -4449,18 +4450,16 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 			return list.SkipWhile(function);
-		else
-		{
-			List<T> result = [];
-			using var en = source.GetEnumerator();
-			var b = false;
-			var i = 0;
-			for (; (b = en.MoveNext()) && function(en.Current, i); i++) ;
-			if (b)
-				result.Add(en.Current);
-			for (; en.MoveNext(); i++) result.Add(en.Current);
-			return result.GetSlice();
-		}
+		List<T> result = [];
+		using var en = source.GetEnumerator();
+		var b = false;
+		var i = 0;
+		while ((b = en.MoveNext()) && function(en.Current, i))
+			i++;
+		if (b)
+			result.Add(en.Current);
+		for (; en.MoveNext(); i++) result.Add(en.Current);
+		return result.GetSlice();
 	}
 
 	public static List<List<T>> SplitIntoEqual<T>(this G.IEnumerable<T> source, int fragmentLength)

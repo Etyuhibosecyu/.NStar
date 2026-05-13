@@ -60,7 +60,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	public SumSet(G.IEnumerable<(T Key, int Value)> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
+	public SumSet(G.IEnumerable<(T Key, int Value)> collection, Func<T, T, int> compareFunction)
+		: this(collection, new Comparer<T>(compareFunction)) { }
 
 	public SumSet(params (T Key, int Value)[] array) : this((G.IEnumerable<(T Key, int Value)>)array) { }
 
@@ -82,7 +83,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	protected override Func<G.IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator { get; } = x => new(x);
 
-	public override G.IComparer<(T Key, int Value)> Comparer => new Comparer<(T Key, int Value)>((x, y) => Comparer2.Compare(x.Key, y.Key));
+	public override G.IComparer<(T Key, int Value)> Comparer => new Comparer<(T Key, int Value)>((x, y) =>
+	Comparer2.Compare(x.Key, y.Key));
 
 	protected virtual G.IComparer<T> Comparer2 { get; }
 
@@ -260,7 +262,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		Changed();
 	}
 
-	private protected static Node? ConstructRootFromSortedArray((T Key, int Value)[] arr, int startIndex, int endIndex, Node? redNode)
+	private protected static Node? ConstructRootFromSortedArray((T Key, int Value)[] arr, int startIndex, int endIndex,
+		Node? redNode)
 	{
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
@@ -277,7 +280,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		//	Leaf nodes are red if they have no sibling (if there are 2 nodes or if a node trickles
 		//	down to the bottom
 
-		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
+		// This is done recursively because the iterative way to do this ends up
+		// wasting more space than it saves in stack frames
 		// Only some base cases are handled below.
 		var size = endIndex - startIndex + 1;
 		Node root;
@@ -356,7 +360,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		TreeSubSet subset = new(this, GetInternal(sourceIndex).Key, GetInternal(sourceIndex + length - 1).Key, true, true);
 		using var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
-			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key, destination.GetInternal(Min(destinationIndex + length, destination._size) - 1).Key, true, true).InOrderTreeWalk(node =>
+			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key,
+				destination.GetInternal(Min(destinationIndex + length, destination._size) - 1).Key, true, true)
+				.InOrderTreeWalk(node =>
 			{
 				var b = en.MoveNext();
 				if (b)
@@ -388,14 +394,17 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	}
 
 	/// <summary>
-	/// Returns an <see cref="G.IEqualityComparer{T}"/> object that can be used to create a collection that contains individual sets.
+	/// Returns an <see cref="G.IEqualityComparer{T}"/> object
+	/// that can be used to create a collection that contains individual sets.
 	/// </summary>
 	public static G.IEqualityComparer<SumSet<T>> CreateSetComparer() => CreateSetComparer(memberEqualityComparer: null);
 
 	/// <summary>
-	/// Returns an <see cref="G.IEqualityComparer{T}"/> object, according to a specified comparer, that can be used to create a collection that contains individual sets.
+	/// Returns an <see cref="G.IEqualityComparer{T}"/> object, according to a specified comparer,
+	/// that can be used to create a collection that contains individual sets.
 	/// </summary>
-	public static G.IEqualityComparer<SumSet<T>> CreateSetComparer(G.IEqualityComparer<T>? memberEqualityComparer) => new SumSetEqualityComparer<T>(memberEqualityComparer);
+	public static G.IEqualityComparer<SumSet<T>> CreateSetComparer(G.IEqualityComparer<T>? memberEqualityComparer) =>
+		new SumSetEqualityComparer<T>(memberEqualityComparer);
 
 	public virtual bool Decrease(T key) => TryGetValue(key, out var value) && Update(key, value - 1);
 
@@ -441,7 +450,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return this;
 	}
 
-	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent,
+		out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the item from the successor to the matching node, and delete the successor.
@@ -483,7 +493,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											  // `sibling` becomes the child of `grandParent` or `root` after rotation.
+											  // Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -652,8 +663,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// </summary>
 	/// <param name="other">The other <see cref="SumSet{T}"/>.</param>
 	/// <returns>A value indicating whether both sets have the same comparer.</returns>
-	protected virtual bool HasEqualComparer(SumSet<T> other) => Comparer2 == other.Comparer2 || Comparer2.Equals(other.Comparer2);
-	// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
+	protected virtual bool HasEqualComparer(SumSet<T> other) =>
+		Comparer2 == other.Comparer2 || Comparer2.Equals(other.Comparer2);
+	// Commonly, both comparers will be the default comparer (and reference-equal).
+	// Avoid a virtual method call to Equals() in that case.
 
 	public virtual bool Increase(T key)
 	{
@@ -729,7 +742,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		using var stack = (Stack<Node>?)typeof(Stack<Node>)
+			.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
 		Debug.Assert(stack is not null);
 		var current = root;
 		while (current is not null)
@@ -983,7 +997,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return false;
 		if (other is G.ICollection<T> c && c.Count == 0)
 			return false;
-		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted) && (Comparer2.Compare(Min, asSorted.Max) > 0 || Comparer2.Compare(Max, asSorted.Min) < 0))
+		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted)
+			&& (Comparer2.Compare(Min, asSorted.Max) > 0 || Comparer2.Compare(Max, asSorted.Min) < 0))
 			return false;
 		foreach (var item in other)
 			if (Contains(item))
@@ -1069,7 +1084,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											  // `sibling` becomes the child of `grandParent` or `root` after rotation.
+											  // Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -1281,7 +1297,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	}
 
 	/// <summary>
-	/// Decides whether two sets have equal contents, using a fallback comparer if the sets do not have equivalent equality comparers.
+	/// Decides whether two sets have equal contents,
+	/// using a fallback comparer if the sets do not have equivalent equality comparers.
 	/// </summary>
 	/// <param name="set1">The first set.</param>
 	/// <param name="set2">The second set.</param>
@@ -1442,13 +1459,15 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return false;
 	}
 
-	protected virtual bool TryToUniqueArray(G.IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
+	protected virtual bool TryToUniqueArray(G.IEnumerable<(T Key, int Value)> collection,
+		out (T Key, int Value)[] elements, out int length)
 	{
 		elements = collection is (T Key, int Value)[] array ? array : [.. collection];
 		length = elements.Length;
 		if (length > 0)
 		{
-			// If `comparer` is null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
+			// If `comparer` is null, sets it to G.Comparer<T>.Default.
+			// We checked for this condition in the G.IComparer<T> constructor.
 			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
 			Array.Sort(elements, 0, length, Comparer);
 			// Overwrite duplicates while shifting the distinct elements towards
@@ -1564,7 +1583,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	internal virtual bool VersionUpToDate() => true;
 #endif
 
-	[DebuggerDisplay("{Item.ToString()}, Left = {Left?.Item.ToString()}, Right = {Right?.Item.ToString()}, Parent = {Parent?.Item.ToString()}")]
+	[DebuggerDisplay("{Item.ToString()}, Left = {Left?.Item.ToString()}, Right = {Right?.Item.ToString()},"
+		+ " Parent = {Parent?.Item.ToString()}")]
 	protected internal sealed class Node : IDisposable
 	{
 		private Node? _left;
@@ -1629,7 +1649,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			{
 				Parent?.LeavesCount += value - _leavesCount;
 				_leavesCount = value;
-				if (Parent is null || Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+				if (Parent is null
+					|| Parent.LeavesCount == (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -1643,7 +1664,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			{
 				Parent?.ValuesSum += value - _valuesSum;
 				_valuesSum = value;
-				if (Parent is null || Parent.ValuesSum == (Parent._left?.ValuesSum ?? 0) + (Parent._right?.ValuesSum ?? 0) + Parent.Item.Value)
+				if (Parent is null
+					|| Parent.ValuesSum == (Parent._left?.ValuesSum ?? 0) + (Parent._right?.ValuesSum ?? 0) + Parent.Item.Value)
 					return;
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -2011,7 +2033,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			set.VersionCheck();
 			_version = set.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(set.TotalCount() + 1)])!;
+			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)
+				?.Invoke(null, [2 * Log2(set.TotalCount() + 1)])!;
 			Debug.Assert(_stack is not null);
 			_current = null;
 			_reverse = reverse;
@@ -2127,7 +2150,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		private readonly bool _lBoundActive, _uBoundActive;
 		// used to see if the length is out of date
 
-		public TreeSubSet(SumSet<T> Underlying, T? Min, T? Max, bool lowerBoundActive, bool upperBoundActive) : base(Underlying.Comparer2)
+		public TreeSubSet(SumSet<T> Underlying, T? Min, T? Max, bool lowerBoundActive, bool upperBoundActive)
+			: base(Underlying.Comparer2)
 		{
 			_underlying = Underlying;
 			_min = Min;
@@ -2265,7 +2289,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null,
+			using var stack = (Stack<Node>?)typeof(Stack<Node>)
+				.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null,
 				[2 * Log2(_size + 1)]); // this is not exactly right if length is out of date, but the stack can grow
 			Debug.Assert(stack is not null);
 			var current = root;

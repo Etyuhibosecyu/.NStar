@@ -499,6 +499,27 @@ public class MpuTTests
 	}
 
 	[TestMethod]
+	public void TryWrite()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			MpzT uz = new(bytes.AsSpan(), RandomOrder());
+			var order = RandomOrder();
+			var bytes2 = GC.AllocateUninitializedArray<byte>(uz.GetByteCount() + random.Next(0, 101));
+			random.NextBytes(bytes2);
+			if (order < 0)
+				Assert.IsTrue(uz.TryWriteLittleEndian(bytes2, out _));
+			else
+				Assert.IsTrue(uz.TryWriteBigEndian(bytes2, out _));
+			Assert.AreEqual(uz, new MpzT(bytes2, order));
+		}
+		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
 	public void VeryBigBitLength()
 	{
 		MpuT z = 3;

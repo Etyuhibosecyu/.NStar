@@ -3,7 +3,7 @@
 namespace NStar.Mpir;
 
 /// <summary>Represents an arbitrarily large unsigned integer.</summary>
-public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<MpuT>, IDisposable, IBinaryInteger<MpuT>
+public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisposable
 {
 	#region Data
 	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
@@ -852,7 +852,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		if (shiftAmount <= 32)
 		{
 			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount) >= 1u << shiftAmount - 1)
-				result++.Dispose();
+				result++;
 		}
 		else
 		{
@@ -861,7 +861,7 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 			Mpir.MpuAnd(left, left, this);
 			using var right = One << shiftAmount - 1;
 			if (Mpir.MpuCmp(left, right) >= 0)
-				result++.Dispose();
+				result++;
 		}
 		return result;
 	}
@@ -874,14 +874,14 @@ public sealed class MpuT : ICloneable, IConvertible, IComparable, IComparable<Mp
 		if (shiftAmount <= 9)
 		{
 			if (this % smallPowersOfTen[shiftAmount] >= 5 * smallPowersOfTen[shiftAmount - 1])
-				result++.Dispose();
+				result++;
 		}
 		else
 		{
 			using var left = this % PowerOfTen(shiftAmount);
 			using var right = 5 * PowerOfTen(shiftAmount - 1);
 			if (Mpir.MpuCmp(left, right) >= 0)
-				result++.Dispose();
+				result++;
 		}
 		return result;
 	}

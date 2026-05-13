@@ -512,8 +512,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		var i = index;
 		for (var j = 0; i <= index + length - m && j >= 0; i += suffshift[j + 1])
 		{
-			for (j = m - 1; j >= 0 && comparer.Equals(list[j], GetInternal(i + j)); j--)
-				;
+			j = m - 1;
+			while (j >= 0 && comparer.Equals(list[j], GetInternal(i + j)))
+				j--;
 			if (j < 0)
 				return i;
 		}
