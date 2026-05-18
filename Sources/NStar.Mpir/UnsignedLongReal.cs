@@ -34,7 +34,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	internal readonly int MantissaLength = 0;
 	public const int AutoMantissaLength = -1, DefaultMantissaLength = 2048, MinMantissaLength = 64;
 
-	private UnsignedLongReal(MpuT m, UnsignedLongReal? e, int mantissaLength = DefaultMantissaLength)
+	internal UnsignedLongReal(MpuT m, UnsignedLongReal? e, int mantissaLength = DefaultMantissaLength)
 	{
 		if (mantissaLength is < MinMantissaLength or > int.MaxValue)
 			mantissaLength = DefaultMantissaLength;
@@ -264,15 +264,21 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 				return new(2, null);
 			if (x.e is null && y.e is null)
 				return new(Math.Sign(x.m.CompareTo(y.m)) + 1, null);
-			if (x.e is null)
+			if (x.e is null
+				&& (x.MantissaLength <= y.MantissaLength || y.e!.e is not null || Mpir.MpuCmpSi(y.e.m, int.MaxValue) > 1))
 				return new(0, null);
-			if (y.e is null)
+			if (y.e is null
+				&& (x.MantissaLength >= y.MantissaLength || x.e!.e is not null || Mpir.MpuCmpSi(x.e.m, int.MaxValue) > 1))
 				return new(2, null);
 			var xBitLength = Compute(x, null!, ComputeOperation.BitLength);
 			var yBitLength = Compute(y, null!, ComputeOperation.BitLength);
 			var compared = Compute(xBitLength, yBitLength, ComputeOperation.Compare).m;
 			if (compared != 1)
 				return new(compared, null);
+			if (x.e is null)
+				return new(Math.Sign(x.m.CompareTo(y.m << (int)y.e! - 1)) + 1, null);
+			else if (y.e is null)
+				return new(Math.Sign((x.m << (int)x.e! - 1).CompareTo(y.m)) + 1, null);
 			var mlDiff = x.MantissaLength - y.MantissaLength;
 			if (mlDiff >= 0)
 				return new(Math.Sign(x.m.CompareTo(y.m << mlDiff)) + 1, null);
@@ -303,9 +309,13 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 					return new(x.m.ShiftRightRound(mlDiff), Compute(x, mlDiff, ComputeOperation.Add), mantissaLength);
 			}
 			case ComputeOperation.Add:
+			mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
+			if (x.e is null && Mpir.MpuCmpSi(x.m, 0) == 0)
+				return Compute(y, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
+			if (y.e is null && Mpir.MpuCmpSi(y.m, 0) == 0)
+				return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 			if (Compute(y, x, ComputeOperation.Compare).m > 1)
 				(x, y) = (y, x);
-			mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 			var mantissaOverflow = MpuT.One << mantissaLength;
 			var mantissaMask = mantissaOverflow - 1;
 			var xmlDiff = mantissaLength - x.MantissaLength;
@@ -325,10 +335,10 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			else if (y.e is null || Compute(yBitLength, mantissaLength, ComputeOperation.Compare).m <= 1)
 			{
 				if (xBitLength.e is not null)
-					return Compute(x, mantissaLength << 1 | 1, ComputeOperation.ChangeML);
+					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var blDiff = (int)xBitLength - Math.Max(y.MantissaLength + 1, (int)yBitLength);
 				if (blDiff > mantissaLength)
-					return Compute(x, mantissaLength << 1 | 1, ComputeOperation.ChangeML);
+					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var ym = (y.e is null ? 0 : yMantissaOverflow) + y.m;
 				var mSum = (x.m << xmlDiff) + (ym << ymlDiff).ShiftRightRound(blDiff);
 				if (Mpir.MpuCmp(mSum, mantissaOverflow) >= 0)
@@ -351,7 +361,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 					return new(((x.m << xmlDiff) + y.m).ShiftRightRound(1), newE, mantissaLength);
 				}
 				if (Compute(blDiff, mantissaLength, ComputeOperation.Compare).m > 1)
-					return Compute(x, mantissaLength << 1 | 1, ComputeOperation.ChangeML);
+					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var mSum = (x.m << xmlDiff) + (yMantissaOverflow + y.m << ymlDiff).ShiftRightRound((int)blDiff);
 				if (Mpir.MpuCmp(mSum, mantissaOverflow) >= 0)
 				{
@@ -380,14 +390,16 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 					newE = Compute(newE, (long)mantissaLength << 1, ComputeOperation.ChangeML);
 					return new((mSum & mantissaMask).ShiftRightRound(1), newE, mantissaLength);
 				}
-				return new(mSum, Compute(x.e, mantissaLength << 1 | 1, ComputeOperation.ChangeML), mantissaLength);
+				return new(mSum, Compute(x.e, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML), mantissaLength);
 			}
 			case ComputeOperation.Subtract:
 			mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
+			if (y.e is null && Mpir.MpuCmpSi(y.m, 0) == 0)
+				return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 			mantissaOverflow = MpuT.One << mantissaLength;
 			mantissaMask = mantissaOverflow - 1;
-			x = Compute(x, mantissaLength << 1, ComputeOperation.ChangeML);
-			y = Compute(y, mantissaLength << 1, ComputeOperation.ChangeML);
+			x = Compute(x, (long)mantissaLength << 1, ComputeOperation.ChangeML);
+			y = Compute(y, (long)mantissaLength << 1, ComputeOperation.ChangeML);
 			if (x.e is null && y.e is null)
 				return new(x.m - y.m, null, mantissaLength);
 			else if (y.e is null)
@@ -1099,8 +1111,12 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	}
 
 	public static UnsignedLongReal operator +(UnsignedLongReal value) => new(value);
+	/// <inheritdoc cref="IUnaryNegationOperators{UnsignedLongReal, UnsignedLongReal}.operator -(UnsignedLongReal-)"/>
+	public static LongReal operator -(UnsignedLongReal value) => -new LongReal(value, value.MantissaLength);
 	static UnsignedLongReal IUnaryNegationOperators<UnsignedLongReal, UnsignedLongReal>.operator -(UnsignedLongReal value) =>
 		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+	/// <inheritdoc cref="IBitwiseOperators{UnsignedLongReal, UnsignedLongReal, UnsignedLongReal}.operator ~(UnsignedLongReal)"/>
+	public static LongReal operator ~(UnsignedLongReal value) => ~new LongReal(value, value.MantissaLength);
 	static UnsignedLongReal IBitwiseOperators<UnsignedLongReal, UnsignedLongReal, UnsignedLongReal>.operator ~(UnsignedLongReal value) =>
 		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
 
@@ -1287,7 +1303,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 		else if (x.e > sizeof(int) * 8)
 			return 0;
 		else
-			return x.MantissaOverflow + x.m << (int)x.e - 1 & y;
+			return x.MantissaOverflow + x.m << (int)(x.e & uint.MaxValue) - 1 & y;
 	}
 
 	/// <inheritdoc cref="operator &(UnsignedLongReal, UnsignedLongReal)"/>
@@ -1300,7 +1316,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 		else if (x.e > sizeof(uint) * 8)
 			return 0;
 		else
-			return x.MantissaOverflow + x.m << (int)x.e - 1 & y;
+			return x.MantissaOverflow + x.m << (int)(x.e & uint.MaxValue) - 1 & y;
 	}
 
 	public static UnsignedLongReal operator &(UnsignedLongReal x, UnsignedLongReal y)

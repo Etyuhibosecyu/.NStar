@@ -15,7 +15,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	private protected T[]? _items;
 
 	private protected static readonly Dictionary<int, G.List<T[]>> arrayPool = [];
-	private protected static readonly object globalLockObj = new();
+	private protected static readonly Lock globalLockObj = new();
 
 	protected List() => _items = null;
 
@@ -93,7 +93,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
 		_items = ArrayPool<T>.Shared.Rent(array.Length);
-		Parallel.For(0, array.Length, i => _items[i] = array[i]);
+		if (array.Length >= 2048)
+			Parallel.For(0, array.Length, i => _items[i] = array[i]);
+		else
+			Array.Copy(array, _items, array.Length);
 	}
 
 	protected List(int capacity, params T[] array)
@@ -102,7 +105,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		_size = array.Length;
 		var arrayLength = Max(capacity, array.Length);
 		_items = ArrayPool<T>.Shared.Rent(arrayLength);
-		Parallel.For(0, array.Length, i => _items[i] = array[i]);
+		if (array.Length >= 2048)
+			Parallel.For(0, array.Length, i => _items[i] = array[i]);
+		else
+			Array.Copy(array, _items, array.Length);
 	}
 
 	protected List(ReadOnlySpan<T> span)
@@ -226,7 +232,11 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (_items is null)
 			return;
-		Parallel.For(0, length, i => array[arrayIndex + i] = _items[index + i]);
+		if (length >= 2048)
+			Parallel.For(0, length, i => array[arrayIndex + i] = _items[index + i]);
+		else
+			for (var i = 0; i < length; i++)
+				array[arrayIndex + i] = _items[index + i];
 	}
 
 	protected override void DisposeInternal()
@@ -404,6 +414,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		_size += length;
 	}
+
 	private T[] InsertInternalGetNewItems(int index, int length)
 	{
 		var min = _size + length;
@@ -415,9 +426,21 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		T[] newItems;
 		newItems = ArrayPool<T>.Shared.Rent(newCapacity);
 		if (index > 0 && _items is not null)
-			Parallel.For(0, index, i => newItems[i] = _items[i]);
+		{
+			if (index >= 2048)
+				Parallel.For(0, index, i => newItems[i] = _items[i]);
+			else
+				for (var i = 0; i < index; i++)
+					newItems[i] = _items[i];
+		}
 		if (index < _size && _items is not null)
-			Parallel.For(index, _size, i => newItems[i + length] = _items[i]);
+		{
+			if (_size - index >= 2048)
+				Parallel.For(index, _size, i => newItems[i + length] = _items[i]);
+			else
+				for (var i = index; i < _size; i++)
+					newItems[i + length] = _items[i];
+		}
 		return newItems;
 	}
 
@@ -730,6 +753,8 @@ public class List<T> : List<T, List<T>>
 	protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator { get; } = x => new(x);
 
 	public static implicit operator List<T>(T x) => new(x);
+
+	public static implicit operator List<T>(T[] x) => new(x);
 
 	public static implicit operator List<T>((T, T) x) => [x.Item1, x.Item2];
 

@@ -1068,7 +1068,7 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var this2 = (TCertain)this;
-		if (index < _size)
+		if (index < _size - 1)
 			CopyToInternal(index + 1, this2, index, _size - 1 - index);
 		_size--;
 		Changed();

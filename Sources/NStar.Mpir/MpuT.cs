@@ -1384,7 +1384,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static bool IsRealNumber(MpuT value) => true;
 	public static bool IsSubnormal(MpuT value) => true;
 	public static bool IsZero(MpuT value) => Mpir.MpuCmpSi(value, 0) == 0;
-	public static MpuT Max(MpuT x, MpuT y) => Mpir.MpuCmp(x, y) < 0 ? x : y;
+	public static MpuT Max(MpuT x, MpuT y) => Mpir.MpuCmp(x, y) > 0 ? x : y;
 	public static MpuT MaxMagnitude(MpuT x, MpuT y) => Max(x, y);
 	public static MpuT MaxMagnitudeNumber(MpuT x, MpuT y) => Max(x, y);
 	public static MpuT Min(MpuT x, MpuT y) => Mpir.MpuCmp(x, y) < 0 ? x : y;

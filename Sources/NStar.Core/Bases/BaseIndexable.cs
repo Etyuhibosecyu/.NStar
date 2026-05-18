@@ -291,7 +291,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <returns><see langword="true"/>, если какой-либо отличающийся элемент был найден,
 	/// иначе <see langword="false"/>.</returns>
-	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index) => ContainsAnyExcluding(collection, index, _size - index);
+	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index) =>
+		ContainsAnyExcluding(collection, index, _size - index);
 
 	/// <summary>
 	/// Проверяет, включает ли диапазон данной коллекции любой из элементов, кроме указанных.
@@ -424,7 +425,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// а в данной коллекции еще есть элементы. Если в такой ситуации этот флаг равен <see langword="true"/>,
 	/// возвращает <see langword="false"/> и наоборот.</param>
 	/// <returns>Булева константа (<see langword="true"/> или <see langword="false"/>).</returns>
-	public virtual bool Equals(IEnumerable<T>? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
+	public virtual bool Equals(IEnumerable<T>? collection, int index, bool toEnd = false) =>
+		EqualsInternal(collection, index, toEnd);
 
 	/// <inheritdoc/>
 	public override bool Equals(object? obj) => obj switch
@@ -1007,7 +1009,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <returns>Индекс первого вхождения какого-либо из отличающихся элементов,
 	/// или -1, если такой элемент не был найден.</returns>
-	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index) => IndexOfAnyExcluding(collection, index, _size - index);
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index) =>
+		IndexOfAnyExcluding(collection, index, _size - index);
 
 	/// <summary>
 	/// Ищет в диапазоне данной коллекции любой из элементов, кроме указанных.
@@ -1062,7 +1065,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="length">Длина диапазона.</param>
 	/// <returns>Индекс начала последнего вхождения <paramref name="collection"/>,
 	/// или -1, если последовательность не была найдена.</returns>
-	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length) => LastIndexOf(collection, index, length, out _);
+	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length) =>
+		LastIndexOf(collection, index, length, out _);
 
 	/// <summary>
 	/// Ищет с конца в диапазоне данной коллекции указанную последовательность элементов,
@@ -1187,7 +1191,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// для которой данный метод вызывается.</param>
 	/// <returns>Индекс последнего вхождения какого-либо из отличающихся элементов,
 	/// или -1, если такой элемент не был найден.</returns>
-	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection) => LastIndexOfAnyExcluding(collection, _size - 1, _size);
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection) =>
+		LastIndexOfAnyExcluding(collection, _size - 1, _size);
 
 	/// <summary>
 	/// Ищет с конца в диапазоне данной коллекции от указанного индекса и до конца любой из элементов, кроме указанных.
@@ -1197,7 +1202,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	/// <param name="index">Индекс начала диапазона.</param>
 	/// <returns>Индекс последнего вхождения какого-либо из отличающихся элементов,
 	/// или -1, если такой элемент не был найден.</returns>
-	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index) => LastIndexOfAnyExcluding(collection, index, index + 1);
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index) =>
+		LastIndexOfAnyExcluding(collection, index, index + 1);
 
 	/// <summary>
 	/// Ищет с конца в диапазоне данной коллекции любой из элементов, кроме указанных.
@@ -1424,7 +1430,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 /// А так, если от конкретного типа без этой ссылки-замыкания уже не наследовать другие типы,
 /// явное приведение не нужно - меньше не определяющего полезную функциональность программы "boilerplate"-кода!</typeparam>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<TCertain> where TCertain : BaseIndexable<T, TCertain>, new()
+public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<TCertain>
+	where TCertain : BaseIndexable<T, TCertain>, new()
 {
 	/// <summary>
 	/// Краткая запись <see cref="GetRange(Range, bool)"/>.
@@ -1447,7 +1454,8 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	/// индекс первого отличающегося элемента (относительно начала диапазона, а НЕ какой-либо из коллекций),
 	/// либо длина меньшего из диапазонов (от указанного для какой-либо из коллекций индекса до конца этой коллекции),
 	/// если все элементы до его конца совпадают).</returns>
-	public virtual int Compare(int index, TCertain other, int otherIndex) => Compare(index, other, otherIndex, Min(_size - index, other._size - otherIndex));
+	public virtual int Compare(int index, TCertain other, int otherIndex) =>
+		Compare(index, other, otherIndex, Min(_size - index, other._size - otherIndex));
 
 	/// <summary>
 	/// Сравнивает диапазоны данной коллекции и указанной коллекции элемент за элементом, возвращая длину общего префикса.
@@ -1496,7 +1504,8 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	protected virtual int CompareInternal(int index, TCertain other, int otherIndex, int length)
 	{
 		for (var i = 0; i < length; i++)
-			if (!(GetInternal(index + i)?.Equals(other.GetInternal(otherIndex + i)) ?? other.GetInternal(otherIndex + i) is null))
+			if (!(GetInternal(index + i)?.Equals(other.GetInternal(otherIndex + i))
+				?? other.GetInternal(otherIndex + i) is null))
 				return i;
 		return length;
 	}
@@ -1508,25 +1517,31 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual bool Contains(TCertain collection, int index) => Contains((IEnumerable<T>)collection, index, _size - index);
 
 	/// <inheritdoc cref="BaseIndexable{T}.Contains(IEnumerable{T}, int, int)"/>
-	public virtual bool Contains(TCertain collection, int index, int length) => Contains((IEnumerable<T>)collection, index, length);
+	public virtual bool Contains(TCertain collection, int index, int length) =>
+		Contains((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ContainsAny(IEnumerable{T})"/>
 	public virtual bool ContainsAny(TCertain collection) => ContainsAny((IEnumerable<T>)collection, 0, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ContainsAny(IEnumerable{T}, int)"/>
-	public virtual bool ContainsAny(TCertain collection, int index) => ContainsAny((IEnumerable<T>)collection, index, _size - index);
+	public virtual bool ContainsAny(TCertain collection, int index) =>
+		ContainsAny((IEnumerable<T>)collection, index, _size - index);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ContainsAny(IEnumerable{T}, int, int)"/>
-	public virtual bool ContainsAny(TCertain collection, int index, int length) => ContainsAny((IEnumerable<T>)collection, index, length);
+	public virtual bool ContainsAny(TCertain collection, int index, int length) =>
+		ContainsAny((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ContainsAnyExcluding(IEnumerable{T})"/>
-	public virtual bool ContainsAnyExcluding(TCertain collection) => ContainsAnyExcluding((IEnumerable<T>)collection, 0, _size);
+	public virtual bool ContainsAnyExcluding(TCertain collection) =>
+		ContainsAnyExcluding((IEnumerable<T>)collection, 0, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ContainsAnyExcluding(IEnumerable{T}, int)"/>
-	public virtual bool ContainsAnyExcluding(TCertain collection, int index) => ContainsAnyExcluding((IEnumerable<T>)collection, index, _size - index);
+	public virtual bool ContainsAnyExcluding(TCertain collection, int index) =>
+		ContainsAnyExcluding((IEnumerable<T>)collection, index, _size - index);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ContainsAnyExcluding(IEnumerable{T}, int, int)"/>
-	public virtual bool ContainsAnyExcluding(TCertain collection, int index, int length) => ContainsAnyExcluding((IEnumerable<T>)collection, index, length);
+	public virtual bool ContainsAnyExcluding(TCertain collection, int index, int length) =>
+		ContainsAnyExcluding((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.EndsWith(IEnumerable{T})"/>
 	public virtual bool EndsWith(TCertain collection) => EndsWith((IEnumerable<T>)collection);
@@ -1535,7 +1550,8 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual bool Equals(TCertain? other) => EqualsInternal(other, 0, true);
 
 	/// <inheritdoc cref="BaseIndexable{T}.Equals(IEnumerable{T}, int, bool)"/>
-	public virtual bool Equals(TCertain? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
+	public virtual bool Equals(TCertain? collection, int index, bool toEnd = false) =>
+		EqualsInternal(collection, index, toEnd);
 
 	/// <inheritdoc cref="BaseIndexable{T}.ForEach(Action{T})"/>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
@@ -1596,12 +1612,14 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetAfter(TCertain collection, int index) => GetAfter((IEnumerable<T>)collection, index, _size - index);
+	public virtual TCertain GetAfter(TCertain collection, int index) =>
+		GetAfter((IEnumerable<T>)collection, index, _size - index);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetAfter(TCertain collection, int index, int length) => GetAfter((IEnumerable<T>)collection, index, length);
+	public virtual TCertain GetAfter(TCertain collection, int index, int length) =>
+		GetAfter((IEnumerable<T>)collection, index, length);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
@@ -1630,12 +1648,14 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetAfterLast(TCertain collection, int index) => GetAfterLast((IEnumerable<T>)collection, index, index + 1);
+	public virtual TCertain GetAfterLast(TCertain collection, int index) =>
+		GetAfterLast((IEnumerable<T>)collection, index, index + 1);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetAfterLast(TCertain collection, int index, int length) => GetAfterLast((IEnumerable<T>)collection, index, length);
+	public virtual TCertain GetAfterLast(TCertain collection, int index, int length) =>
+		GetAfterLast((IEnumerable<T>)collection, index, length);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
@@ -1664,12 +1684,14 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetBefore(TCertain collection, int index) => GetBefore((IEnumerable<T>)collection, index, _size - index);
+	public virtual TCertain GetBefore(TCertain collection, int index) =>
+		GetBefore((IEnumerable<T>)collection, index, _size - index);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetBefore(TCertain collection, int index, int length) => GetBefore((IEnumerable<T>)collection, index, length);
+	public virtual TCertain GetBefore(TCertain collection, int index, int length) =>
+		GetBefore((IEnumerable<T>)collection, index, length);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
@@ -1698,12 +1720,14 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetBeforeLast(TCertain collection, int index) => GetBeforeLast((IEnumerable<T>)collection, index, index + 1);
+	public virtual TCertain GetBeforeLast(TCertain collection, int index) =>
+		GetBeforeLast((IEnumerable<T>)collection, index, index + 1);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual TCertain GetBeforeLast(TCertain collection, int index, int length) => GetBeforeLast((IEnumerable<T>)collection, index, length);
+	public virtual TCertain GetBeforeLast(TCertain collection, int index, int length) =>
+		GetBeforeLast((IEnumerable<T>)collection, index, length);
 
 	/// <summary>
 	/// Возвращает неглубокую копию диапазона данной коллекции от указанного индекса и до конца
@@ -1763,10 +1787,12 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual int IndexOf(TCertain collection, int index) => IndexOf((IEnumerable<T>)collection, index, _size - index);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOf(IEnumerable{T}, int, int)"/>
-	public virtual int IndexOf(TCertain collection, int index, int length) => IndexOf((IEnumerable<T>)collection, index, length);
+	public virtual int IndexOf(TCertain collection, int index, int length) =>
+		IndexOf((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOf(IEnumerable{T}, int, int, out int)"/>
-	public virtual int IndexOf(TCertain collection, int index, int length, out int collectionLength) => IndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
+	public virtual int IndexOf(TCertain collection, int index, int length, out int collectionLength) =>
+		IndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOf(IEnumerable{T}, IEqualityComparer{T})"/>
 	public virtual int IndexOf(TCertain collection, IEqualityComparer<T> comparer) =>
@@ -1789,49 +1815,61 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual int IndexOfAny(TCertain collection) => IndexOfAny((IEnumerable<T>)collection, 0, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOfAny(IEnumerable{T}, int)"/>
-	public virtual int IndexOfAny(TCertain collection, int index) => IndexOfAny((IEnumerable<T>)collection, index, _size - index);
+	public virtual int IndexOfAny(TCertain collection, int index) =>
+		IndexOfAny((IEnumerable<T>)collection, index, _size - index);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOfAny(IEnumerable{T}, int, int)"/>
-	public virtual int IndexOfAny(TCertain collection, int index, int length) => IndexOfAny((IEnumerable<T>)collection, index, length);
+	public virtual int IndexOfAny(TCertain collection, int index, int length) =>
+		IndexOfAny((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOfAnyExcluding(IEnumerable{T})"/>
 	public virtual int IndexOfAnyExcluding(TCertain collection) => IndexOfAnyExcluding((IEnumerable<T>)collection, 0, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOfAnyExcluding(IEnumerable{T}, int)"/>
-	public virtual int IndexOfAnyExcluding(TCertain collection, int index) => IndexOfAnyExcluding((IEnumerable<T>)collection, index, _size - index);
+	public virtual int IndexOfAnyExcluding(TCertain collection, int index) =>
+		IndexOfAnyExcluding((IEnumerable<T>)collection, index, _size - index);
 
 	/// <inheritdoc cref="BaseIndexable{T}.IndexOfAnyExcluding(IEnumerable{T}, int, int)"/>
-	public virtual int IndexOfAnyExcluding(TCertain collection, int index, int length) => IndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
+	public virtual int IndexOfAnyExcluding(TCertain collection, int index, int length) =>
+		IndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOf(IEnumerable{T})"/>
 	public virtual int LastIndexOf(TCertain collection) => LastIndexOf((IEnumerable<T>)collection, _size - 1, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOf(IEnumerable{T}, int)"/>
-	public virtual int LastIndexOf(TCertain collection, int index) => LastIndexOf((IEnumerable<T>)collection, index, index + 1);
+	public virtual int LastIndexOf(TCertain collection, int index) =>
+		LastIndexOf((IEnumerable<T>)collection, index, index + 1);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOf(IEnumerable{T}, int, int)"/>
-	public virtual int LastIndexOf(TCertain collection, int index, int length) => LastIndexOf((IEnumerable<T>)collection, index, length);
+	public virtual int LastIndexOf(TCertain collection, int index, int length) =>
+		LastIndexOf((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOf(IEnumerable{T}, int, int, out int)"/>
-	public virtual int LastIndexOf(TCertain collection, int index, int length, out int collectionLength) => LastIndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
+	public virtual int LastIndexOf(TCertain collection, int index, int length, out int collectionLength) =>
+		LastIndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOfAny(IEnumerable{T})"/>
 	public virtual int LastIndexOfAny(TCertain collection) => LastIndexOfAny((IEnumerable<T>)collection, _size - 1, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOfAny(IEnumerable{T}, int)"/>
-	public virtual int LastIndexOfAny(TCertain collection, int index) => LastIndexOfAny((IEnumerable<T>)collection, index, index + 1);
+	public virtual int LastIndexOfAny(TCertain collection, int index) =>
+		LastIndexOfAny((IEnumerable<T>)collection, index, index + 1);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOfAny(IEnumerable{T}, int, int)"/>
-	public virtual int LastIndexOfAny(TCertain collection, int index, int length) => LastIndexOfAny((IEnumerable<T>)collection, index, length);
+	public virtual int LastIndexOfAny(TCertain collection, int index, int length) =>
+		LastIndexOfAny((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOfAnyExcluding(IEnumerable{T})"/>
-	public virtual int LastIndexOfAnyExcluding(TCertain collection) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, _size - 1, _size);
+	public virtual int LastIndexOfAnyExcluding(TCertain collection) =>
+		LastIndexOfAnyExcluding((IEnumerable<T>)collection, _size - 1, _size);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOfAnyExcluding(IEnumerable{T}, int)"/>
-	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, index + 1);
+	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index) =>
+		LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, index + 1);
 
 	/// <inheritdoc cref="BaseIndexable{T}.LastIndexOfAnyExcluding(IEnumerable{T}, int, int)"/>
-	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index, int length) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
+	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index, int length) =>
+		LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
 
 	/// <inheritdoc cref="BaseIndexable{T}.StartsWith(IEnumerable{T})"/>
 	public virtual bool StartsWith(TCertain collection) => StartsWith((IEnumerable<T>)collection);
@@ -1947,7 +1985,8 @@ public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCert
 	/// <param name="value">Элемент для замены элементов на него.</param>
 	/// <param name="range">Заменяемый диапазон в виде структуры <see cref="Range"/>.</param>
 	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
-	public virtual TCertain SetAll(T value, Range range) => SetAll(value, CreateVar(range.GetOffsetAndLength(_size), out var range2).Offset, range2.Length);
+	public virtual TCertain SetAll(T value, Range range) =>
+		SetAll(value, CreateVar(range.GetOffsetAndLength(_size), out var range2).Offset, range2.Length);
 
 	protected virtual void SetAllInternal(T value, int index, int length)
 	{

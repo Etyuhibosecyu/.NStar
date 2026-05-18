@@ -1020,7 +1020,6 @@ public class UnsignedLongRealTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 1000000; i++)
 		{
 			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
@@ -1041,7 +1040,6 @@ public class UnsignedLongRealTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 1000000; i++)
 		{
 			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
@@ -1130,7 +1128,6 @@ public class UnsignedLongRealTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 1000000; i++)
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
@@ -1169,7 +1166,6 @@ public class UnsignedLongRealTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 10000; i++)
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
@@ -1207,7 +1203,6 @@ public class UnsignedLongRealTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		var writeBuffer = GC.AllocateUninitializedArray<byte>(MantissaByteLength * 3);
 		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(260), _ => (byte)random.Next(256));

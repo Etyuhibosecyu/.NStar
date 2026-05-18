@@ -27,7 +27,11 @@ public readonly record struct Chain(int Start, int Length) : IReadOnlyList<int>
 	{
 		var start = Start;
 		var array = GC.AllocateUninitializedArray<int>(Length);
-		Parallel.For(0, Length, i => array[i] = start + i);
+		if (Length >= 256)
+			Parallel.For(0, Length, i => array[i] = start + i);
+		else
+			for (var i = 0; i < Length; i++)
+				array[i] = start + i;
 		return array;
 	}
 
@@ -35,7 +39,11 @@ public readonly record struct Chain(int Start, int Length) : IReadOnlyList<int>
 	{
 		var start = Start;
 		var list = RedStarLinq.EmptyList<int>(Length);
-		Parallel.For(0, Length, i => list[i] = start + i);
+		if (Length >= 256)
+			Parallel.For(0, Length, i => list[i] = start + i);
+		else
+			for (var i = 0; i < Length; i++)
+				list[i] = start + i;
 		return list;
 	}
 

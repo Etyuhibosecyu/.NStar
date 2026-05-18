@@ -62,7 +62,11 @@ internal interface IUnsignedLongReal<TSelf> : ICloneable, IConvertible, IDisposa
 			bytesWritten += sizeof(int);
 		}
 		if (Exponent is null)
-			return Mantissa.TryWriteBigEndian(destination, out bytesWritten);
+		{
+			var result = Mantissa.TryWriteBigEndian(destination, out var mantissaBytesWritten);
+			bytesWritten += mantissaBytesWritten;
+			return result;
+		}
 		var mLength = Mantissa.GetByteCount();
 		if (!Mantissa.TryWriteBigEndian(destination[^mLength..], out _))
 		{
@@ -90,7 +94,11 @@ internal interface IUnsignedLongReal<TSelf> : ICloneable, IConvertible, IDisposa
 			bytesWritten += sizeof(int);
 		}
 		if (Exponent is null)
-			return Mantissa.TryWriteLittleEndian(destination, out bytesWritten);
+		{
+			var result = Mantissa.TryWriteLittleEndian(destination, out var mantissaBytesWritten);
+			bytesWritten += mantissaBytesWritten;
+			return result;
+		}
 		var mLength = Mantissa.GetByteCount();
 		if (!Mantissa.TryWriteLittleEndian(destination, out _))
 		{
