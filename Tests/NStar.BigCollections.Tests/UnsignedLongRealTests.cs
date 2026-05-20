@@ -563,7 +563,6 @@ public class UnsignedLongRealTests
 					op = uz;
 				if (op > uz)
 					return;
-				var old = uz;
 				if (uz.BitLength <= op.BitLength + MantissaLength)
 					uz -= op;
 				uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
@@ -846,6 +845,12 @@ public class UnsignedLongRealTests
 			ProcessB(ulr, num);
 			num = ulr / 3;
 			ProcessB(ulr, num);
+			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
+			num = new UnsignedLongReal(bytes.AsSpan(), RandomOrder(), (int)Round(Pow(2, random.NextDouble() * 2 + 10)));
+			var (ulr2, num2) = (ulr, num);
+			while (ulr2.BitLength > int.MaxValue || num2.BitLength > int.MaxValue)
+				(ulr2, num2) = (ulr2.BitLength, num2.BitLength);
+			Assert.AreEqual(Sign(((MpuT)ulr2).CompareTo((MpuT)num2)), ulr.CompareTo(num));
 			num = (byte)0;
 			Validate(ulr, num);
 			num = (short)0;
@@ -888,12 +893,21 @@ public class UnsignedLongRealTests
 			num2 = (MpzT)num;
 			Validate2(ulr, num2);
 			num2 = (UnsignedLongReal)num;
-			var comp = num2.ToByteArray(1) is not byte[] rightArr
-				? 0 : ulr.ToByteArray(1) is var leftArr
-				&& leftArr.Length.CompareTo(rightArr.Length) is var lenDiff && lenDiff != 0
-				? Sign(lenDiff) : MemoryExtensions.CommonPrefixLength(leftArr, rightArr) is var len
-				&& len == leftArr.Length && len == rightArr.Length
-				? 0 : len == leftArr.Length ? -1 : len == rightArr.Length ? 1 : Sign(leftArr[len].CompareTo(rightArr[len]));
+			int comp;
+			if (num2.ToByteArray(1) is not byte[] rightArr)
+				comp = 0;
+			else if (ulr.ToByteArray(1) is var leftArr
+				&& leftArr.Length.CompareTo(rightArr.Length) is var lenDiff && lenDiff != 0)
+				comp = Sign(lenDiff);
+			else if (MemoryExtensions.CommonPrefixLength(leftArr, rightArr) is var len
+				&& len == leftArr.Length && len == rightArr.Length)
+				comp = 0;
+			else if (len == leftArr.Length)
+				comp = -1;
+			else if (len == rightArr.Length)
+				comp = 1;
+			else
+				comp = Sign(leftArr[len].CompareTo(rightArr[len]));
 			Assert.AreEqual(comp, Sign(ulr.CompareTo(num2)));
 			Assert.AreEqual(comp, Sign(ulr.CompareTo((object)num2)));
 			Assert.AreEqual(comp, -Sign(num2.CompareTo(ulr)));
@@ -1031,6 +1045,7 @@ public class UnsignedLongRealTests
 			Assert.AreEqual(uz++, ulr++);
 			Assert.AreEqual(--uz, --ulr);
 			Assert.AreEqual(uz--, ulr--);
+			_ = (uz, ulr);
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -1208,7 +1223,6 @@ public class UnsignedLongRealTests
 			bytes.FillInPlace(random.Next(260), _ => (byte)random.Next(256));
 			var order = RandomOrder();
 			using UnsignedLongReal ulr = new(bytes.AsSpan(), order, MantissaLength);
-			var @base = (uint)random.Next(2, 37);
 			Assert.IsTrue(UnsignedLongReal.TryParse(ulr.ToString(), out var @string) && ulr.Equals(@string));
 			Assert.IsTrue(UnsignedLongReal.TryParse(ulr.ToString(),
 				CultureInfo.InvariantCulture, out @string) && ulr.Equals(@string));

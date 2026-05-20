@@ -80,12 +80,7 @@ public static partial class Mpir
 		if (__retval != 0) HandleError(__retval);
 		return result;
 	}
-	internal static mpz_intptr MpuInitSet(MpuT op)
-	{
-		var __retval = xmpir_mpz_init_set(out var result, op.val);
-		if (__retval != 0) HandleError(__retval);
-		return result;
-	}
+	internal static mpz_intptr MpuInitSet(MpuT op) => MpzInitSet(Unsafe.As<MpzT>(op));
 	internal static mpz_intptr MpuInitSetUi(uint op)
 	{
 		var __retval = xmpir_mpz_init_set_ui(out var result, op);

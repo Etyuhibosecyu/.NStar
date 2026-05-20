@@ -28,13 +28,13 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 		//}, arr =>
 		//{
 		//	dic.SymmetricExceptWith(arr);
-		//	foreach (var x in E.DistinctBy(arr, x => x.Key))
+		//	foreach (var x in E.DistinctBy(arr, x => x.key))
 		//	{
-		//		var result = dic2.ContainsKey(x.Key) ? dic2.Remove(x.Key) : dic2.TryAdd(x.Key, x.Value);
+		//		var result = dic2.ContainsKey(x.key) ? dic2.Remove(x.key) : dic2.TryAdd(x.key, x.value);
 		//		Assert.IsTrue(result);
 		//	}
 		//	Assert.AreEqual(dic.Length, dic2.Count);
-		//	Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
+		//	Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.key, out var value) && x.value.Equals(value)));
 		}, arr =>
 		{
 			dic.UnionWith(arr);
@@ -62,7 +62,7 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 		{
 			if (dic.Length == 0) return;
 			var (n, _) = newKeyAndValueFunc();
-			var b = dic.TryGetValue(n, out var value);
+			var b = dic.TryGetValue(n, out _);
 			if (!b) return;
 			dic.Remove(n);
 			dic2.Remove(n);

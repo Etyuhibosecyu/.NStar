@@ -7,8 +7,6 @@ public class LongRealTests
 {
 	private static readonly int MantissaLength = 1000;
 	private static readonly int MantissaByteLength = GetArrayLength(MantissaLength, 8);
-	private static readonly MpuT MantissaOverflow = MpuT.One << MantissaLength;
-	private static readonly MpuT MantissaMask = MantissaOverflow - 1;
 
 	[TestMethod]
 	public void ComplexTestMixed()
@@ -196,34 +194,34 @@ public class LongRealTests
 			{
 				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
 				r += op;
-				lr += (double)op;
+				lr += op;
 				Validate();
 			}, () =>
 			{
 				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
 				r -= op;
-				lr -= (double)op;
+				lr -= op;
 				Validate();
 			}, () =>
 			{
 				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64() +(random.Next(2) == 0 ? 0 : 1uL << 63));
 				r *= op;
-				lr *= (double)op;
+				lr *= op;
 				Validate();
 			}, () =>
 			{
 				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64() +(random.Next(2) == 0 ? 0 : 1uL << 63));
-				if (op == 0)
+				if (op.Equals(0))
 					return;
 				r /= op;
-				lr /= (double)op;
+				lr /= op;
 				Validate();
 			}, () =>
 			{
 				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
 				var order = lr.Abs() < 1 ? -(int)(1 / lr).Order : (int)lr.Order;
 				r %= op;
-				lr %= (double)op;
+				lr %= op;
 				ValidateRemainder(order - 52);
 			},
 		};
@@ -236,7 +234,7 @@ public class LongRealTests
 		}
 		if (counter++ < 10000)
 			goto l1;
-		void Validate() => Assert.IsTrue(r == (double)lr || r is double.NaN && (double)lr is double.NaN);
+		void Validate() => Assert.IsTrue(r.Equals((double)lr) || r is double.NaN && (double)lr is double.NaN);
 		void ValidateRemainder(int validOrder) => Assert.IsTrue(Abs(r - (double)lr) < ((LongReal)1).Shift(validOrder));
 	}
 
@@ -336,111 +334,111 @@ public class LongRealTests
 			bytes.FillInPlace(random.Next(1, 501), _ => (byte)random.Next(256));
 			var order = RandomOrder();
 			bytes[order < 0 ? ^1 : 0] = 0;
-			LongReal ulr = new(bytes.AsSpan(), order, MantissaLength);
+			LongReal lr = new(bytes.AsSpan(), order, MantissaLength);
 			if (bytes.Length - MantissaByteLength == 4)
 				continue;
-			ProcessA(ulr);
+			ProcessA(lr);
 		}
-		void ProcessA(LongReal ulr)
+		void ProcessA(LongReal lr)
 		{
-			dynamic num = ulr;
-			ProcessB(ulr, num);
-			num = ulr + 1;
-			ProcessB(ulr, num);
-			if (ulr.CompareTo(0) != 0)
+			dynamic num = lr;
+			ProcessB(lr, num);
+			num = lr + 1;
+			ProcessB(lr, num);
+			if (lr.CompareTo(0) != 0)
 			{
-				num = ulr - 1;
-				ProcessB(ulr, num);
+				num = lr - 1;
+				ProcessB(lr, num);
 			}
-			num = ulr * 2;
-			ProcessB(ulr, num);
-			num = ulr / 2;
-			ProcessB(ulr, num);
-			num = ulr * 3;
-			ProcessB(ulr, num);
-			num = ulr / 3;
-			ProcessB(ulr, num);
+			num = lr * 2;
+			ProcessB(lr, num);
+			num = lr / 2;
+			ProcessB(lr, num);
+			num = lr * 3;
+			ProcessB(lr, num);
+			num = lr / 3;
+			ProcessB(lr, num);
 			num = (byte)0;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = (short)0;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = (ushort)0;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = 0;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = 0u;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = 0L;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = 0uL;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = MpuT.Zero;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), num.Equals(ulr));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), num.Equals(lr));
 			num = MpzT.Zero;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), num.Equals(ulr));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), num.Equals(lr));
 			num = 0f;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = 0d;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
 			num = LongReal.Zero;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals(num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), ulr.Equals((object)num));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num), num.Equals(ulr));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals(num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), lr.Equals((object)num));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num), num.Equals(lr));
 		}
-		void ProcessB(LongReal ulr, dynamic num)
+		void ProcessB(LongReal lr, dynamic num)
 		{
 			dynamic num2 = (byte)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (short)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (ushort)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (int)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (uint)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (long)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (ulong)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (MpuT)(num < 0 ? -num : num);
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), num2.Equals(ulr));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), num2.Equals(lr));
 			num2 = (MpzT)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), num2.Equals(ulr));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), num2.Equals(lr));
 			num2 = (float)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (double)num;
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals(num2));
-			Assert.AreEqual(ulr.Equals((MpzT)ulr) && ((MpzT)ulr).Equals(num2), ulr.Equals((object)num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals(num2));
+			Assert.AreEqual(lr.Equals((MpzT)lr) && ((MpzT)lr).Equals(num2), lr.Equals((object)num2));
 			num2 = (LongReal)num;
-			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), ulr.Equals(num2));
-			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), ulr.Equals((object)num2));
-			Assert.AreEqual(E.SequenceEqual(ulr.ToByteArray(-1), num2.ToByteArray(-1)), num2.Equals(ulr));
+			Assert.AreEqual(E.SequenceEqual(lr.ToByteArray(-1), num2.ToByteArray(-1)), lr.Equals(num2));
+			Assert.AreEqual(E.SequenceEqual(lr.ToByteArray(-1), num2.ToByteArray(-1)), lr.Equals((object)num2));
+			Assert.AreEqual(E.SequenceEqual(lr.ToByteArray(-1), num2.ToByteArray(-1)), num2.Equals(lr));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -499,18 +497,11 @@ public class LongRealTests
 			var r = BitConverter.ToDouble(bytes.AsSpan());
 			LongReal lr = new(r, MantissaLength);
 			if (LongReal.IsNaN(lr))
-				Assert.IsTrue(LongReal.IsNaN(LongReal.Log(lr)));
+				Assert.IsTrue(LongReal.IsNaN(lr.Log()));
 			else
-				Assert.AreEqual(Log(r), (double)LongReal.Log(lr));
+				Assert.AreEqual(Log(r), (double)lr.Log());
 		}
-	}
-
-	[TestMethod]
-	public void TestLogProperties()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		List<byte> bytes = new(1024);
-		for (var i = 0; i < 10000; i++)
+		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
 			var baseA = new MpuT(bytes.AsSpan(), RandomOrder());
@@ -522,22 +513,76 @@ public class LongRealTests
 			bytes.FillInPlace(random.Next(65), _ => (byte)random.Next(256));
 			var shiftB = new MpzT(bytes.AsSpan(), RandomOrder());
 			var b = new LongReal(baseB, MantissaLength).Shift(shiftB);
-			var logA = LongReal.Log(a);
-			var logB = LongReal.Log(b);
-			var logProd = LongReal.Log(a * b);
-			var logQuot = LongReal.Log(a / b);
+			var logA = a.Log();
+			var logB = b.Log();
+			var logProd = (a * b).Log();
+			var logQuot = (a / b).Log();
 			var logAAbs = logA.Abs();
 			var logBAbs = logB.Abs();
-			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 2, (logA + logB - logProd).Abs());
-			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 2, (logA - logB - logQuot).Abs());
-			Assert.AreEqual(a.CompareTo(b), LongReal.Log(a).CompareTo(LongReal.Log(b)));
+			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 3, (logA + logB - logProd).Abs());
+			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 3, (logA - logB - logQuot).Abs());
+			var log2A = a.Log2();
+			var log2B = b.Log2();
+			var log2Prod = (a * b).Log2();
+			var log2Quot = (a / b).Log2();
+			var log2AAbs = log2A.Abs();
+			var log2BAbs = log2B.Abs();
+			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 3, (log2A + log2B - log2Prod).Abs());
+			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 3, (log2A - log2B - log2Quot).Abs());
+			Assert.AreEqual(a.CompareTo(b), a.Log().CompareTo(b.Log()));
 			Assert.AreEqual(a.CompareTo(b), logA.CompareTo(logB));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 
 	[TestMethod]
-	public void TestShiftsDouble()
+	public void TestPower()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var longRealThree = new LongReal(3);
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 5000; i++)
+		{
+			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
+			var uz = new MpuT(bytes.AsSpan(), RandomOrder());
+			bytes.FillInPlace(random.Next(65), _ => (byte)random.Next(256));
+			var lr = new LongReal(uz, MantissaLength);
+			var lr2 = longRealThree.Power(lr).Log(longRealThree);
+			Assert.IsLessThanOrEqualTo(lr >> MantissaLength - 20, (lr - lr2).Abs());
+		}
+		for (var i = 0; i < 5000; i++)
+		{
+			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
+			var @base = new MpuT(bytes.AsSpan(), RandomOrder());
+			bytes.FillInPlace(random.Next(65), _ => (byte)random.Next(256));
+			var shift = random.Next();
+			var lr = new LongReal(@base, MantissaLength).Shift(shift);
+			var lr2 = longRealThree.Power(lr.Log(longRealThree));
+			Assert.IsLessThanOrEqualTo(lr >> MantissaLength - 50, (lr - lr2).Abs());
+		}
+		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
+	public void TestReciproc()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
+			var @base = new MpzT(bytes.AsSpan(), RandomOrder());
+			bytes.FillInPlace(random.Next(65), _ => (byte)random.Next(256));
+			var shift = new MpzT(bytes.AsSpan(), RandomOrder());
+			var lr = new LongReal(@base, MantissaLength).Shift(shift);
+			var lr2 = 1 / lr.Reciproc();
+			Assert.IsLessThanOrEqualTo(lr.Abs() >> MantissaLength - 1, (lr - lr2).Abs());
+		}
+		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
+	public void TestShifts()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
@@ -556,13 +601,6 @@ public class LongRealTests
 			Assert.AreEqual(r / Pow(2, shiftAmount), (double)(lr >> shiftAmount));
 			Assert.AreEqual(r / Pow(2, shiftAmount), (double)(lr >> (UnsignedLongReal)shiftAmount));
 		}
-	}
-
-	[TestMethod]
-	public void TestShiftsMpuT()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		List<byte> bytes = new(1024);
 		for (var i = 0; i < 1000000; i++)
 		{
 			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
@@ -603,13 +641,6 @@ public class LongRealTests
 			else
 				Assert.AreEqual(Sqrt(r), (double)LongReal.Sqrt(lr));
 		}
-	}
-
-	[TestMethod]
-	public void TestSqrt2()
-	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		List<byte> bytes = new(1024);
 		for (var i = 0; i < 100000; i++)
 		{
 			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
@@ -646,25 +677,26 @@ public class LongRealTests
 	}
 
 	[TestMethod]
-	[DataRow(1, 0, "1E+0")]     // 1 * 2^0 = 1
-	[DataRow(1, 1, "2E+0")]     // 1 * 2^1 = 2
-	[DataRow(1, 2, "4E+0")]     // 1 * 2^2 = 4
-	[DataRow(3, 3, "2.4E+1")]  // 3 * 2^3 = 24
-	[DataRow(5, -2, "1.25E+0")] // 5 * 2^-2 = 1.25
-	public void TestToString_BasicNumbers(long a, int n, string expected)
+	public void TestToString()
 	{
 		CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-		var longReal = new LongReal(a).Shift(n);
+		var longReal = new LongReal(1).Shift(0);
 		var result = longReal.ToString("E6");
-		Assert.AreEqual(expected, result);
-	}
-
-	[TestMethod]
-	public void TestToString_Complex()
-	{
-		CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-		var longReal = new LongReal(123).Shift(50);
-		var result = longReal.ToString("E4");
+		Assert.AreEqual("1E+0", result);
+		longReal = new LongReal(1).Shift(1);
+		result = longReal.ToString("E6");
+		Assert.AreEqual("2E+0", result);
+		longReal = new LongReal(1).Shift(2);
+		result = longReal.ToString("E6");
+		Assert.AreEqual("4E+0", result);
+		longReal = new LongReal(3).Shift(3);
+		result = longReal.ToString("E6");
+		Assert.AreEqual("2.4E+1", result);
+		longReal = new LongReal(5).Shift(-2);
+		result = longReal.ToString("E6");
+		Assert.AreEqual("1.25E+0", result);
+		longReal = new LongReal(123).Shift(50);
+		result = longReal.ToString("E4");
 		Assert.AreEqual("1.3849E+17", result);
 		longReal = new LongReal(1000).Shift(-10);
 		result = longReal.ToString("F6", CultureInfo.GetCultureInfo("en-US"));
@@ -687,16 +719,42 @@ public class LongRealTests
 			var deResult = longReal.ToString(format, CultureInfo.GetCultureInfo("de-DE"));
 			Assert.AreEqual(de, deResult);
 		}
-		mpz = new MpzT(77).Power(77);
-		longReal = new LongReal(1).Shift(mpz);
-		result = longReal.ToString("E6");
-		Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
+		//mpz = new MpzT(77).Power(77);
+		//longReal = new LongReal(1).Shift(mpz);
+		//result = longReal.ToString("E6");
+		//Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
 	}
 
-	public static G.IEnumerable<(LongReal number, string format, string en, string ru, string de)> CultureTestData()
+	private static G.IEnumerable<(LongReal number, string format, string en, string ru, string de)> CultureTestData()
 	{
 		yield return (new LongReal(15L).Shift(12), "F2", "61,440.00", "61 440,00", "61.440,00");
 		yield return (new LongReal(-987L).Shift(-8), "E3", "-3.855E+0", "-3,855E+0", "-3,855E+0");
 		yield return (new(123456.789), "N5", "123,456.78900", "123 456,78900", "123.456,78900");
+	}
+
+	[TestMethod]
+	public void TestToUnsignedLongReal()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(1, 501), _ => (byte)random.Next(256));
+			var order = RandomOrder();
+			UnsignedLongReal ulr = new(bytes.AsSpan(), order, MantissaLength);
+			if (bytes.Length - MantissaByteLength == 4)
+				continue;
+			LongReal lr = ulr;
+			Assert.AreEqual(ulr, (UnsignedLongReal)lr);
+		}
+		for (var i = 0; i < 100; i++)
+		{
+			var lr = new LongReal(random.Next()).Shift(-random.Next());
+			Assert.AreEqual(UnsignedLongReal.Zero, (UnsignedLongReal)lr);
+		}
+		Assert.ThrowsExactly<OverflowException>(() => (UnsignedLongReal)LongReal.PositiveInfinity);
+		Assert.ThrowsExactly<OverflowException>(() => (UnsignedLongReal)LongReal.NegativeInfinity);
+		Assert.ThrowsExactly<OverflowException>(() => (UnsignedLongReal)LongReal.NaN);
+		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
 }

@@ -3,16 +3,18 @@
 /// <summary>Represents an arbitrarily large signed integer.</summary>
 public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisposable
 {
+	public const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+		+ " тип все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
+    internal const string NoNegativeNumbers = "Этот тип не поддерживает отрицательные числа.";
+    internal const string NoDivisionByZero = "Этот тип не поддерживает деление на ноль.";
 	internal const uint DefaultStringBase = 10u;
 	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
 	private static byte[] exportBytes = GC.AllocateUninitializedArray<byte>(1024);
 	private static readonly Lock lockObj = new();
-	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
 
-	internal nint val;
+    internal nint val;
 
 	/// <summary>Initializes a new MpzT to 0.</summary>
 	public MpzT() => val = Mpir.MpzInit();
@@ -100,10 +102,7 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 				return IsPositive(this) ? 1 : 0;
 			else if (IsPositive(this))
 				return 1;
-			else if (IsNegative(this))
-				return -1;
-			else
-				throw new ArithmeticException("Произошла ошибка при вычислении знака.");
+			return IsNegative(this) ? -1 : throw new ArithmeticException("Произошла ошибка при вычислении знака.");
 		}
 	}
 
@@ -316,11 +315,6 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 
 	public MpzT Divide(uint x, out uint remainder)
 	{
-		// Unsure about the below exception for negative numbers. It's in Stefanov's
-		// original code, but that limitation isn't mentioned in
-		// http://Gmplib.org/manual/Integer-Division.html#Integer-Division.
-		//if(this.ChunkCount < 0)
-		//	throw new InvalidOperationException("This method may not be called when the instance represents a negative number.");
 		var quotient = new MpzT();
 		var uintRemainder = Mpir.MpzTdivQUi(quotient, this, x);
 		if (uintRemainder > int.MaxValue)
@@ -1042,41 +1036,41 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 		string.Format(formatProvider, format ?? "{0:N0}", ToString());
 	string IConvertible.ToString(IFormatProvider? provider) => ToString() ?? "";
 
-	object IConvertible.ToType(Type targetType, IFormatProvider? provider)
+	object IConvertible.ToType(Type conversionType, IFormatProvider? provider)
 	{
-		ArgumentNullException.ThrowIfNull(targetType);
-		if (targetType == typeof(MpzT))
+		ArgumentNullException.ThrowIfNull(conversionType);
+		if (conversionType == typeof(MpzT))
 			return this;
 		IConvertible value = this;
-		if (targetType == typeof(sbyte))
+		if (conversionType == typeof(sbyte))
 			return value.ToSByte(provider);
-		else if (targetType == typeof(byte))
+		else if (conversionType == typeof(byte))
 			return value.ToByte(provider);
-		else if (targetType == typeof(short))
+		else if (conversionType == typeof(short))
 			return value.ToInt16(provider);
-		else if (targetType == typeof(ushort))
+		else if (conversionType == typeof(ushort))
 			return value.ToUInt16(provider);
-		else if (targetType == typeof(int))
+		else if (conversionType == typeof(int))
 			return value.ToInt32(provider);
-		else if (targetType == typeof(uint))
+		else if (conversionType == typeof(uint))
 			return value.ToUInt32(provider);
-		else if (targetType == typeof(long))
+		else if (conversionType == typeof(long))
 			return value.ToInt64(provider);
-		else if (targetType == typeof(ulong))
+		else if (conversionType == typeof(ulong))
 			return value.ToUInt64(provider);
-		else if (targetType == typeof(float))
+		else if (conversionType == typeof(float))
 			return value.ToSingle(provider);
-		else if (targetType == typeof(double))
+		else if (conversionType == typeof(double))
 			return value.ToDouble(provider);
-		else if (targetType == typeof(decimal))
+		else if (conversionType == typeof(decimal))
 			return value.ToDecimal(provider);
-		else if (targetType == typeof(MpzT))
+		else if (conversionType == typeof(MpzT))
 			return new MpzT(value.ToString(provider));
-		else if (targetType == typeof(MpuT))
+		else if (conversionType == typeof(MpuT))
 			return new MpuT(value.ToString(provider));
-		else if (targetType == typeof(string))
+		else if (conversionType == typeof(string))
 			return value.ToString(provider);
-		else if (targetType == typeof(object))
+		else if (conversionType == typeof(object))
 			return value;
 		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpzT) + ", " + nameof(MpuT)
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");

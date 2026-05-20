@@ -4,21 +4,22 @@ using System.Runtime.CompilerServices;
 namespace NStar.Dictionaries;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TValue : notnull
+public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary, IReadOnlyDictionary<TKey, TValue>
+	where TKey : notnull where TValue : notnull
 {
 	protected struct Entry
 	{
-		public uint hashCode;
-		public uint hashCodeM;
-		/// <summary>
-		/// 0-based index of next entry in chain: -1 means end of chain
-		/// also encodes whether this entry _itself_ is part of the free list by changing sign and subtracting 3,
-		/// so -2 means end of free list, -3 means index 0 but on free list, -4 means index 1 but on free list, etc.
-		/// </summary>
-		public int next;
-		public int nextM;
-		public TKey key;	 // Key of entry
-		public TValue value; // Value of entry
+        internal uint hashCode;
+        internal uint hashCodeM;
+        /// <summary>
+        /// 0-based index of next entry in chain: -1 means end of chain
+        /// also encodes whether this entry _itself_ is part of the free list by changing sign and subtracting 3,
+        /// so -2 means end of free list, -3 means index 0 but on free list, -4 means index 1 but on free list, etc.
+        /// </summary>
+        internal int next;
+        internal int nextM;
+		internal TKey key;
+		internal TValue value;
 	}
 
 	private protected int[]? _buckets;
@@ -34,11 +35,14 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	private protected KeyCollection? _keys;
 	private protected ValueCollection? _values;
 	private protected const int StartOfFreeList = -3;
-
-	protected const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-		+ " список все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
+	private const string CannotDeleteItem = "Невозможно удалить элемент. Возможные причины:\r\n";
+	private const string EntriesNonNull = "entries should be non-null";
+    private const string NoModifyDuringIteration = "Коллекцию нельзя изменять во время перечисления по ней.";
+	private const string SequenceOutOfArray = "Копируемая последовательность выходит за размер целевого массива.";
+    private const string ShouldntUnderflow = "shouldn't underflow because max hashtable length"
+		+ " is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646";
+    private const string UseOriginalDictionaryMethod = "Этот метод не поддерживается в этой коллекции."
+        + " Вместо этого используйте одноименный метод оригинального словаря.";
 
 	public Mirror() : this(0, (G.IEqualityComparer<TKey>?)null, null) { }
 
@@ -48,19 +52,27 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 	public Mirror(Func<TKey, TKey, bool> equalFunction) : this(new EComparer<TKey>(equalFunction)) { }
 
-	public Mirror(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Mirror(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(0, keyComparer, valueComparer) { }
+	public Mirror(G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer)
+		: this(0, keyComparer, valueComparer) { }
 
-	public Mirror(Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM) : this(new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
+	public Mirror(Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM)
+		: this(new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
 
-	public Mirror(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM) : this(new EComparer<TKey>(equalFunction, hashCodeFunction), new EComparer<TValue>(equalFunctionM, hashCodeFunctionM)) { }
+	public Mirror(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction,
+		Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM)
+		: this(new EComparer<TKey>(equalFunction, hashCodeFunction),
+		new EComparer<TValue>(equalFunctionM, hashCodeFunctionM))
+	{ }
 
 	public Mirror(int capacity, G.IEqualityComparer<TKey>? keyComparer) : this(capacity, keyComparer, null) { }
 
 	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction) : this(capacity, new EComparer<TKey>(equalFunction)) { }
 
-	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
 	public Mirror(int capacity, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer)
 	{
@@ -69,85 +81,146 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			Initialize(capacity);
 		if (!typeof(TKey).IsValueType)
 			_comparer = keyComparer ?? G.EqualityComparer<TKey>.Default;
-		else if (keyComparer is not null && keyComparer != G.EqualityComparer<TKey>.Default) // first check for null to avoid forcing default comparer instantiation unnecessarily
+		// first check for null to avoid forcing default comparer instantiation unnecessarily
+		else if (keyComparer is not null && keyComparer != G.EqualityComparer<TKey>.Default)
 			_comparer = keyComparer;
 		else
 			_comparer = G.EqualityComparer<TKey>.Default;
 		if (!typeof(TValue).IsValueType)
 			_comparerM = valueComparer ?? G.EqualityComparer<TValue>.Default;
-		else if (valueComparer is not null && valueComparer != G.EqualityComparer<TValue>.Default) // first check for null to avoid forcing default comparer instantiation unnecessarily
+		// first check for null to avoid forcing default comparer instantiation unnecessarily
+		else if (valueComparer is not null && valueComparer != G.EqualityComparer<TValue>.Default)
 			_comparerM = valueComparer;
 		else
 			_comparerM = G.EqualityComparer<TValue>.Default;
 	}
 
-	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM) : this(capacity, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
+	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM)
+		: this(capacity, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
 
-	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM) : this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction), new EComparer<TValue>(equalFunctionM, hashCodeFunctionM)) { }
+	public Mirror(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction,
+		Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM)
+		: this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction),
+		new EComparer<TValue>(equalFunctionM, hashCodeFunctionM))
+	{ }
 
 	public Mirror(G.IDictionary<TKey, TValue> dictionary) : this(dictionary, (G.IEqualityComparer<TKey>?)null, null) { }
 
-	public Mirror(G.IDictionary<TKey, TValue> dictionary, G.IEqualityComparer<TKey>? keyComparer) : this(dictionary, keyComparer, null) { }
+	public Mirror(G.IDictionary<TKey, TValue> dictionary, G.IEqualityComparer<TKey>? keyComparer)
+		: this(dictionary, keyComparer, null) { }
 
-	public Mirror(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction) : this(dictionary, new EComparer<TKey>(equalFunction)) { }
+	public Mirror(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction)
+		: this(dictionary, new EComparer<TKey>(equalFunction)) { }
 
-	public Mirror(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Mirror(G.IDictionary<TKey, TValue> dictionary,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(G.IDictionary<TKey, TValue> dictionary, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(dictionary?.Count ?? 0, keyComparer, valueComparer)
+	public Mirror(G.IDictionary<TKey, TValue> dictionary,
+		G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer)
+		: this(dictionary?.Count ?? 0, keyComparer, valueComparer)
 	{
 		ArgumentNullException.ThrowIfNull(dictionary);
 		AddRange(dictionary);
 	}
 
-	public Mirror(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM) : this(dictionary, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
+	public Mirror(G.IDictionary<TKey, TValue> dictionary,
+		Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM)
+		: this(dictionary, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
 
-	public Mirror(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM) : this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction), new EComparer<TValue>(equalFunctionM, hashCodeFunctionM)) { }
+	public Mirror(G.IDictionary<TKey, TValue> dictionary,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction,
+		Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM)
+		: this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction),
+		new EComparer<TValue>(equalFunctionM, hashCodeFunctionM))
+	{ }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection) : this(collection, (G.IEqualityComparer<TKey>?)null, null) { }
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection)
+		: this(collection, (G.IEqualityComparer<TKey>?)null, null) { }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? keyComparer) : this(collection, keyComparer, null) { }
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? keyComparer)
+		: this(collection, keyComparer, null) { }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction)
+		: this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(collection is not null && collection.TryGetLengthEasily(out var length) ? length : 0, keyComparer, valueComparer)
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection,
+		G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer)
+		: this(collection is not null && collection.TryGetLengthEasily(out var length) ? length : 0, keyComparer, valueComparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		AddRange(collection);
 	}
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM) : this(collection, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM)
+		: this(collection, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
 
-	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), new EComparer<TValue>(equalFunctionM, hashCodeFunctionM)) { }
+	public Mirror(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction,
+		Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM)
+		: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction),
+		new EComparer<TValue>(equalFunctionM, hashCodeFunctionM))
+	{ }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection) : this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection)
+		: this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, G.IEqualityComparer<TKey>? keyComparer) : this(keyCollection, valueCollection, keyComparer, null) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		G.IEqualityComparer<TKey>? keyComparer) : this(keyCollection, valueCollection, keyComparer, null) { }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction)) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		Func<TKey, TKey, bool> equalFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction)) { }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection), keyComparer, valueComparer) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer)
+		: this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection), keyComparer, valueComparer) { }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM)
+		: this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
 
-	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction), new EComparer<TValue>(equalFunctionM, hashCodeFunctionM)) { }
+	public Mirror(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction,
+		Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM)
+		: this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction),
+		new EComparer<TValue>(equalFunctionM, hashCodeFunctionM))
+	{ }
 
 	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? keyComparer) : this(collection, keyComparer, null) { }
+	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? keyComparer)
+		: this(collection, keyComparer, null) { }
 
-	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction)
+		: this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer) : this(new UnsortedDictionary<TKey, TValue>(collection), keyComparer, valueComparer) { }
+	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection,
+		G.IEqualityComparer<TKey>? keyComparer, G.IEqualityComparer<TValue>? valueComparer)
+		: this(new UnsortedDictionary<TKey, TValue>(collection), keyComparer, valueComparer) { }
 
-	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM) : this(collection, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
+	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TValue, TValue, bool> equalFunctionM)
+		: this(collection, new EComparer<TKey>(equalFunction), new EComparer<TValue>(equalFunctionM)) { }
 
-	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), new EComparer<TValue>(equalFunctionM, hashCodeFunctionM)) { }
+	public Mirror(G.IEnumerable<(TKey Key, TValue Value)> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction,
+		Func<TValue, TValue, bool> equalFunctionM, Func<TValue, int> hashCodeFunctionM)
+		: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction),
+		new EComparer<TValue>(equalFunctionM, hashCodeFunctionM))
+	{ }
 
 	public virtual TKey this[TValue targetValue] { get => GetKey(targetValue); set => SetKey(targetValue, value); }
 
@@ -232,7 +305,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		Debug.Assert(modified); // If there was an existing key and the Add failed, an exception will already have been thrown.
 	}
 
-	void G.ICollection<G.KeyValuePair<TKey, TValue>>.Add(G.KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
+	void G.ICollection<G.KeyValuePair<TKey, TValue>>.Add(G.KeyValuePair<TKey, TValue> keyValuePair) =>
+		Add(keyValuePair.Key, keyValuePair.Value);
 
 	void System.Collections.IDictionary.Add(object key, object? value)
 	{
@@ -359,10 +433,10 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				ref var entry = ref newEntries[newCount];
 				entry = entries[i];
 				ref var bucket = ref GetBucket(hashCode);
-				entry.next = bucket - 1; // Value in _buckets is 1-based
+				entry.next = bucket - 1; // value in _buckets is 1-based
 				bucket = newCount + 1;
 				ref var bucketM = ref GetBucketM(hashCodeM);
-				entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
+				entry.nextM = bucketM - 1; // value in _bucketsM is 1-based
 				bucketM = newCount + 1;
 				newCount++;
 			}
@@ -377,7 +451,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		if ((uint)index > (uint)array.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+			throw new ArgumentException(SequenceOutOfArray);
 		Debug.Assert(_entries is not null);
 		var length = _count;
 		Debug.Assert(_entries is not null);
@@ -400,7 +474,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		if ((uint)index > (uint)array.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+			throw new ArgumentException(SequenceOutOfArray);
 		Debug.Assert(_entries is not null);
 		if (array is G.KeyValuePair<TKey, TValue>[] pairs)
 			CopyTo(pairs, index);
@@ -444,7 +518,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	{
 		uint collisionCount = 0;
 		var last = -1;
-		var current = bucket - 1; // Value in buckets is 1-based
+		var current = bucket - 1; // value in buckets is 1-based
 		while (current >= 0)
 		{
 			if (current == otherCurrent)
@@ -453,8 +527,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = mirrored ? entries[current].next : entries[current].nextM;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + MpzT.InternalError
 					+ $"Текущее состояние: длина - неизвестно, емкость - {entries?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -470,28 +543,27 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			goto ReturnNotFound;
 		Debug.Assert(_entries is not null, "expected entries to be is not null");
 		var comparerM = _comparerM;
-			Debug.Assert(comparerM is not null);
-			var hashCodeM = (uint)comparerM.GetHashCode(value);
-			var currentM = GetBucketM(hashCodeM);
-			var entries = _entries;
-			uint collisionCountM = 0;
-			currentM--; // Key in _bucketsM is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
-			do
-			{
-				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
-				// Test in if to drop range check for following array access
-				if ((uint)currentM >= (uint)entries.Length)
-					goto ReturnNotFound;
-				entry = ref entries[currentM];
-				if (entry.hashCodeM == hashCodeM && comparerM.Equals(entry.value, value))
-					goto ReturnFound;
-				currentM = entry.nextM;
-				collisionCountM++;
-			} while (collisionCountM <= (uint)entries.Length);
-			// The chain of entries forms a loop; which means a concurrent update has happened.
-			// Break out of the loop and throw, rather than looping forever.
-		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
-			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+		Debug.Assert(comparerM is not null);
+		var hashCodeM = (uint)comparerM.GetHashCode(value);
+		var currentM = GetBucketM(hashCodeM);
+		var entries = _entries;
+		uint collisionCountM = 0;
+		currentM--; // key in _bucketsM is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
+		do
+		{
+			// Should be a while loop https://github.com/dotnet/runtime/issues/9422
+			// Test in if to drop range check for following array access
+			if ((uint)currentM >= (uint)entries.Length)
+				goto ReturnNotFound;
+			entry = ref entries[currentM];
+			if (entry.hashCodeM == hashCodeM && comparerM.Equals(entry.value, value))
+				goto ReturnFound;
+			currentM = entry.nextM;
+			collisionCountM++;
+		} while (collisionCountM <= (uint)entries.Length);
+		// The chain of entries forms a loop; which means a concurrent update has happened.
+		// Break out of the loop and throw, rather than looping forever.
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + MpzT.InternalError
 			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	ReturnFound:
@@ -512,28 +584,27 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			goto ReturnNotFound;
 		Debug.Assert(_entries is not null, "expected entries to be is not null");
 		var comparer = _comparer;
-			Debug.Assert(comparer is not null);
-			var hashCode = (uint)comparer.GetHashCode(key);
-			var current = GetBucket(hashCode);
-			var entries = _entries;
-			uint collisionCount = 0;
-			current--; // Value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
-			do
-			{
-				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
-				// Test in if to drop range check for following array access
-				if ((uint)current >= (uint)entries.Length)
-					goto ReturnNotFound;
-				entry = ref entries[current];
-				if (entry.hashCode == hashCode && comparer.Equals(entry.key, key))
-					goto ReturnFound;
-				current = entry.next;
-				collisionCount++;
-			} while (collisionCount <= (uint)entries.Length);
-			// The chain of entries forms a loop; which means a concurrent update has happened.
-			// Break out of the loop and throw, rather than looping forever.
-		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
-			+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+		Debug.Assert(comparer is not null);
+		var hashCode = (uint)comparer.GetHashCode(key);
+		var current = GetBucket(hashCode);
+		var entries = _entries;
+		uint collisionCount = 0;
+		current--; // value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
+		do
+		{
+			// Should be a while loop https://github.com/dotnet/runtime/issues/9422
+			// Test in if to drop range check for following array access
+			if ((uint)current >= (uint)entries.Length)
+				goto ReturnNotFound;
+			entry = ref entries[current];
+			if (entry.hashCode == hashCode && comparer.Equals(entry.key, key))
+				goto ReturnFound;
+			current = entry.next;
+			collisionCount++;
+		} while (collisionCount <= (uint)entries.Length);
+		// The chain of entries forms a loop; which means a concurrent update has happened.
+		// Break out of the loop and throw, rather than looping forever.
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + MpzT.InternalError
 			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	ReturnFound:
@@ -615,7 +686,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 	private protected static void ProcessLast(Entry[] entries, Entry entry, ref int bucket, int last, bool mirrored = false)
 	{
 		if (last < 0)
-			bucket = (mirrored ? entry.nextM : entry.next) + 1; // Value in buckets is 1-based
+			bucket = (mirrored ? entry.nextM : entry.next) + 1; // value in buckets is 1-based
 		else if (mirrored)
 			entries[last].nextM = entry.nextM;
 		else
@@ -641,7 +712,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			throw new ArgumentNullException(nameof(key));
 		if (_buckets is null || _bucketsM is null)
 			return false;
-		Debug.Assert(_entries is not null, "entries should be non-null");
+		Debug.Assert(_entries is not null, EntriesNonNull);
 		uint collisionCount = 0;
 		var comparer = _comparer;
 		Debug.Assert(typeof(TKey).IsValueType || comparer is not null);
@@ -649,7 +720,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		ref var bucket = ref GetBucket(hashCode);
 		var entries = _entries;
 		var last = -1;
-		var current = bucket - 1; // Value in buckets is 1-based
+		var current = bucket - 1; // value in buckets is 1-based
 		while (current >= 0)
 		{
 			ref var entry = ref entries[current];
@@ -659,9 +730,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				var lastM = Find(entries, current, bucketM);
 				ProcessLast(entries, entry, ref bucket, last);
 				ProcessLast(entries, entry, ref bucketM, lastM, true);
-				Debug.Assert(StartOfFreeList - _freeList < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeList < 0, ShouldntUnderflow);
 				entry.next = StartOfFreeList - _freeList;
-				Debug.Assert(StartOfFreeList - _freeListM < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeListM < 0, ShouldntUnderflow);
 				entry.nextM = StartOfFreeList - _freeListM;
 				if (RuntimeHelpers.IsReferenceOrContainsReferences<TKey>())
 					entry.key = default!;
@@ -677,8 +748,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -697,7 +767,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			value = default;
 			return false;
 		}
-		Debug.Assert(_entries is not null, "entries should be non-null");
+		Debug.Assert(_entries is not null, EntriesNonNull);
 		uint collisionCount = 0;
 		var comparer = _comparer;
 		Debug.Assert(typeof(TKey).IsValueType || comparer is not null);
@@ -705,7 +775,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		ref var bucket = ref GetBucket(hashCode);
 		var entries = _entries;
 		var last = -1;
-		var current = bucket - 1; // Value in buckets is 1-based
+		var current = bucket - 1; // value in buckets is 1-based
 		while (current >= 0)
 		{
 			ref var entry = ref entries[current];
@@ -716,9 +786,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				ProcessLast(entries, entry, ref bucket, last);
 				ProcessLast(entries, entry, ref bucketM, lastM, true);
 				value = entry.value;
-				Debug.Assert(StartOfFreeList - _freeList < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeList < 0, ShouldntUnderflow);
 				entry.next = StartOfFreeList - _freeList;
-				Debug.Assert(StartOfFreeList - _freeListM < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeListM < 0, ShouldntUnderflow);
 				entry.nextM = StartOfFreeList - _freeListM;
 				if (RuntimeHelpers.IsReferenceOrContainsReferences<TKey>())
 					entry.key = default!;
@@ -734,8 +804,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -752,7 +821,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			throw new ArgumentNullException(nameof(value));
 		if (_buckets is null || _bucketsM is null)
 			return false;
-		Debug.Assert(_entries is not null, "entries should be non-null");
+		Debug.Assert(_entries is not null, EntriesNonNull);
 		uint collisionCountM = 0;
 		var comparerM = _comparerM;
 		Debug.Assert(typeof(TValue).IsValueType || comparerM is not null);
@@ -760,7 +829,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		ref var bucketM = ref GetBucketM(hashCodeM);
 		var entries = _entries;
 		var lastM = -1;
-		var currentM = bucketM - 1; // Key in buckets is 1-based
+		var currentM = bucketM - 1; // key in buckets is 1-based
 		while (currentM >= 0)
 		{
 			ref var entry = ref entries[currentM];
@@ -770,9 +839,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				var last = Find(entries, currentM, bucket, true);
 				ProcessLast(entries, entry, ref bucket, last);
 				ProcessLast(entries, entry, ref bucketM, lastM, true);
-				Debug.Assert(StartOfFreeList - _freeList < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeList < 0, ShouldntUnderflow);
 				entry.next = StartOfFreeList - _freeList;
-				Debug.Assert(StartOfFreeList - _freeListM < 0, "shouldn't underflow because max hashtable length is MaxPrimeArrayLength = 0x7FEFFFFD(2146435069) _freelist underflow threshold 2147483646");
+				Debug.Assert(StartOfFreeList - _freeListM < 0, ShouldntUnderflow);
 				entry.nextM = StartOfFreeList - _freeListM;
 				if (RuntimeHelpers.IsReferenceOrContainsReferences<TValue>())
 					entry.value = default!;
@@ -788,8 +857,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -808,7 +876,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			key = default;
 			return false;
 		}
-		Debug.Assert(_entries is not null, "entries should be non-null");
+		Debug.Assert(_entries is not null, EntriesNonNull);
 		uint collisionCountM = 0;
 		var comparerM = _comparerM;
 		Debug.Assert(typeof(TValue).IsValueType || comparerM is not null);
@@ -816,7 +884,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		ref var bucketM = ref GetBucketM(hashCodeM);
 		var entries = _entries;
 		var lastM = -1;
-		var currentM = bucketM - 1; // Key in buckets is 1-based
+		var currentM = bucketM - 1; // key in buckets is 1-based
 		while (currentM >= 0)
 		{
 			ref var entry = ref entries[currentM];
@@ -849,8 +917,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -873,7 +940,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 	protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
-		// Value types never rehash
+		// value types never rehash
 		Debug.Assert(!forceNewHashCodes || !typeof(TKey).IsValueType || !typeof(TValue).IsValueType);
 		Debug.Assert(_entries is not null, "_entries should be non-null");
 		Debug.Assert(newSize >= _entries.Length);
@@ -1002,13 +1069,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		var hashCode = (uint)comparer.GetHashCode(key);
 		uint collisionCount = 0;
 		ref var bucket = ref GetBucket(hashCode);
-		var current = bucket - 1; // Value in _buckets is 1-based
+		var current = bucket - 1; // value in _buckets is 1-based
 		Debug.Assert(comparer is not null);
 		while (true)
 		{
 			// Should be a while loop https://github.com/dotnet/runtime/issues/9422
 			// Test uint in if rather than loop condition to drop range check for following array access
-			var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCode, ref collisionCount, ref current);
+			var a = TryInsertInternal(key, value, behavior, comparer, comparerM, hashCode, ref collisionCount, ref current);
 			Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
 			Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 			if (a == 0)
@@ -1021,13 +1088,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		var hashCodeM = (uint)comparerM.GetHashCode(value);
 		uint collisionCountM = 0;
 		ref var bucketM = ref GetBucketM(hashCodeM);
-		var currentM = bucketM - 1; // Value in _bucketsM is 1-based
+		var currentM = bucketM - 1; // value in _bucketsM is 1-based
 		Debug.Assert(comparer is not null);
 		while (true)
 		{
 			// Should be a while loop https://github.com/dotnet/runtime/issues/9422
 			// Test uint in if rather than loop condition to drop range check for following array access
-			var a = TryInsertInternal(key, value, behavior, entries, comparer, comparerM, hashCodeM, ref collisionCountM, ref currentM, true);
+			var a = TryInsertInternal(key, value, behavior, comparer, comparerM, hashCodeM, ref collisionCountM, ref currentM, true);
 			Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
 			Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
 			if (a == 0)
@@ -1064,81 +1131,87 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		ref var entry = ref entries![index];
 		entry.hashCode = hashCode;
 		entry.hashCodeM = hashCodeM;
-		entry.next = bucket - 1; // Value in _buckets is 1-based
-		entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
+		entry.next = bucket - 1; // value in _buckets is 1-based
+		entry.nextM = bucketM - 1; // value in _bucketsM is 1-based
 		entry.key = key;
 		entry.value = value;
-		bucket = index + 1; // Value in _buckets is 1-based
-		bucketM = indexM + 1; // Value in _bucketsM is 1-based
+		bucket = index + 1; // value in _buckets is 1-based
+		bucketM = indexM + 1; // value in _bucketsM is 1-based
 		_version++;
 		Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
 		Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
-		// Value types never rehash
+		// value types never rehash
 		if (!typeof(TKey).IsValueType && collisionCount > HashHelpers.HashCollisionThreshold || !typeof(TValue).IsValueType && collisionCountM > HashHelpers.HashCollisionThreshold)
 			Resize(entries.Length, true);
 		return true;
 	}
 
-	private protected int TryInsertInternal(TKey key, TValue value, InsertionBehavior behavior, Entry[] entries,
+	private protected int TryInsertInternal(TKey key, TValue value, InsertionBehavior behavior,
 		G.IEqualityComparer<TKey> comparer, G.IEqualityComparer<TValue> comparerM,
 		uint hashCode, ref uint collisionCount, ref int current, bool mirrored = false)
 	{
-		if ((uint)current >= (uint)entries.Length)
+		Debug.Assert(_entries is not null);
+		if ((uint)current >= (uint)_entries.Length)
 			return 0;
-		if ((mirrored ? entries[current].hashCodeM : entries[current].hashCode) != hashCode
-			|| !(mirrored ? comparerM.Equals(entries[current].value, value) : comparer.Equals(entries[current].key, key)))
+		if ((mirrored ? _entries[current].hashCodeM : _entries[current].hashCode) != hashCode
+			|| !(mirrored ? comparerM.Equals(_entries[current].value, value) : comparer.Equals(_entries[current].key, key)))
 		{
-			current = mirrored ? entries[current].nextM : entries[current].next;
+			current = mirrored ? _entries[current].nextM : _entries[current].next;
 			collisionCount++;
-			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+			if (collisionCount > (uint)_entries.Length)
+				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 			return 3;
 		}
-		if (mirrored ? comparer.Equals(entries[current].key, key) : comparerM.Equals(entries[current].value, value))
+		if (mirrored ? comparer.Equals(_entries[current].key, key) : comparerM.Equals(_entries[current].value, value))
 			return behavior switch
 			{
 				InsertionBehavior.None => 2,
 				InsertionBehavior.OverwriteExisting => 1,
-				InsertionBehavior.ThrowOnExisting => throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
-				_ => throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				InsertionBehavior.ThrowOnExisting =>
+					throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
+				_ => throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
+					+ MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),
-				};
+			};
 		if (behavior == InsertionBehavior.OverwriteExisting)
 		{
 			if (mirrored)
 			{
 				RemoveKey(key);
-				ref var entry = ref entries[current];
+				ref var entry = ref _entries[current];
 				ref var bucket = ref GetBucket(entry.hashCode);
-				var last = Find(entries, current, bucket, true);
-				ProcessLast(entries, entry, ref bucket, last);
+				var last = Find(_entries, current, bucket, true);
+				ProcessLast(_entries, entry, ref bucket, last);
 				entry.hashCode = (uint)(typeof(TKey).IsValueType && comparer is null ? key.GetHashCode() : comparer.GetHashCode(key));
 				bucket = ref GetBucket(entry.hashCode);
-				entry.next = bucket - 1; // Value in _buckets is 1-based
-				entries[current].key = key;
-				bucket = current + 1; // Value in _buckets is 1-based
+				entry.next = bucket - 1; // value in _buckets is 1-based
+				_entries[current].key = key;
+				bucket = current + 1; // value in _buckets is 1-based
 			}
 			else
 			{
 				RemoveValue(value);
-				ref var entry = ref entries[current];
+				ref var entry = ref _entries[current];
 				ref var bucketM = ref GetBucketM(entry.hashCodeM);
-				var lastM = Find(entries, current, bucketM);
-				ProcessLast(entries, entry, ref bucketM, lastM, true);
+				var lastM = Find(_entries, current, bucketM);
+				ProcessLast(_entries, entry, ref bucketM, lastM, true);
 				entry.hashCodeM = (uint)(typeof(TValue).IsValueType && comparer is null ? value.GetHashCode() : comparerM.GetHashCode(value));
 				bucketM = ref GetBucketM(entry.hashCodeM);
-				entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
-				entries[current].value = value;
-				bucketM = current + 1; // Value in _bucketsM is 1-based
+				entry.nextM = bucketM - 1; // value in _bucketsM is 1-based
+				_entries[current].value = value;
+				bucketM = current + 1; // value in _bucketsM is 1-based
 			}
 			return 1;
 		}
-		return behavior == InsertionBehavior.ThrowOnExisting ? throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)) : 2;
+		if (behavior != InsertionBehavior.ThrowOnExisting)
+			return 2;
+		else if (mirrored)
+			throw new ArgumentException("Невозможно вставить такой элемент.", nameof(value));
+		else
+			throw new ArgumentException("Невозможно вставить такой элемент.", nameof(key));
 	}
 
 	public struct Enumerator : G.IEnumerator<G.KeyValuePair<TKey, TValue>>, IDictionaryEnumerator
@@ -1150,6 +1223,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 
 		internal const int DictEntry = 1;
 		internal const int KeyValuePair = 2;
+		private const string IteratorOutOfBounds = "Указатель находится за границей коллекции.";
 
 		internal Enumerator(Mirror<TKey, TValue> dictionary, int getEnumeratorRetType)
 		{
@@ -1167,7 +1241,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException("Указатель находится за границей коллекции.");
+					throw new InvalidOperationException(IteratorOutOfBounds);
 				if (_getEnumeratorRetType == DictEntry)
 					return new DictionaryEntry(Current.Key, Current.Value);
 				return new G.KeyValuePair<TKey, TValue>(Current.Key, Current.Value);
@@ -1179,7 +1253,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException("Указатель находится за границей коллекции.");
+					throw new InvalidOperationException(IteratorOutOfBounds);
 				return new DictionaryEntry(Current.Key, Current.Value);
 			}
 		}
@@ -1189,7 +1263,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException("Указатель находится за границей коллекции.");
+					throw new InvalidOperationException(IteratorOutOfBounds);
 				return Current.Key;
 			}
 		}
@@ -1199,7 +1273,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			get
 			{
 				if (_index == 0 || _index == _dictionary._count + 1)
-					throw new InvalidOperationException("Указатель находится за границей коллекции.");
+					throw new InvalidOperationException(IteratorOutOfBounds);
 				return Current.Value;
 			}
 		}
@@ -1209,7 +1283,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		public bool MoveNext()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+				throw new InvalidOperationException(NoModifyDuringIteration);
 			// Use unsigned comparison since we set index to dictionary.length+1 when the enumeration ends.
 			// dictionary.length+1 could be negative if dictionary.length is int.MaxValue
 			while ((uint)_index < (uint)_dictionary._count)
@@ -1229,14 +1303,14 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		void IEnumerator.Reset()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+				throw new InvalidOperationException(NoModifyDuringIteration);
 			_index = 0;
 			Current = default;
 		}
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
-	public sealed class KeyCollection(Mirror<TKey, TValue> dictionary) : ICollection<TKey>, Core.ICollection, IReadOnlyCollection<TKey>
+	public sealed class KeyCollection(Mirror<TKey, TValue> dictionary) : ICollection<TKey>, IReadOnlyCollection<TKey>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
@@ -1249,12 +1323,10 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		object System.Collections.ICollection.SyncRoot => ((System.Collections.ICollection)_dictionary).SyncRoot;
 
 		void G.ICollection<TKey>.Add(TKey item) =>
-			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Вместо этого используйте одноименный метод оригинального словаря.");
+			throw new NotSupportedException(UseOriginalDictionaryMethod);
 
 		void G.ICollection<TKey>.Clear() =>
-			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Вместо этого используйте одноименный метод оригинального словаря.");
+			throw new NotSupportedException(UseOriginalDictionaryMethod);
 
 		public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
@@ -1264,7 +1336,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			if (arrayIndex < 0 || arrayIndex > array.Length)
 				throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 			if (array.Length - arrayIndex < _dictionary.Length)
-				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+				throw new ArgumentException(SequenceOutOfArray);
 			var length = _dictionary._count;
 			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
@@ -1282,7 +1354,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			if ((uint)index > (uint)array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
-				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+				throw new ArgumentException(SequenceOutOfArray);
 			if (array is TKey[] keys)
 				CopyTo(keys, index);
 			else
@@ -1307,7 +1379,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			+ " Вместо этого используйте метод Remove() оригинального словаря.");
 	}
 
-	public struct KeyEnumerator : G.IEnumerator<TKey>, IEnumerator
+	public struct KeyEnumerator : G.IEnumerator<TKey>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary;
 		private int _index;
@@ -1338,7 +1410,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		public bool MoveNext()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+				throw new InvalidOperationException(NoModifyDuringIteration);
 			while ((uint)_index < (uint)_dictionary._count)
 			{
 				ref var entry = ref _dictionary._entries![_index++];
@@ -1356,14 +1428,14 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		void IEnumerator.Reset()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+				throw new InvalidOperationException(NoModifyDuringIteration);
 			_index = 0;
 			Current = default!;
 		}
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
-	public sealed class ValueCollection(Mirror<TKey, TValue> dictionary) : ICollection<TValue>, Core.ICollection, IReadOnlyCollection<TValue>
+	public sealed class ValueCollection(Mirror<TKey, TValue> dictionary) : ICollection<TValue>, IReadOnlyCollection<TValue>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
@@ -1376,12 +1448,10 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		object System.Collections.ICollection.SyncRoot => ((System.Collections.ICollection)_dictionary).SyncRoot;
 
 		void G.ICollection<TValue>.Add(TValue item) =>
-			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Вместо этого используйте одноименный метод оригинального словаря.");
+			throw new NotSupportedException(UseOriginalDictionaryMethod);
 
 		void G.ICollection<TValue>.Clear() =>
-			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Вместо этого используйте одноименный метод оригинального словаря.");
+			throw new NotSupportedException(UseOriginalDictionaryMethod);
 
 		bool G.ICollection<TValue>.Contains(TValue item) => _dictionary.ContainsValue(item);
 
@@ -1391,7 +1461,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			if ((uint)arrayIndex > array.Length)
 				throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 			if (array.Length - arrayIndex < _dictionary.Length)
-				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+				throw new ArgumentException(SequenceOutOfArray);
 			var length = _dictionary._count;
 			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
@@ -1409,7 +1479,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			if ((uint)index > (uint)array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
-				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+				throw new ArgumentException(SequenceOutOfArray);
 			if (array is TValue[] values)
 				CopyTo(values, index);
 			else
@@ -1434,7 +1504,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			+ " Вместо этого используйте метод Remove() оригинального словаря.");
 	}
 
-	public struct ValueEnumerator : G.IEnumerator<TValue>, IEnumerator
+	public struct ValueEnumerator : G.IEnumerator<TValue>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary;
 		private int _index;
@@ -1465,7 +1535,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		public bool MoveNext()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+				throw new InvalidOperationException(NoModifyDuringIteration);
 			while ((uint)_index < (uint)_dictionary._count)
 			{
 				ref var entry = ref _dictionary._entries![_index++];
@@ -1483,14 +1553,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		void IEnumerator.Reset()
 		{
 			if (_version != _dictionary._version)
-				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
+				throw new InvalidOperationException(NoModifyDuringIteration);
 			_index = 0;
 			Current = default!;
 		}
 	}
 }
 
-[Serializable]
 public class ValueNotFoundException : SystemException
 {
 	public ValueNotFoundException() : this("The given value was not present in the dictionary.") { }

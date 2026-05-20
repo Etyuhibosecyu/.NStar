@@ -27,6 +27,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	private readonly int MantissaLength = 0;
 	private readonly SpecialValue specialValue = SpecialValue.None;
 	public const int AutoMantissaLength = -1, DefaultMantissaLength = 2048, MinMantissaLength = 64;
+	private const string ULRConversionError = "Это преобразование не поддерживает бесконечность,"
+		+ " неопределенность и отрицательные числа.";
 
 	private LongReal(MpzT m, UnsignedLongReal e, int mantissaLength = DefaultMantissaLength,
 		SpecialValue specialValue = SpecialValue.None)
@@ -132,6 +134,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		{
 			m = (ShiftUniversal(Unsafe.As<MpzT>(op.m), MantissaLength - op.m.BitLength + 1) & MantissaMask) << 1;
 			e = op.m.BitLength - 1;
+			if (Mpir.MpuCmpSi(op.m, 0) == 0)
+				specialValue = SpecialValue.Zero;
 		}
 		else
 		{
@@ -170,11 +174,11 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		{
 			m = MpzT.Zero;
 			e = new(0, null, mantissaLength);
-			this.specialValue = SpecialValue.Zero;
+			specialValue = SpecialValue.Zero;
 		}
-		if ((SpecialValue)bytes[order < 0 ? ^1 : 0] is var specialValue
-			&& specialValue is >= SpecialValue.None and <= SpecialValue.NaN)
-			this.specialValue = specialValue;
+		if ((SpecialValue)bytes[order < 0 ? ^1 : 0] is var localSpecialValue
+			&& localSpecialValue is >= SpecialValue.None and <= SpecialValue.NaN)
+			specialValue = localSpecialValue;
 		var mantissaByteLength = MantissaByteLength;
 		if (bytes.Length <= mantissaByteLength)
 		{
@@ -213,6 +217,15 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			+ "688178653879324378455075626438210264897657355700579597727386599835543043538782151160193950"
 			+ "868207881451568910345457532214277663968636501301973715891225506562239342265260222480528658"
 			+ "377131953208479986214776729405607414665548631974587246249519"), 0, DefaultMantissaLength);
+	/// <summary>Gets the mathematical constant ln10.</summary>
+	public static LongReal Ln10 { get; } = new(new MpzT("9778644287376780"
+		+ "110269415607844281018128355904215069894977107489417638149475088934081129044237361753067437"
+		+ "042600760324829712691829836159513949365867714554477208667457449291066005449636002063010622"
+		+ "775296806656581131337705774889812169051978225238515112924104520035100593509272052567374533"
+		+ "889503341322986068728442354509210388477204349091102699660012829882157117697859833156257204"
+		+ "129275976388486747197476952749035406913923843228267462137550232670250495296551429315626322"
+		+ "646989652823402720172396868237425618341432076845966216491401654786669011006535148805759371"
+		+ "068055986562303903841554196631409082527647138479899794838076"), 1, DefaultMantissaLength);
 	/// <summary>Gets the mathematical constant log₁₀2.</summary>
 	public static LongReal Log10of2 { get; } = new(new MpzT("13193093437534837"
 			+ "303673461252140622067065792820957531270659411632284461569252577010857745113059787258480204"
@@ -771,6 +784,31 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	};
 
 	/// <summary>
+	/// Вычисляет e в степени данного числа (экспоненту).
+	/// </summary>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - e в степени данного числа (экспонента).
+	/// </returns>
+	public LongReal Exp() => (this / Ln2.GetWithOtherML(MantissaLength, false)).PowerOf2();
+
+	/// <summary>
+	/// Вычисляет e в степени указанного числа (экспоненту).
+	/// </summary>
+	/// <param name="value">Показатель для вычисления экспоненты.</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - e в степени <paramref name="value"/> (экспонента).
+	/// </returns>
+	public static LongReal Exp(LongReal value) => (value / Ln2.GetWithOtherML(value.MantissaLength, false)).PowerOf2();
+
+	/// <summary>
 	/// Возвращает наибольшее целое число, которое не больше данного числа:
 	/// само данное число для целых и ближайшее снизу целое для дробных.
 	/// </summary>
@@ -913,7 +951,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var sum = 0;
 		_ = nfi.NumberGroupSizes.FirstOrDefault(x =>
 		{
-			var value = (sum += x) >= decimalPosition;
+			sum += x;
+			var value = sum >= decimalPosition;
 			if (!value)
 				fixedLength++;
 			return value;
@@ -1126,6 +1165,20 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public static bool IsZero(LongReal value) => value.specialValue == SpecialValue.Zero;
 
 	/// <summary>
+	/// Вычисляет натуральный логарифм данного числа (по основанию e).
+	/// </summary>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - натуральный логарифм данного числа.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Log()">Log()</see>.</remarks>
+	public LongReal Ln() => Log();
+
+	/// <summary>
 	/// Вычисляет натуральный логарифм указанного числа (по основанию e).
 	/// </summary>
 	/// <param name="value">Число для вычисления логарифма.</param>
@@ -1137,38 +1190,75 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для единицы - ноль;<br />
 	/// в остальных случаях - натуральный логарифм <paramref name="value"/>.
 	/// </returns>
-	public static LongReal Log(LongReal value)
+	/// <remarks>
+	/// Данный метод называется только Ln(), без варианта Log(), так как уже существует метод
+	/// <see cref="Log(LongReal)">Log()</see> с одним параметром типа <see cref="LongReal"/>,
+	/// а два метода с одинаковыми количеством и типами параметров невозможны,
+	/// даже если один статический, а другой экземплярный.
+	/// </remarks>
+	public static LongReal Ln(LongReal value) => value.Log();
+
+	/// <summary>
+	/// Вычисляет натуральный логарифм данного числа (по основанию e).
+	/// </summary>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - натуральный логарифм данного числа.
+	/// </returns>
+	/// <remarks>Данный метод также имеет альтернативное название <see cref="Ln()">Ln()</see>.</remarks>
+	public LongReal Log()
 	{
-		switch (value.specialValue)
+		switch (specialValue)
 		{
 			case SpecialValue.Zero:
-			return new(0, 0, value.MantissaLength, SpecialValue.NegativeInfinity);
+			return new(0, 0, MantissaLength, SpecialValue.NegativeInfinity);
 			case SpecialValue.PositiveInfinity:
-			return new(0, 0, value.MantissaLength, SpecialValue.PositiveInfinity);
+			return new(0, 0, MantissaLength, SpecialValue.PositiveInfinity);
 			case SpecialValue.NegativeInfinity or SpecialValue.NaN:
-			return new(0, 0, value.MantissaLength, SpecialValue.NaN);
+			return new(0, 0, MantissaLength, SpecialValue.NaN);
 		}
-		if (Mpir.MpzCmpSi(value.m, 0) < 0)
-			return new(0, 0, value.MantissaLength, SpecialValue.NaN);
-		else if (Mpir.MpzCmpSi(value.m, 0) == 0 && value.e == 0)
-			return new(0, 0, value.MantissaLength, SpecialValue.Zero);
-		else if (value == E)
-			return new(0, 0, value.MantissaLength, SpecialValue.None);
-		else if (value.e > int.MaxValue)
+		if (Mpir.MpzCmpSi(m, 0) < 0)
+			return new(0, 0, MantissaLength, SpecialValue.NaN);
+		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
+			return new(0, 0, MantissaLength, SpecialValue.Zero);
+		else if (this == E)
+			return new(0, 0, MantissaLength, SpecialValue.None);
+		else if (e > int.MaxValue)
 		{
-			var mLog = LogInternal(new LongReal(value.MantissaOverflow + (value.m >> 1), value.MantissaLength)
-				>> value.MantissaLength);
-			var eLog = (value.m & 1) != 0 ? ~value.e : value.e;
-			return eLog * Ln2.GetWithOtherML(value.MantissaLength, false) + mLog;
+			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength) >> MantissaLength);
+			var eLog = (m & 1) != 0 ? ~e : e;
+			return eLog * Ln2.GetWithOtherML(MantissaLength, false) + mLog;
 		}
-		else if ((value.m & 1) != 0)
-			return -LogInternal(One / value);
+		else if ((m & 1) != 0)
+			return -LogInternal(One / this);
 		else
-			return LogInternal(value);
+			return LogInternal(this);
 	}
 
 	/// <summary>
-	/// Вычисляет логарифм указанного числа по основанию <paramref name="base"/>.
+	/// Вычисляет логарифм данного числа по основанию <paramref name="base"/>.
+	/// </summary>
+	/// <param name="base">Основание логарифма.</param>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - логарифм данного числа по основанию <paramref name="base"/>.
+	/// </returns>
+	public LongReal Log(LongReal @base)
+	{
+		var maxMantissaLength = Math.Max(MantissaLength, @base.MantissaLength);
+		return GetWithOtherML(maxMantissaLength, false).Log() / @base.GetWithOtherML(maxMantissaLength, false).Log();
+	}
+
+	/// <summary>
+	/// Вычисляет логарифм указанного числа по указанному основанию.
 	/// </summary>
 	/// <param name="value">Число для вычисления логарифма.</param>
 	/// <param name="base">Основание логарифма.</param>
@@ -1180,7 +1270,90 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для единицы - ноль;<br />
 	/// в остальных случаях - логарифм <paramref name="value"/> по основанию <paramref name="base"/>.
 	/// </returns>
-	public static LongReal Log(LongReal value, LongReal @base) => Log(value) / Log(@base);
+	public static LongReal Log(LongReal value, LongReal @base) => value.Log(@base);
+
+	/// <summary>
+	/// Вычисляет логарифм данного числа по основанию 2.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - логарифм данного числа по основанию 2.
+	/// </returns>
+	public LongReal Log2()
+	{
+		switch (specialValue)
+		{
+			case SpecialValue.Zero:
+			return new(0, 0, MantissaLength, SpecialValue.NegativeInfinity);
+			case SpecialValue.PositiveInfinity:
+			return new(0, 0, MantissaLength, SpecialValue.PositiveInfinity);
+			case SpecialValue.NegativeInfinity or SpecialValue.NaN:
+			return new(0, 0, MantissaLength, SpecialValue.NaN);
+		}
+		if (Mpir.MpzCmpSi(m, 0) < 0)
+			return new(0, 0, MantissaLength, SpecialValue.NaN);
+		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
+			return new(0, 0, MantissaLength, SpecialValue.Zero);
+		else if (Mpir.MpzCmpSi(m, 0) == 0)
+			return new(e, MantissaLength);
+		else if (Mpir.MpzCmpSi(m, 1) == 0)
+			return -new LongReal(e + UnsignedLongReal.One, MantissaLength);
+		else if (e > int.MaxValue)
+		{
+			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength) >> MantissaLength);
+			var eLog = (m & 1) != 0 ? ~e : e;
+			return eLog + mLog / Ln2.GetWithOtherML(MantissaLength, false);
+		}
+		else if ((m & 1) != 0)
+			return -LogInternal(One / this) / Ln2.GetWithOtherML(MantissaLength, false);
+		else
+			return LogInternal(this) / Ln2.GetWithOtherML(MantissaLength, false);
+	}
+
+	/// <summary>
+	/// Вычисляет логарифм указанного числа по основанию 2.
+	/// </summary>
+	/// <param name="value">Число для вычисления логарифма.</param>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - логарифм <paramref name="value"/> по основанию 2.
+	/// </returns>
+	public static LongReal Log2(LongReal value) => value.Log2();
+
+	/// <summary>
+	/// Вычисляет логарифм данного числа по основанию 10.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - логарифм данного числа по основанию 10.
+	/// </returns>
+	public LongReal Log10() => Log() / Ln10.GetWithOtherML(MantissaLength, false);
+
+	/// <summary>
+	/// Вычисляет логарифм указанного числа по основанию 10.
+	/// </summary>
+	/// <param name="value">Число для вычисления логарифма.</param>
+	/// <returns>
+	/// Для нуля - минус бесконечность;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// для единицы - ноль;<br />
+	/// в остальных случаях - логарифм <paramref name="value"/> по основанию 10.
+	/// </returns>
+	public static LongReal Log10(LongReal value) => value.Log() / Ln10.GetWithOtherML(value.MantissaLength, false);
 
 	private static LongReal LogInternal(LongReal value)
 	{
@@ -1285,28 +1458,157 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		return result;
 	}
 
-	private LongReal Power(MpzT exponent)
+	/// <summary>
+	/// Вычисляет данное число в степени указанного числа.
+	/// </summary>
+	/// <param name="exponent">Показатель для вычисления степени.</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - данное число в степени <paramref name="exponent"/>.
+	/// </returns>
+	public LongReal Power(LongReal exponent)
 	{
-		if (exponent < 0)
-			return One / Power(Unsafe.As<MpuT>(-exponent));
-		else
-			return Power(Unsafe.As<MpuT>(exponent));
+		var maxMantissaLength = Math.Max(MantissaLength, exponent.MantissaLength);
+		return (exponent.GetWithOtherML(maxMantissaLength, false) * GetWithOtherML(maxMantissaLength, false).Log2()).PowerOf2();
 	}
 
-	private LongReal Power(MpuT exponent)
+	/// <summary>
+	/// Вычисляет указанное основание в степени указанного показателя.
+	/// </summary>
+	/// <param name="base">Основание для вычисления степени.</param>
+	/// <param name="exponent">Показатель для вычисления степени.</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - <paramref name="base"/> в степени <paramref name="exponent"/>.
+	/// </returns>
+	public static LongReal Power(LongReal @base, LongReal exponent) => @base.Power(exponent);
+
+	/// <summary>
+	/// Вычисляет 2 в степени данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - 2 в степени данного числа.
+	/// </returns>
+	public LongReal PowerOf2()
 	{
-		if (Mpir.MpuCmpSi(exponent, 0) == 0)
-			return One;
-		else if (Mpir.MpuCmpSi(exponent, 1) == 0)
-			return this;
-		var result = this;
-		for (var i = exponent.BitLength - 2; i >= 0; i--)
+		if (specialValue != SpecialValue.None)
+			return new(0, 0, MantissaLength, specialValue switch
+			{
+				SpecialValue.Zero => SpecialValue.None,
+				SpecialValue.PositiveInfinity => SpecialValue.PositiveInfinity,
+				SpecialValue.NegativeInfinity => SpecialValue.Zero,
+				SpecialValue.NaN => SpecialValue.NaN,
+				_ => throw new InvalidOperationException("Невозможно возвести в степень. Возможные причины:\r\n"
+					+ InternalError + $"Текущее состояние: число - {this},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),
+			});
+		var floor = Floor();
+		LongReal floorExponent = floor < 0 ? new(MpzT.One, (UnsignedLongReal)~floor, MantissaLength)
+			: new(MpzT.Zero, (UnsignedLongReal)floor, MantissaLength);
+		var fracOriginal = (this - floor) * Ln2.GetWithOtherML(MantissaLength, false);
+		if (fracOriginal.specialValue == SpecialValue.Zero)
+			return floorExponent;
+		LongReal frac = fracOriginal.ReciprocInternal(), fracPow = frac;
+		LongReal factorial = new(0, 0, MantissaLength), fracExponent = factorial + fracOriginal, prev;
+		var i = 2u;
+		do
 		{
-			result *= result;
-			if ((exponent & 1u << i) != 0)
-				result *= this;
-		}
-		return result;
+			prev = fracExponent;
+#pragma warning disable IDE0079 // Удалить ненужное подавление
+#pragma warning disable S1121
+			fracExponent += MultiplyInternal(fracPow = MultiplyInternal(fracPow, frac, MantissaLength),
+				factorial = MultiplyUiInternal(factorial, i++, MantissaLength), MantissaLength).ReciprocInternal();
+#pragma warning restore S1121
+#pragma warning restore IDE0079 // Удалить ненужное подавление
+		} while (fracExponent.e != prev.e || Mpir.MpzCmpabsUi((fracExponent.m >> 1) - (prev.m >> 1), 1) > 0);
+		return floorExponent * fracExponent;
+	}
+
+	/// <summary>
+	/// Вычисляет 2 в степени указанного числа.
+	/// </summary>
+	/// <param name="value">Показатель для вычисления степени.</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - 2 в степени <paramref name="value"/>.
+	/// </returns>
+	public static LongReal PowerOf2(LongReal value) => value.PowerOf2();
+
+	/// <summary>
+	/// Вычисляет 10 в степени данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - 10 в степени данного числа.
+	/// </returns>
+	public LongReal PowerOf10() => (this / Log10of2.GetWithOtherML(MantissaLength, false)).PowerOf2();
+
+	/// <summary>
+	/// Вычисляет 10 в степени указанного числа.
+	/// </summary>
+	/// <param name="value">Показатель для вычисления степени.</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - 10 в степени <paramref name="value"/>.
+	/// </returns>
+	public static LongReal PowerOf10(LongReal value) => value.PowerOf10();
+
+	/// <summary>
+	/// Вычисляет число, обратное данному (1 / x).
+	/// </summary>
+	/// <returns>
+	/// Для нуля - плюс бесконечность;<br />
+	/// для плюс бесконечности или для минус бесконечности - ноль;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - число, обратное данному (1 / x).
+	/// </returns>
+	public LongReal Reciproc()
+	{
+		if (specialValue != SpecialValue.None)
+			return new(0, 0, MantissaLength, specialValue switch
+			{
+				SpecialValue.Zero => SpecialValue.PositiveInfinity,
+				SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity => SpecialValue.Zero,
+				SpecialValue.NaN => SpecialValue.NaN,
+				_ => throw new InvalidOperationException("Невозможно вычислить обратное число. Возможные причины:\r\n"
+					+ InternalError + $"Текущее состояние: число - {this},"
+					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),
+			});
+		if (e == 0 && Mpir.MpzCmpSi(m, 0) == 0)
+			return this;
+		else if (Mpir.MpzCmpSi(m, 0) < 0)
+			return -(-this).ReciprocInternal();
+		else
+			return ReciprocInternal();
+	}
+
+	private LongReal ReciprocInternal()
+	{
+		var mantissaOverflow = MpuT.One << MantissaLength;
+		var mantissaMask = mantissaOverflow - 1;
+		var quotient = (mantissaOverflow << MantissaLength + 1) / (mantissaOverflow + (m >> 1));
+		var shiftAmount = quotient.BitLength - MantissaLength - 1;
+		quotient = quotient.ShiftRightRound(shiftAmount) & mantissaMask;
+		return new(quotient << 1 | (m & 1) ^ 1, Mpir.MpzCmpSi(m, 1) <= 0 ? e - (1 - (m & 1) * 2) : e, MantissaLength);
 	}
 
 	/// <summary>
@@ -1532,11 +1834,12 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if ((m & 1) != 0)
 			exponent = ~exponent;
 		mantissa += MantissaOverflow;
-		exponent = (MpzT)((exponent + (LongReal)(BigInteger.Log((BigInteger)mantissa, 2) - MantissaLength + 0.000001))
-			* Log10of2).Floor();
-		var mantissaDigits = (double)Abs(this / Ten.Power(exponent));
-		return Format(mantissaDigits.ToString("F" + precision, CultureInfo.InvariantCulture).Replace(".", "")?.TrimEnd('0') ?? "1",
-			exponent, negative, format, nfi);
+		exponent = (MpzT)((exponent + (Log2(mantissa) - MantissaLength)) * Log10of2).Floor();
+		var mantissaDigits = (double)Abs(this / PowerOf10(exponent));
+		return Format(mantissaDigits
+			.ToString("F" + (formatSpecifier is 'F' or 'N' && Mpir.MpzCmpSi(exponent, int.MaxValue) <= 0
+			&& Mpir.MpzCmpSi(exponent, 0) > 0 ? exponent + precision : precision),
+			CultureInfo.InvariantCulture).Replace(".", "")?.TrimEnd('0') ?? "1", exponent, negative, format, nfi);
 	}
 
 	object IConvertible.ToType(Type conversionType, IFormatProvider? provider)
@@ -1813,7 +2116,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var eAfterCast = (int)value.e;
 		if (negativeExponent)
 			eAfterCast = ~eAfterCast;
-		var exponent = (ulong)Math.Max(eAfterCast += 1023, 0);
+		eAfterCast += 1023;
+		var exponent = (ulong)Math.Max(eAfterCast, 0);
 		var mantissa = value.m >> 1;
 		if (negative)
 			mantissa = ~mantissa;
@@ -1839,7 +2143,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			var mantissa = value.m >> 1;
 			if (Mpir.MpzCmpSi(value.m, 0) < 0)
 				mantissa = ~mantissa;
-			mantissa = (value.MantissaOverflow + mantissa).ShiftRightRound(value.MantissaLength - eAfterCast);
+			if (Mpir.MpzCmpSi(value.m, 0) >= 0 || Mpir.MpzCmpSi(mantissa, 0) != 0)
+				mantissa = (value.MantissaOverflow + mantissa).ShiftRightRound(value.MantissaLength - eAfterCast);
 			if (Mpir.MpzCmpSi(value.m, 0) < 0)
 				mantissa = ~mantissa;
 			return mantissa;
@@ -1861,11 +2166,39 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return (MpuT)(value.m << eAfterCast - value.MantissaLength);
 	}
 
+	public static explicit operator UnsignedLongReal(LongReal value)
+	{
+		switch (value.specialValue)
+		{
+			case SpecialValue.Zero:
+			return UnsignedLongReal.Zero;
+			case not SpecialValue.None:
+			throw new OverflowException(ULRConversionError);
+		}
+		if (Mpir.MpzCmpSi(value.m, 0) < 0)
+			throw new OverflowException(ULRConversionError);
+		else if ((value.m & 1) != 0)
+			return UnsignedLongReal.Zero;
+		else if (value.e < value.MantissaLength)
+			return new(Unsafe.As<MpuT>(value.MantissaOverflow + (value.m >> 1))
+				.ShiftRightRound(value.MantissaLength - (int)value.e), null, value.MantissaLength);
+		else
+			return new(Unsafe.As<MpuT>(value.m >> 1), value.e - (value.MantissaLength - 1), value.MantissaLength);
+	}
+
 	public static LongReal operator +(LongReal value) => new(value);
-	public static LongReal operator -(LongReal value) =>
-		new(~(value.m >> 1) << 1 | value.m & 1, value.e, value.MantissaLength,
-			value.specialValue == SpecialValue.PositiveInfinity ? SpecialValue.NegativeInfinity
-			: value.specialValue == SpecialValue.NegativeInfinity ? SpecialValue.PositiveInfinity : value.specialValue);
+
+	public static LongReal operator -(LongReal value)
+	{
+		var localSpecialValue = value.specialValue switch
+		{
+			SpecialValue.PositiveInfinity => SpecialValue.NegativeInfinity,
+			SpecialValue.NegativeInfinity => SpecialValue.PositiveInfinity,
+			_ => value.specialValue,
+		};
+		return new(~(value.m >> 1) << 1 | value.m & 1, value.e, value.MantissaLength, localSpecialValue);
+	}
+
 	/// <inheritdoc cref="IBitwiseOperators{LongReal, LongReal, LongReal}.operator ~(LongReal)"/>
 	public static LongReal operator ~(LongReal value) => -(value + One);
 
@@ -1995,9 +2328,12 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var mantissaLength = x.MantissaLength;
 		if (y == 0)
-			return new(0, 0, mantissaLength,
-				x.specialValue is SpecialValue.Zero or SpecialValue.NaN ? SpecialValue.NaN
-				: x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+		{
+			if (x.specialValue is SpecialValue.Zero or SpecialValue.NaN)
+				return new(0, 0, mantissaLength, SpecialValue.NaN);
+			else
+				return new(0, 0, mantissaLength, x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+		}
 		else if (x.specialValue != SpecialValue.None || y == 1)
 			return x.Copy();
 		else if ((y & y - 1) == 0)
@@ -2014,9 +2350,12 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (x.specialValue == SpecialValue.NaN || y.specialValue == SpecialValue.NaN)
 			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
 		else if (y.specialValue == SpecialValue.Zero)
-			return new(0, 0, maxMantissaLength,
-				x.specialValue is SpecialValue.Zero or SpecialValue.NaN ? SpecialValue.NaN
-				: x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+		{
+			if (x.specialValue is SpecialValue.Zero or SpecialValue.NaN)
+				return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			else
+				return new(0, 0, maxMantissaLength, x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+		}
 		else if (y.specialValue != SpecialValue.None)
 			return new(0, 0, maxMantissaLength,
 				x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity

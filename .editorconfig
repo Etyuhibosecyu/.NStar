@@ -70,6 +70,9 @@ dotnet_code_quality_unused_parameters = all
 dotnet_remove_unnecessary_suppression_exclusions = none
 dotnet_diagnostic.SA1407.severity = none
 dotnet_diagnostic.SA1408.severity = none
+dotnet_diagnostic.CA1859.severity = none
+dotnet_diagnostic.S2234.severity = none
+dotnet_diagnostic.S3776.severity = none
 
 # Предпочтения для новых строк
 dotnet_style_allow_multiple_blank_lines_experimental = false:suggestion
@@ -229,9 +232,6 @@ dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix = 
 dotnet_naming_style.begins_with_i.word_separator = 
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
-
-# CA1859: Используйте конкретные типы, когда это возможно, для повышения производительности
-dotnet_diagnostic.CA1859.severity = silent
 csharp_style_prefer_primary_constructors = true:suggestion
 csharp_style_prefer_unbound_generic_type_in_nameof = true:suggestion
 csharp_prefer_system_threading_lock = true:suggestion

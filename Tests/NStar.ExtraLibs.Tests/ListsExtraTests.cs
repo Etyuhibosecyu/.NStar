@@ -684,6 +684,8 @@ public class ListTests
 
 public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new()
 {
+	protected BaseSumListTests() { }
+
 	public static void ComplexTest(Func<(BaseSumList<T, TCertain>, G.List<T>, byte[])> create, Func<T> newValueFunc, Action<int> check, Action<byte[]> check2)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));

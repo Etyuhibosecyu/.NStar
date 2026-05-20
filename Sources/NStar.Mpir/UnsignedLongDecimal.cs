@@ -46,7 +46,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public UnsignedLongDecimal(ulong op, int mantissaLength = MinMantissaLength) : this(new MpuT(op), null, mantissaLength) { }
 
 	public UnsignedLongDecimal(MpzT op, int mantissaLength = DefaultMantissaLength) : this(op < 0
-		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op))
+		? throw new ArgumentException(NoNegativeNumbers, nameof(op))
 		: Unsafe.As<MpuT>(op), mantissaLength) { }
 
 	public UnsignedLongDecimal(MpuT op, int mantissaLength = DefaultMantissaLength)
@@ -58,21 +58,19 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		{
 			m = op;
 			e = null;
+			return;
+		}
+		var eDiff = op.DecLength - MantissaLength - 1;
+		var shifted = op.ShiftRightRoundDec(eDiff);
+		if (shifted == MantissaOverflow * 10)
+		{
+			m = MpuT.Zero;
+			e = new(eDiff + 2, mantissaLength);
 		}
 		else
 		{
-			var eDiff = op.DecLength - MantissaLength - 1;
-			var shifted = op.ShiftRightRoundDec(eDiff);
-			if (shifted == MantissaOverflow * 10)
-			{
-				m = MpuT.Zero;
-				e = new(eDiff + 2, mantissaLength);
-			}
-			else
-			{
-				m = shifted - MantissaOverflow;
-				e = new(eDiff + 1, mantissaLength);
-			}
+			m = shifted - MantissaOverflow;
+			e = new(eDiff + 1, mantissaLength);
 		}
 	}
 
@@ -147,8 +145,8 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	private int MantissaByteLength => (int)Math.Ceiling((MantissaLength + Math.Log10(9)) * Math.Log(10, 256));
 	int IUnsignedLongReal<UnsignedLongDecimal>.MantissaByteLength => MantissaByteLength;
 	int IUnsignedLongReal<UnsignedLongDecimal>.MantissaLength => MantissaLength;
-	private MpuT MantissaMask => MantissaMasks.GetOrAdd(MantissaLength, x => MpuT.PowerOfTen(x) * 9 - 1);
-	private MpuT MantissaOverflow => MpuT.PowerOfTen(MantissaLength);
+	private MpuT MantissaMask => MantissaMasks.GetOrAdd(MantissaLength, x => MpuT.PowerOf10(x) * 9 - 1);
+	private MpuT MantissaOverflow => MpuT.PowerOf10(MantissaLength);
 	MpuT IUnsignedLongReal<UnsignedLongDecimal>.MantissaOverflow => MantissaOverflow;
 	public static UnsignedLongDecimal MultiplicativeIdentity => One;
 	static UnsignedLongDecimal ISignedNumber<UnsignedLongDecimal>.NegativeOne => throw new NotSupportedException();
@@ -164,6 +162,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 
 	public object Clone() => new UnsignedLongDecimal(m, e?.Copy());
 
+	/// <summary>
+	/// Сравнивает данное число с <see langword="int"/>.
+	/// См. описание <see cref="CompareTo(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public int CompareTo(int other)
 	{
 		if (e is not null)
@@ -171,6 +173,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.CompareTo(other);
 	}
 
+	/// <summary>
+	/// Сравнивает данное число с <see langword="uint"/>.
+	/// См. описание <see cref="CompareTo(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public int CompareTo(uint other)
 	{
 		if (e is not null)
@@ -178,6 +184,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.CompareTo(other);
 	}
 
+	/// <summary>
+	/// Сравнивает данное число с <see langword="long"/>.
+	/// См. описание <see cref="CompareTo(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public int CompareTo(long other)
 	{
 		if (e is not null)
@@ -185,6 +195,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.CompareTo(other);
 	}
 
+	/// <summary>
+	/// Сравнивает данное число с <see langword="ulong"/>.
+	/// См. описание <see cref="CompareTo(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public int CompareTo(ulong other)
 	{
 		if (e is not null)
@@ -192,6 +206,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.CompareTo(other);
 	}
 
+	/// <summary>
+	/// Сравнивает данное число с <see cref="MpuT"/>.
+	/// См. описание <see cref="CompareTo(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public int CompareTo(MpuT other)
 	{
 		if (e is null)
@@ -204,6 +222,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return (MantissaOverflow + m).ShiftLeftDec(eDiff - 1).CompareTo(other);
 	}
 
+	/// <summary>
+	/// Сравнивает данное число с <see cref="MpzT"/>.
+	/// См. описание <see cref="CompareTo(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public int CompareTo(MpzT other)
 	{
 		if (Mpir.MpzCmpSi(other, 0) < 0)
@@ -305,7 +327,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 				return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 			if (Compute(y, x, ComputeOperation.Compare).m > 1)
 				(x, y) = (y, x);
-			var mantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+			var mantissaOverflow = MpuT.PowerOf10(mantissaLength);
 			var xmlDiff = mantissaLength - x.MantissaLength;
 			var ymlDiff = mantissaLength - y.MantissaLength;
 			xDecLength = Compute(x, null!, ComputeOperation.DecLength);
@@ -393,7 +415,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 			if (y.e is null && Mpir.MpuCmpSi(y.m, 0) == 0)
 				return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
-			mantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+			mantissaOverflow = MpuT.PowerOf10(mantissaLength);
 			x = Compute(x, (long)mantissaLength << 1, ComputeOperation.ChangeML);
 			y = Compute(y, (long)mantissaLength << 1, ComputeOperation.ChangeML);
 			if (x.e is null && y.e is null)
@@ -412,7 +434,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 					return new(mDiff * 10 - mantissaOverflow, (int)x.e - 1, mantissaLength);
 			}
 			else if (x.e is null || Compute(x.e, y.e, ComputeOperation.Compare).m < 1)
-				throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
+				throw new OverflowException(NoNegativeNumbers);
 			else if (Compute(x.e, Compute(y.e, 1, ComputeOperation.Add), ComputeOperation.Compare).m > 1)
 			{
 				var eDiff = Compute(x.e, y.e, ComputeOperation.Subtract);
@@ -459,6 +481,11 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		GC.SuppressFinalize(this);
 	}
 
+	/// <summary>
+	/// Возвращает частное и остаток от деления данного числа на указанное число типа <see cref="MpuT"/>.
+	/// </summary>
+	/// <param name="x">Делитель.</param>
+	/// <returns>Кортеж, содержащий частное в первом элементе и остаток во втором.</returns>
 	public (UnsignedLongDecimal Quotient, MpuT Remainder) DivRem(MpuT x)
 	{
 		if (e is null)
@@ -471,7 +498,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			Debug.Assert(e is not null);
 			var mantissaOverflow = MantissaOverflow;
 			if (Mpir.MpuCmpSi(x, 0) == 0)
-				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+				throw new DivideByZeroException(NoDivisionByZero);
 			else if (Mpir.MpuCmpSi(x, 1) == 0)
 				return (this, MpuT.Zero);
 			else if (e <= x.DecLength + 1)
@@ -495,11 +522,15 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		}
 	}
 
+	/// <summary>
+	/// Возвращает частное и остаток от деления данного числа на указанное число типа <see cref="UnsignedLongDecimal"/>.
+	/// </summary>
+	/// <param name="x">Делитель.</param>
+	/// <returns>Кортеж, содержащий частное в первом элементе и остаток во втором.</returns>
 	public (UnsignedLongDecimal Quotient, UnsignedLongDecimal Remainder) DivRem(UnsignedLongDecimal x)
 	{
 		var mantissaLength = Math.Max(MantissaLength, x.MantissaLength);
-		var MantissaOverflow = MantissaOverflows.GetOrAdd(mantissaLength, MpuT.PowerOfTen);
-		var MantissaMask = MantissaOverflow - 1;
+		var mantissaOverflow = MantissaOverflows.GetOrAdd(mantissaLength, MpuT.PowerOf10);
 		var this2 = GetWithOtherML(mantissaLength, false);
 		x = x.GetWithOtherML(mantissaLength, false);
 		if (this2.e is null && x.e is null)
@@ -511,15 +542,15 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		{
 			Debug.Assert(this2.e is not null);
 			if (Mpir.MpuCmpSi(x.m, 0) == 0)
-				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+				throw new DivideByZeroException(NoDivisionByZero);
 			else if (Mpir.MpuCmpSi(x.m, 1) == 0)
 				return (this2, new(0, mantissaLength));
 			else if (this2.e <= x.m.DecLength)
-				return (new((MantissaOverflow + this2.m).ShiftLeftDec((int)this2.e - 1).Divide(x.m, out var remainder),
+				return (new((mantissaOverflow + this2.m).ShiftLeftDec((int)this2.e - 1).Divide(x.m, out var remainder),
 					mantissaLength), new(remainder, mantissaLength));
-			var quotient = (MantissaOverflow + this2.m).ShiftLeftDec(mantissaLength + 1) / x.m;
+			var quotient = (mantissaOverflow + this2.m).ShiftLeftDec(mantissaLength + 1) / x.m;
 			var shiftAmount = quotient.DecLength - mantissaLength - 1;
-			return (new(quotient.ShiftRightRoundDec(shiftAmount) - MantissaOverflow,
+			return (new(quotient.ShiftRightRoundDec(shiftAmount) - mantissaOverflow,
 				this2.e + (shiftAmount - mantissaLength - 1), mantissaLength), new(0, mantissaLength));
 		}
 		else if (this2.e is null || this2.e < x.e)
@@ -527,30 +558,48 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		else if (this2.e <= x.e + mantissaLength)
 		{
 			var eDiff = (int)(this2.e - x.e);
-			var quotient = (MantissaOverflow + this2.m).ShiftLeftDec(eDiff).Divide(MantissaOverflow + x.m, out var remainder);
+			var quotient = (mantissaOverflow + this2.m).ShiftLeftDec(eDiff).Divide(mantissaOverflow + x.m, out var remainder);
 			return (new(quotient, mantissaLength), new(remainder.ShiftLeftDec((int)x.e - 1), mantissaLength));
 		}
 		else
 		{
-			var quotient = (MantissaOverflow + this2.m).ShiftLeftDec(mantissaLength + 1) / (MantissaOverflow + x.m);
+			var quotient = (mantissaOverflow + this2.m).ShiftLeftDec(mantissaLength + 1) / (mantissaOverflow + x.m);
 			var shiftAmount = quotient.DecLength - mantissaLength - 1;
-			return (new(quotient.ShiftRightRoundDec(shiftAmount) - MantissaOverflow,
+			return (new(quotient.ShiftRightRoundDec(shiftAmount) - mantissaOverflow,
 				this2.e - x.e + (shiftAmount - mantissaLength), mantissaLength), new(0, mantissaLength));
 		}
 	}
 
+	/// <summary>
+	/// Возвращает частное и остаток от деления данного числа на указанное число типа <see cref="MpuT"/>.
+	/// </summary>
+	/// <param name="x">Делитель.</param>
+	/// <param name="remainder"><see langword="out"/>-параметр, в который помещается остаток от деления.</param>
+	/// <returns>Эта перегрузка метода возвращает только частное,
+	/// помещая остаток в <see langword="out"/>-параметр <paramref name="remainder"/>.</returns>
 	public UnsignedLongDecimal DivRem(MpuT x, out MpuT remainder)
 	{
 		(var Quotient, remainder) = DivRem(x);
 		return Quotient;
 	}
 
+	/// <summary>
+	/// Возвращает частное и остаток от деления данного числа на указанное число типа <see cref="UnsignedLongReal"/>.
+	/// </summary>
+	/// <param name="x">Делитель.</param>
+	/// <param name="remainder"><see langword="out"/>-параметр, в который помещается остаток от деления.</param>
+	/// <returns>Эта перегрузка метода возвращает только частное,
+	/// помещая остаток в <see langword="out"/>-параметр <paramref name="remainder"/>.</returns>
 	public UnsignedLongDecimal DivRem(UnsignedLongDecimal x, out UnsignedLongDecimal remainder)
 	{
 		(var Quotient, remainder) = DivRem(x);
 		return Quotient;
 	}
 
+	/// <summary>
+	/// Проверяет, равно ли данное число указанному числу типа <see langword="int"/>.
+	/// См. описание <see cref="Equals(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public bool Equals(int other)
 	{
 		if (e is not null)
@@ -558,6 +607,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.Equals(other);
 	}
 
+	/// <summary>
+	/// Проверяет, равно ли данное число указанному числу типа <see langword="uint"/>.
+	/// См. описание <see cref="Equals(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public bool Equals(uint other)
 	{
 		if (e is not null)
@@ -565,6 +618,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.Equals(other);
 	}
 
+	/// <summary>
+	/// Проверяет, равно ли данное число указанному числу типа <see langword="long"/>.
+	/// См. описание <see cref="Equals(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public bool Equals(long other)
 	{
 		if (e is not null)
@@ -572,6 +629,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.Equals(other);
 	}
 
+	/// <summary>
+	/// Проверяет, равно ли данное число указанному числу типа <see langword="ulong"/>.
+	/// См. описание <see cref="Equals(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public bool Equals(ulong other)
 	{
 		if (e is not null)
@@ -579,6 +640,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return m.Equals(other);
 	}
 
+	/// <summary>
+	/// Проверяет, равно ли данное число указанному числу типа <see cref="MpuT"/>.
+	/// См. описание <see cref="Equals(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public bool Equals(MpuT other)
 	{
 		if (e is null)
@@ -591,6 +656,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return (MantissaOverflow + m).ShiftLeftDec(eDiff - 1).Equals(other);
 	}
 
+	/// <summary>
+	/// Проверяет, равно ли данное число указанному числу типа <see cref="MpzT"/>.
+	/// См. описание <see cref="Equals(UnsignedLongDecimal)"/> для более подробных сведений.
+	/// </summary>
 	public bool Equals(MpzT other)
 	{
 		if (e is null)
@@ -624,6 +693,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	};
 
 	public int GetByteCount() => GetByteCount(true);
+	/// <summary>Возвращает количество байт, необходимое для сохранения числа вместе с длиной мантиссы или без нее.</summary>
 	public int GetByteCount(bool saveMantissaLength) =>
 		(e is null ? m.GetByteCount() : MantissaByteLength + e.GetByteCount(false)) + (saveMantissaLength ? sizeof(int) : 0);
 	public int GetExponentByteCount() => e is null ? 0 : e.GetByteCount();
@@ -690,6 +760,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static UnsignedLongDecimal PopCount(UnsignedLongDecimal value) => value.PopCount();
 	static UnsignedLongDecimal IFloatingPoint<UnsignedLongDecimal>.Round(UnsignedLongDecimal x, int digits, MidpointRounding mode) => x;
 
+	/// <summary>Возвращает квадратный корень данного числа (округленный вниз).</summary>
 	public UnsignedLongDecimal Sqrt()
 	{
 		if (e is null)
@@ -724,11 +795,16 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
 
+	/// <summary>
+	/// Преобразует данное число в строку, только если его длина меньше заданного порога
+	/// (30000 десятичных цифр для данного типа).
+	/// </summary>
+	/// <returns>Результат преобразования в строку или строка-заглушка, если число слишком большое.</returns>
 	public string? ToShortString()
 	{
 		if (m.val == 0)
 			return (string?)"0";
-		else if (DecLength >= 65536)
+		else if (DecLength >= 30000)
 			return (string?)"Too large for short string, use ToString() instead.";
 		else
 			return ((MpuT)this).ToString();
@@ -965,6 +1041,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten) =>
 		TryWriteLittleEndian(destination, out bytesWritten, true);
 
+	/// <inheritdoc cref="TryWriteLittleEndian(Span{byte}, out int)"/>
 	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten, bool saveMantissaLength) =>
 		((IUnsignedLongReal<UnsignedLongDecimal>)this)
 		.TryWriteLittleEndianInterface(destination, out bytesWritten, saveMantissaLength);
@@ -1037,26 +1114,33 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 
 	public static UnsignedLongDecimal operator +(UnsignedLongDecimal value) => new(value);
 	static UnsignedLongDecimal IUnaryNegationOperators<UnsignedLongDecimal, UnsignedLongDecimal>.operator -(UnsignedLongDecimal value) =>
-		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+		throw new NotSupportedException(NoNegativeNumbers);
 	static UnsignedLongDecimal IBitwiseOperators<UnsignedLongDecimal, UnsignedLongDecimal, UnsignedLongDecimal>.operator ~(UnsignedLongDecimal value) =>
-		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+		throw new NotSupportedException(NoNegativeNumbers);
 
+	/// <inheritdoc cref="operator +(UnsignedLongDecimal, UnsignedLongDecimal)"/>
+	public static UnsignedLongDecimal operator +(int x, UnsignedLongDecimal y) => y + x;
+	/// <inheritdoc cref="operator +(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator +(UnsignedLongDecimal x, int y) =>
 		y >= 0 ? Compute(x, y, ComputeOperation.Add) : Compute(x, -y, ComputeOperation.Subtract);
 	public static UnsignedLongDecimal operator +(UnsignedLongDecimal x, UnsignedLongDecimal y) =>
 		Compute(x, y, ComputeOperation.Add);
+	/// <inheritdoc cref="operator -(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator -(UnsignedLongDecimal x, int y) =>
 		y >= 0 ? Compute(x, y, ComputeOperation.Subtract) : Compute(x, -y, ComputeOperation.Add);
 	public static UnsignedLongDecimal operator -(UnsignedLongDecimal x, UnsignedLongDecimal y) =>
 		Compute(x, y, ComputeOperation.Subtract);
 
+	/// <inheritdoc cref="operator *(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator *(int x, UnsignedLongDecimal y) => y * x;
+	/// <inheritdoc cref="operator *(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator *(uint x, UnsignedLongDecimal y) => y * x;
 
+	/// <inheritdoc cref="operator *(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator *(UnsignedLongDecimal x, int y)
 	{
 		var mantissaLength = x.MantissaLength;
-		var MantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var MantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		if (x.e is null)
 			return new(x.m * y, mantissaLength);
 		if (y == 0)
@@ -1070,10 +1154,11 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		return new(product.ShiftRightRoundDec(shiftAmount) - MantissaOverflow, newE, mantissaLength);
 	}
 
+	/// <inheritdoc cref="operator *(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator *(UnsignedLongDecimal x, uint y)
 	{
 		var mantissaLength = x.MantissaLength;
-		var MantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var MantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		if (x.e is null)
 			return new(x.m * y, mantissaLength);
 		else
@@ -1091,7 +1176,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static UnsignedLongDecimal operator *(UnsignedLongDecimal x, UnsignedLongDecimal y)
 	{
 		var mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
-		var MantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var MantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		x = x.GetWithOtherML(mantissaLength, false);
 		y = y.GetWithOtherML(mantissaLength, false);
 		if (x.e is null && y.e is null)
@@ -1126,14 +1211,15 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		}
 	}
 
+	/// <inheritdoc cref="operator /(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator /(UnsignedLongDecimal x, int y)
 	{
 		var mantissaLength = x.MantissaLength;
-		var MantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var MantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		if (x.e is null)
 			return new(x.m / y, null, mantissaLength);
 		else if (y == 0)
-			throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
 		else if (x.e <= sizeof(int) * 8 - int.LeadingZeroCount(y))
@@ -1144,14 +1230,15 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			new(x.e + (shiftAmount - mantissaLength - 1), mantissaLength), mantissaLength);
 	}
 
+	/// <inheritdoc cref="operator /(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator /(UnsignedLongDecimal x, uint y)
 	{
 		var mantissaLength = x.MantissaLength;
-		var MantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var MantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		if (x.e is null)
 			return new(x.m / y, null, mantissaLength);
 		else if (y == 0)
-			throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
 		else if (x.e <= sizeof(uint) * 8 - uint.LeadingZeroCount(y))
@@ -1165,7 +1252,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static UnsignedLongDecimal operator /(UnsignedLongDecimal x, UnsignedLongDecimal y)
 	{
 		var mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
-		var MantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var MantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		x = x.GetWithOtherML(mantissaLength, false);
 		y = y.GetWithOtherML(mantissaLength, false);
 		if (x.e is null && y.e is null)
@@ -1174,7 +1261,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		{
 			Debug.Assert(x.e is not null);
 			if (Mpir.MpuCmpSi(y.m, 0) == 0)
-				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+				throw new DivideByZeroException(NoDivisionByZero);
 			else if (Mpir.MpuCmpSi(y.m, 1) == 0)
 				return x.Copy();
 			else if (x.e <= y.m.DecLength)
@@ -1197,10 +1284,12 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 		}
 	}
 
+	/// <inheritdoc cref="operator %(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static UnsignedLongDecimal operator %(UnsignedLongDecimal x, MpuT y) => new(x.DivRem(y).Remainder, x.MantissaLength);
 
 	public static UnsignedLongDecimal operator %(UnsignedLongDecimal x, UnsignedLongDecimal y) => x.DivRem(y).Remainder;
 
+	/// <inheritdoc cref="operator &(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static int operator &(UnsignedLongDecimal x, int y)
 	{
 		if (y == 1)
@@ -1213,6 +1302,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			return (x.MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) & y;
 	}
 
+	/// <inheritdoc cref="operator &(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static uint operator &(UnsignedLongDecimal x, uint y)
 	{
 		if (y == 1)
@@ -1228,7 +1318,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static UnsignedLongDecimal operator &(UnsignedLongDecimal x, UnsignedLongDecimal y)
 	{
 		var mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
-		var mantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var mantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		x = x.GetWithOtherML(mantissaLength, false);
 		y = y.GetWithOtherML(mantissaLength, false);
 		if (x.e is null && y.e is null)
@@ -1263,7 +1353,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static UnsignedLongDecimal operator |(UnsignedLongDecimal x, UnsignedLongDecimal y)
 	{
 		var mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
-		var mantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var mantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		x = x.GetWithOtherML(mantissaLength, false);
 		y = y.GetWithOtherML(mantissaLength, false);
 		if (x.e is null && y.e is null)
@@ -1298,7 +1388,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static UnsignedLongDecimal operator ^(UnsignedLongDecimal x, UnsignedLongDecimal y)
 	{
 		var mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
-		var mantissaOverflow = MpuT.PowerOfTen(mantissaLength);
+		var mantissaOverflow = MpuT.PowerOf10(mantissaLength);
 		x = x.GetWithOtherML(mantissaLength, false);
 		y = y.GetWithOtherML(mantissaLength, false);
 		if (x.e is null && y.e is null)
@@ -1341,6 +1431,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			return new(x.m, x.e + shiftAmount, x.MantissaLength);
 	}
 
+	/// <inheritdoc cref="operator {{(UnsignedLongDecimal, int)"/>
 	public static UnsignedLongDecimal operator <<(UnsignedLongDecimal x, UnsignedLongDecimal shiftAmount)
 	{
 		if (shiftAmount.CompareTo(0) == 0)
@@ -1366,6 +1457,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			return new((x.MantissaOverflow + x.m).ShiftRightRoundDec(shiftAmount - (int)x.e + 1), null, x.MantissaLength);
 	}
 
+	/// <inheritdoc cref="operator }}(UnsignedLongDecimal, int)"/>
 	public static UnsignedLongDecimal operator >>(UnsignedLongDecimal x, UnsignedLongDecimal shiftAmount)
 	{
 		if (shiftAmount.CompareTo(0) == 0)
@@ -1387,6 +1479,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 
 	public static UnsignedLongDecimal operator >>>(UnsignedLongDecimal x, int shiftAmount) => x >> shiftAmount;
 
+	/// <inheritdoc cref="operator }}}(UnsignedLongDecimal, int)"/>
 	public static UnsignedLongDecimal operator >>>(UnsignedLongDecimal x, UnsignedLongDecimal shiftAmount) => x >> shiftAmount;
 
 	public static UnsignedLongDecimal operator ++(UnsignedLongDecimal value)
@@ -1414,77 +1507,149 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			return value.Copy();
 	}
 
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(UnsignedLongDecimal x, int y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(UnsignedLongDecimal x, int y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(UnsignedLongDecimal x, int y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(UnsignedLongDecimal x, int y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(UnsignedLongDecimal x, int y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(UnsignedLongDecimal x, int y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(UnsignedLongDecimal x, uint y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(UnsignedLongDecimal x, uint y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(UnsignedLongDecimal x, uint y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(UnsignedLongDecimal x, uint y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(UnsignedLongDecimal x, uint y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(UnsignedLongDecimal x, uint y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(UnsignedLongDecimal x, long y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(UnsignedLongDecimal x, long y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(UnsignedLongDecimal x, long y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(UnsignedLongDecimal x, long y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(UnsignedLongDecimal x, long y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(UnsignedLongDecimal x, long y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(UnsignedLongDecimal x, ulong y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(UnsignedLongDecimal x, ulong y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(UnsignedLongDecimal x, ulong y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(UnsignedLongDecimal x, ulong y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(UnsignedLongDecimal x, ulong y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(UnsignedLongDecimal x, ulong y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(UnsignedLongDecimal x, MpzT y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(UnsignedLongDecimal x, MpzT y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(UnsignedLongDecimal x, MpzT y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(UnsignedLongDecimal x, MpzT y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(UnsignedLongDecimal x, MpzT y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(UnsignedLongDecimal x, MpzT y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(UnsignedLongDecimal x, MpuT y) => x.CompareTo(y) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(UnsignedLongDecimal x, MpuT y) => x.CompareTo(y) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(UnsignedLongDecimal x, MpuT y) => x.CompareTo(y) >= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(UnsignedLongDecimal x, MpuT y) => x.CompareTo(y) <= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(UnsignedLongDecimal x, MpuT y) => x.CompareTo(y) > 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(UnsignedLongDecimal x, MpuT y) => x.CompareTo(y) < 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(int x, UnsignedLongDecimal y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(int x, UnsignedLongDecimal y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(int x, UnsignedLongDecimal y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(int x, UnsignedLongDecimal y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(int x, UnsignedLongDecimal y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(int x, UnsignedLongDecimal y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(uint x, UnsignedLongDecimal y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(uint x, UnsignedLongDecimal y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(uint x, UnsignedLongDecimal y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(uint x, UnsignedLongDecimal y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(uint x, UnsignedLongDecimal y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(uint x, UnsignedLongDecimal y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(long x, UnsignedLongDecimal y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(long x, UnsignedLongDecimal y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(long x, UnsignedLongDecimal y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(long x, UnsignedLongDecimal y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(long x, UnsignedLongDecimal y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(long x, UnsignedLongDecimal y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(ulong x, UnsignedLongDecimal y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(ulong x, UnsignedLongDecimal y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(ulong x, UnsignedLongDecimal y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(ulong x, UnsignedLongDecimal y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(ulong x, UnsignedLongDecimal y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(ulong x, UnsignedLongDecimal y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(MpzT x, UnsignedLongDecimal y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(MpzT x, UnsignedLongDecimal y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(MpzT x, UnsignedLongDecimal y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(MpzT x, UnsignedLongDecimal y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(MpzT x, UnsignedLongDecimal y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(MpzT x, UnsignedLongDecimal y) => y.CompareTo(x) > 0;
+	/// <inheritdoc cref="operator ==(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator ==(MpuT x, UnsignedLongDecimal y) => y.CompareTo(x) == 0;
+	/// <inheritdoc cref="operator !=(UnsignedLongDecimal?, UnsignedLongDecimal?)"/>
 	public static bool operator !=(MpuT x, UnsignedLongDecimal y) => y.CompareTo(x) != 0;
+	/// <inheritdoc cref="operator }=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >=(MpuT x, UnsignedLongDecimal y) => y.CompareTo(x) <= 0;
+	/// <inheritdoc cref="operator {=(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <=(MpuT x, UnsignedLongDecimal y) => y.CompareTo(x) >= 0;
+	/// <inheritdoc cref="operator }(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator >(MpuT x, UnsignedLongDecimal y) => y.CompareTo(x) < 0;
+	/// <inheritdoc cref="operator {(UnsignedLongDecimal, UnsignedLongDecimal)"/>
 	public static bool operator <(MpuT x, UnsignedLongDecimal y) => y.CompareTo(x) > 0;
 	public static bool operator ==(UnsignedLongDecimal? x, UnsignedLongDecimal? y) => x?.CompareTo(y) == 0;
 	public static bool operator !=(UnsignedLongDecimal? x, UnsignedLongDecimal? y) => x?.CompareTo(y) != 0;

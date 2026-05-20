@@ -31,7 +31,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	public BigQueue() : this(32) { }
 
-	public BigQueue(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigQueue(int subbranchesBitLength, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength is >= 2 and <= 30)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -74,6 +74,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			Enqueue(en.Current);
 	}
 
+	~BigQueue() => Dispose(false);
+
 	protected virtual bool IsFull
 	{
 		get
@@ -113,11 +115,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно очистить очередь. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		Length = 0;
 	}
@@ -137,11 +136,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно клонировать очередь. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		q.fragment = fragment;
 #if VERIFY
@@ -216,15 +212,18 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент из очереди. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
-	public virtual void Dispose()
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	protected void Dispose(bool _)
 	{
 		low?.Dispose();
 		low = null;
@@ -237,7 +236,6 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		high = null;
 		fragment = 1;
 		Length = 0;
-		GC.SuppressFinalize(this);
 	}
 
 	public virtual void Enqueue(T item)
@@ -294,11 +292,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно добавить элемент в очередь. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		Length++;
 #if VERIFY
@@ -319,11 +314,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно получить элемент очереди. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
@@ -343,11 +335,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			return high[0].Peek();
 		else
 			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
@@ -429,11 +418,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно освободить избыток памяти в очереди. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры очереди (ошибка в логике -"
-				+ " очередь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {Length},"
+				+ MpzT.InternalError
+                + $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
 		Verify();
@@ -566,213 +552,4 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			current = default!;
 		}
 	}
-}
-
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-[Obsolete("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа. Теперь он удален окончательно."
-		+ " Большие списки делают все то же самое и многое другое, и они уже работают.", true)]
-public abstract class BigArray<T, TCertain, TLow>
-	where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
-{
-	private protected TLow? low;
-	private protected TCertain[]? high;
-	private protected MpzT fragment = 1;
-
-	public BigArray() : this(-1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigArray(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual MpzT Capacity
-	{
-		get =>
-			throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-		set => throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-	}
-
-	public virtual MpzT Length
-	{
-		get =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-			+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-		private protected set =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-			+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-	}
-
-	public virtual TCertain Add(T item) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual TCertain AddRange(G.IEnumerable<T> collection) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual bool Contains(T item, MpzT index, MpzT length) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual void Dispose() =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-}
-
-/// <summary>
-/// Представляет строго типизированный массив элементов, упорядоченных по индексу.
-/// В отличие от стандартного T[], имеет индекс типа <see cref="MpzT"/>, а не
-/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
-/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
-/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
-/// коллекции). Методы для поиска, сортировки и других манипуляций с массивом находятся в разработке, на текущий момент
-/// поддерживаются только установка элемента по индексу, копирование диапазона и копирование в обычный массив.
-/// </summary>
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-[Obsolete("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа. Теперь он удален окончательно."
-		+ " Большие списки делают все то же самое и многое другое, и они уже работают.", true)]
-public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
-{
-	public BigArray() { }
-
-	public BigArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: base(subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: base(length, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigArray(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: base(collection, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
-
-	protected virtual Func<MpzT, BigArray<T>> CapacityCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<int, List<T>> CapacityLowCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<G.IEnumerable<T>, BigArray<T>> CollectionCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<G.IEnumerable<T>, List<T>> CollectionLowCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-}
-
-/// <summary>
-/// Представляет компактный строго типизированный массив бит (true или false), упорядоченных по индексу.
-/// В отличие от стандартного <see cref="BitArray"/>, имеет индекс типа <see cref="MpzT"/>, а не
-/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
-/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
-/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
-/// коллекции). Методы для поиска, сортировки и других манипуляций с массивом находятся в разработке, на текущий момент
-/// поддерживаются только установка элемента по индексу, копирование диапазона и копирование в обычный массив.
-/// </summary>
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-[Obsolete("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа. Теперь он удален окончательно."
-		+ " Большие списки делают все то же самое и многое другое, и они уже работают.", true)]
-public class BigBitArray : BigArray<bool, BigBitArray, BitList>
-{
-	// XPerY=n means that n Xs can be stored in 1 Y.
-	private protected const int BitsPerInt = sizeof(int) * BitsPerByte;
-	private protected const int BytesPerInt = sizeof(int);
-	private protected const int BitsPerByte = 8;
-
-	public BigBitArray() =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigBitArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: base(subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigBitArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: base(length, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigBitArray(MpzT length, bool defaultValue, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigBitArray(BitArray bitArray, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigBitArray(G.IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigBitArray(G.IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigBitArray(G.IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public BigBitArray(G.IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<MpzT, BigBitArray> CapacityCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<int, BitList> CapacityLowCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<G.IEnumerable<bool>, BigBitArray> CollectionCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	protected virtual Func<G.IEnumerable<bool>, BitList> CollectionLowCreator =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual BigBitArray And(BigBitArray value) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual uint GetSmallRange(MpzT index, int length) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual BigBitArray Not() =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual BigBitArray Or(BigBitArray value) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual void SetAll(bool value) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual BigArray<uint> ToUIntBigList() =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual BigBitArray Xor(BigBitArray value) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 }

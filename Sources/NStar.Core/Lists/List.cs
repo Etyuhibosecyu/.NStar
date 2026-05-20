@@ -12,6 +12,8 @@
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TCertain : List<T, TCertain>, new()
 {
+	private const string NSortRenamed = "Этот метод был переименован в Sort() и больше недоступен под текущим именем.";
+	private const string SortingRangeOutOfCollection = "Сортируемый диапазон выходит за текущий размер коллекции.";
 	private protected T[]? _items;
 
 	private protected static readonly Dictionary<int, G.List<T[]>> arrayPool = [];
@@ -451,21 +453,21 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return Array.LastIndexOf(_items, item, index, length);
 	}
 
-	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	[Obsolete(NSortRenamed, true)]
 	public virtual TCertain NSort() =>
-		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+		throw new NotSupportedException(NSortRenamed);
 
-	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	[Obsolete(NSortRenamed, true)]
 	public virtual TCertain NSort(int index, int length) =>
-		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+		throw new NotSupportedException(NSortRenamed);
 
-	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	[Obsolete(NSortRenamed, true)]
 	public virtual TCertain NSort(Func<T, uint> function) =>
-		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+		throw new NotSupportedException(NSortRenamed);
 
-	[Obsolete("Этот метод был переименован в Sort() и больше недоступен под текущим именем.", true)]
+	[Obsolete(NSortRenamed, true)]
 	public virtual TCertain NSort(Func<T, uint> function, int index, int length) =>
-		throw new NotSupportedException("Этот метод был переименован в Sort() и больше недоступен под текущим именем.");
+		throw new NotSupportedException(NSortRenamed);
 
 	/// <summary>
 	/// Проверяет, является ли указанная последовательность списком,
@@ -515,7 +517,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
+			throw new ArgumentException(SortingRangeOutOfCollection);
 		if (length == 0)
 			return (TCertain)this;
 		if (this is List<byte> byteList)
@@ -571,7 +573,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
+			throw new ArgumentException(SortingRangeOutOfCollection);
 		if (_items is null)
 			return (TCertain)this;
 		_items.NSort(function, index, length);
@@ -642,7 +644,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
+			throw new ArgumentException(SortingRangeOutOfCollection);
 		if (index + length > values._size)
 			throw new ArgumentException("Сортируемый диапазон выходит за размер экстра-коллекции.");
 		if (_items is null)
@@ -688,7 +690,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
+			throw new ArgumentException(SortingRangeOutOfCollection);
 		if (_items is null)
 			return (TCertain)this;
 		Array.Sort(_items, index, length, comparer);

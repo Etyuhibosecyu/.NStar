@@ -1,13 +1,14 @@
 ﻿global using NStar.Core;
+global using NStar.Mpir;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
-global using G = System.Collections.Generic;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
-using System.Threading;
+global using G = System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace NStar.Dictionaries;
 
@@ -155,7 +156,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	void G.ICollection<G.KeyValuePair<TKey, TValue>>.CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) => CopyToHelper(array, arrayIndex);
 
-	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex) => CopyToHelper(array, arrayIndex);
+	void System.Collections.ICollection.CopyTo(Array array, int index) => CopyToHelper(array, index);
 
 	protected abstract void CopyToHelper(Array array, int arrayIndex);
 
@@ -405,10 +406,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				return high[key];
 			else
 				throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -420,10 +418,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				high[key] = value;
 			else
 				throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 			if (!isHigh && low is not null && Length >= _hashThreshold)
@@ -460,10 +455,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				return high.Keys;
 			else
 				throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -479,10 +471,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				return high.Values;
 			else
 				throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
-					+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-					+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-					+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-					+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+					+ MpzT.InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -496,10 +485,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			high.Add(key, value);
 		else
 			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (!isHigh && low is not null && Length >= _hashThreshold)
@@ -518,10 +504,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			high.Clear();
 		else
 			throw new InvalidOperationException("Невозможно очистить словарь. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -534,10 +517,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.ContainsKey(key);
 		else
 			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -547,13 +527,10 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low is not null)
 			((Core.ICollection)low).CopyTo(array, arrayIndex);
 		else if (high is not null)
-			((Core.ICollection)high).CopyTo(array, arrayIndex);
+			((System.Collections.ICollection)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -566,10 +543,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -583,10 +557,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				RemoveValue(x);
 		else
 			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -600,10 +571,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				Remove(x);
 		else
 			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -617,10 +585,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				RemoveValue(x);
 		else
 			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -633,10 +598,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.GetEnumerator();
 		else
 			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -649,10 +611,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.GetEnumerator();
 		else
 			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -665,10 +624,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Keys;
 		else
 			throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -681,10 +637,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Values;
 		else
 			throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -694,18 +647,10 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low is not null)
 			low.IntersectWith(other);
 		else if (high is not null)
-		{
-			var hs = other.ToHashSet();
-			foreach (var x in high)
-				if (!hs.Contains(x))
-					high.Remove(x.Key);
-		}
-		else
-			throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+            ExceptWith(this.ToHashSet().ExceptWith(other));
+        else
+            throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -715,18 +660,10 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low is not null)
 			low.IntersectWith(other);
 		else if (high is not null)
-		{
-			var hs = other.ToHashSet();
-			foreach (var x in high)
-				if (!hs.Contains(x.Key))
-					high.Remove(x.Key);
-		}
-		else
-			throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+            ExceptWith(Keys.ToHashSet().ExceptWith(other));
+        else
+            throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -736,18 +673,10 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low is not null)
 			low.IntersectWith(other);
 		else if (high is not null)
-		{
-			var hs = other.ToHashSet();
-			foreach (var x in high)
-				if (!hs.Contains((x.Key, x.Value)))
-					high.Remove(x.Key);
-		}
-		else
-			throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+            ExceptWith(this.Convert(x => (x.Key, x.Value)).ToHashSet().ExceptWith(other));
+        else
+            throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -760,10 +689,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Remove(key);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -776,10 +702,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Remove(key, out value);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -792,10 +715,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return ((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -808,10 +728,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			high.TrimExcess();
 		else
 			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -824,10 +741,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.TryGetValue(key, out value);
 		else
 			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
+				+ MpzT.InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -870,21 +784,17 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return null;
 		else if (!x.isHigh && x.low is not null)
 			return new(x.low);
-		else if (x.high is not null)
-			return x.high;
-		else
-			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
-				+ "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-				+ "2. Нарушение целостности структуры словаря (ошибка в логике -"
-				+ " словарь все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-				+ "3. Системная ошибка (память, диск и т. д.).\r\n"
-				+ $"Текущее состояние: длина - {x.Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+		return x.high ?? throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
+			+ MpzT.InternalError
+			+ $"Текущее состояние: длина - {x.Length},"
+			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 }
 
 internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
+	private const string NotSupportedMethod = "Этот метод не поддерживается в этой коллекции."
+		+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.";
 	private protected readonly List<TKey> keys;
 	private protected readonly List<TValue> values;
 	[NonSerialized]
@@ -899,33 +809,26 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	public UnsortedDictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection) =>
 		(keys, values) = E.DistinctBy(collection, x => x.Key).Break(x => x.Key, x => x.Value);
 
-	public virtual TValue this[TKey key] => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+	public virtual TValue this[TKey key] => throw new NotSupportedException(NotSupportedMethod);
 
 	TValue G.IDictionary<TKey, TValue>.this[TKey key]
 	{
-		get => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
-		set => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		get => throw new NotSupportedException(NotSupportedMethod);
+		set => throw new NotSupportedException(NotSupportedMethod);
 	}
 
-	public virtual G.IEnumerable<TKey> Keys => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+	public virtual G.IEnumerable<TKey> Keys => throw new NotSupportedException(NotSupportedMethod);
 
 	public virtual int Length => keys.Length;
 
 	public virtual G.IEnumerable<TValue> Values =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		throw new NotSupportedException(NotSupportedMethod);
 
 	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		throw new NotSupportedException(NotSupportedMethod);
 
 	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		throw new NotSupportedException(NotSupportedMethod);
 
 	public virtual bool IsReadOnly => false;
 
@@ -959,12 +862,10 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	public virtual bool ContainsKey(TKey key) => keys.Contains(item: key);
 
 	public void CopyTo(Array array, int index) =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		throw new NotSupportedException(NotSupportedMethod);
 
 	public virtual void CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		throw new NotSupportedException(NotSupportedMethod);
 
 	public virtual Enumerator GetEnumerator() => new(this);
 
@@ -974,12 +875,10 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 	private protected int IndexOfKey(TKey key) => keys.IndexOf(key);
 
-	public virtual bool Remove(TKey key) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+	public virtual bool Remove(TKey key) => throw new NotSupportedException(NotSupportedMethod);
 
 	public virtual bool RemoveValue(G.KeyValuePair<TKey, TValue> item) =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте Dictionary<TKey, TValue> или SortedDictionary<TKey, TValue>.");
+		throw new NotSupportedException(NotSupportedMethod);
 
 	public virtual bool TryGetValue(TKey key, out TValue value)
 	{
@@ -1005,11 +904,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 		readonly object IEnumerator.Current => Current;
 
-		public void Dispose()
-		{
-			index = 0;
-			Current = default;
-		}
+		public void Dispose() => Reset();
 
 		public bool MoveNext()
 		{

@@ -56,7 +56,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	public UnsignedLongReal(ulong op, int mantissaLength = MinMantissaLength) : this(new MpuT(op), null, mantissaLength) { }
 
 	public UnsignedLongReal(MpzT op, int mantissaLength = DefaultMantissaLength) : this(op < 0
-		? throw new ArgumentException("Этот тип не поддерживает отрицательные числа.", nameof(op))
+		? throw new ArgumentException(NoNegativeNumbers, nameof(op))
 		: Unsafe.As<MpuT>(op), mantissaLength) { }
 
 	public UnsignedLongReal(MpuT op, int mantissaLength = DefaultMantissaLength)
@@ -276,9 +276,9 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			if (compared != 1)
 				return new(compared, null);
 			if (x.e is null)
-				return new(Math.Sign(x.m.CompareTo(y.m << (int)y.e! - 1)) + 1, null);
+				return new(Math.Sign(x.m.CompareTo(y.MantissaOverflow + y.m << (int)y.e! - 1)) + 1, null);
 			else if (y.e is null)
-				return new(Math.Sign((x.m << (int)x.e! - 1).CompareTo(y.m)) + 1, null);
+				return new(Math.Sign((x.MantissaOverflow + x.m << (int)x.e! - 1).CompareTo(y.m)) + 1, null);
 			var mlDiff = x.MantissaLength - y.MantissaLength;
 			if (mlDiff >= 0)
 				return new(Math.Sign(x.m.CompareTo(y.m << mlDiff)) + 1, null);
@@ -336,11 +336,11 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			{
 				if (xBitLength.e is not null)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
-				var blDiff = (int)xBitLength - Math.Max(y.MantissaLength + 1, (int)yBitLength);
-				if (blDiff > mantissaLength)
+				var blDiff = Compute(xBitLength, Math.Max(y.MantissaLength + 1, (int)yBitLength), ComputeOperation.Subtract);
+				if (Compute(blDiff, mantissaLength, ComputeOperation.Compare).m > 1)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var ym = (y.e is null ? 0 : yMantissaOverflow) + y.m;
-				var mSum = (x.m << xmlDiff) + (ym << ymlDiff).ShiftRightRound(blDiff);
+				var mSum = (x.m << xmlDiff) + (ym << ymlDiff).ShiftRightRound((int)blDiff);
 				if (Mpir.MpuCmp(mSum, mantissaOverflow) >= 0)
 				{
 					newE = Compute(xBitLength, mantissaLength - 1, ComputeOperation.Subtract);
@@ -356,7 +356,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 				var blDiff = Compute(xBitLength, yBitLength, ComputeOperation.Subtract);
 				if (blDiff.e is null && blDiff.m == 0)
 				{
-					newE = Compute(Compute(x.e, 1, ComputeOperation.Add), xmlDiff, ComputeOperation.Subtract);
+					newE = Compute(Compute(x.e, One, ComputeOperation.Add), xmlDiff, ComputeOperation.Subtract);
 					newE = Compute(newE, (long)mantissaLength << 1, ComputeOperation.ChangeML);
 					return new(((x.m << xmlDiff) + y.m).ShiftRightRound(1), newE, mantissaLength);
 				}
@@ -416,8 +416,8 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 					return new((mDiff << 1) & mantissaMask, (int)x.e - 1, mantissaLength);
 			}
 			else if (x.e is null || Compute(x.e, y.e, ComputeOperation.Compare).m < 1)
-				throw new OverflowException("Этот тип не поддерживает отрицательные числа.");
-			else if (Compute(x.e, Compute(y.e, 1, ComputeOperation.Add), ComputeOperation.Compare).m > 1)
+				throw new OverflowException(NoNegativeNumbers);
+			else if (Compute(x.e, Compute(y.e, One, ComputeOperation.Add), ComputeOperation.Compare).m > 1)
 			{
 				var eDiff = Compute(x.e, y.e, ComputeOperation.Subtract);
 				if (Compute(eDiff, mantissaLength, ComputeOperation.Compare).m > 1)
@@ -428,7 +428,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 				else if (x.e.e is null && x.e.m == 1)
 					return new(mDiff, null, mantissaLength);
 				else
-					return new((mDiff << 1) & mantissaMask, Compute(x.e, 1, ComputeOperation.Subtract), mantissaLength);
+					return new((mDiff << 1) & mantissaMask, Compute(x.e, One, ComputeOperation.Subtract), mantissaLength);
 			}
 			else if (Compute(x.e, y.e, ComputeOperation.Compare).m == 1)
 			{
@@ -481,7 +481,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			Debug.Assert(e is not null);
 			var mantissaOverflow = MantissaOverflow;
 			if (Mpir.MpuCmpSi(x, 0) == 0)
-				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+				throw new DivideByZeroException(NoDivisionByZero);
 			else if (Mpir.MpuCmpSi(x, 1) == 0)
 				return (this, MpuT.Zero);
 			else if (e <= x.BitLength + 1)
@@ -526,7 +526,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 		{
 			Debug.Assert(this2.e is not null);
 			if (Mpir.MpuCmpSi(x.m, 0) == 0)
-				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+				throw new DivideByZeroException(NoDivisionByZero);
 			else if (Mpir.MpuCmpSi(x.m, 1) == 0)
 				return (this2, new(0, maxMantissaLength));
 			else if (this2.e <= x.m.BitLength)
@@ -677,6 +677,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	};
 
 	public int GetByteCount() => GetByteCount(true);
+	/// <summary>Возвращает количество байт, необходимое для сохранения числа вместе с длиной мантиссы или без нее.</summary>
 	public int GetByteCount(bool saveMantissaLength) =>
 		(e is null ? m.GetByteCount() : MantissaByteLength + e.GetByteCount(false)) + (saveMantissaLength ? sizeof(int) : 0);
 	public int GetExponentByteCount() => e is null ? 0 : e.GetByteCount();
@@ -794,8 +795,22 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	long IConvertible.ToInt64(IFormatProvider? provider) => (long)this;
 	sbyte IConvertible.ToSByte(IFormatProvider? provider) => (sbyte)(short)this;
 	float IConvertible.ToSingle(IFormatProvider? provider) => (float)this;
-	public string? ToShortString() => m is null || m.val == 0 ? "0" : BitLength >= 65536
-		? "Too large for short string, use ToString() instead." : ((MpuT)this).ToString();
+
+	/// <summary>
+	/// Преобразует данное число в строку, только если его длина меньше заданного порога
+	/// (65536 бит для данного типа).
+	/// </summary>
+	/// <returns>Результат преобразования в строку или строка-заглушка, если число слишком большое.</returns>
+	public string? ToShortString()
+	{
+		if (m is null || m.val == 0)
+			return "0";
+		else if (BitLength >= 65536)
+			return (string?)"Too large for short string, use ToString() instead.";
+		else
+			return ((MpuT)this).ToString();
+	}
+
 	public override string? ToString() => ((MpuT)this).ToString(DefaultStringBase);
 	public string ToString(IFormatProvider? provider) => ToString(DefaultStringBase) ?? "";
 	public string ToString(string? format, IFormatProvider? formatProvider) =>
@@ -1114,20 +1129,22 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	/// <inheritdoc cref="IUnaryNegationOperators{UnsignedLongReal, UnsignedLongReal}.operator -(UnsignedLongReal-)"/>
 	public static LongReal operator -(UnsignedLongReal value) => -new LongReal(value, value.MantissaLength);
 	static UnsignedLongReal IUnaryNegationOperators<UnsignedLongReal, UnsignedLongReal>.operator -(UnsignedLongReal value) =>
-		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+		throw new NotSupportedException(NoNegativeNumbers);
 	/// <inheritdoc cref="IBitwiseOperators{UnsignedLongReal, UnsignedLongReal, UnsignedLongReal}.operator ~(UnsignedLongReal)"/>
 	public static LongReal operator ~(UnsignedLongReal value) => ~new LongReal(value, value.MantissaLength);
 	static UnsignedLongReal IBitwiseOperators<UnsignedLongReal, UnsignedLongReal, UnsignedLongReal>.operator ~(UnsignedLongReal value) =>
-		throw new NotSupportedException("Этот тип не поддерживает отрицательные числа.");
+		throw new NotSupportedException(NoNegativeNumbers);
 
 	/// <inheritdoc cref="operator +(UnsignedLongReal, UnsignedLongReal)"/>
 	public static UnsignedLongReal operator +(int x, UnsignedLongReal y) => y + x;
 	/// <inheritdoc cref="operator +(UnsignedLongReal, UnsignedLongReal)"/>
-	public static UnsignedLongReal operator +(UnsignedLongReal x, int y) => y < 0 ? x - (uint)-y : x + (uint)y;
+	public static UnsignedLongReal operator +(UnsignedLongReal x, int y) =>
+		y < 0 ? x - new UnsignedLongReal(-y) : x + new UnsignedLongReal(y);
 	public static UnsignedLongReal operator +(UnsignedLongReal x, UnsignedLongReal y) =>
 		Compute(x, y, ComputeOperation.Add);
 	/// <inheritdoc cref="operator -(UnsignedLongReal, UnsignedLongReal)"/>
-	public static UnsignedLongReal operator -(UnsignedLongReal x, int y) => y < 0 ? x + (uint)-y : x - (uint)y;
+	public static UnsignedLongReal operator -(UnsignedLongReal x, int y) =>
+		y < 0 ? x + new UnsignedLongReal(-y) : x - new UnsignedLongReal(y);
 	public static UnsignedLongReal operator -(UnsignedLongReal x, UnsignedLongReal y) =>
 		Compute(x, y, ComputeOperation.Subtract);
 	/// <inheritdoc cref="operator *(UnsignedLongReal, UnsignedLongReal)"/>
@@ -1222,7 +1239,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 		if (x.e is null)
 			return new(x.m / y, null, MantissaLength);
 		else if (y == 0)
-			throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
 		else if (x.e <= sizeof(int) * 8 - int.LeadingZeroCount(y))
@@ -1242,7 +1259,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 		if (x.e is null)
 			return new(x.m / y, null, MantissaLength);
 		else if (y == 0)
-			throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
 		else if (x.e <= sizeof(uint) * 8 - uint.LeadingZeroCount(y))
@@ -1266,7 +1283,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 		{
 			Debug.Assert(x.e is not null);
 			if (Mpir.MpuCmpSi(y.m, 0) == 0)
-				throw new DivideByZeroException("Этот тип не поддерживает деление на ноль.");
+				throw new DivideByZeroException(NoDivisionByZero);
 			else if (Mpir.MpuCmpSi(y.m, 1) == 0)
 				return x.Copy();
 			else if (x.e <= y.m.BitLength)
