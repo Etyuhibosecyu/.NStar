@@ -534,7 +534,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			var i = 0;
 			foreach (var item in source)
@@ -578,7 +580,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			var i = 0;
 			foreach (var item in source)
@@ -623,7 +627,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			var i = 0;
 			foreach (var item in source)
@@ -677,7 +683,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
@@ -733,7 +741,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
@@ -785,7 +795,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<T> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			List<T3> result3 = new(length);
 			var i = 0;
@@ -834,7 +846,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
@@ -884,7 +898,9 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			List<TResult> result = new(source.TryGetLengthEasily(out var length) ? length : length = 1024);
+			if (!source.TryGetLengthEasily(out var length))
+				length = 1024;
+			List<TResult> result = new(length);
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
@@ -2385,7 +2401,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2401,7 +2418,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2416,7 +2434,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2438,7 +2457,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2454,7 +2474,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2469,7 +2490,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2490,7 +2512,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2506,7 +2529,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2521,7 +2545,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index] = (f, result[index].Count + 1);
 				else
 					result.Add((f, 1));
@@ -2634,7 +2659,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2650,7 +2676,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2665,7 +2692,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2687,7 +2715,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2703,7 +2732,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2718,7 +2748,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2739,7 +2770,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2755,7 +2787,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2770,7 +2803,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -2890,7 +2924,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -2906,7 +2941,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -2921,7 +2957,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = function(item), out var index))
+				f = function(item);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -2943,7 +2980,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -2959,7 +2997,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -2974,7 +3013,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = function(item, i), out var index))
+				f = function(item, i);
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -2995,7 +3035,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -3011,7 +3052,8 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -3026,7 +3068,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				if (!hs.TryAdd(f = item, out var index))
+				f = item;
+				if (!hs.TryAdd(f, out var index))
 					result[index].Add(i);
 				else
 					result.Add(new(32, i, f));
@@ -5670,7 +5713,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5689,7 +5733,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5708,7 +5753,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5727,7 +5773,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5745,7 +5792,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5764,7 +5812,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5783,7 +5832,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5801,7 +5851,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5820,7 +5871,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5839,7 +5891,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5857,7 +5910,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -5876,7 +5930,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -5895,7 +5950,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -5913,7 +5969,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -5932,7 +5989,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -5951,7 +6009,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -5969,7 +6028,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -5988,7 +6048,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -6007,7 +6068,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -6025,7 +6087,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -6044,7 +6107,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item), out var index))
+			f = function(item);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -6063,7 +6127,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = function(item, i), out var index))
+			f = function(item, i);
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));
@@ -6081,7 +6146,8 @@ public static class RedStarLinqExtras
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			if (!hs.TryAdd(f = item, out var index))
+			f = item;
+			if (!hs.TryAdd(f, out var index))
 				result[index].Add(i);
 			else
 				result.Add(new(32, i, f));

@@ -502,6 +502,11 @@ public class LongRealTests
 	[TestMethod]
 	public void TestLog()
 	{
+		Assert.AreEqual(LongReal.NegativeInfinity, LongReal.Zero.Log());
+		Assert.AreEqual(LongReal.PositiveInfinity, LongReal.PositiveInfinity.Log());
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NegativeInfinity.Log()));
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN.Log()));
+		Assert.AreEqual(LongReal.Zero, LongReal.One.Log());
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 10000; i++)
@@ -557,6 +562,10 @@ public class LongRealTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var longRealThree = new LongReal(3);
+		Assert.AreEqual(LongReal.One, longRealThree.Power(LongReal.Zero));
+		Assert.AreEqual(LongReal.PositiveInfinity, longRealThree.Power(LongReal.PositiveInfinity));
+		Assert.AreEqual(LongReal.Zero, longRealThree.Power(LongReal.NegativeInfinity));
+		Assert.IsTrue(LongReal.IsNaN(longRealThree.Power(LongReal.NaN)));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 5000; i++)
 		{
@@ -581,6 +590,11 @@ public class LongRealTests
 	[TestMethod]
 	public void TestReciproc()
 	{
+		Assert.AreEqual(LongReal.PositiveInfinity, LongReal.Zero.Reciproc());
+		Assert.AreEqual(LongReal.Zero, LongReal.PositiveInfinity.Reciproc());
+		Assert.AreEqual(LongReal.Zero, LongReal.NegativeInfinity.Reciproc());
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN.Reciproc()));
+		Assert.AreEqual(LongReal.One, LongReal.One.Reciproc());
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 1000000; i++)
@@ -599,6 +613,14 @@ public class LongRealTests
 	[TestMethod]
 	public void TestShifts()
 	{
+		Assert.AreEqual(LongReal.Zero, LongReal.Zero << 3);
+		Assert.AreEqual(LongReal.PositiveInfinity, LongReal.PositiveInfinity << 3);
+		Assert.AreEqual(LongReal.NegativeInfinity, LongReal.NegativeInfinity << 3);
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN << 3));
+		Assert.AreEqual(LongReal.Zero, LongReal.Zero >> 3);
+		Assert.AreEqual(LongReal.PositiveInfinity, LongReal.PositiveInfinity >> 3);
+		Assert.AreEqual(LongReal.NegativeInfinity, LongReal.NegativeInfinity >> 3);
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN >> 3));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 1000000; i++)
@@ -640,6 +662,11 @@ public class LongRealTests
 	[TestMethod]
 	public void TestSqrt()
 	{
+		Assert.AreEqual(LongReal.Zero, LongReal.Zero.Sqrt());
+		Assert.AreEqual(LongReal.PositiveInfinity, LongReal.PositiveInfinity.Sqrt());
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NegativeInfinity.Sqrt()));
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN.Sqrt()));
+		Assert.AreEqual(LongReal.One, LongReal.One.Sqrt());
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 100000; i++)
@@ -684,11 +711,42 @@ public class LongRealTests
 			else
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
 			var mantissaLength = random.Next(32, Max(bytes.Length * 8, 32));
-			LongReal lr = new(bytes.AsSpan(), order, mantissaLength);
+			LongReal lr = random.Next(1000) switch
+			{
+				0 => new(0d, mantissaLength),
+				1 => new(double.PositiveInfinity, mantissaLength),
+				2 => new(double.NegativeInfinity, mantissaLength),
+				3 => new(double.NaN, mantissaLength),
+				4 => new(double.NegativeZero, mantissaLength),
+				_ => new(bytes.AsSpan(), order, mantissaLength),
+			};
 			LongReal lr2 = new(lr.ToByteArray(order, false), order, mantissaLength);
 			Assert.IsTrue(LongReal.IsNaN(lr) && LongReal.IsNaN(lr2) || lr.Equals(lr2));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
+	public void TestToDouble()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 5000000; i++)
+		{
+			bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
+			if (random.Next(2) == 0)
+				bytes.Resize(8);
+			else
+				bytes.ResizeLeft(8);
+			var r = BitConverter.ToDouble(bytes.AsSpan());
+			LongReal lr = new(r, MantissaLength);
+			Assert.AreEqual(r, (double)lr);
+		}
+		for (var i = 0; i < 100; i++)
+		{
+			var lr = new LongReal(random.Next()).Shift(-random.Next());
+			Assert.AreEqual(UnsignedLongReal.Zero, (UnsignedLongReal)lr);
+		}
 	}
 
 	[TestMethod]
@@ -753,6 +811,9 @@ public class LongRealTests
 		Assert.AreEqual(0, (-LongReal.Pi).Sin());
 		Assert.AreEqual(1, (-3 * LongReal.Pi >> 1).Sin());
 		Assert.AreEqual(0, (-LongReal.Pi << 1).Sin());
+		Assert.IsTrue(LongReal.IsNaN(LongReal.PositiveInfinity.Sin()));
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NegativeInfinity.Sin()));
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN.Sin()));
 		Assert.AreEqual(1, LongReal.Zero.Cos());
 		Assert.AreEqual(0, (LongReal.Pi >> 1).Cos());
 		Assert.AreEqual(-1, LongReal.Pi.Cos());
@@ -762,6 +823,9 @@ public class LongRealTests
 		Assert.AreEqual(-1, (-LongReal.Pi).Cos());
 		Assert.AreEqual(0, (-3 * LongReal.Pi >> 1).Cos());
 		Assert.AreEqual(1, (-LongReal.Pi << 1).Cos());
+		Assert.IsTrue(LongReal.IsNaN(LongReal.PositiveInfinity.Cos()));
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NegativeInfinity.Cos()));
+		Assert.IsTrue(LongReal.IsNaN(LongReal.NaN.Cos()));
 		for (var i = 0; i < 10000; i++)
 		{
 			var r = Pow(2, random.NextDouble() * 128 - 64);

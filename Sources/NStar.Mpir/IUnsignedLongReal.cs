@@ -11,41 +11,41 @@ internal interface IUnsignedLongReal<TSelf> : ICloneable, IConvertible, IDisposa
 
 	TSelf Copy();
 
-	object IConvertible.ToType(Type targetType, IFormatProvider? provider)
+	object IConvertible.ToType(Type conversionType, IFormatProvider? provider)
 	{
-		ArgumentNullException.ThrowIfNull(targetType);
-		if (targetType == typeof(UnsignedLongReal))
+		ArgumentNullException.ThrowIfNull(conversionType);
+		if (conversionType == typeof(UnsignedLongReal))
 			return Copy();
 		IConvertible value = this;
-		if (targetType == typeof(sbyte))
+		if (conversionType == typeof(sbyte))
 			return value.ToSByte(provider);
-		else if (targetType == typeof(byte))
+		else if (conversionType == typeof(byte))
 			return value.ToByte(provider);
-		else if (targetType == typeof(short))
+		else if (conversionType == typeof(short))
 			return value.ToInt16(provider);
-		else if (targetType == typeof(ushort))
+		else if (conversionType == typeof(ushort))
 			return value.ToUInt16(provider);
-		else if (targetType == typeof(int))
+		else if (conversionType == typeof(int))
 			return value.ToInt32(provider);
-		else if (targetType == typeof(uint))
+		else if (conversionType == typeof(uint))
 			return value.ToUInt32(provider);
-		else if (targetType == typeof(long))
+		else if (conversionType == typeof(long))
 			return value.ToInt64(provider);
-		else if (targetType == typeof(ulong))
+		else if (conversionType == typeof(ulong))
 			return value.ToUInt64(provider);
-		else if (targetType == typeof(float))
+		else if (conversionType == typeof(float))
 			return value.ToSingle(provider);
-		else if (targetType == typeof(double))
+		else if (conversionType == typeof(double))
 			return value.ToDouble(provider);
-		else if (targetType == typeof(decimal))
+		else if (conversionType == typeof(decimal))
 			return value.ToDecimal(provider);
-		else if (targetType == typeof(MpzT))
+		else if (conversionType == typeof(MpzT))
 			return new MpzT(value.ToString(provider));
-		else if (targetType == typeof(MpuT))
+		else if (conversionType == typeof(MpuT))
 			return new MpuT(value.ToString(provider));
-		else if (targetType == typeof(string))
+		else if (conversionType == typeof(string))
 			return value.ToString(provider);
-		else if (targetType == typeof(object))
+		else if (conversionType == typeof(object))
 			return Copy();
 		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(UnsignedLongReal)
 			+ ", " + nameof(MpzT) + ", " + nameof(MpuT)
