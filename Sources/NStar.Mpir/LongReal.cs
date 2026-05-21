@@ -52,22 +52,22 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		{
 			case 0d or double.NegativeZero:
 			m = MpzT.Zero;
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 			specialValue = SpecialValue.Zero;
 			return;
 			case double.PositiveInfinity:
 			m = MpzT.Zero;
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 			specialValue = SpecialValue.PositiveInfinity;
 			return;
 			case double.NegativeInfinity:
 			m = MpzT.Zero;
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 			specialValue = SpecialValue.NegativeInfinity;
 			return;
 			case double.NaN:
 			m = MpzT.Zero;
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 			specialValue = SpecialValue.NaN;
 			return;
 		}
@@ -107,7 +107,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (op == 0)
 		{
 			m = MpzT.Zero;
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 			specialValue = SpecialValue.Zero;
 		}
 		else
@@ -173,7 +173,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (bytes.Length == 0)
 		{
 			m = MpzT.Zero;
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 			specialValue = SpecialValue.Zero;
 		}
 		if ((SpecialValue)bytes[order < 0 ? ^1 : 0] is var localSpecialValue
@@ -183,7 +183,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (bytes.Length <= mantissaByteLength)
 		{
 			m = new(bytes[1..], order);
-			e = new(0, null, mantissaLength);
+			e = new(MpuT.Zero, null, mantissaLength);
 		}
 		else
 		{
@@ -240,12 +240,13 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		this is var this2 ? MantissaMasks.GetOrAdd(MantissaLength, x => this2.MantissaOverflow - 1) : 0;
 	private MpzT MantissaOverflow => MantissaOverflows.GetOrAdd(MantissaLength, x => MpuT.One << x);
 	public static LongReal MultiplicativeIdentity => One;
-	public static LongReal NaN { get; } = new(0, 0, MinMantissaLength, SpecialValue.NaN);
-	public static LongReal NegativeInfinity { get; } = new(0, 0, MinMantissaLength, SpecialValue.NegativeInfinity);
+	public static LongReal NaN { get; } = new(MpzT.Zero, UnsignedLongReal.Zero, MinMantissaLength, SpecialValue.NaN);
+	public static LongReal NegativeInfinity { get; }
+		= new(MpzT.Zero, UnsignedLongReal.Zero, MinMantissaLength, SpecialValue.NegativeInfinity);
 	public static LongReal NegativeOne { get; } = new(-2, 0, MinMantissaLength);
-	public static LongReal One { get; } = new(0, 0, MinMantissaLength);
+	public static LongReal One { get; } = new(MpzT.Zero, UnsignedLongReal.Zero, MinMantissaLength);
 	/// <summary>Получает (двоичный) порядок числа: количество бит в целой части для чисел &gt;= 1 и 0 для &lt; 1.</summary>
-	public UnsignedLongReal Order => (m & 1) != 0 ? new(0, null, MantissaLength) : e + 1;
+	public UnsignedLongReal Order => (m & 1) != 0 ? new(MpuT.Zero, null, MantissaLength) : e + 1;
 	public static LongReal Pi { get; } = new(new MpzT("36892856717025391680"
 			+ "740891802812412405176592852830664590007670367492169080340481831853321118904436015143933"
 			+ "552972672082765245263376508596357945745324793896227010542086020897025607990336625291706026"
@@ -254,7 +255,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			+ "226431511337193553086781892270787770264832522584079134584415722107695941190721836268649424"
 			+ "712276400413118826525211701140639299587367404718191375213418672365248997374612830495675957"
 			+ "061903613212067735740210469522784694662354974839940735756692"), 1, DefaultMantissaLength);
-	public static LongReal PositiveInfinity { get; } = new(0, 0, MinMantissaLength, SpecialValue.PositiveInfinity);
+	public static LongReal PositiveInfinity { get; }
+		= new(MpzT.Zero, UnsignedLongReal.Zero, MinMantissaLength, SpecialValue.PositiveInfinity);
 	public static int Radix => 2;
 
 	/// <summary>Получает знак числа (в формате целого числа 1, 0 или -1).</summary>
@@ -269,14 +271,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 
 	/// <summary>Получает порядок числа с учетом знака: положительный для положительных чисел и отрицательный иначе.</summary>
 	public LongReal SignedOrder => (LongReal)Order * Sign;
-	public static LongReal Tau { get; } = new(new MpzT("18446428358512695"
-			+ "840370445901406206202588296426415332295003835183746084540170240915926660559452218007571966"
-			+ "776486336041382622631688254298178972872662396948113505271043010448512803995168312645853013"
-			+ "070577786713821036054795170130116588436555702706838674001875780258213953644307447012671405"
-			+ "978624015332035199411215046085079465971748057789745376095728427323727938808466113270155357"
-			+ "613215755668596776543390946135393885132416261292039567292207861053847970595360918134324712"
-			+ "356138200206559413262605850570319649793683702359095687606709336182624498687306415247837978"
-			+ "530951806606033867870105234761392347331177487419970367878346"), 2, DefaultMantissaLength);
+	public static LongReal Tau { get; } = new(Pi.m, 2, DefaultMantissaLength);
 	/// <summary>Gets the mathematical constant 10.</summary>
 	public static LongReal Ten { get; } = new(new MpzT("16158503035655503"
 			+ "650357438344334975980222051334857742016065172713762327569433945446598600705761456731844358"
@@ -286,7 +281,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			+ "096354230157075129296432088558362971801859230928678799175576150822952201848806616643615613"
 			+ "562842355410104862578550863465661734839271290328348967522998634176499319107762583194718667"
 			+ "771801067716614802322659239302476074096777926805529798115328"), 3, DefaultMantissaLength);
-	public static LongReal Zero { get; } = new(0, 0, MinMantissaLength, SpecialValue.Zero);
+	public static LongReal Zero { get; } = new(MpzT.Zero, UnsignedLongReal.Zero, MinMantissaLength, SpecialValue.Zero);
 
 	/// <summary>
 	/// Computes the absolute of this number.
@@ -294,6 +289,88 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// <returns>The absolute of this number.</returns>
 	public LongReal Abs() => Mpir.MpzCmpSi(m, 0) < 0 ? -this : this;
 	public static LongReal Abs(LongReal value) => value.Abs();
+
+	/// <summary>
+	/// Вычисляет арккосинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - <see cref="Pi"/> &gt;&gt; 1;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - арккосинус данного числа.
+	/// </returns>
+	public LongReal Acos()
+	{
+		if (specialValue == SpecialValue.Zero)
+			return Pi.GetWithOtherML(MantissaLength, false) >> 1;
+		else if (specialValue != SpecialValue.None)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		else if ((m & 1) == 0)
+		{
+			if (e != 0)
+				return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+			else if (Mpir.MpzCmpSi(m, 0) == 0)
+				return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+			else if (Mpir.MpzCmpSi(m, -2) == 0)
+				return Pi.GetWithOtherML(MantissaLength, false);
+			else
+				return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		}
+		var sign = Mpir.MpzCmpSi(m, 0) < 0 ? -1 : 1;
+		var localValue = Abs().GetWithOtherML(MantissaLength + 100, false);
+		var threshold = new LongReal(MpzT.Zero, UnsignedLongReal.One, MantissaLength + 100).SqrtInternal().ReciprocInternal();
+		if (localValue == threshold)
+			return (2 - sign) * Pi.GetWithOtherML(MantissaLength, false) >> 2;
+		var reverse = localValue < threshold;
+		if (reverse)
+			localValue = AddInternal(One, -localValue.ReciprocInternal().SquareInternal().ReciprocInternal(),
+				MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
+		localValue = AddInternal(One, -AddInternal(One, -localValue, MantissaLength + 100) >> 1,
+			MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
+		localValue = AddInternal(One, -localValue.ReciprocInternal().SquareInternal().ReciprocInternal(),
+			MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
+		localValue = localValue.AsinInternal() << 1;
+		if (reverse)
+			localValue = (Pi.GetWithOtherML(MantissaLength + 100, false) >> 1) - localValue;
+		if (sign < 0)
+			localValue = Pi.GetWithOtherML(MantissaLength + 100, false) - localValue;
+		return localValue.GetWithOtherML(MantissaLength, false);
+	}
+
+	/// <summary>
+	/// Вычисляет арккосинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - <see cref="Pi"/> &gt;&gt; 1;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - арккосинус данного числа.
+	/// </returns>
+	public static LongReal Acos(LongReal value) => value.Acos();
+
+	/// <summary>
+	/// Вычисляет гиперболический арккосинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля, для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// в остальных случаях - гиперболический арккосинус данного числа.
+	/// </returns>
+	public LongReal Acosh() => Ln(this + Sqrt(Square() - One));
+
+	/// <summary>
+	/// Вычисляет гиперболический арккосинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля, для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арккосинус данного числа.
+	/// </returns>
+	public static LongReal Acosh(LongReal value) => value.Acosh();
 
 	private static LongReal AddInternal(LongReal x, LongReal y, int mantissaLength, int xmlDiff = 0, int ymlDiff = 0)
 	{
@@ -341,7 +418,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			{
 				var mDiff = xm - ym;
 				if (mDiff == 0)
-					return new(0, 0, mantissaLength, SpecialValue.Zero);
+					return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.Zero);
 				var shiftAmount = mantissaLength - mDiff.BitLength + 1;
 				newE = (x.e + shiftAmount).GetWithOtherML(mantissaLength, false);
 				return new((mDiff << shiftAmount & mantissaMask) << 1 | 1, newE, mantissaLength);
@@ -438,7 +515,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			{
 				var mDiff = xm - ym;
 				if (mDiff == 0)
-					return new(0, 0, mantissaLength, SpecialValue.Zero);
+					return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.Zero);
 				var shiftAmount = mantissaLength - mDiff.BitLength + 1;
 				if (x.e < shiftAmount)
 				{
@@ -490,34 +567,39 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var maxMantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 		if (x.specialValue == SpecialValue.NaN || y.specialValue == SpecialValue.NaN)
-			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 		else if (x.specialValue == SpecialValue.Zero || y.specialValue == SpecialValue.Zero)
-			return new(0, 0, maxMantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
 				x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				|| y.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				? SpecialValue.NaN : SpecialValue.Zero);
 		else if (x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 			&& y.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, x.specialValue == y.specialValue ? x.specialValue : SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				x.specialValue == y.specialValue ? x.specialValue : SpecialValue.NaN);
 		else if (x.specialValue is SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
 		else if (x.specialValue is SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
 		else if (y.specialValue is SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
 		else if (y.specialValue is SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
 		else if (Mpir.MpzCmpSi(x.m, 0) < 0 ^ Mpir.MpzCmpSi(y.m, 0) < 0)
-			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 		else if (Mpir.MpzCmpSi(x.m, 0) == 0 && x.e == 0 && Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
-			return new(0, 0, maxMantissaLength, SpecialValue.None);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.None);
 		x = x.GetWithOtherML(maxMantissaLength, false);
 		y = y.GetWithOtherML(maxMantissaLength, false);
 		if (Mpir.MpzCmp(x.m, y.m) == 0 && x.e == y.e)
 			return new(x.m, x.e, maxMantissaLength, SpecialValue.None);
 		if (y > x)
 			(x, y) = (y, x);
-		UnsignedLongReal shiftAmount = new(0, null, maxMantissaLength);
+		UnsignedLongReal shiftAmount = new(MpuT.Zero, null, maxMantissaLength);
 		if ((x.m & 1) != 0)
 			shiftAmount = x.e + 1;
 		if ((y.m & 1) != 0 && y.e >= shiftAmount)
@@ -538,6 +620,163 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	}
 
 	/// <summary>
+	/// Вычисляет арксинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - арксинус данного числа.
+	/// </returns>
+	public LongReal Asin()
+	{
+		if (specialValue == SpecialValue.Zero)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+		else if (specialValue != SpecialValue.None)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		else if ((m & 1) == 0)
+		{
+			if (e != 0)
+				return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+			else if (Mpir.MpzCmpSi(m, 0) == 0)
+				return Pi.GetWithOtherML(MantissaLength, false) >> 1;
+			else if (Mpir.MpzCmpSi(m, -2) == 0)
+				return -Pi.GetWithOtherML(MantissaLength, false) >> 1;
+			else
+				return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		}
+		var sign = Mpir.MpzCmpSi(m, 0) < 0 ? -1 : 1;
+		var localValue = Abs().GetWithOtherML(MantissaLength + 100, false);
+		var threshold = new LongReal(MpzT.Zero, UnsignedLongReal.One, MantissaLength + 100).SqrtInternal().ReciprocInternal();
+		if (localValue == threshold)
+			return (2 - sign) * Pi.GetWithOtherML(MantissaLength, false) >> 2;
+		var reverse = localValue > threshold;
+		if (!reverse)
+			localValue = AddInternal(One, -localValue.ReciprocInternal().SquareInternal().ReciprocInternal(),
+				MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
+		localValue = AddInternal(One, -AddInternal(One, -localValue, MantissaLength + 100) >> 1,
+			MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
+		localValue = AddInternal(One, -localValue.ReciprocInternal().SquareInternal().ReciprocInternal(),
+			MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
+		localValue = localValue.AsinInternal() << 1;
+		if (reverse)
+			localValue = (Pi.GetWithOtherML(MantissaLength + 100, false) >> 1) - localValue;
+		return (localValue * sign).GetWithOtherML(MantissaLength, false);
+	}
+
+	/// <summary>
+	/// Вычисляет арксинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - арксинус данного числа.
+	/// </returns>
+	public static LongReal Asin(LongReal value) => value.Asin();
+
+	/// <summary>
+	/// Вычисляет гиперболический арксинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический арксинус данного числа.
+	/// </returns>
+	public LongReal Asinh() => Ln(this + Sqrt(Square() + One));
+
+	/// <summary>
+	/// Вычисляет гиперболический арксинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический арксинус данного числа.
+	/// </returns>
+	public static LongReal Asinh(LongReal value) => value.Asinh();
+
+	private LongReal AsinInternal()
+	{
+		var inverseSquare = ReciprocInternal().SquareInternal();
+		LongReal frac = inverseSquare >> 2, fracPow = frac;
+		LongReal factorial = new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength);
+		LongReal doubleFactorial = new(MpzT.Zero, UnsignedLongReal.One, MantissaLength);
+		LongReal rowSum = inverseSquare.ReciprocInternal() << 1, prev;
+		uint i = 2u, i2 = 3;
+		do
+		{
+			prev = rowSum;
+#pragma warning disable IDE0079 // Удалить ненужное подавление
+#pragma warning disable S1121
+			rowSum += MultiplyInternal(fracPow = MultiplyInternal(fracPow, frac, MantissaLength),
+				MultiplyUiInternal(DivideInternal(doubleFactorial
+				= MultiplyUiInternal(doubleFactorial, i2++ * i2++, MantissaLength),
+				MultiplyInternal(factorial = MultiplyUiInternal(factorial, i, MantissaLength), factorial, MantissaLength),
+				MantissaLength), i * i, MantissaLength), MantissaLength).ReciprocInternal();
+			i++;
+#pragma warning restore S1121
+#pragma warning restore IDE0079 // Удалить ненужное подавление
+		} while (rowSum.e != prev.e || Mpir.MpzCmpabsUi((rowSum.m >> 1) - (prev.m >> 1), 1) > 0);
+		return (rowSum >> 1).ReciprocInternal().SqrtInternal().ReciprocInternal();
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический арктангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арктангенс данного числа.
+	/// </returns>
+	public LongReal Atan()
+	{
+		var cos = Sqrt(1 / (1 + Square()));
+		return Acos(cos) * Sign;
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический арктангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арктангенс данного числа.
+	/// </returns>
+	public static LongReal Atan(LongReal value) => value.Atan();
+
+	/// <summary>
+	/// Вычисляет арктангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - арктангенс данного числа.
+	/// </returns>
+	public LongReal Atanh() => Ln((One + this) / (One - this)) >> 1;
+
+	/// <summary>
+	/// Вычисляет арктангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - арктангенс данного числа.
+	/// </returns>
+	public static LongReal Atanh(LongReal value) => value.Atanh();
+
+	/// <summary>
 	/// Возвращает наименьшее целое число, которое не меньше данного числа:
 	/// само данное число для целых и ближайшее сверху целое для дробных.
 	/// </summary>
@@ -556,6 +795,48 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			truncated++;
 		return truncated;
 	}
+
+	/// <summary>
+	/// Возвращает наименьшее целое число, которое не меньше указанного числа:
+	/// само число <paramref name="value"/> для целых и ближайшее сверху целое для дробных.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - минус бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// для целых чисел - <paramref name="value"/>;<br />
+	/// в остальных случаях - см. общее описание.
+	/// </returns>
+	public static LongReal Ceiling(LongReal value) => value.Ceiling();
+
+	/// <summary>
+	/// Вычисляет гиперболический косинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности и минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический косинус данного числа.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Cosh()">Cosh()</see>.</remarks>
+	public LongReal Ch() => Cosh();
+
+	/// <summary>
+	/// Вычисляет гиперболический косинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности и минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический косинус <paramref name="value"/>.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Cosh(LongReal)">Cosh()</see>.</remarks>
+	public static LongReal Ch(LongReal value) => value.Cosh();
 
 	public object Clone() => Copy();
 
@@ -664,8 +945,12 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 				return Mpir.MpzCmpSi(m, 0) < 0 ? -compared : compared;
 		}
 		var mantissaLength = Math.Max(MantissaLength, other.MantissaLength);
-		return ShiftUniversal(m >> 1, mantissaLength - MantissaLength)
-			.CompareTo(ShiftUniversal(other.m >> 1, mantissaLength - other.MantissaLength));
+		if (Mpir.MpzCmpSi(m, 0) < 0)
+			return ShiftUniversal(~(other.m >> 1), mantissaLength - other.MantissaLength)
+				.CompareTo(ShiftUniversal(~(m >> 1), mantissaLength - MantissaLength));
+		else
+			return ShiftUniversal(m >> 1, mantissaLength - MantissaLength)
+				.CompareTo(ShiftUniversal(other.m >> 1, mantissaLength - other.MantissaLength));
 	}
 
 	public int CompareTo(object? obj) => obj switch
@@ -690,6 +975,122 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 
 	/// <inheritdoc cref="Clone"/>
 	public LongReal Copy() => new(m, e.Copy(), MantissaLength, specialValue);
+
+	/// <summary>
+	/// Вычисляет косинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - косинус данного числа.
+	/// </returns>
+	public LongReal Cos()
+	{
+		if (specialValue != SpecialValue.None)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, specialValue switch
+			{
+				SpecialValue.Zero => SpecialValue.None,
+				_ => SpecialValue.NaN,
+			});
+		var abs = Abs();
+		if (abs >= Tau << MantissaLength)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		var divisor = Tau.GetWithOtherML(MantissaLength + 100, false);
+		var localValue = abs.GetWithOtherML(MantissaLength + 100, false) % divisor;
+		var oldDivisor = divisor;
+		divisor >>= 1;
+		if (localValue == divisor)
+			return new(-2, 0, MantissaLength);
+		if (localValue >= divisor)
+			localValue = oldDivisor - localValue;
+		oldDivisor = divisor;
+		if (localValue == (divisor >>= 1))
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+		(var sign, localValue) = localValue >= divisor ? (-1, oldDivisor - localValue) : (1, localValue);
+		if (localValue.specialValue == SpecialValue.Zero)
+			return new(sign - 1, 0, MantissaLength);
+		oldDivisor = divisor;
+		divisor >>= 1;
+		(var reverse, localValue) = (localValue >= divisor) ? (true, oldDivisor - localValue) : (false, localValue);
+		var cos = localValue.CosInternal();
+		if (!reverse)
+			return (cos * sign).GetWithOtherML(MantissaLength, false);
+		else if (cos.e == 0 && Mpir.MpzCmpSi(cos.m, 0) == 0)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+		else
+			return (AddInternal(One, -cos.ReciprocInternal().SquareInternal().ReciprocInternal(), MantissaLength + 100)
+				.ReciprocInternal().SqrtInternal().ReciprocInternal() * sign).GetWithOtherML(MantissaLength, false);
+	}
+
+	/// <summary>
+	/// Вычисляет косинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - косинус <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Cos(LongReal value) => value.Cos();
+
+	/// <summary>
+	/// Вычисляет гиперболический косинус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности и минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический косинус данного числа.
+	/// </returns>
+	public LongReal Cosh()
+	{
+		var exp = Exp();
+		return exp + exp.Reciproc() >> 1;
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический косинус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - единица;<br />
+	/// для плюс бесконечности и минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический косинус <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Cosh(LongReal value) => value.Cosh();
+
+	private LongReal CosInternal()
+	{
+		var frac = Reciproc();
+		frac = MultiplyInternal(frac, frac, MantissaLength);
+		var rowSum = AddInternal(new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength), -frac.Reciproc() >> 1, MantissaLength);
+		LongReal factorial = new(MpzT.Zero, UnsignedLongReal.One, MantissaLength), prev;
+		var fracExponent = frac;
+		var i = 3L;
+		do
+		{
+			prev = rowSum;
+#pragma warning disable IDE0079 // Удалить ненужное подавление
+#pragma warning disable S1121
+			rowSum = AddInternal(rowSum,
+				AddInternal(MultiplyInternal(fracExponent = MultiplyInternal(fracExponent, frac, MantissaLength),
+				factorial = MultiplyInternal(factorial, new(i++ * i++, MantissaLength), MantissaLength),
+				MantissaLength).ReciprocInternal(),
+				-MultiplyInternal(fracExponent = MultiplyInternal(fracExponent, frac, MantissaLength),
+				factorial = MultiplyInternal(factorial, new(i++ * i++, MantissaLength), MantissaLength),
+				MantissaLength).ReciprocInternal(), MantissaLength), MantissaLength);
+#pragma warning restore S1121
+#pragma warning restore IDE0079 // Удалить ненужное подавление
+		} while (prev.e != rowSum.e || Mpir.MpzCmpabsUi((prev.m >> 1) - (rowSum.m >> 1), 1) > 0);
+		return rowSum;
+	}
 
 	private static LongReal DivideInternal(LongReal x, LongReal y, int maxMantissaLength)
 	{
@@ -827,6 +1228,22 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			truncated--;
 		return truncated;
 	}
+
+	/// <summary>
+	/// Возвращает наибольшее целое число, которое не больше указанного числа:
+	/// само число <paramref name="value"/> для целых и ближайшее снизу целое для дробных.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - минус бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// для целых чисел - <paramref name="value"/>;<br />
+	/// в остальных случаях - см. общее описание.
+	/// </returns>
+	public static LongReal Floor(LongReal value) => value.Floor();
 
 	private static string Format(string mantissaDigits, MpzT exponent, bool isNegative, string format, NumberFormatInfo nfi)
 	{
@@ -1025,8 +1442,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	}
 
 	/// <summary>
-	/// Возвращает дробную часть данного числа, положительную для положительных чисел и отрицательную для отрицательных,
-	/// отбрасывая целую часть.
+	/// Возвращает дробную часть данного числа, положительную для положительных чисел
+	/// и отрицательную для отрицательных, отбрасывая целую часть.
 	/// </summary>
 	/// <returns>
 	/// Для нуля - ноль;<br />
@@ -1035,6 +1452,20 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// в остальных случаях - см. общее описание.
 	/// </returns>
 	public LongReal Frac() => this - Truncate();
+
+	/// <summary>
+	/// Возвращает дробную часть <paramref name="value"/>, положительную для положительных чисел
+	/// и отрицательную для отрицательных, отбрасывая целую часть.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для целых чисел - ноль;<br />
+	/// в остальных случаях - см. общее описание.
+	/// </returns>
+	public static LongReal Frac(LongReal value) => value.Frac();
 
 	/// <summary>
 	/// Вычисляет геометрическое среднее указанных чисел.
@@ -1056,27 +1487,32 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var maxMantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 		if (x.specialValue == SpecialValue.NaN || y.specialValue == SpecialValue.NaN)
-			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 		else if (x.specialValue == SpecialValue.Zero || y.specialValue == SpecialValue.Zero)
-			return new(0, 0, maxMantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
 				x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				|| y.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				? SpecialValue.NaN : SpecialValue.Zero);
 		else if (x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 			&& y.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, x.specialValue == y.specialValue ? x.specialValue : SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				x.specialValue == y.specialValue ? x.specialValue : SpecialValue.NaN);
 		else if (x.specialValue is SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
 		else if (x.specialValue is SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(y.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
 		else if (y.specialValue is SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
 		else if (y.specialValue is SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.NaN);
 		else if (Mpir.MpzCmpSi(x.m, 0) < 0 ^ Mpir.MpzCmpSi(y.m, 0) < 0)
-			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 		else if (Mpir.MpzCmpSi(x.m, 0) == 0 && x.e == 0 && Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
-			return new(0, 0, maxMantissaLength, SpecialValue.None);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.None);
 		x = x.GetWithOtherML(maxMantissaLength, false);
 		y = y.GetWithOtherML(maxMantissaLength, false);
 		if (Mpir.MpzCmp(x.m, y.m) == 0 && x.e == y.e)
@@ -1093,7 +1529,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	}
 
 	private static LongReal GeometricMeanInternal(LongReal x, LongReal y, int maxMantissaLength) =>
-		SqrtInternal(MultiplyInternal(x, y, maxMantissaLength));
+		MultiplyInternal(x, y, maxMantissaLength).SqrtInternal();
 
 	/// <inheritdoc cref="IBinaryInteger{TSelf}.GetByteCount"/>
 	public int GetByteCount() => GetByteCount(true);
@@ -1215,18 +1651,18 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		switch (specialValue)
 		{
 			case SpecialValue.Zero:
-			return new(0, 0, MantissaLength, SpecialValue.NegativeInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NegativeInfinity);
 			case SpecialValue.PositiveInfinity:
-			return new(0, 0, MantissaLength, SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.PositiveInfinity);
 			case SpecialValue.NegativeInfinity or SpecialValue.NaN:
-			return new(0, 0, MantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
 		}
 		if (Mpir.MpzCmpSi(m, 0) < 0)
-			return new(0, 0, MantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
 		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
-			return new(0, 0, MantissaLength, SpecialValue.Zero);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
 		else if (this == E)
-			return new(0, 0, MantissaLength, SpecialValue.None);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.None);
 		else if (e > int.MaxValue)
 		{
 			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength) >> MantissaLength);
@@ -1288,16 +1724,16 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		switch (specialValue)
 		{
 			case SpecialValue.Zero:
-			return new(0, 0, MantissaLength, SpecialValue.NegativeInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NegativeInfinity);
 			case SpecialValue.PositiveInfinity:
-			return new(0, 0, MantissaLength, SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.PositiveInfinity);
 			case SpecialValue.NegativeInfinity or SpecialValue.NaN:
-			return new(0, 0, MantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
 		}
 		if (Mpir.MpzCmpSi(m, 0) < 0)
-			return new(0, 0, MantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
 		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
-			return new(0, 0, MantissaLength, SpecialValue.Zero);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
 		else if (Mpir.MpzCmpSi(m, 0) == 0)
 			return new(e, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 1) == 0)
@@ -1502,7 +1938,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal PowerOf2()
 	{
 		if (specialValue != SpecialValue.None)
-			return new(0, 0, MantissaLength, specialValue switch
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, specialValue switch
 			{
 				SpecialValue.Zero => SpecialValue.None,
 				SpecialValue.PositiveInfinity => SpecialValue.PositiveInfinity,
@@ -1515,23 +1951,24 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var floor = Floor();
 		LongReal floorExponent = floor < 0 ? new(MpzT.One, (UnsignedLongReal)~floor, MantissaLength)
 			: new(MpzT.Zero, (UnsignedLongReal)floor, MantissaLength);
-		var fracOriginal = (this - floor) * Ln2.GetWithOtherML(MantissaLength, false);
+		var fracOriginal = (GetWithOtherML(MantissaLength * 2, false) - floor) * Ln2.GetWithOtherML(MantissaLength * 2, false);
 		if (fracOriginal.specialValue == SpecialValue.Zero)
 			return floorExponent;
 		LongReal frac = fracOriginal.ReciprocInternal(), fracPow = frac;
-		LongReal factorial = new(0, 0, MantissaLength), fracExponent = factorial + fracOriginal, prev;
+		LongReal factorial = new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength * 2);
+		LongReal rowSum = factorial + fracOriginal, prev;
 		var i = 2u;
 		do
 		{
-			prev = fracExponent;
+			prev = rowSum;
 #pragma warning disable IDE0079 // Удалить ненужное подавление
 #pragma warning disable S1121
-			fracExponent += MultiplyInternal(fracPow = MultiplyInternal(fracPow, frac, MantissaLength),
-				factorial = MultiplyUiInternal(factorial, i++, MantissaLength), MantissaLength).ReciprocInternal();
+			rowSum += MultiplyInternal(fracPow = MultiplyInternal(fracPow, frac, MantissaLength * 2),
+				factorial = MultiplyUiInternal(factorial, i++, MantissaLength * 2), MantissaLength * 2).ReciprocInternal();
 #pragma warning restore S1121
 #pragma warning restore IDE0079 // Удалить ненужное подавление
-		} while (fracExponent.e != prev.e || Mpir.MpzCmpabsUi((fracExponent.m >> 1) - (prev.m >> 1), 1) > 0);
-		return floorExponent * fracExponent;
+		} while (rowSum.e != prev.e || Mpir.MpzCmpabsUi((rowSum.m >> 1) - (prev.m >> 1), 1) > 0);
+		return floorExponent * rowSum.GetWithOtherML(MantissaLength, false);
 	}
 
 	/// <summary>
@@ -1584,7 +2021,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Reciproc()
 	{
 		if (specialValue != SpecialValue.None)
-			return new(0, 0, MantissaLength, specialValue switch
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, specialValue switch
 			{
 				SpecialValue.Zero => SpecialValue.PositiveInfinity,
 				SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity => SpecialValue.Zero,
@@ -1649,6 +2086,22 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		}
 	}
 
+	/// <summary>
+	/// Возвращает целое число, ближайшее к <paramref name="value"/>. Если два целых числа одинаково близки к нему
+	/// (дробная часть точно равна 0.5 или -0.5), возвращает то из них, которое является четным.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - минус бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// для целых чисел - данное число;<br />
+	/// в остальных случаях - см. общее описание.
+	/// </returns>
+	public static LongReal Round(LongReal value) => value.Round();
+
 	public static LongReal Round(LongReal x, int digits, MidpointRounding mode)
 	{
 		var multiplier = ten.Power(digits);
@@ -1692,6 +2145,30 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	};
 
 	/// <summary>
+	/// Вычисляет гиперболический синус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический синус данного числа.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Sinh()">Sinh()</see>.</remarks>
+	public LongReal Sh() => Sinh();
+
+	/// <summary>
+	/// Вычисляет гиперболический синус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический синус <paramref name="value"/>.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Sinh(LongReal)">Sinh()</see>.</remarks>
+	public static LongReal Sh(LongReal value) => value.Sinh();
+
+	/// <summary>
 	/// Производит универсальный сдвиг данного числа, как влево, так и вправо, в зависимости от знака параметра.
 	/// </summary>
 	/// <param name="shiftAmount">Величина сдвига данного числа, положительная или отрицательная (или нулевая).</param>
@@ -1723,6 +2200,119 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	};
 
 	/// <summary>
+	/// Вычисляет синус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - синус данного числа.
+	/// </returns>
+	public LongReal Sin()
+	{
+		if (specialValue != SpecialValue.None)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, specialValue switch
+			{
+				SpecialValue.Zero => SpecialValue.Zero,
+				_ => SpecialValue.NaN,
+			});
+		var abs = Abs();
+		if (abs >= Tau << MantissaLength)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		var divisor = Tau.GetWithOtherML(MantissaLength * 2, false);
+		var localValue = this - Floor(GetWithOtherML(MantissaLength * 2, false) / divisor) * divisor;
+		if (localValue.specialValue == SpecialValue.Zero)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+		var oldDivisor = divisor;
+		divisor >>= 1;
+		(var sign, localValue) = localValue >= divisor ? (-1, oldDivisor - localValue) : (1, localValue);
+		if (localValue == divisor)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+		oldDivisor = divisor;
+		if (localValue >= (divisor >>= 1))
+			localValue = oldDivisor - localValue;
+		if (Abs(localValue - divisor) <= new LongReal(MpzT.One, MantissaLength - 2, MantissaLength))
+			return new(sign - 1, 0, MantissaLength);
+		oldDivisor = divisor;
+		divisor >>= 1;
+		(var reverse, localValue) = (localValue >= divisor) ? (true, oldDivisor - localValue) : (false, localValue);
+		var cos = localValue.CosInternal();
+		return ((reverse ? cos : AddInternal(One, -cos.ReciprocInternal().SquareInternal().ReciprocInternal(),
+			MantissaLength * 2).ReciprocInternal().SqrtInternal().ReciprocInternal()) * sign)
+			.GetWithOtherML(MantissaLength, false);
+	}
+
+	/// <summary>
+	/// Вычисляет синус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - синус <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Sin(LongReal value) => value.Sin();
+
+	/// <summary>
+	/// Вычисляет гиперболический синус данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический синус данного числа.
+	/// </returns>
+	public LongReal Sinh()
+	{
+		var exp = Exp();
+		return exp - exp.Reciproc() >> 1;
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический синус указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический синус <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Sinh(LongReal value) => value.Cosh();
+
+	/// <summary>
+	/// Вычисляет квадратный корень данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности и неопределенности - неопределенность;<br />
+	/// для отрицательных чисел - неопределенность;<br />
+	/// в остальных случаях - арифметический квадратный корень данного числа.
+	/// </returns>
+	public LongReal Sqrt()
+	{
+		switch (specialValue)
+		{
+			case SpecialValue.Zero:
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
+			case SpecialValue.PositiveInfinity:
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.PositiveInfinity);
+			case SpecialValue.NegativeInfinity or SpecialValue.NaN:
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		}
+		if (Mpir.MpzCmpSi(m, 0) < 0)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.NaN);
+		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.None);
+		else if ((m & 1) != 0)
+			return ReciprocInternal().SqrtInternal().ReciprocInternal();
+		else
+			return SqrtInternal();
+	}
+
+	/// <summary>
 	/// Вычисляет квадратный корень указанного числа.
 	/// </summary>
 	/// <param name="value">Число для извлечения квадратного корня.</param>
@@ -1733,37 +2323,184 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для отрицательных чисел - неопределенность;<br />
 	/// в остальных случаях - арифметический квадратный корень <paramref name="value"/>.
 	/// </returns>
-	public static LongReal Sqrt(LongReal value)
-	{
-		switch (value.specialValue)
-		{
-			case SpecialValue.Zero:
-			return new(0, 0, value.MantissaLength, SpecialValue.Zero);
-			case SpecialValue.PositiveInfinity:
-			return new(0, 0, value.MantissaLength, SpecialValue.PositiveInfinity);
-			case SpecialValue.NegativeInfinity or SpecialValue.NaN:
-			return new(0, 0, value.MantissaLength, SpecialValue.NaN);
-		}
-		if (Mpir.MpzCmpSi(value.m, 0) < 0)
-			return new(0, 0, value.MantissaLength, SpecialValue.NaN);
-		else if (Mpir.MpzCmpSi(value.m, 0) == 0 && value.e == 0)
-			return new(0, 0, value.MantissaLength, SpecialValue.None);
-		else if ((value.m & 1) != 0)
-			return 1 / SqrtInternal(1 / value);
-		else
-			return SqrtInternal(value);
-	}
+	public static LongReal Sqrt(LongReal value) => value.Sqrt();
 
-	private static LongReal SqrtInternal(LongReal value)
+	private LongReal SqrtInternal()
 	{
-		LongReal current = new(0, value.e + 1 >> 1, value.MantissaLength), prev;
+		LongReal current = new(MpzT.Zero, e + 1 >> 1, MantissaLength), prev;
 		do
 		{
 			prev = current;
-			current = AddInternal(current, DivideInternal(value, current, value.MantissaLength), value.MantissaLength) >> 1;
+			current = AddInternal(current, DivideInternal(this, current, MantissaLength), MantissaLength) >> 1;
 		} while (current.e != prev.e || ((current.m >> 1) - (prev.m >> 1)).Abs() > 1);
 		return current;
 	}
+
+	public LongReal Square()
+	{
+		var maxMantissaLength = Math.Max(MantissaLength, MantissaLength);
+		if (specialValue == SpecialValue.NaN)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
+		else if (specialValue == SpecialValue.Zero)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
+				? SpecialValue.NaN : SpecialValue.Zero);
+		else if (specialValue == SpecialValue.NegativeInfinity)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(m, 0) < 0 ? SpecialValue.PositiveInfinity : SpecialValue.NegativeInfinity);
+		else if (specialValue == SpecialValue.PositiveInfinity)
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				Mpir.MpzCmpSi(m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+		if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
+			return this;
+		var shiftAmount = (m & 1) != 0 ? e + 1 : new(MpuT.Zero, null, maxMantissaLength);
+		var x = Abs() << shiftAmount;
+		return x.SquareInternal() >> (shiftAmount << 1);
+	}
+
+	private LongReal SquareInternal()
+	{
+		var mantissaOverflow = MpuT.One << MantissaLength;
+		var mantissaMask = mantissaOverflow - 1;
+		var product = (mantissaOverflow + (m >> 1)).Square();
+		var shiftAmount = product.BitLength - MantissaLength - 1;
+		var shifted = product.ShiftRightRound(shiftAmount);
+		if (Mpir.MpzCmp(shifted, mantissaOverflow << 1) == 0)
+			shiftAmount++;
+		return new((shifted & mantissaMask) << 1, (e << 1) + (shiftAmount - MantissaLength), MantissaLength);
+	}
+
+	/// <summary>
+	/// Вычисляет тангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - тангенс данного числа.
+	/// </returns>
+	public LongReal Tan()
+	{
+		var cos = Cos();
+		var tau = Tau.GetWithOtherML(MantissaLength, false);
+		var result = Sqrt(1 - cos.Square()) / cos;
+		if (this - Floor(this / tau) * tau >= tau >> 1)
+			result = -result;
+		return result;
+	}
+
+	/// <summary>
+	/// Вычисляет тангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - тангенс <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Tan(LongReal value) => value.Tan();
+
+	/// <summary>
+	/// Вычисляет гиперболический тангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический тангенс данного числа.
+	/// </returns>
+	public LongReal Tanh()
+	{
+		var exp = (this << 1).Exp();
+		return (exp - 1) / (exp + 1);
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический тангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический тангенс <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Tanh(LongReal value) => value.Tanh();
+
+	/// <summary>
+	/// Вычисляет тангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - тангенс данного числа.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Tan()">Tan()</see>.</remarks>
+	public LongReal Tg() => Tan();
+
+	/// <summary>
+	/// Вычисляет тангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше <see cref="Pi"/> &lt;&lt; <see cref="MantissaLength"/> + 1 - неопределенность;<br />
+	/// в остальных случаях - тангенс <paramref name="value"/>.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Tan(LongReal)">Tan()</see>.</remarks>
+	public static LongReal Tg(LongReal value) => value.Tan();
+
+	/// <summary>
+	/// Вычисляет гиперболический тангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический тангенс данного числа.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Tanh()">Tanh()</see>.</remarks>
+	public LongReal Tgh() => Tanh();
+
+	/// <summary>
+	/// Вычисляет гиперболический тангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический тангенс <paramref name="value"/>.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Tanh(LongReal)">Tanh()</see>.</remarks>
+	public static LongReal Tgh(LongReal value) => value.Tanh();
+
+	/// <summary>
+	/// Вычисляет гиперболический тангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический тангенс данного числа.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Tanh()">Tanh()</see>.</remarks>
+	public LongReal Th() => Tanh();
+
+	/// <summary>
+	/// Вычисляет гиперболический тангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// в остальных случаях - гиперболический тангенс <paramref name="value"/>.
+	/// </returns>
+	/// <remarks>Данный метод является альтернативным названием для <see cref="Tanh(LongReal)">Tanh()</see>.</remarks>
+	public static LongReal Th(LongReal value) => value.Tanh();
 
 	bool IConvertible.ToBoolean(IFormatProvider? provider) => CompareTo(1) >= 0;
 	byte IConvertible.ToByte(IFormatProvider? provider) => (byte)this;
@@ -1834,7 +2571,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if ((m & 1) != 0)
 			exponent = ~exponent;
 		mantissa += MantissaOverflow;
-		exponent = (MpzT)((exponent + (Log2(mantissa) - MantissaLength)) * Log10of2).Floor();
+		exponent = (MpzT)Floor((exponent + (Log2(mantissa) - MantissaLength)) * Log10of2);
 		var mantissaDigits = (double)Abs(this / PowerOf10(exponent));
 		return Format(mantissaDigits
 			.ToString("F" + (formatSpecifier is 'F' or 'N' && Mpir.MpzCmpSi(exponent, int.MaxValue) <= 0
@@ -1905,7 +2642,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (specialValue != SpecialValue.None)
 			return Copy();
 		if ((m & 1) != 0)
-			return new(0, 0, MantissaLength, SpecialValue.Zero);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength, SpecialValue.Zero);
 		if (e >= MantissaLength)
 			return Copy();
 		var newM = m >> 1;
@@ -1917,6 +2654,23 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			newM = ~newM;
 		return new(newM << 1, e, MantissaLength);
 	}
+
+	/// <summary>
+	/// Возвращает наибольшее целое число, которое не больше указанного числа, для положительных,
+	/// и наименьшее целое число, которое не меньше указанного числа, для отрицательных (для нуля, если это непонятно, ноль).
+	/// Другими словами, возвращает целую часть указанного числа (<paramref name="value"/>), отбрасывая дробную.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - минус бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// для целых чисел - данное число;<br />
+	/// в остальных случаях - см. общее описание.
+	/// </returns>
+	public static LongReal Truncate(LongReal value) => value.Truncate();
 
 	public static bool TryConvertFromChecked<TOther>(TOther value, [MaybeNullWhen(false)] out LongReal result)
 		where TOther : INumberBase<TOther> => throw new NotImplementedException();
@@ -2206,17 +2960,17 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var mantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 		if (x.specialValue == SpecialValue.NaN || y.specialValue == SpecialValue.NaN)
-			return new(0, 0, mantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.NaN);
 		else if (x.specialValue == SpecialValue.NegativeInfinity)
-			return new(0, 0, mantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength,
 				y.specialValue == SpecialValue.PositiveInfinity ? SpecialValue.NaN : SpecialValue.NegativeInfinity);
 		else if (x.specialValue == SpecialValue.PositiveInfinity)
-			return new(0, 0, mantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength,
 				y.specialValue == SpecialValue.NegativeInfinity ? SpecialValue.NaN : SpecialValue.PositiveInfinity);
 		else if (y.specialValue == SpecialValue.NegativeInfinity)
-			return new(0, 0, mantissaLength, SpecialValue.NegativeInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.NegativeInfinity);
 		else if (y.specialValue == SpecialValue.PositiveInfinity)
-			return new(0, 0, mantissaLength, SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.PositiveInfinity);
 		else if (x.specialValue == SpecialValue.Zero)
 			return y.GetWithOtherML(mantissaLength, true);
 		else if (y.specialValue == SpecialValue.Zero)
@@ -2224,7 +2978,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (Mpir.MpzCmp(x.m, y.m) == 0 && x.e == y.e)
 			return x << 1;
 		else if (Mpir.MpzCmp(x.m >> 1, ~y.m >> 1) == 0 && (x.m & 1) == (y.m & 1) && x.e == y.e)
-			return new(0, 0, mantissaLength, SpecialValue.Zero);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.Zero);
 		if (y > x)
 			(x, y) = (y, x);
 		var xmlDiff = mantissaLength - x.MantissaLength;
@@ -2262,7 +3016,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var mantissaLength = x.MantissaLength;
 		if (y == 0)
-			return new(0, 0, mantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength,
 				x.specialValue is SpecialValue.None or SpecialValue.Zero ? SpecialValue.Zero : SpecialValue.NaN);
 		else if (x.specialValue != SpecialValue.None || y == 1)
 			return x.Copy();
@@ -2278,21 +3032,23 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var maxMantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 		if (x.specialValue == SpecialValue.NaN || y.specialValue == SpecialValue.NaN)
-			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 		else if (x.specialValue == SpecialValue.Zero || y.specialValue == SpecialValue.Zero)
-			return new(0, 0, maxMantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
 				x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				|| y.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				? SpecialValue.NaN : SpecialValue.Zero);
 		else if (x.specialValue == SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, y < 0 ? SpecialValue.PositiveInfinity : SpecialValue.NegativeInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				y < 0 ? SpecialValue.PositiveInfinity : SpecialValue.NegativeInfinity);
 		else if (x.specialValue == SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength, y < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				y < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
 		else if (y.specialValue == SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
 				Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.PositiveInfinity : SpecialValue.NegativeInfinity);
 		else if (y.specialValue == SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
 				Mpir.MpzCmpSi(x.m, 0) < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
 		x = x.GetWithOtherML(maxMantissaLength, false);
 		y = y.GetWithOtherML(maxMantissaLength, false);
@@ -2300,8 +3056,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return y;
 		else if (Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
 			return x;
-		var xShiftAmount = (x.m & 1) != 0 ? x.e + 1 : new(0, null, maxMantissaLength);
-		var yShiftAmount = (y.m & 1) != 0 ? y.e + 1 : new(0, null, maxMantissaLength);
+		var xShiftAmount = (x.m & 1) != 0 ? x.e + 1 : new(MpuT.Zero, null, maxMantissaLength);
+		var yShiftAmount = (y.m & 1) != 0 ? y.e + 1 : new(MpuT.Zero, null, maxMantissaLength);
 		x <<= xShiftAmount;
 		y <<= yShiftAmount;
 		if (Mpir.MpzCmpSi(x.m, 0) < 0 && Mpir.MpzCmpSi(y.m, 0) < 0)
@@ -2330,9 +3086,10 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (y == 0)
 		{
 			if (x.specialValue is SpecialValue.Zero or SpecialValue.NaN)
-				return new(0, 0, mantissaLength, SpecialValue.NaN);
+				return new(MpzT.Zero, UnsignedLongReal.Zero, mantissaLength, SpecialValue.NaN);
 			else
-				return new(0, 0, mantissaLength, x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+				return new(MpzT.Zero, UnsignedLongReal.Zero,
+					mantissaLength, x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
 		}
 		else if (x.specialValue != SpecialValue.None || y == 1)
 			return x.Copy();
@@ -2348,31 +3105,34 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		var maxMantissaLength = Math.Max(x.MantissaLength, y.MantissaLength);
 		if (x.specialValue == SpecialValue.NaN || y.specialValue == SpecialValue.NaN)
-			return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 		else if (y.specialValue == SpecialValue.Zero)
 		{
 			if (x.specialValue is SpecialValue.Zero or SpecialValue.NaN)
-				return new(0, 0, maxMantissaLength, SpecialValue.NaN);
+				return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.NaN);
 			else
-				return new(0, 0, maxMantissaLength, x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+				return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+					x < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
 		}
 		else if (y.specialValue != SpecialValue.None)
-			return new(0, 0, maxMantissaLength,
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
 				x.specialValue is SpecialValue.PositiveInfinity or SpecialValue.NegativeInfinity
 				? SpecialValue.NaN : SpecialValue.Zero);
 		else if (x.specialValue == SpecialValue.Zero)
-			return new(0, 0, maxMantissaLength, SpecialValue.Zero);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength, SpecialValue.Zero);
 		else if (x.specialValue == SpecialValue.NegativeInfinity)
-			return new(0, 0, maxMantissaLength, y < 0 ? SpecialValue.PositiveInfinity : SpecialValue.NegativeInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				y < 0 ? SpecialValue.PositiveInfinity : SpecialValue.NegativeInfinity);
 		else if (x.specialValue == SpecialValue.PositiveInfinity)
-			return new(0, 0, maxMantissaLength, y < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
+			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength,
+				y < 0 ? SpecialValue.NegativeInfinity : SpecialValue.PositiveInfinity);
 		else if (Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
 			return x.Copy();
 		else if (Mpir.MpzCmpSi(y.m, -2) == 0 && y.e == 0)
 			return -x;
 		x = x.GetWithOtherML(maxMantissaLength, false);
 		y = y.GetWithOtherML(maxMantissaLength, false);
-		UnsignedLongReal shiftAmount = new(0, null, maxMantissaLength);
+		UnsignedLongReal shiftAmount = new(MpuT.Zero, null, maxMantissaLength);
 		if ((x.m & 1) != 0)
 			shiftAmount = x.e + 1;
 		if ((y.m & 1) != 0 && y.e >= shiftAmount)
@@ -2389,7 +3149,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return DivideInternal(x, y, maxMantissaLength);
 	}
 
-	public static LongReal operator %(LongReal x, LongReal y) => x - (x / y).Truncate() * y;
+	public static LongReal operator %(LongReal x, LongReal y) => x - Truncate(x / y) * y;
 
 	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
 	public static LongReal operator <<(LongReal x, int shiftAmount)

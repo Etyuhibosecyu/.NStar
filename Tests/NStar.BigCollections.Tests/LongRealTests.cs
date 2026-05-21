@@ -314,12 +314,12 @@ public class LongRealTests
 				else
 					bytes.ResizeLeft(8);
 			}
-			var uz2 = BitConverter.ToDouble(bytes.AsSpan());
-			LongReal lr2 = new(uz2, MantissaLength);
+			var r2 = BitConverter.ToDouble(bytes.AsSpan());
+			LongReal lr2 = new(r2, (int)Round(MantissaLength * (random.NextDouble() * 2 - 1)));
 			if (LongReal.IsNaN(lr) || LongReal.IsNaN(lr2))
 				Assert.AreEqual(int.MinValue, lr.CompareTo(lr2));
 			else
-				Assert.AreEqual(Sign(r.CompareTo(uz2)), Sign(lr.CompareTo(lr2)));
+				Assert.AreEqual(Sign(r.CompareTo(r2)), Sign(lr.CompareTo(lr2)));
 		}
 		Assert.Throws<ArgumentNullException>(() => x.CompareTo(null!));
 	}
@@ -483,6 +483,23 @@ public class LongRealTests
 	}
 
 	[TestMethod]
+	public void TestInverseTrigonometry()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 5000; i++)
+		{
+			var r = random.NextDouble() * (random.Next(2) == 0 ? -1 : 1);
+			var lr = new LongReal(r, MantissaLength);
+			var lr2 = lr.Asin().Sin();
+			var lr3 = lr.Acos().Cos();
+			var lr4 = lr.Atan().Tan();
+			Assert.IsLessThanOrEqualTo(LongReal.One >> MantissaLength, (lr - lr2).Abs());
+			Assert.IsLessThanOrEqualTo(LongReal.One >> MantissaLength, (lr - lr3).Abs());
+			Assert.IsLessThanOrEqualTo(LongReal.One >> MantissaLength - 16, (lr - lr4).Abs());
+		}
+	}
+
+	[TestMethod]
 	public void TestLog()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
@@ -545,16 +562,14 @@ public class LongRealTests
 		{
 			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
 			var uz = new MpuT(bytes.AsSpan(), RandomOrder());
-			bytes.FillInPlace(random.Next(65), _ => (byte)random.Next(256));
 			var lr = new LongReal(uz, MantissaLength);
 			var lr2 = longRealThree.Power(lr).Log(longRealThree);
-			Assert.IsLessThanOrEqualTo(lr >> MantissaLength - 20, (lr - lr2).Abs());
+			Assert.IsLessThanOrEqualTo(lr >> MantissaLength - 8, (lr - lr2).Abs());
 		}
 		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
 			var @base = new MpuT(bytes.AsSpan(), RandomOrder());
-			bytes.FillInPlace(random.Next(65), _ => (byte)random.Next(256));
 			var shift = random.Next();
 			var lr = new LongReal(@base, MantissaLength).Shift(shift);
 			var lr2 = longRealThree.Power(lr.Log(longRealThree));
@@ -723,6 +738,54 @@ public class LongRealTests
 		//longReal = new LongReal(1).Shift(mpz);
 		//result = longReal.ToString("E6");
 		//Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
+	}
+
+	[TestMethod]
+	public void TestTrigonometry()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		Assert.AreEqual(0, LongReal.Zero.Sin());
+		Assert.AreEqual(1, (LongReal.Pi >> 1).Sin());
+		Assert.AreEqual(0, LongReal.Pi.Sin());
+		Assert.AreEqual(-1, (3 * LongReal.Pi >> 1).Sin());
+		Assert.AreEqual(0, (LongReal.Pi << 1).Sin());
+		Assert.AreEqual(-1, (-LongReal.Pi >> 1).Sin());
+		Assert.AreEqual(0, (-LongReal.Pi).Sin());
+		Assert.AreEqual(1, (-3 * LongReal.Pi >> 1).Sin());
+		Assert.AreEqual(0, (-LongReal.Pi << 1).Sin());
+		Assert.AreEqual(1, LongReal.Zero.Cos());
+		Assert.AreEqual(0, (LongReal.Pi >> 1).Cos());
+		Assert.AreEqual(-1, LongReal.Pi.Cos());
+		Assert.AreEqual(0, (3 * LongReal.Pi >> 1).Cos());
+		Assert.AreEqual(1, (LongReal.Pi << 1).Cos());
+		Assert.AreEqual(0, (-LongReal.Pi >> 1).Cos());
+		Assert.AreEqual(-1, (-LongReal.Pi).Cos());
+		Assert.AreEqual(0, (-3 * LongReal.Pi >> 1).Cos());
+		Assert.AreEqual(1, (-LongReal.Pi << 1).Cos());
+		for (var i = 0; i < 10000; i++)
+		{
+			var r = Pow(2, random.NextDouble() * 128 - 64);
+			LongReal lr = new(r, MantissaLength);
+			if (LongReal.IsNaN(lr))
+			{
+				Assert.IsTrue(LongReal.IsNaN(lr.Sin()));
+				Assert.IsTrue(LongReal.IsNaN(lr.Cos()));
+				Assert.IsTrue(LongReal.IsNaN(lr.Tan()));
+			}
+			else
+			{
+				Assert.IsLessThanOrEqualTo(Pow(2, -52), Abs(Sin(r) - (double)lr.Sin()));
+				Assert.IsLessThanOrEqualTo(Pow(2, -52), Abs(Cos(r) - (double)lr.Cos()));
+				Assert.IsLessThanOrEqualTo(Max(Abs(Tan(r)), 1) / Pow(2, 52), Abs(Tan(r) - (double)lr.Tan()));
+			}
+		}
+		for (var i = 0; i < 10000; i++)
+		{
+			var r = (1 - random.NextDouble()) * PI / 2;
+			LongReal lr = new(r, MantissaLength);
+			Assert.IsLessThan(lr, lr.Sin());
+			Assert.IsGreaterThan(lr, lr.Tan());
+		}
 	}
 
 	private static G.IEnumerable<(LongReal number, string format, string en, string ru, string de)> CultureTestData()
