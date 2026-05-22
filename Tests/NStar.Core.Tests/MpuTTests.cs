@@ -453,6 +453,24 @@ public class MpuTTests
 	}
 
 	[TestMethod]
+	public void ShiftRightRoundDec()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 1000000; i++)
+		{
+			bytes.FillInPlace(random.Next(500), _ => (byte)random.Next(256));
+			MpzT uz = new(bytes.AsSpan(), RandomOrder());
+			var shift = random.Next(1025);
+			var rounded = uz.ShiftRightRoundDec(shift).ShiftLeftDec(shift);
+			Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpzCmpabs(rounded, uz.ShiftRightDec(shift).ShiftLeftDec(shift)));
+			Assert.IsLessThanOrEqualTo(0,
+				Mpir.Mpir.MpzCmpabs(rounded, (uz.ShiftRightDec(shift) + uz.Sign).ShiftLeftDec(shift)));
+		}
+		int RandomOrder() => random.Next(2) * 2 - 1;
+	}
+
+	[TestMethod]
 	public void SizeInBase()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));

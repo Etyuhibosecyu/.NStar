@@ -334,10 +334,10 @@ public class UnsignedLongRealTests
 		void Validate()
 		{
 			var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
-			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & MantissaMask;
+			using var expected = (MpzT)(uz.ShiftRightRound(bitLengthDiff) & MantissaMask);
 			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.One << bitLengthDiff, (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.One << bitLengthDiff, (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
 				Assert.AreEqual(bitLengthDiff + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
@@ -522,8 +522,8 @@ public class UnsignedLongRealTests
 			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & (MpzT.One << maxMantissaLength) - 1;
 			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, GetArrayLength(maxMantissaLength, 8));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.One << maxMantissaLength, (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.One << maxMantissaLength, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
@@ -727,10 +727,10 @@ public class UnsignedLongRealTests
 		void Validate()
 		{
 			var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
-			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & MantissaMask;
+			using var expected = (MpzT)(uz.ShiftRightRound(bitLengthDiff) & MantissaMask);
 			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.One << bitLengthDiff, (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.One << bitLengthDiff, (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
 				Assert.AreEqual(bitLengthDiff + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
@@ -753,9 +753,9 @@ public class UnsignedLongRealTests
 			var bitLengthDiff = Max(uz.BitLength - MantissaLength - 1, 0);
 			if (bitLengthDiff > 0)
 				uz = uz.ShiftRightRound(bitLengthDiff) << bitLengthDiff;
-			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & MantissaMask;
+			using var expected = (MpzT)(uz.ShiftRightRound(bitLengthDiff) & MantissaMask);
 			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
 			Assert.AreEqual(expected, actual);
 			if (bytesWritten > MantissaByteLength)
 				Assert.AreEqual(bitLengthDiff + 1,
@@ -805,8 +805,8 @@ public class UnsignedLongRealTests
 			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & (MpzT.One << maxMantissaLength) - 1;
 			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, GetArrayLength(maxMantissaLength, 8));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.One << maxMantissaLength, (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
+			Assert.IsLessThanOrEqualTo(MpzT.One << maxMantissaLength, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
@@ -1128,8 +1128,8 @@ public class UnsignedLongRealTests
 			using var expected = (MpzT)uz.ShiftRightRound(bitLengthDiff) & (MpzT.One << maxMantissaLength) - 1;
 			Assert.IsTrue(ulr.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, GetArrayLength(maxMantissaLength, 8));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.One << maxMantissaLength, (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
+			Assert.IsLessThanOrEqualTo(MpzT.One << maxMantissaLength, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)

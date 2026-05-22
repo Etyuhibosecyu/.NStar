@@ -19,12 +19,12 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	}
 
 	private static readonly ConcurrentDictionary<int, MpuT> MantissaMasks = [], MantissaOverflows = [];
-	private readonly MpuT m;
-	private readonly UnsignedLongDecimal? e;
-	private readonly int MantissaLength = 0;
-	public const int AutoMantissaLength = -1, DefaultMantissaLength = 3000, MinMantissaLength = 30;
+	internal readonly MpuT m;
+	internal readonly UnsignedLongDecimal? e;
+	internal readonly int MantissaLength = 0;
+	public const int AutoMantissaLength = -1, DefaultMantissaLength = 3000, MinMantissaLength = 36;
 
-	private UnsignedLongDecimal(MpuT m, UnsignedLongDecimal? e, int mantissaLength = DefaultMantissaLength)
+	internal UnsignedLongDecimal(MpuT m, UnsignedLongDecimal? e, int mantissaLength = DefaultMantissaLength)
 	{
 		if (mantissaLength is < MinMantissaLength or > int.MaxValue)
 			mantissaLength = DefaultMantissaLength;
@@ -344,7 +344,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			}
 			else if (y.e is null || Compute(yDecLength, mantissaLength, ComputeOperation.Compare).m <= 1)
 			{
-				if (xDecLength.e is not null || xDecLength.m.BitLength >= sizeof(int) * 8)
+				if (xDecLength.e is not null || xDecLength.m.BitLength >= BitsPerInt)
 					return Compute(x, (long)mantissaLength << 1 | 1, ComputeOperation.ChangeML);
 				var blDiff = (int)xDecLength - Math.Max(y.MantissaLength + 1, (int)yDecLength);
 				if (blDiff > mantissaLength)
@@ -713,7 +713,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public int GetSignificandByteCount() => m.GetByteCount();
 	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	private UnsignedLongDecimal GetWithOtherML(int mantissaLength, bool copy) =>
+	internal UnsignedLongDecimal GetWithOtherML(int mantissaLength, bool copy) =>
 		Compute(this, new((ulong)mantissaLength << 1 | (copy ? 1u : 0), null), ComputeOperation.ChangeML);
 
 	public static bool IsCanonical(UnsignedLongDecimal value) => true;
@@ -734,7 +734,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	public static bool IsPow2(UnsignedLongDecimal value) => value.PopCount() == 1;
 	public static bool IsRealNumber(UnsignedLongDecimal value) => true;
 	public static bool IsSubnormal(UnsignedLongDecimal value) => value.e is null;
-	public static bool IsZero(UnsignedLongDecimal value) => Mpir.MpzCmpSi(value.m, 0) == 0 && value.e is null;
+	public static bool IsZero(UnsignedLongDecimal value) => Mpir.MpuCmpSi(value.m, 0) == 0 && value.e is null;
 
 	public static UnsignedLongDecimal Log2(UnsignedLongDecimal value)
 	{
@@ -1113,8 +1113,10 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	}
 
 	public static UnsignedLongDecimal operator +(UnsignedLongDecimal value) => new(value);
+	public static LongDecimal operator -(UnsignedLongDecimal value) => -new LongDecimal(value, value.MantissaLength);
 	static UnsignedLongDecimal IUnaryNegationOperators<UnsignedLongDecimal, UnsignedLongDecimal>.operator -(UnsignedLongDecimal value) =>
 		throw new NotSupportedException(NoNegativeNumbers);
+	public static LongDecimal operator ~(UnsignedLongDecimal value) => ~new LongDecimal(value, value.MantissaLength);
 	static UnsignedLongDecimal IBitwiseOperators<UnsignedLongDecimal, UnsignedLongDecimal, UnsignedLongDecimal>.operator ~(UnsignedLongDecimal value) =>
 		throw new NotSupportedException(NoNegativeNumbers);
 
@@ -1222,7 +1224,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
-		else if (x.e <= sizeof(int) * 8 - int.LeadingZeroCount(y))
+		else if (x.e <= BitsPerInt - int.LeadingZeroCount(y))
 			return new((MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) / y, mantissaLength);
 		var quotient = (MantissaOverflow + x.m).ShiftLeftDec(mantissaLength + 1) / y;
 		var shiftAmount = quotient.DecLength - mantissaLength - 1;
@@ -1241,7 +1243,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
-		else if (x.e <= sizeof(uint) * 8 - uint.LeadingZeroCount(y))
+		else if (x.e <= BitsPerInt - uint.LeadingZeroCount(y))
 			return new((MantissaOverflow + x.m).ShiftLeftDec((int)x.e - 1) / y, mantissaLength);
 		var quotient = (MantissaOverflow + x.m).ShiftLeftDec(mantissaLength + 1) / y;
 		var shiftAmount = quotient.DecLength - mantissaLength - 1;

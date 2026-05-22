@@ -184,9 +184,9 @@ public interface IReadOnlyList<T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
 public static unsafe class Extents
 {
 	// XPerY=n means that n Xs can be stored in 1 Y.
+	public const int BitsPerByte = 8;
 	public const int BitsPerInt = sizeof(int) * BitsPerByte;
 	public const int BytesPerInt = sizeof(int);
-	public const int BitsPerByte = 8;
 	public const int ValuesInByte = 1 << BitsPerByte;
 	public const int ValuesIn2Bytes = ValuesInByte << BitsPerByte;
 	public const int ValuesIn3Bytes = ValuesIn2Bytes << BitsPerByte;

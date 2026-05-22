@@ -343,8 +343,8 @@ public class UnsignedLongDecimalTests
 			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped), MantissaOverflow,
 				decLengthDiff > 0 || uz.GetByteCount() != uld.GetByteCount(false));
 			Assert.IsTrue(uld.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOf10(decLengthDiffClamped), (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.PowerOf10(decLengthDiffClamped), (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
 				Assert.AreEqual(decLengthDiffClamped + 1,
 					new MpuT(writeBuffer.AsSpan(Min(bytesWritten, MantissaByteLength)..bytesWritten), -1));
@@ -534,8 +534,8 @@ public class UnsignedLongDecimalTests
 				MpuT.PowerOf10(maxMantissaLength), decLengthDiff > 0 || uz.GetByteCount() != uld.GetByteCount(false));
 			Assert.IsTrue(uld.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, (int)Ceiling((maxMantissaLength + Log10(9)) * Log(10, 256)));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOf10(maxMantissaLength), (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.PowerOf10(maxMantissaLength), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
@@ -754,8 +754,8 @@ public class UnsignedLongDecimalTests
 			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped), MantissaOverflow,
 				decLengthDiff > 0 || uz.GetByteCount() != uld.GetByteCount(false));
 			Assert.IsTrue(uld.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOf10(decLengthDiffClamped), (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.PowerOf10(decLengthDiffClamped), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > MantissaByteLength)
@@ -784,7 +784,7 @@ public class UnsignedLongDecimalTests
 			using var expected = (MpzT)SafeSubtract(uz.ShiftRightRoundDec(decLengthDiffClamped), MantissaOverflow,
 				decLengthDiff > 0 || uz.GetByteCount() != uld.GetByteCount(false));
 			Assert.IsTrue(uld.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, Min(bytesWritten, MantissaByteLength)), -1);
 			Assert.AreEqual(expected, actual);
 			if (bytesWritten > MantissaByteLength)
 				Assert.AreEqual(decLengthDiffClamped + 1,
@@ -836,8 +836,8 @@ public class UnsignedLongDecimalTests
 				MpuT.PowerOf10(maxMantissaLength), decLengthDiff > 0 || uz.GetByteCount() != uld.GetByteCount(false));
 			Assert.IsTrue(uld.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, (int)Ceiling((maxMantissaLength + Log10(9)) * Log(10, 256)));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOf10(maxMantissaLength), (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.PowerOf10(maxMantissaLength), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)
@@ -1165,8 +1165,8 @@ public class UnsignedLongDecimalTests
 				MpuT.PowerOf10(maxMantissaLength), decLengthDiff > 0 || uz.GetByteCount() != uld.GetByteCount(false));
 			Assert.IsTrue(uld.TryWriteLittleEndian(writeBuffer, out var bytesWritten, false));
 			var maxMantissaByteLength = Min(bytesWritten, (int)Ceiling((maxMantissaLength + Log10(9)) * Log(10, 256)));
-			using var actual = new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
-			Assert.IsLessThanOrEqualTo(MpuT.PowerOf10(maxMantissaLength), (expected - actual).Abs());
+			using var actual = (MpzT)new MpuT(writeBuffer.AsSpan(0, maxMantissaByteLength), -1);
+			Assert.IsLessThanOrEqualTo((MpzT)MpuT.PowerOf10(maxMantissaLength), (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(expected >> 2, (expected - actual).Abs());
 			Assert.IsLessThanOrEqualTo(actual >> 2, (expected - actual).Abs());
 			if (bytesWritten > maxMantissaByteLength)

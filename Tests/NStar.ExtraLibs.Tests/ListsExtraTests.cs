@@ -843,7 +843,7 @@ public class SumListTests
 		return (sl, gl, bytes);
 	}, () => random.Next(1, 16), index => Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), E.Sum(E.Take(gl, index))), bytes =>
 	{
-		var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
+		var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % ((MpzT)sl.ValuesSum + 1)), out var sum));
 		Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 	});
 	}

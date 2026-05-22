@@ -719,7 +719,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 	public static bool IsPow2(UnsignedLongReal value) => value.PopCount() == 1;
 	public static bool IsRealNumber(UnsignedLongReal value) => true;
 	public static bool IsSubnormal(UnsignedLongReal value) => value.e is null;
-	public static bool IsZero(UnsignedLongReal value) => Mpir.MpzCmpSi(value.m, 0) == 0 && value.e is null;
+	public static bool IsZero(UnsignedLongReal value) => Mpir.MpuCmpSi(value.m, 0) == 0 && value.e is null;
 
 	public static UnsignedLongReal Log2(UnsignedLongReal value)
 	{
@@ -1242,7 +1242,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
-		else if (x.e <= sizeof(int) * 8 - int.LeadingZeroCount(y))
+		else if (x.e <= BitsPerInt - int.LeadingZeroCount(y))
 			return new(((MantissaOverflow + x.m) << (int)x.e - 1) / y, MantissaLength);
 		var quotient = (MantissaOverflow + x.m << MantissaLength + 1) / y;
 		var shiftAmount = quotient.BitLength - MantissaLength - 1;
@@ -1262,7 +1262,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			throw new DivideByZeroException(NoDivisionByZero);
 		else if (y == 1)
 			return x.Copy();
-		else if (x.e <= sizeof(uint) * 8 - uint.LeadingZeroCount(y))
+		else if (x.e <= BitsPerInt - uint.LeadingZeroCount(y))
 			return new(((MantissaOverflow + x.m) << (int)x.e - 1) / y, MantissaLength);
 		var quotient = (MantissaOverflow + x.m << MantissaLength + 1) / y;
 		var shiftAmount = quotient.BitLength - MantissaLength - 1;
@@ -1317,7 +1317,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			return x.e is null ? (x.m & 1) : 0;
 		else if (x.e is null)
 			return x.m & y;
-		else if (x.e > sizeof(int) * 8)
+		else if (x.e > BitsPerInt)
 			return 0;
 		else
 			return x.MantissaOverflow + x.m << (int)(x.e & uint.MaxValue) - 1 & y;
@@ -1330,7 +1330,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			return x.e is null ? (x.m & 1u) : 0;
 		else if (x.e is null)
 			return x.m & y;
-		else if (x.e > sizeof(uint) * 8)
+		else if (x.e > BitsPerInt)
 			return 0;
 		else
 			return x.MantissaOverflow + x.m << (int)(x.e & uint.MaxValue) - 1 & y;
@@ -1366,7 +1366,7 @@ public sealed class UnsignedLongReal : IUnsignedLongReal<UnsignedLongReal>
 			if (eDiff >= maxMantissaLength)
 				return new(0, maxMantissaLength);
 			var newMantissa = MantissaOverflow + x.m & (MantissaOverflow + y.m << ((int)eDiff));
-			if (Mpir.MpzCmpSi(newMantissa, 0) == 0)
+			if (Mpir.MpuCmpSi(newMantissa, 0) == 0)
 				return new(0, maxMantissaLength);
 			var shiftAmount = (MantissaOverflow + x.m).BitLength - newMantissa.BitLength;
 			if (x.e <= shiftAmount)

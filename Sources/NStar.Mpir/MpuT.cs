@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace NStar.Mpir;
+﻿namespace NStar.Mpir;
 
 /// <summary>Represents an arbitrarily large unsigned integer.</summary>
 public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisposable
@@ -10,8 +8,6 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	private static readonly Lock lockObj = new();
 	private static readonly MpuT five = new(5);
 	private static readonly MpuT ten = new(10);
-	private static readonly ImmutableArray<uint> smallPowersOfTen = [1, 10, 100, 1000, 10_000, 100_000,
-		1000_000, 10_000_000, 100_000_000, 1000_000_000];
 	private static readonly Dictionary<int, MpuT> PowersOfFive = [];
 	private static readonly Dictionary<int, MpuT> PowersOfTen = [];
 	private const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
@@ -76,16 +72,16 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	{
 		if (op < 0)
 			throw new ArgumentException(NoNegativeNumbers, nameof(op));
-		val = Mpir.MpuInitSetSi(unchecked((int)(op >> sizeof(int) * 8)));
-		Mpir.MpuMul2exp(this, this, sizeof(int) * 8);
+		val = Mpir.MpuInitSetSi(unchecked((int)(op >> BitsPerInt)));
+		Mpir.MpuMul2exp(this, this, BitsPerInt);
 		Mpir.MpuAddUi(this, this, unchecked((uint)op));
 	}
 
 	/// <summary>Initializes a new MpuT to the unsigned long op.</summary>
 	public MpuT(ulong op)
 	{
-		val = Mpir.MpuInitSetUi(unchecked((uint)(op >> sizeof(uint) * 8)));
-		Mpir.MpuMul2exp(this, this, sizeof(uint) * 8);
+		val = Mpir.MpuInitSetUi(unchecked((uint)(op >> BitsPerInt)));
+		Mpir.MpuMul2exp(this, this, BitsPerInt);
 		Mpir.MpuAddUi(this, this, unchecked((uint)op));
 	}
 
@@ -181,37 +177,38 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		return z;
 	}
 
-    public static int Compare(int x, MpuT y) => -y.CompareTo(x);
-    public static int Compare(MpuT x, int y) => x.CompareTo(y);
-    public static int Compare(uint x, MpuT y) => -y.CompareTo(x);
-    public static int Compare(MpuT x, uint y) => x.CompareTo(y);
-    public static int Compare(long x, MpuT y) => -y.CompareTo(x);
-    public static int Compare(MpuT x, long y) => x.CompareTo(y);
-    public static int Compare(ulong x, MpuT y) => -y.CompareTo(x);
-    public static int Compare(MpuT x, ulong y) => x.CompareTo(y);
-    public static int Compare(double x, MpuT y) => -y.CompareTo(x);
-    public static int Compare(MpuT x, double y) => x.CompareTo(y);
-    public static int Compare(decimal x, MpuT y) => -y.CompareTo(x);
-    public static int Compare(MpuT x, decimal y) => x.CompareTo(y);
-    public static int Compare(MpuT x, MpuT? y) => x.CompareTo(y);
-    public static int Compare(MpuT x, object? y) => x.CompareTo(y);
-    public static int Compare(object x, MpuT y) => -y.CompareTo(x);
-    public static int CompareAbs(MpuT x, MpuT y) => x.CompareAbsTo(y);
-    public static int CompareAbs(MpuT x, object y) => x.CompareAbsTo(y);
-    public static int CompareAbs(object x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(int x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(MpuT x, int y) => x.CompareAbsTo(y);
-    public static int CompareAbs(uint x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(MpuT x, uint y) => x.CompareAbsTo(y);
-    public static int CompareAbs(long x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(MpuT x, long y) => x.CompareAbsTo(y);
-    public static int CompareAbs(ulong x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(MpuT x, ulong y) => x.CompareAbsTo(y);
-    public static int CompareAbs(double x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(MpuT x, double y) => x.CompareAbsTo(y);
-    public static int CompareAbs(decimal x, MpuT y) => -y.CompareAbsTo(x);
-    public static int CompareAbs(MpuT x, decimal y) => x.CompareAbsTo(y);
-    public int CompareAbsTo(int other) => Mpir.MpuCmpabsUi(this, (uint)other);
+	public static int Compare(int x, MpuT y) => -y.CompareTo(x);
+	public static int Compare(MpuT x, int y) => x.CompareTo(y);
+	public static int Compare(uint x, MpuT y) => -y.CompareTo(x);
+	public static int Compare(MpuT x, uint y) => x.CompareTo(y);
+	public static int Compare(long x, MpuT y) => -y.CompareTo(x);
+	public static int Compare(MpuT x, long y) => x.CompareTo(y);
+	public static int Compare(ulong x, MpuT y) => -y.CompareTo(x);
+	public static int Compare(MpuT x, ulong y) => x.CompareTo(y);
+	public static int Compare(double x, MpuT y) => -y.CompareTo(x);
+	public static int Compare(MpuT x, double y) => x.CompareTo(y);
+	public static int Compare(decimal x, MpuT y) => -y.CompareTo(x);
+	public static int Compare(MpuT x, decimal y) => x.CompareTo(y);
+	public static int Compare(MpuT x, MpuT? y) => x.CompareTo(y);
+	public static int Compare(MpuT x, MpzT? y) => x.CompareTo(y);
+	public static int Compare(MpuT x, object? y) => x.CompareTo(y);
+	public static int Compare(object x, MpuT y) => -y.CompareTo(x);
+	public static int CompareAbs(MpuT x, MpuT y) => x.CompareAbsTo(y);
+	public static int CompareAbs(MpuT x, object y) => x.CompareAbsTo(y);
+	public static int CompareAbs(object x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(int x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(MpuT x, int y) => x.CompareAbsTo(y);
+	public static int CompareAbs(uint x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(MpuT x, uint y) => x.CompareAbsTo(y);
+	public static int CompareAbs(long x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(MpuT x, long y) => x.CompareAbsTo(y);
+	public static int CompareAbs(ulong x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(MpuT x, ulong y) => x.CompareAbsTo(y);
+	public static int CompareAbs(double x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(MpuT x, double y) => x.CompareAbsTo(y);
+	public static int CompareAbs(decimal x, MpuT y) => -y.CompareAbsTo(x);
+	public static int CompareAbs(MpuT x, decimal y) => x.CompareAbsTo(y);
+	public int CompareAbsTo(int other) => Mpir.MpuCmpabsUi(this, (uint)other);
 	public int CompareAbsTo(uint other) => Mpir.MpuCmpabsUi(this, other);
 	public int CompareAbsTo(long other) => CompareAbsTo((MpuT)other);
 	public int CompareAbsTo(ulong other) => CompareAbsTo((MpuT)other);
@@ -219,69 +216,70 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public int CompareAbsTo(decimal other) => Mpir.MpuCmpabsD(this, (double)other);
 	public int CompareAbsTo(MpuT other) => Mpir.MpuCmpabs(this, other);
 
-    public int CompareAbsTo(object obj) => obj switch
-    {
-        MpuT uz => CompareAbsTo(uz),
-        MpzT z => CompareAbsTo(z),
-        int i => CompareAbsTo(i),
-        uint ui => CompareAbsTo(ui),
-        long li => CompareAbsTo(li),
-        ulong uli => CompareAbsTo(uli),
-        double d => CompareAbsTo(d),
-        float f => CompareAbsTo(f),
-        short si => CompareAbsTo(si),
-        ushort usi => CompareAbsTo(usi),
-        byte y => CompareAbsTo(y),
-        sbyte sy => CompareAbsTo(sy),
-        decimal m => CompareAbsTo(m),
-        string s => CompareAbsTo(new MpuT(s)),
-        _ => throw new ArgumentException("Cannot compare to " + obj.GetType()),
-    };
+	public int CompareAbsTo(object obj) => obj switch
+	{
+		MpuT uz => CompareAbsTo(uz),
+		MpzT z => CompareAbsTo(z),
+		int i => CompareAbsTo(i),
+		uint ui => CompareAbsTo(ui),
+		long li => CompareAbsTo(li),
+		ulong uli => CompareAbsTo(uli),
+		double d => CompareAbsTo(d),
+		float f => CompareAbsTo(f),
+		short si => CompareAbsTo(si),
+		ushort usi => CompareAbsTo(usi),
+		byte y => CompareAbsTo(y),
+		sbyte sy => CompareAbsTo(sy),
+		decimal m => CompareAbsTo(m),
+		string s => CompareAbsTo(new MpuT(s)),
+		_ => throw new ArgumentException("Cannot compare to " + obj.GetType()),
+	};
 
-    public int CompareTo(int other) => Mpir.MpuCmpSi(this, other);
-    public int CompareTo(uint other) => Mpir.MpuCmpUi(this, other);
+	public int CompareTo(int other) => Mpir.MpuCmpSi(this, other);
+	public int CompareTo(uint other) => Mpir.MpuCmpUi(this, other);
 
-    // TODO: Optimize by accessing the memory directly
-    public int CompareTo(long other)
-    {
-        var otherMpu = new MpuT(other);
-        var ret = CompareTo(otherMpu);
-        return ret;
-    }
+	// TODO: Optimize by accessing the memory directly
+	public int CompareTo(long other)
+	{
+		var otherMpu = new MpuT(other);
+		var ret = CompareTo(otherMpu);
+		return ret;
+	}
 
-    // TODO: Optimize by accessing the memory directly
-    public int CompareTo(ulong other)
-    {
-        var otherMpu = new MpuT(other);
-        var ret = CompareTo(otherMpu);
-        return ret;
-    }
+	// TODO: Optimize by accessing the memory directly
+	public int CompareTo(ulong other)
+	{
+		var otherMpu = new MpuT(other);
+		var ret = CompareTo(otherMpu);
+		return ret;
+	}
 
-    public int CompareTo(float other) => Mpir.MpuCmpD(this, (double)other);
-    public int CompareTo(double other) => Mpir.MpuCmpD(this, other);
-    public int CompareTo(decimal other) => Mpir.MpuCmpD(this, (double)other);
-    public int CompareTo(MpuT? other) => Mpir.MpuCmp(this, other);
+	public int CompareTo(float other) => Mpir.MpuCmpD(this, (double)other);
+	public int CompareTo(double other) => Mpir.MpuCmpD(this, other);
+	public int CompareTo(decimal other) => Mpir.MpuCmpD(this, (double)other);
+	public int CompareTo(MpzT? other) => Mpir.MpzCmp(Unsafe.As<MpzT>(this), other);
+	public int CompareTo(MpuT? other) => Mpir.MpuCmp(this, other);
 
-    public int CompareTo(object? obj) => obj switch
-    {
-        MpuT uz => CompareTo(uz),
-        MpzT z => -z.CompareTo(this),
-        int i => CompareTo(i),
-        uint ui => CompareTo(ui),
-        long li => CompareTo(li),
-        ulong uli => CompareTo(uli),
-        double d => CompareTo(d),
-        float f => CompareTo(f),
-        short si => CompareTo(si),
-        ushort usi => CompareTo(usi),
-        byte y => CompareTo(y),
-        sbyte sy => CompareTo(sy),
-        string s => CompareTo(new MpuT(s)),
-        IComparable ic => -ic.CompareTo(this),
-        _ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
-    };
+	public int CompareTo(object? obj) => obj switch
+	{
+		MpuT uz => CompareTo(uz),
+		MpzT z => -z.CompareTo(this),
+		int i => CompareTo(i),
+		uint ui => CompareTo(ui),
+		long li => CompareTo(li),
+		ulong uli => CompareTo(uli),
+		double d => CompareTo(d),
+		float f => CompareTo(f),
+		short si => CompareTo(si),
+		ushort usi => CompareTo(usi),
+		byte y => CompareTo(y),
+		sbyte sy => CompareTo(sy),
+		string s => CompareTo(new MpuT(s)),
+		IComparable ic => -ic.CompareTo(this),
+		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
+	};
 
-    public MpzT Complement() => ~this;
+	public MpzT Complement() => ~this;
 	public int CountOnes() => (int)Mpir.MpuPopcount(this);
 
 	public void Dispose()
@@ -364,56 +362,58 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public MpuT DivideMod(MpuT x, MpuT mod) => this * x.InvertMod(mod) % mod;
 
-    public bool Equals(int other) => CompareTo(other) == 0;
+	public bool Equals(int other) => CompareTo(other) == 0;
 
-    public bool Equals(uint other) => CompareTo(other) == 0;
+	public bool Equals(uint other) => CompareTo(other) == 0;
 
-    public bool Equals(long other) => CompareTo(other) == 0;
+	public bool Equals(long other) => CompareTo(other) == 0;
 
-    public bool Equals(ulong other) => CompareTo(other) == 0;
+	public bool Equals(ulong other) => CompareTo(other) == 0;
 
-    public bool Equals(double other) => CompareTo(other) == 0;
+	public bool Equals(double other) => CompareTo(other) == 0;
 
-    public bool Equals(decimal other) => CompareTo(other) == 0;
+	public bool Equals(decimal other) => CompareTo(other) == 0;
 
-    public bool Equals(MpuT? other) => Compare(this, other) == 0;
+	public bool Equals(MpzT? other) => Compare(this, other) == 0;
 
-    public override bool Equals(object? obj) => obj switch
-    {
-        null => false,
-        MpuT uz => CompareTo(uz) == 0,
-        MpzT z => CompareTo(z) == 0,
-        int i => this == i,
-        uint ui => this == ui,
-        long li => this == li,
-        ulong uli => this == uli,
-        double d => this == d,
-        float f => this == f,
-        short si => this == si,
-        ushort usi => this == usi,
-        byte y => this == y,
-        sbyte sy => this == sy,
-        IConvertible ic => ic.Equals(this),
-        _ => false
-    };
+	public bool Equals(MpuT? other) => Compare(this, other) == 0;
 
-    public bool EqualsMod(int x, int mod)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(mod);
-        if (x >= 0)
-            return Mpir.MpuCongruentUiP(this, (uint)x, (uint)mod) != 0;
-        else
-        {
-            var xAsUint = (uint)(x % mod + mod);
-            return Mpir.MpuCongruentUiP(this, xAsUint, (uint)mod) != 0;
-        }
-    }
+	public override bool Equals(object? obj) => obj switch
+	{
+		null => false,
+		MpuT uz => CompareTo(uz) == 0,
+		MpzT z => CompareTo(z) == 0,
+		int i => this == i,
+		uint ui => this == ui,
+		long li => this == li,
+		ulong uli => this == uli,
+		double d => this == d,
+		float f => this == f,
+		short si => this == si,
+		ushort usi => this == usi,
+		byte y => this == y,
+		sbyte sy => this == sy,
+		IConvertible ic => ic.Equals(this),
+		_ => false
+	};
 
-    public bool EqualsMod(MpuT x, MpuT mod) => Mpir.MpuCongruentP(this, x, mod) != 0;
+	public bool EqualsMod(int x, int mod)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(mod);
+		if (x >= 0)
+			return Mpir.MpuCongruentUiP(this, (uint)x, (uint)mod) != 0;
+		else
+		{
+			var xAsUint = (uint)(x % mod + mod);
+			return Mpir.MpuCongruentUiP(this, xAsUint, (uint)mod) != 0;
+		}
+	}
 
-    public bool EqualsMod(uint x, uint mod) => Mpir.MpuCongruentUiP(this, x, mod) != 0;
+	public bool EqualsMod(MpuT x, MpuT mod) => Mpir.MpuCongruentP(this, x, mod) != 0;
 
-    public static MpuT Factorial(int x)
+	public bool EqualsMod(uint x, uint mod) => Mpir.MpuCongruentUiP(this, x, mod) != 0;
+
+	public static MpuT Factorial(int x)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(x);
 		var z = new MpuT();
@@ -478,7 +478,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static MpuT Gcd(MpuT x, int y)
 	{
-		if (Mpir.MpzCmpSi(y, 0) < 0)
+		if (Mpir.MpuCmpSi(y, 0) < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuGcdUi(z, x, (uint)y);
@@ -526,25 +526,25 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public int GetByteCount() => (BitLength + 7) / 8;
 	public MpuT GetFullBitLength() => Mpir.MpuSizeinbase(this, 2);
 
-    public override int GetHashCode()
-    {
-        uint hash = 0;
-        Span<byte> bytes;
-        lock (lockObj)
-            bytes = ProcessToByteArray(this, false);
-        var len = bytes.Length; // Make sure it's only evaluated once.
-        var shift = 0;
-        for (var i = 0; i < len; i++)
-        {
-            hash ^= (uint)bytes[i] << shift;
-            shift = (shift + 8) & 0x1F;
-        }
-        return (int)hash;
-    }
+	public override int GetHashCode()
+	{
+		uint hash = 0;
+		Span<byte> bytes;
+		lock (lockObj)
+			bytes = ProcessToByteArray(this, false);
+		var len = bytes.Length; // Make sure it's only evaluated once.
+		var shift = 0;
+		for (var i = 0; i < len; i++)
+		{
+			hash ^= (uint)bytes[i] << shift;
+			shift = (shift + 8) & 0x1F;
+		}
+		return (int)hash;
+	}
 
-    public int GetShortestBitLength() => BitLength;
-    TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
-    public static int HammingDistance(MpuT x, MpuT y) => (int)Mpir.MpuHamdist(x, y);
+	public int GetShortestBitLength() => BitLength;
+	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
+	public static int HammingDistance(MpuT x, MpuT y) => (int)Mpir.MpuHamdist(x, y);
 
 	/// <summary>
 	/// Import the integer in the byte array bytes, starting at startOffset and ending at endOffset.
@@ -662,21 +662,21 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static int JacobiSymbol(int x, MpuT y)
 	{
-		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
+		if (IsEvenInteger(y) || Mpir.MpuCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuSiKronecker(x, y);
 	}
 
 	public static int JacobiSymbol(MpuT x, int y)
 	{
-		if ((y & 1) == 0 || Mpir.MpzCmpSi(y, 0) < 0)
+		if ((y & 1) == 0 || Mpir.MpuCmpSi(y, 0) < 0)
 			throw new ArgumentException(null, nameof(y));
 		return Mpir.MpuKroneckerSi(x, y);
 	}
 
 	public static int JacobiSymbol(MpuT x, MpuT y)
 	{
-		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
+		if (IsEvenInteger(y) || Mpir.MpuCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuJacobi(x, y);
 	}
@@ -690,7 +690,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static int JacobiSymbol(uint x, MpuT y)
 	{
-		if (IsEvenInteger(y) || Mpir.MpzCmpSi(y, 0) < 0)
+		if (IsEvenInteger(y) || Mpir.MpuCmpSi(y, 0) < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuUiKronecker(x, y);
 	}
@@ -712,7 +712,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static MpuT Lcm(MpuT x, int y)
 	{
-		if (Mpir.MpzCmpSi(y, 0) < 0)
+		if (Mpir.MpuCmpSi(y, 0) < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuLcmUi(z, x, (uint)y);
@@ -818,6 +818,12 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	public MpuT Or(MpuT x) => this | x;
+	public static MpuT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
+	public static MpuT Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider) =>
+		Parse(s.ToString(), style, provider);
+	public static MpuT Parse(string s) => new(s);
+	public static MpuT Parse(string s, IFormatProvider? provider) => new(s);
+	public static MpuT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
 	public int PopCount() => (int)Mpir.MpuPopcount(this);
 	public static MpuT PopCount(MpuT value) => value.PopCount();
 
@@ -907,36 +913,36 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		}
 	}
 
-    private static void ProcessLongConversion(MpuT value)
-    {
-        var exportBytesSpan = ProcessToByteArray(value, BitConverter.IsLittleEndian);
-        var length = Math.Min(exportBytesSpan.Length, convertToLongBytes.Length);
-        var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
-        convertToLongBytes.AsSpan(BitConverter.IsLittleEndian ? length.. : ..destOffset).Clear();
-        exportBytesSpan[BitConverter.IsLittleEndian ? 0..length : ^length..].CopyTo(convertToLongBytes.AsSpan(destOffset));
-    }
+	private static void ProcessLongConversion(MpuT value)
+	{
+		var exportBytesSpan = ProcessToByteArray(value, BitConverter.IsLittleEndian);
+		var length = Math.Min(exportBytesSpan.Length, convertToLongBytes.Length);
+		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
+		convertToLongBytes.AsSpan(BitConverter.IsLittleEndian ? length.. : ..destOffset).Clear();
+		exportBytesSpan[BitConverter.IsLittleEndian ? 0..length : ^length..].CopyTo(convertToLongBytes.AsSpan(destOffset));
+	}
 
-    private static Span<byte> ProcessToByteArray(MpuT value, bool bLittleEndian)
-    {
-        var exportLength = (int)Math.Min(Mpir.MpuSizeinbase(value, 256), 2147483647);
-        if (exportLength > exportBytes.Length)
-        {
-            var newCapacity = Math.Max(1024, exportBytes.Length * 2);
-            if ((uint)newCapacity > int.MaxValue)
-                newCapacity = int.MaxValue;
-            if (newCapacity < exportLength)
-                newCapacity = exportLength;
-            exportBytes = GC.AllocateUninitializedArray<byte>(newCapacity);
-        }
-        var exportBytesSpan = exportBytes.AsSpan(..exportLength);
-        if (bLittleEndian)
-            value.TryWriteLittleEndian(exportBytesSpan, out _);
-        else
-            value.TryWriteBigEndian(exportBytesSpan, out _);
-        return exportBytesSpan;
-    }
+	private static Span<byte> ProcessToByteArray(MpuT value, bool bLittleEndian)
+	{
+		var exportLength = (int)Math.Min(Mpir.MpuSizeinbase(value, 256), 2147483647);
+		if (exportLength > exportBytes.Length)
+		{
+			var newCapacity = Math.Max(1024, exportBytes.Length * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
+			if (newCapacity < exportLength)
+				newCapacity = exportLength;
+			exportBytes = GC.AllocateUninitializedArray<byte>(newCapacity);
+		}
+		var exportBytesSpan = exportBytes.AsSpan(..exportLength);
+		if (bLittleEndian)
+			value.TryWriteLittleEndian(exportBytesSpan, out _);
+		else
+			value.TryWriteBigEndian(exportBytesSpan, out _);
+		return exportBytesSpan;
+	}
 
-    public MpuT Remainder(MpuT x)
+	public MpuT Remainder(MpuT x)
 	{
 		var z = new MpuT();
 		Mpir.MpuTdivR(z, this, x);
@@ -1018,7 +1024,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		var result = this >> shiftAmount;
 		if (shiftAmount <= 32)
 		{
-			if ((this & uint.MaxValue >>> sizeof(uint) * 8 - shiftAmount) >= 1u << shiftAmount - 1)
+			if ((this & uint.MaxValue >>> BitsPerInt - shiftAmount) >= 1u << shiftAmount - 1)
 				result++;
 		}
 		else
@@ -1092,7 +1098,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		if (value == Zero)
 			return Zero;
 		var result = 0;
-		const int ulongBits = sizeof(ulong) * 8;
+		const int ulongBits = BitsPerLong;
 		var value2 = value << ulongBits;
 		MpuT mask = ulong.MaxValue;
 		for (; Mpir.MpuCmp(mask, value2) < 0; mask <<= ulongBits)
@@ -1123,13 +1129,6 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 			return true;
 		}
 	}
-
-	public MpuT Xor(MpuT x) => this ^ x;
-	public static MpuT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
-	public static MpuT Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider) => Parse(s.ToString(), style, provider);
-	public static MpuT Parse(string s) => new(s);
-	public static MpuT Parse(string s, IFormatProvider? provider) => new(s);
-	public static MpuT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
 
 	public BigInteger ToBigInteger() => new([.. ToByteArray(-1), 0]);
 	bool IConvertible.ToBoolean(IFormatProvider? provider) => Mpir.MpuCmpSi(this, 1) >= 0;
@@ -1358,6 +1357,8 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		return false;
 	}
 
+	public MpuT Xor(MpuT x) => this ^ x;
+
 	public static implicit operator MpuT(byte value) => new((uint)value);
 	public static implicit operator MpuT(short value) => new(value);
 	public static implicit operator MpuT(ushort value) => new(value);
@@ -1378,7 +1379,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static explicit operator uint(MpuT value)
 	{
 		var result = Mpir.MpuGetUi(value);
-		if (Mpir.MpzCmpSi(value, 0) < 0)
+		if (Mpir.MpuCmpSi(value, 0) < 0)
 			result = ~result + 1;
 		return result;
 	}
@@ -1417,7 +1418,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static MpzT operator -(MpuT x)
 	{
 		var z = new MpzT();
-		Mpir.MpzNeg(z, x);
+		Mpir.MpzNeg(z, Unsafe.As<MpzT>(x));
 		return z;
 	}
 
@@ -1432,7 +1433,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static MpzT operator ~(MpuT x)
 	{
 		var z = new MpzT();
-		Mpir.MpzCom(z, x);
+		Mpir.MpzCom(z, Unsafe.As<MpzT>(x));
 		return z;
 	}
 
@@ -1577,7 +1578,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
 	public static MpuT operator *(MpuT x, int y)
 	{
-		if (Mpir.MpzCmpSi(y, 0) < 0)
+		if (Mpir.MpuCmpSi(y, 0) < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuMulSi(z, x, y);
@@ -1610,7 +1611,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
 	public static MpuT operator /(MpuT x, int y)
 	{
-		if (Mpir.MpzCmpSi(y, 0) < 0)
+		if (Mpir.MpuCmpSi(y, 0) < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var quotient = new MpuT();
 		Mpir.MpuTdivQUi(quotient, x, (uint)y);
@@ -1696,45 +1697,45 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		throw new OverflowException(NoNegativeNumbers);
 	}
 
-    public static bool operator ==(MpuT? x, MpuT? y) => (x ?? Zero).CompareTo(y) == 0;
-    public static bool operator ==(int x, MpuT y) => y.CompareTo(x) == 0;
-    public static bool operator ==(MpuT x, int y) => x.CompareTo(y) == 0;
-    public static bool operator ==(uint x, MpuT y) => y.CompareTo(x) == 0;
-    public static bool operator ==(MpuT x, uint y) => x.CompareTo(y) == 0;
-    // TODO: Optimize this by accessing memory directly.
-    public static bool operator ==(long x, MpuT y) => y.CompareTo(x) == 0;
-    // TODO: Optimize this by accessing memory directly.
-    public static bool operator ==(MpuT x, long y) => x.CompareTo(y) == 0;
-    // TODO: Optimize this by accessing memory directly.
-    public static bool operator ==(ulong x, MpuT y) => y.CompareTo(x) == 0;
-    // TODO: Optimize this by accessing memory directly.
-    public static bool operator ==(MpuT x, ulong y) => x.CompareTo(y) == 0;
-    public static bool operator ==(float x, MpuT y) => y.CompareTo(x) == 0;
-    public static bool operator ==(MpuT x, float y) => x.CompareTo(y) == 0;
-    public static bool operator ==(double x, MpuT y) => y.CompareTo(x) == 0;
-    public static bool operator ==(MpuT x, double y) => x.CompareTo(y) == 0;
-    public static bool operator ==(decimal x, MpuT y) => y.CompareTo(x) == 0;
-    public static bool operator ==(MpuT x, decimal y) => x.CompareTo(y) == 0;
-    public static bool operator !=(MpuT? x, MpuT? y) => (x ?? Zero).CompareTo(y) != 0;
-    public static bool operator !=(int x, MpuT y) => y.CompareTo(x) != 0;
-    public static bool operator !=(MpuT x, int y) => x.CompareTo(y) != 0;
-    public static bool operator !=(uint x, MpuT y) => y.CompareTo(x) != 0;
-    public static bool operator !=(MpuT x, uint y) => x.CompareTo(y) != 0;
-    // TODO: Optimize this by accessing memory directly
-    public static bool operator !=(long x, MpuT y) => y.CompareTo(x) != 0;
-    // TODO: Optimize this by accessing memory directly
-    public static bool operator !=(MpuT x, long y) => x.CompareTo(y) != 0;
-    // TODO: Optimize this by accessing memory directly
-    public static bool operator !=(ulong x, MpuT y) => y.CompareTo(x) != 0;
-    // TODO: Optimize this by accessing memory directly
-    public static bool operator !=(MpuT x, ulong y) => x.CompareTo(y) != 0;
-    public static bool operator !=(float x, MpuT y) => y.CompareTo(x) != 0;
-    public static bool operator !=(MpuT x, float y) => x.CompareTo(y) != 0;
-    public static bool operator !=(double x, MpuT y) => y.CompareTo(x) != 0;
-    public static bool operator !=(MpuT x, double y) => x.CompareTo(y) != 0;
-    public static bool operator !=(decimal x, MpuT y) => y.CompareTo(x) != 0;
-    public static bool operator !=(MpuT x, decimal y) => x.CompareTo(y) != 0;
-    public static bool operator >=(MpuT x, MpuT y) => x.CompareTo(y) >= 0;
+	public static bool operator ==(MpuT? x, MpuT? y) => (x ?? Zero).CompareTo(y) == 0;
+	public static bool operator ==(int x, MpuT y) => y.CompareTo(x) == 0;
+	public static bool operator ==(MpuT x, int y) => x.CompareTo(y) == 0;
+	public static bool operator ==(uint x, MpuT y) => y.CompareTo(x) == 0;
+	public static bool operator ==(MpuT x, uint y) => x.CompareTo(y) == 0;
+	// TODO: Optimize this by accessing memory directly.
+	public static bool operator ==(long x, MpuT y) => y.CompareTo(x) == 0;
+	// TODO: Optimize this by accessing memory directly.
+	public static bool operator ==(MpuT x, long y) => x.CompareTo(y) == 0;
+	// TODO: Optimize this by accessing memory directly.
+	public static bool operator ==(ulong x, MpuT y) => y.CompareTo(x) == 0;
+	// TODO: Optimize this by accessing memory directly.
+	public static bool operator ==(MpuT x, ulong y) => x.CompareTo(y) == 0;
+	public static bool operator ==(float x, MpuT y) => y.CompareTo(x) == 0;
+	public static bool operator ==(MpuT x, float y) => x.CompareTo(y) == 0;
+	public static bool operator ==(double x, MpuT y) => y.CompareTo(x) == 0;
+	public static bool operator ==(MpuT x, double y) => x.CompareTo(y) == 0;
+	public static bool operator ==(decimal x, MpuT y) => y.CompareTo(x) == 0;
+	public static bool operator ==(MpuT x, decimal y) => x.CompareTo(y) == 0;
+	public static bool operator !=(MpuT? x, MpuT? y) => (x ?? Zero).CompareTo(y) != 0;
+	public static bool operator !=(int x, MpuT y) => y.CompareTo(x) != 0;
+	public static bool operator !=(MpuT x, int y) => x.CompareTo(y) != 0;
+	public static bool operator !=(uint x, MpuT y) => y.CompareTo(x) != 0;
+	public static bool operator !=(MpuT x, uint y) => x.CompareTo(y) != 0;
+	// TODO: Optimize this by accessing memory directly
+	public static bool operator !=(long x, MpuT y) => y.CompareTo(x) != 0;
+	// TODO: Optimize this by accessing memory directly
+	public static bool operator !=(MpuT x, long y) => x.CompareTo(y) != 0;
+	// TODO: Optimize this by accessing memory directly
+	public static bool operator !=(ulong x, MpuT y) => y.CompareTo(x) != 0;
+	// TODO: Optimize this by accessing memory directly
+	public static bool operator !=(MpuT x, ulong y) => x.CompareTo(y) != 0;
+	public static bool operator !=(float x, MpuT y) => y.CompareTo(x) != 0;
+	public static bool operator !=(MpuT x, float y) => x.CompareTo(y) != 0;
+	public static bool operator !=(double x, MpuT y) => y.CompareTo(x) != 0;
+	public static bool operator !=(MpuT x, double y) => x.CompareTo(y) != 0;
+	public static bool operator !=(decimal x, MpuT y) => y.CompareTo(x) != 0;
+	public static bool operator !=(MpuT x, decimal y) => x.CompareTo(y) != 0;
+	public static bool operator >=(MpuT x, MpuT y) => x.CompareTo(y) >= 0;
 	public static bool operator >=(int x, MpuT y) => y.CompareTo(x) <= 0;
 	public static bool operator >=(MpuT x, int y) => x.CompareTo(y) >= 0;
 	public static bool operator >=(uint x, MpuT y) => y.CompareTo(x) <= 0;
