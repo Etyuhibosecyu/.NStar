@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace NStar.BigCollections.Tests;
+﻿namespace NStar.Mpir.Tests;
 
 [TestClass]
 public class LongRealTests
@@ -204,13 +202,13 @@ public class LongRealTests
 				Validate();
 			}, () =>
 			{
-				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64() +(random.Next(2) == 0 ? 0 : 1uL << 63));
+				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64()+ (random.Next(2) == 0 ? 0 : 1uL << 63));
 				r *= op;
 				lr *= op;
 				Validate();
 			}, () =>
 			{
-				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64() +(random.Next(2) == 0 ? 0 : 1uL << 63));
+				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64()+ (random.Next(2) == 0 ? 0 : 1uL << 63));
 				if (op.Equals(0))
 					return;
 				r /= op;

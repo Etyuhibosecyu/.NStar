@@ -14,7 +14,6 @@ global using System.Runtime.InteropServices;
 global using G = System.Collections.Generic;
 global using static NStar.Core.Extents;
 global using static System.Math;
-global using E = System.Linq.Enumerable;
 using static NStar.Mpir.Mpir;
 
 namespace NStar.BigCollections;

@@ -168,7 +168,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else
 		{
-			using CustomBigList<uint> list = new(E.Select(ints, x => (uint)x));
+			using CustomBigList<uint> list = new(ints.Convert(x => (uint)x));
 			ConstructFromUIntList(list);
 		}
 #if VERIFY
@@ -392,7 +392,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			low.AddRange(bigUIntList);
 			low.RemoveEnd((int)bitLength);
-			Length = bitLength;
+			parent?.Length += bitLength;
 			return;
 		}
 		Debug.Assert(low is null && high is not null && fragment != 1);
@@ -434,7 +434,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			highLength = null;
 			fragment = 1;
 			AddCapacity(bitLength);
-			Length = bitLength;
+			parent?.Length += bitLength;
 			return;
 		}
 		low = null;
@@ -554,7 +554,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (low is not null)
 			return new(low.ToUIntList());
 		else if (high is not null)
-			return new(E.SelectMany(high, x => x.ToUIntBigList()));
+			return new(high.ConvertAndJoin(x => x.ToUIntBigList()));
 		else
 			throw new InvalidOperationException("Невозможно преобразовать в BigList<uint>."
 				+ " Возможные причины:\r\n" + InternalError

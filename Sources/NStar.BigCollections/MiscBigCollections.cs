@@ -1,4 +1,6 @@
-﻿namespace NStar.BigCollections;
+﻿using System.Reflection;
+
+namespace NStar.BigCollections;
 
 public interface IBigCollection<T> : G.IEnumerable<T>
 {
@@ -25,6 +27,14 @@ public interface IBigList<T> : IBigCollection<T>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 {
+	private protected static readonly MethodInfo QueueGetElement
+#pragma warning disable IDE0079 // Удалить ненужное подавление
+#pragma warning disable S3011
+		= typeof(Queue<T>).GetMethod("GetElement", BindingFlags.Instance | BindingFlags.NonPublic)
+#pragma warning restore S3011
+#pragma warning restore IDE0079 // Удалить ненужное подавление
+		?? throw new InvalidOperationException("Невозможно создать очередь из-за ошибки в имени метода."
+		+ " Обратитесь к разработчикам программы.");
 	private protected Queue<T>? low;
 	private protected LimitedBuffer<BigQueue<T>>? high;
 	private protected MpzT fragment = 1;
@@ -59,7 +69,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		{
 			fragment = MpzT.One << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
 				SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
-			high = new((int)GetArrayLength(capacity, fragment));
+			high = new((int)BigBitList.GetArrayLength(capacity, fragment));
 			for (var i = MpzT.Zero; i < high.Capacity; i++)
 				high.Add(new(fragment, SubbranchesBitLength, LeafSizeBitLength));
 		}
@@ -115,8 +125,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно очистить очередь. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		Length = 0;
 	}
@@ -136,8 +146,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно клонировать очередь. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		q.fragment = fragment;
 #if VERIFY
@@ -152,12 +162,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		if (low is not null)
 			return low.Contains(obj);
 		else if (high is not null)
-		{
-			foreach (var subQueue in high)
-				if (subQueue.Contains(obj))
-					return true;
-			return false;
-		}
+			return high.Any(x => x.Contains(obj));
 		else
 			return false;
 	}
@@ -202,7 +207,6 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			var removed = high[0].Dequeue();
 			if (high[0].Length == 0 && high.Length != 1)
 			{
-				high[0].Dispose();
 				high.RemoveAt(0);
 			}
 #if VERIFY
@@ -212,8 +216,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент из очереди. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
@@ -225,14 +229,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 
 	protected void Dispose(bool _)
 	{
-		low?.Dispose();
 		low = null;
-		if (high is not null)
-		{
-			foreach (var x in high)
-				x.Dispose();
-			high.Dispose();
-		}
 		high = null;
 		fragment = 1;
 		Length = 0;
@@ -292,8 +289,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно добавить элемент в очередь. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		Length++;
 #if VERIFY
@@ -304,7 +301,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 	internal T GetElement(MpzT i)
 	{
 		if (low is not null)
-			return E.ElementAt(low, i % LeafSize);
+			return (T)QueueGetElement.Invoke(low, [i % LeafSize])!;
 		else if (high is not null)
 		{
 			if (high[0].Length == 0 || i < high[0].Length)
@@ -314,8 +311,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно получить элемент очереди. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
@@ -335,8 +332,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 			return high[0].Peek();
 		else
 			throw new InvalidOperationException("Невозможно получить ближайший элемент в очереди. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
 
@@ -361,8 +358,6 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 					? 1 : (int)((Length - high[0].Length) / fragment) + 1;
 				if (index < high.Length && high[index].Length != 0)
 					index++;
-				for (var i = index; i < high.Length; i++)
-					high[i].Dispose();
 				if (index > 1)
 				{
 					high.RemoveEnd(index);
@@ -376,7 +371,6 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 				low = high[0].low;
 				high = high[0].high;
 				oldHigh.Clear();
-				oldHigh.Dispose();
 			}
 			Debug.Assert(low is not null);
 			high = null;
@@ -392,8 +386,6 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 					? 1 : (int)((Length - high[0].Length) / fragment) + 1;
 				if (index < high.Length && high[index].Length != 0)
 					index++;
-				for (var i = index; i < high.Length; i++)
-					high[i].Dispose();
 				if (index > 1)
 				{
 #if VERIFY
@@ -404,7 +396,6 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 				var oldHigh = high;
 				high = high[0].high;
 				oldHigh.RemoveAt(0);
-				oldHigh.Dispose();
 				fragment >>= SubbranchesBitLength;
 			}
 			Debug.Assert(high is not null);
@@ -418,8 +409,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable, IDisposable
 		}
 		else
 			throw new InvalidOperationException("Невозможно освободить избыток памяти в очереди. Возможные причины:\r\n"
-				+ MpzT.InternalError
-                + $"Текущее состояние: длина - {Length},"
+				+ InternalError
+				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 #if VERIFY
 		Verify();

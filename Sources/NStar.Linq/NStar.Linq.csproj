@@ -42,7 +42,7 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
-		<ProjectReference Include="..\NStar.MathLib\NStar.MathLib.csproj" />
+		<ProjectReference Include="..\NStar.Core\NStar.Core.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

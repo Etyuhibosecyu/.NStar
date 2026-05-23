@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace NStar.BigCollections.Tests;
+﻿namespace NStar.Mpir.Tests;
 
 [TestClass]
 public class UnsignedLongDecimalTests
@@ -276,7 +274,7 @@ public class UnsignedLongDecimalTests
 			}, () =>
 			{
 				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				if (Mpir.Mpir.MpuCmp(op, uz) > 0)
+				if (Mpir.MpuCmp(op, uz) > 0)
 					return;
 				if (uz.DecLength <= MantissaLength + ((MpuT)op).DecLength)
 					uz -= op;
@@ -1188,7 +1186,7 @@ public class UnsignedLongDecimalTests
 				bytes.Resize(Max(bytes.FindLastIndex(x => x != 0), 0) + 1);
 			else
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
-			var mantissaLength = random.Next(15, Max((int)Ceiling(bytes.Length * Log10(256)), 15));
+			var mantissaLength = random.Next(18, Max((int)Ceiling(bytes.Length * Log10(256)), 18));
 			using UnsignedLongDecimal uld = new(bytes.AsSpan(), order, mantissaLength);
 			using UnsignedLongDecimal uld2 = new(uld.ToByteArray(order, false), order, mantissaLength);
 			Assert.IsTrue(uld.Equals(uld2));
@@ -1294,7 +1292,7 @@ public class UnsignedLongDecimalTests
 		{
 			bytes.FillInPlace(random.Next(500), _ => (byte)random.Next(256));
 			var order = RandomOrder();
-			var mantissaLength = random.Next(15, Max((int)Ceiling(bytes.Length * Log10(256)), 15));
+			var mantissaLength = random.Next(18, Max((int)Ceiling(bytes.Length * Log10(256)), 18));
 			using UnsignedLongDecimal uld = new(bytes.AsSpan(), order, mantissaLength);
 			bytes2.FillInPlace(0, bytes.Length + 2);
 			if (order < 0)

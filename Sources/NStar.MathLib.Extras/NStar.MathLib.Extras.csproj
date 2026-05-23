@@ -13,9 +13,12 @@
 		<DebugType>pdbonly</DebugType>
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\NStar.MathLib\NStar.MathLib.csproj" />
+	</ItemGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

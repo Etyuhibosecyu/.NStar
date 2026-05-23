@@ -77,7 +77,7 @@ public readonly record struct Chain(int Start, int Length) : IReadOnlyList<int>
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable, IDisposable
+public class Queue<T> : ICollection, IReadOnlyCollection<T>, ICloneable, IDisposable
 {
 	private protected T[] _array;
 	private protected int _start;
@@ -114,6 +114,8 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		while (en.MoveNext())
 			Enqueue(en.Current);
 	}
+
+	~Queue() => Dispose(false);
 
 	public virtual void Clear()
 	{
@@ -162,11 +164,17 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 
 	public virtual void Dispose()
 	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	protected void Dispose(bool disposing)
+	{
+		_ = disposing;
 		_array = default!;
 		_start = 0;
 		_end = 0;
 		_size = 0;
-		GC.SuppressFinalize(this);
 	}
 
 	public virtual void Enqueue(T obj)

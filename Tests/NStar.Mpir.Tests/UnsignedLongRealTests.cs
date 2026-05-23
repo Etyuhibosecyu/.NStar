@@ -1,7 +1,17 @@
-﻿using System.Globalization;
-using System.Reflection;
+﻿global using NStar.Core;
+global using NStar.Core.Tests;
+global using NStar.Linq;
+global using NStar.Mpir;
+global using System;
+global using System.Globalization;
+global using System.Numerics;
+global using static NStar.Core.Extents;
+global using static NStar.Core.Tests.Global;
+global using static System.Math;
+global using E = System.Linq.Enumerable;
+global using G = System.Collections.Generic;
 
-namespace NStar.BigCollections.Tests;
+namespace NStar.Mpir.Tests;
 
 [TestClass]
 public class UnsignedLongRealTests
@@ -274,7 +284,7 @@ public class UnsignedLongRealTests
 			}, () =>
 			{
 				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				if (Mpir.Mpir.MpuCmp(op, uz) > 0)
+				if (Mpir.MpuCmp(op, uz) > 0)
 					return;
 				if (uz.BitLength <= MantissaLength + ((MpuT)op).BitLength)
 					uz -= op;

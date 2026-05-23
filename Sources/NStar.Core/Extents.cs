@@ -1,5 +1,4 @@
-﻿global using NStar.Mpir;
-global using System;
+﻿global using System;
 global using System.Buffers;
 global using System.Collections;
 global using System.Diagnostics;
@@ -74,24 +73,24 @@ public class EComparer<T> : IEqualityComparer<T>
 	public int GetHashCode(T obj) => hashCode(obj);
 }
 
-public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
+public class ListEComparer<T> : IEqualityComparer<G.IList<T>>
 {
 	private protected readonly Func<T, T, bool> equals;
 	private protected readonly Func<T, int> hashCode;
 
-	public IListEComparer()
+	public ListEComparer()
 	{
 		equals = EqualityComparer<T>.Default.Equals;
 		hashCode = x => x?.GetHashCode() ?? 0;
 	}
 
-	public IListEComparer(Func<T, T, bool> equals)
+	public ListEComparer(Func<T, T, bool> equals)
 	{
 		this.equals = equals;
 		hashCode = x => x?.GetHashCode() ?? 0;
 	}
 
-	public IListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
+	public ListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
 	{
 		this.equals = equals;
 		this.hashCode = hashCode;
@@ -128,22 +127,24 @@ public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
 	}
 }
 
-[Serializable]
 public class SlowOperationException : Exception
 {
-	public SlowOperationException() : this("Внимание! Эта операция будет выполняться очень долго. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
+	public SlowOperationException() : this("Внимание! Эта операция будет выполняться очень долго."
+		+ " Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
 
 	public SlowOperationException(string? message) : base(message) { }
 
 	public SlowOperationException(string? message, Exception? innerException) : base(message, innerException) { }
 }
 
+/// <inheritdoc cref="System.Collections.ICollection"/>
 public interface ICollection : System.Collections.ICollection
 {
 	int Length { get; }
 	int System.Collections.ICollection.Count => Length;
 }
 
+/// <inheritdoc cref="G.ICollection{T}"/>
 public interface ICollection<T> : G.ICollection<T>, ICollection
 {
 	int G.ICollection<T>.Count => Length;
@@ -151,33 +152,41 @@ public interface ICollection<T> : G.ICollection<T>, ICollection
 	bool RemoveValue(T item);
 }
 
+/// <inheritdoc cref="System.Collections.IDictionary"/>
 public interface IDictionary : System.Collections.IDictionary, ICollection
 {
 }
 
+/// <inheritdoc cref="G.IDictionary{TKey, TValue}"/>
 public interface IDictionary<TKey, TValue> : G.IDictionary<TKey, TValue>, ICollection<KeyValuePair<TKey, TValue>>
 {
 }
 
+/// <inheritdoc cref="System.Collections.IList"/>
 public interface IList : System.Collections.IList, ICollection
 {
 }
 
+/// <inheritdoc cref="G.IList{T}"/>
 public interface IList<T> : G.IList<T>, ICollection<T>
 {
 }
 
-public interface IReadOnlyCollection<T> : G.IReadOnlyCollection<T>
+/// <inheritdoc cref="G.IReadOnlyCollection{T}"/>
+public interface IReadOnlyCollection<out T> : G.IReadOnlyCollection<T>
 {
 	int Length { get; }
 	int G.IReadOnlyCollection<T>.Count => Length;
 }
 
-public interface IReadOnlyDictionary<TKey, TValue> : G.IReadOnlyDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>
+/// <inheritdoc cref="G.IReadOnlyDictionary{TKey, TValue}"/>
+public interface IReadOnlyDictionary<TKey, TValue>
+	: G.IReadOnlyDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>
 {
 }
 
-public interface IReadOnlyList<T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
+/// <inheritdoc cref="G.IReadOnlyList{T}"/>
+public interface IReadOnlyList<out T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
 {
 }
 
@@ -187,9 +196,15 @@ public static unsafe class Extents
 	public const int BitsPerByte = 8;
 	public const int BitsPerInt = sizeof(int) * BitsPerByte;
 	public const int BytesPerInt = sizeof(int);
+	public const int BitsPerLong = sizeof(long) * BitsPerByte;
+	public const int BytesPerLong = sizeof(long);
 	public const int ValuesInByte = 1 << BitsPerByte;
 	public const int ValuesIn2Bytes = ValuesInByte << BitsPerByte;
 	public const int ValuesIn3Bytes = ValuesIn2Bytes << BitsPerByte;
+	public const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
+		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
+		+ " тип все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
+		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
 
 	internal static readonly Random random = new();
 
@@ -212,27 +227,17 @@ public static unsafe class Extents
 
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
-	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int length) => MemoryExtensions.AsSpan(source, index, length);
+	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int length) =>
+		MemoryExtensions.AsSpan(source, index, length);
 
-	/// <summary>Считает количество бит в числе. Логарифм для этой цели использовать невыгодно, так как это достаточно медленная операция.</summary>
-	/// <param name="x">Исходное число.</param>
-	/// <returns>Количество бит в числе.</returns>
-	public static int BitLength(this int x) => BitLength((uint)x);
+	internal static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged =>
+		new Span<T>(source, length).CopyTo(new Span<T>(destination, length));
 
-	/// <summary>Считает количество бит в числе. Логарифм для этой цели использовать невыгодно, так как это достаточно медленная операция.</summary>
-	/// <param name="x">Исходное число.</param>
-	/// <returns>Количество бит в числе.</returns>
-	public static int BitLength(this uint x) => ((MpzT)x).BitLength;
+	internal static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length)
+		where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
-	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length));
-
-	public static int CompareMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => CompareMemory(left + leftIndex, right + rightIndex, length);
-
-	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => new Span<T>(source, length).CopyTo(new Span<T>(destination, length));
-
-	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
-
-	public static void CopyMemory<T>(T[] source, int sourceIndex, T[] destination, int destinationIndex, int length) where T : unmanaged
+	internal static void CopyMemory<T>(T[] source, int sourceIndex, T[] destination, int destinationIndex, int length)
+		where T : unmanaged
 	{
 		fixed (T* source2 = source)
 		fixed (T* destination2 = destination)
@@ -241,22 +246,8 @@ public static unsafe class Extents
 
 	public static T CreateVar<T>(T value, out T @out) => @out = value;
 
-	public static bool EqualMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length)) == length;
-
-	public static bool EqualMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => EqualMemory(left + leftIndex, right + rightIndex, length);
-
-	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => new Span<byte>((byte*)source, sizeof(T) * length).Fill(fill);
-
-	private static KeyValuePair<int, T>? FindMinGreaterOrEqual<T>(this SortedSet<KeyValuePair<int, T>> set, int value)
-	{
-		if (value > set.Max.Key)
-			return default;
-		// Получаем представление набора от value до максимального элемента
-		var view = set.GetViewBetween(new(value, default!), set.Max);
-		// Возвращаем первый элемент, если он есть
-		var en = view.GetEnumerator();
-		return en.MoveNext() ? en.Current : default;
-	}
+	internal static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged =>
+		new Span<byte>((byte*)source, sizeof(T) * length).Fill(fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array.
@@ -275,18 +266,6 @@ public static unsafe class Extents
 	/// <returns></returns>
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
-	public static MpzT GetArrayLength(MpzT n, MpzT div) => n > 0 ? ((n - 1) / div + 1) : 0;
-
-	private static int GetMedian(int low, int hi)
-	{
-		// Note both may be negative, if we are dealing with arrays w/ negative lower bounds.
-		Debug.Assert(low <= hi);
-		Debug.Assert(hi - low >= 0, "Length overflow!");
-		return low + ((hi - low) >> 1);
-	}
-
-	public static MpzT GetOffset(this Index index, MpzT length) => index.IsFromEnd ? length - index.Value : index.Value;
-
 	public static void Lock(object lockObj, Action function)
 	{
 		lock (lockObj)
@@ -299,8 +278,30 @@ public static unsafe class Extents
 			return function();
 	}
 
+	/// <summary>
+	/// Производит сортировку массива.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
+	/// но работает только для типов byte, short, ushort, int, uint, long или ulong.
+	/// Может не сработать, если массив очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <typeparam name="T">Тип элементов массива.</typeparam>
+	/// <param name="array">Массив для сортировки.</param>
+	/// <returns>Отсортированный массив.</returns>
 	public static T[] NSort<T>(this T[] array) where T : unmanaged => NSort(array, 0, array.Length);
 
+	/// <summary>
+	/// Производит сортировку диапазона массива.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
+	/// но работает только для типов byte, short, ushort, int, uint, long или ulong.
+	/// Может не сработать, если массив очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <typeparam name="T">Тип элементов массива.</typeparam>
+	/// <param name="array">Массив для сортировки.</param>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// <returns>Отсортированный массив (весь массив, не только сортируемый диапазон).</returns>
 	public static T[] NSort<T>(this T[] array, int index, int length) where T : unmanaged
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -315,23 +316,53 @@ public static unsafe class Extents
 		return array;
 	}
 
+	/// <summary>
+	/// Производит сортировку массива по ключу типа byte.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
+	/// но требует явного указания алгоритма преобразования каждого элемента в byte.
+	/// Может не сработать, если массив очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <typeparam name="T">Тип элементов массива.</typeparam>
+	/// <param name="array">Массив для сортировки.</param>
+	/// <param name="function">Алгоритм преобразования каждого элемента в byte (функция или лямбда-выражение).</param>
+	/// <returns>Отсортированный массив.</returns>
 	public static T[] NSort<T>(this T[] array, Func<T, byte> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, byte> function, int index, int length) => NSort<T, byte>(array, function, index, length);
+	/// <summary>
+	/// Производит сортировку диапазона массива по ключу типа byte.
+	/// Эта сортировка на порядки быстрее классического <see cref="Array.Sort{T}(T[])"/>,
+	/// но требует явного указания алгоритма преобразования каждого элемента в byte.
+	/// Может не сработать, если массив очень большой, на компьютере переполнена память и нет файла подкачки,
+	/// но это экстремально редкая ситуация, логично?
+	/// </summary>
+	/// <typeparam name="T">Тип элементов массива.</typeparam>
+	/// <param name="array">Массив для сортировки.</param>
+	/// <param name="function">Алгоритм преобразования каждого элемента в byte (функция или лямбда-выражение).</param>
+	/// <param name="index">Индекс начала диапазона.</param>
+	/// <param name="length">Длина диапазона.</param>
+	/// <returns>Отсортированный массив (весь массив, не только сортируемый диапазон).</returns>
+	public static T[] NSort<T>(this T[] array, Func<T, byte> function, int index, int length) =>
+		NSort<T, byte>(array, function, index, length);
 
-	public static T* NSort<T>(T* array, Func<T, byte> function, int index, int length) where T : unmanaged => NSort<T, byte>(array, function, index, length);
+	public static T* NSort<T>(T* array, Func<T, byte> function, int index, int length) where T : unmanaged =>
+		NSort<T, byte>(array, function, index, length);
 
 	public static T[] NSort<T>(this T[] array, Func<T, uint> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int length) => NSort<T, uint>(array, function, index, length);
+	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int length) =>
+		NSort<T, uint>(array, function, index, length);
 
-	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int length) where T : unmanaged => NSort<T, uint>(array, function, index, length);
+	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int length) where T : unmanaged =>
+		NSort<T, uint>(array, function, index, length);
 
 	public static T[] NSort<T>(this T[] array, Func<T, ushort> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, ushort> function, int index, int length) => NSort<T, ushort>(array, function, index, length);
+	public static T[] NSort<T>(this T[] array, Func<T, ushort> function, int index, int length) =>
+		NSort<T, ushort>(array, function, index, length);
 
-	public static T* NSort<T>(T* array, Func<T, ushort> function, int index, int length) where T : unmanaged => NSort<T, ushort>(array, function, index, length);
+	public static T* NSort<T>(T* array, Func<T, ushort> function, int index, int length) where T : unmanaged =>
+		NSort<T, ushort>(array, function, index, length);
 
 	public static void NSort<T, T2>(T* @in, T2* in2, int n) where T : unmanaged where T2 : unmanaged => RadixSort(@in, in2, n);
 
@@ -357,7 +388,8 @@ public static unsafe class Extents
 		return array;
 	}
 
-	private static T* NSort<T, T2>(T* array, Func<T, T2> function, int index, int length) where T : unmanaged where T2 : unmanaged
+	private static T* NSort<T, T2>(T* array, Func<T, T2> function, int index, int length)
+		where T : unmanaged where T2 : unmanaged
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -461,7 +493,8 @@ public static unsafe class Extents
 		}
 	}
 
-	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
+	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count)
+		where T : unmanaged where T2 : unmanaged
 	{
 		T2* sp2;
 		RadixPassMain(offset, @in, count, out var sp, out var i, out var bp, out var cp);
@@ -475,7 +508,8 @@ public static unsafe class Extents
 		}
 	}
 
-	private static void RadixPassMain<T>(int offset, T* @in, int* count, out T* sp, out int i, out byte* bp, out int* cp) where T : unmanaged
+	private static void RadixPassMain<T>(int offset, T* @in, int* count, out T* sp, out int i, out byte* bp, out int* cp)
+		where T : unmanaged
 	{
 		int s, c;
 		s = 0;
@@ -494,7 +528,6 @@ public static unsafe class Extents
 	{
 		FillMemory((byte*)counters, ValuesInByte * sizeof(T) * sizeof(int), 0);
 		var bp = (byte*)data;
-		var dataEnd = (byte*)(data + n);
 		for (var i = 0; i < n; i++)
 		{
 			for (var j = 0; j < sizeof(T); j++)

@@ -1,6 +1,6 @@
 ﻿namespace NStar.Linq;
 
-public class ArrayEComparer<T> : IListEComparer<T>, G.IEqualityComparer<T[]>
+public class ArrayEComparer<T> : Core.ListEComparer<T>, G.IEqualityComparer<T[]>
 {
 	public ArrayEComparer() : base()
 	{
@@ -19,7 +19,7 @@ public class ArrayEComparer<T> : IListEComparer<T>, G.IEqualityComparer<T[]>
 	public int GetHashCode(T[] x) => base.GetHashCode(x);
 }
 
-public class ListEComparer<T> : IListEComparer<T>, G.IEqualityComparer<List<T>>
+public class ListEComparer<T> : Core.ListEComparer<T>, G.IEqualityComparer<List<T>>
 {
 	public ListEComparer() : base()
 	{

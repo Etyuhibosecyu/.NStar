@@ -19,7 +19,7 @@
 		<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.7.0" />
 		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.2.3" />
 		<PackageReference Include="MSTest" Version="4.2.3" />
-		<ProjectReference Include="..\..\Sources\NStar.BigCollections\NStar.BigCollections.csproj" />
+		<ProjectReference Include="..\..\Sources\NStar.Mpir\NStar.Mpir.csproj" />
 		<ProjectReference Include="..\NStar.Core.Tests\NStar.Core.Tests.csproj" />
 		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
 	</ItemGroup>

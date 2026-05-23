@@ -1,6 +1,6 @@
 ﻿namespace NStar.BigCollections;
 
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}")]
 public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, IDisposable
 	where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
 {
@@ -375,6 +375,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return !toEnd || index == Length;
 	}
 
+	internal static int GetArrayLength(int n, int div) => Extents.GetArrayLength(n, div);
+	public static MpzT GetArrayLength(MpzT n, MpzT div) => n > 0 ? ((n - 1) / div + 1) : 0;
+
 	public virtual Enumerator GetEnumerator() => new(this);
 
 	G.IEnumerator<T> G.IEnumerable<T>.GetEnumerator() => GetEnumerator();
@@ -390,6 +393,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	}
 
 	protected abstract T GetInternal(MpzT index, bool invoke = true);
+
+	public static MpzT GetOffset(Index index, MpzT length) => index.IsFromEnd ? length - index.Value : index.Value;
 
 	public virtual TCertain GetRange(MpzT index, bool alwaysCopy = false) => GetRange(index, Length - index, alwaysCopy);
 
@@ -537,7 +542,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return -1;
 	}
 
-	public virtual TCertain Insert(Index index, T item) => Insert(index.GetOffset(Length), item);
+	public virtual TCertain Insert(Index index, T item) => Insert(GetOffset(index, Length), item);
 
 	public virtual TCertain Insert(int index, T item) => Insert((MpzT)index, item);
 
@@ -554,7 +559,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	/// <summary>
 	/// Этот метод называется именно так, а не InsertRange().
 	/// </summary>
-	public virtual TCertain Insert(Index index, G.IEnumerable<T> collection) => Insert(index.GetOffset(Length), collection);
+	public virtual TCertain Insert(Index index, G.IEnumerable<T> collection) => Insert(GetOffset(index, Length), collection);
 
 	/// <summary>
 	/// Этот метод называется именно так, а не InsertRange().
@@ -840,7 +845,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 #endif
 
 	[Serializable]
-	public struct Enumerator : G.IEnumerator<T>, IEnumerator
+	public struct Enumerator : G.IEnumerator<T>
 	{
 		private readonly BaseBigList<T, TCertain, TLow> list;
 		private MpzT index;

@@ -1,4 +1,4 @@
-﻿namespace NStar.Core.Tests;
+﻿namespace NStar.Mpir.Tests;
 
 [TestClass]
 public class MpuTTests
@@ -427,14 +427,14 @@ public class MpuTTests
 	{
 		MpuT a = new(50U);
 		MpuT b = new(30U);
-		Assert.IsGreaterThan(0, Mpir.Mpir.MpuCmp(a, b));
-		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThan(0, Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.MpuCmp(a, b));
 		b = new(50U);
-		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
-		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsLessThanOrEqualTo(0, Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.MpuCmp(a, b));
 		b = new(70U);
-		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
-		Assert.IsLessThan(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsLessThanOrEqualTo(0, Mpir.MpuCmp(a, b));
+		Assert.IsLessThan(0, Mpir.MpuCmp(a, b));
 	}
 
 	[TestMethod]
@@ -442,14 +442,14 @@ public class MpuTTests
 	{
 		MpuT a = new(15U);
 		MpuT b = new(25U);
-		Assert.IsLessThan(0, Mpir.Mpir.MpuCmp(a, b));
-		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsLessThan(0, Mpir.MpuCmp(a, b));
+		Assert.IsLessThanOrEqualTo(0, Mpir.MpuCmp(a, b));
 		b = new(15U);
-		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
-		Assert.IsLessThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.MpuCmp(a, b));
+		Assert.IsLessThanOrEqualTo(0, Mpir.MpuCmp(a, b));
 		b = new(5U);
-		Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpuCmp(a, b));
-		Assert.IsGreaterThan(0, Mpir.Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThanOrEqualTo(0, Mpir.MpuCmp(a, b));
+		Assert.IsGreaterThan(0, Mpir.MpuCmp(a, b));
 	}
 
 	[TestMethod]
@@ -463,9 +463,9 @@ public class MpuTTests
 			MpzT uz = new(bytes.AsSpan(), RandomOrder());
 			var shift = random.Next(1025);
 			var rounded = uz.ShiftRightRoundDec(shift).ShiftLeftDec(shift);
-			Assert.IsGreaterThanOrEqualTo(0, Mpir.Mpir.MpzCmpabs(rounded, uz.ShiftRightDec(shift).ShiftLeftDec(shift)));
+			Assert.IsGreaterThanOrEqualTo(0, Mpir.MpzCmpabs(rounded, uz.ShiftRightDec(shift).ShiftLeftDec(shift)));
 			Assert.IsLessThanOrEqualTo(0,
-				Mpir.Mpir.MpzCmpabs(rounded, (uz.ShiftRightDec(shift) + uz.Sign).ShiftLeftDec(shift)));
+				Mpir.MpzCmpabs(rounded, (uz.ShiftRightDec(shift) + uz.Sign).ShiftLeftDec(shift)));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -479,7 +479,7 @@ public class MpuTTests
 		{
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
-			Assert.IsTrue((int)Mpir.Mpir.MpuSizeinbase(uz, 10) - (uz.ToString()?.Length ?? 1) is 0 or 1);
+			Assert.IsTrue((int)Mpir.MpuSizeinbase(uz, 10) - (uz.ToString()?.Length ?? 1) is 0 or 1);
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}

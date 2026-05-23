@@ -8,7 +8,6 @@ global using static System.Math;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
 global using String = NStar.Core.String;
-using NStar.MathLib;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -1234,7 +1233,7 @@ public static class RedStarLinqExtras
 			this.source2 = source2;
 			this.source3 = source3;
 			this.function = function;
-			_size = RedStarLinqMath.Min(source.Count, source2.Count, source3.Count);
+			_size = Min(Min(source.Count, source2.Count), source3.Count);
 		}
 
 		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
@@ -1298,7 +1297,7 @@ public static class RedStarLinqExtras
 			this.source2 = source2;
 			this.source3 = source3;
 			this.function = function;
-			_size = RedStarLinqMath.Min(source.Count, source2.Count, source3.Count);
+			_size = Min(Min(source.Count, source2.Count), source3.Count);
 		}
 
 		public override Memory<TResult> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
@@ -1358,7 +1357,7 @@ public static class RedStarLinqExtras
 			this.source = source;
 			this.source2 = source2;
 			this.source3 = source3;
-			_size = RedStarLinqMath.Min(source.Count, source2.Count, source3.Count);
+			_size = Min(Min(source.Count, source2.Count), source3.Count);
 		}
 
 		public override Memory<(T, T2, T3)> AsMemory(int index, int length) => GetSlice(index, length).ToArray().AsMemory();
@@ -1457,7 +1456,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
-			var length = RedStarLinqMath.Min(list2_.Count, list2_2.Count, list2_3.Count);
+			var length = Min(Min(list2_.Count, list2_2.Count), list2_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
@@ -1468,7 +1467,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
-			var length = RedStarLinqMath.Min(list3_.Count, list3_2.Count, list3_3.Count);
+			var length = Min(Min(list3_.Count, list3_2.Count), list3_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
@@ -1502,7 +1501,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
-			var length = RedStarLinqMath.Min(list2_.Count, list2_2.Count, list2_3.Count);
+			var length = Min(Min(list2_.Count, list2_2.Count), list2_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
@@ -1513,7 +1512,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
 		{
-			var length = RedStarLinqMath.Min(list3_.Count, list3_2.Count, list3_3.Count);
+			var length = Min(Min(list3_.Count, list3_2.Count), list3_3.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
@@ -5205,7 +5204,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> Combine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
+		var length = Min(Min(source.Length, source2.Length), source3.Length);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], source3[i]);
@@ -5216,7 +5215,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> Combine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
+		var length = Min(Min(source.Length, source2.Length), source3.Length);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], source3[i], i);
@@ -5226,7 +5225,7 @@ public static class RedStarLinqExtras
 	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<(T, T2, T3)> Combine<T, T2, T3>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3)
 	{
-		var length = RedStarLinqMath.Min(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
+		var length = Min(Min(source.Length, source2.Length), source3.Length);
 		List<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result[i] = (source[i], source2[i], source3[i]);
@@ -6692,7 +6691,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
+		var length = Min(Min(source.Count, source2.Count), source3.Count);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -6707,7 +6706,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
+		var length = Min(Min(source.Count, source2.Count), source3.Count);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -6721,7 +6720,7 @@ public static class RedStarLinqExtras
 
 	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3)
 	{
-		var length = RedStarLinqMath.Min(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
+		var length = Min(Min(source.Count, source2.Count), source3.Count);
 		var result = RedStarLinq.EmptyList<(T, T2, T3)>(length);
 		Parallel.For(0, length, i =>
 		{

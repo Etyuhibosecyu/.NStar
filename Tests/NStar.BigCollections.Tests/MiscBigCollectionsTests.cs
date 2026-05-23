@@ -14,7 +14,6 @@ public class BigQueueTests
 		G.Queue<int> gq = new(arr);
 		var actions = new[] { () =>
 		{
-			var n = random.Next(16);
 			if (random.Next(25) == 0)
 			{
 				bq.Clear();

@@ -5,17 +5,11 @@ namespace NStar.Mpir;
 /// <summary>Represents an arbitrarily large signed integer.</summary>
 public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisposable
 {
-	public const string InternalError = "1. Конкурентный доступ из нескольких потоков (используйте синхронизацию).\r\n"
-		+ "2. Нарушение целостности структуры списка (ошибка в логике -"
-		+ " тип все еще не в релизной версии, разные ошибки в структуре в некоторых случаях возможны).\r\n"
-		+ "3. Системная ошибка (память, диск и т. д.).\r\n";
-	public const int BitsPerByte = 8;
-	public const int BitsPerInt = sizeof(int) * BitsPerByte;
-	public const int BytesPerInt = sizeof(int);
-	public const int BitsPerLong = sizeof(long) * BitsPerByte;
-	public const int BytesPerLong = sizeof(long);
-	internal const string NoNegativeNumbers = "Этот тип не поддерживает отрицательные числа.";
 	internal const string NoDivisionByZero = "Этот тип не поддерживает деление на ноль.";
+	internal const string NoNegativeNumbers = "Этот тип не поддерживает отрицательные числа.";
+	internal const string SpecialValuesConversionError = "Это преобразование не поддерживает бесконечность и неопределенность.";
+	internal const string ULRConversionError = "Это преобразование не поддерживает бесконечность,"
+		+ " неопределенность и отрицательные числа.";
 	internal const uint DefaultStringBase = 10u;
 	internal static readonly ImmutableArray<uint> smallPowersOfTen = [1, 10, 100, 1000, 10_000, 100_000,
 		1000_000, 10_000_000, 100_000_000, 1000_000_000];
@@ -604,7 +598,6 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 		return z;
 	}
 
-	internal static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 	public static bool IsCanonical(MpzT value) => true;
 	public static bool IsComplexNumber(MpzT value) => true;
 

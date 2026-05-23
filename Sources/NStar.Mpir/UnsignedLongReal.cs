@@ -1,11 +1,19 @@
-﻿global using System.Collections.Concurrent;
+﻿global using NStar.Core;
+global using NStar.Dictionaries;
+global using NStar.Linq;
+global using System;
+global using System.Buffers;
+global using System.Collections.Concurrent;
 global using System.Diagnostics;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
+global using System.IO;
 global using System.Numerics;
 global using System.Runtime.CompilerServices;
 global using System.Runtime.InteropServices;
 global using System.Text;
+global using System.Threading;
+global using static NStar.Core.Extents;
 global using static NStar.Mpir.MpzT;
 
 namespace NStar.Mpir;

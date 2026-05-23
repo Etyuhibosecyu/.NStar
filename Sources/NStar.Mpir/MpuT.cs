@@ -607,7 +607,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	private bool IsInPowersOfFiveDictionary()
 	{
-		if (BitLength > 69658 || PowersOfTen.Count == 0)
+		if (BitLength > 69658 || PowersOfTen.Length == 0)
 			return false;
 		MpuT? powerOfFive;
 		lock (lockObj)
@@ -621,7 +621,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	private bool IsInPowersOfTenDictionary()
 	{
-		if (BitLength > 99658 || PowersOfTen.Count == 0)
+		if (BitLength > 99658 || PowersOfTen.Length == 0)
 			return false;
 		MpuT? powerOfTen;
 		lock (lockObj)

@@ -16,6 +16,7 @@
 	
 	<ItemGroup>
 		<Compile Include="..\NStar.TreeSets\TreeHelpers.cs" Link="TreeHelpers.cs" />
+		<ProjectReference Include="..\NStar.Mpir\NStar.Mpir.csproj" />
 		<ProjectReference Include="..\NStar.TreeSets\NStar.TreeSets.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -2,7 +2,6 @@
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 		<TargetFramework>net10.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -20,5 +19,9 @@
 		<Content Include="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\NStar.Dictionaries\NStar.Dictionaries.csproj" />
+	  <ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
 	</ItemGroup>
 </Project>

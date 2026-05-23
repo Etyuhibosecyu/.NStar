@@ -527,7 +527,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = mirrored ? entries[current].next : entries[current].nextM;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + MpzT.InternalError
+				throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 					+ $"Текущее состояние: длина - неизвестно, емкость - {entries?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -563,7 +563,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		} while (collisionCountM <= (uint)entries.Length);
 		// The chain of entries forms a loop; which means a concurrent update has happened.
 		// Break out of the loop and throw, rather than looping forever.
-		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + MpzT.InternalError
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	ReturnFound:
@@ -604,7 +604,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 		} while (collisionCount <= (uint)entries.Length);
 		// The chain of entries forms a loop; which means a concurrent update has happened.
 		// Break out of the loop and throw, rather than looping forever.
-		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + MpzT.InternalError
+		throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	ReturnFound:
@@ -748,7 +748,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
+				throw new InvalidOperationException(CannotDeleteItem + InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -804,7 +804,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = entry.next;
 			collisionCount++;
 			if (collisionCount > (uint)entries.Length)
-				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
+				throw new InvalidOperationException(CannotDeleteItem + InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -857,7 +857,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
+				throw new InvalidOperationException(CannotDeleteItem + InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -917,7 +917,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			currentM = entry.nextM;
 			collisionCountM++;
 			if (collisionCountM > (uint)entries.Length)
-				throw new InvalidOperationException(CannotDeleteItem + MpzT.InternalError
+				throw new InvalidOperationException(CannotDeleteItem + InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -1159,7 +1159,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 			current = mirrored ? _entries[current].nextM : _entries[current].next;
 			collisionCount++;
 			if (collisionCount > (uint)_entries.Length)
-				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + MpzT.InternalError
+				throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n" + InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 			return 3;
@@ -1172,7 +1172,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, Core.IDictionary,
 				InsertionBehavior.ThrowOnExisting =>
 					throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
 				_ => throw new InvalidOperationException("Невозможно вставить элемент. Возможные причины:\r\n"
-					+ MpzT.InternalError
+					+ InternalError
 					+ $"Текущее состояние: длина - {Length}, емкость - {_buckets?.Length ?? 0},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),
 			};

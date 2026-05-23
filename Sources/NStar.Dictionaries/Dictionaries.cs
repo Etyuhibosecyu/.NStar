@@ -1,9 +1,9 @@
 ﻿global using NStar.Core;
-global using NStar.Mpir;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
 global using System.Runtime.InteropServices;
+global using static NStar.Core.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
@@ -406,7 +406,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				return high[key];
 			else
 				throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-					+ MpzT.InternalError
+					+ InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -418,7 +418,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				high[key] = value;
 			else
 				throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
-					+ MpzT.InternalError
+					+ InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 			if (!isHigh && low is not null && Length >= _hashThreshold)
@@ -455,7 +455,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				return high.Keys;
 			else
 				throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
-					+ MpzT.InternalError
+					+ InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -471,7 +471,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				return high.Values;
 			else
 				throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
-					+ MpzT.InternalError
+					+ InternalError
 					+ $"Текущее состояние: длина - {Length},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		}
@@ -485,7 +485,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			high.Add(key, value);
 		else
 			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 		if (!isHigh && low is not null && Length >= _hashThreshold)
@@ -504,7 +504,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			high.Clear();
 		else
 			throw new InvalidOperationException("Невозможно очистить словарь. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -517,7 +517,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.ContainsKey(key);
 		else
 			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -530,7 +530,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			((System.Collections.ICollection)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -543,7 +543,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -557,7 +557,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				RemoveValue(x);
 		else
 			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -571,7 +571,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				Remove(x);
 		else
 			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -585,7 +585,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				RemoveValue(x);
 		else
 			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -598,7 +598,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.GetEnumerator();
 		else
 			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -611,7 +611,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.GetEnumerator();
 		else
 			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -624,7 +624,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Keys;
 		else
 			throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -637,7 +637,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Values;
 		else
 			throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -650,7 +650,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
             ExceptWith(this.ToHashSet().ExceptWith(other));
         else
             throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -663,7 +663,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
             ExceptWith(Keys.ToHashSet().ExceptWith(other));
         else
             throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -676,7 +676,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
             ExceptWith(this.Convert(x => (x.Key, x.Value)).ToHashSet().ExceptWith(other));
         else
             throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -689,7 +689,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Remove(key);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -702,7 +702,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.Remove(key, out value);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -715,7 +715,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return ((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
 			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -728,7 +728,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			high.TrimExcess();
 		else
 			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -741,7 +741,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			return high.TryGetValue(key, out value);
 		else
 			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-				+ MpzT.InternalError
+				+ InternalError
 				+ $"Текущее состояние: длина - {Length},"
 				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}
@@ -785,7 +785,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (!x.isHigh && x.low is not null)
 			return new(x.low);
 		return x.high ?? throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
-			+ MpzT.InternalError
+			+ InternalError
 			+ $"Текущее состояние: длина - {x.Length},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
 	}

@@ -17,8 +17,6 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	internal readonly UnsignedLongReal e;
 	internal readonly int MantissaLength = 0;
 	public const int AutoMantissaLength = -1, DefaultMantissaLength = 2048, MinMantissaLength = 64;
-	private const string ULRConversionError = "Это преобразование не поддерживает бесконечность,"
-		+ " неопределенность и отрицательные числа.";
 
 	internal LongReal(MpzT m, UnsignedLongReal e, int mantissaLength = DefaultMantissaLength)
 	{
@@ -39,19 +37,19 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		switch (op)
 		{
 			case 0d or double.NegativeZero:
-			m = (MantissaOverflow << 1) + 1;
+			m = ShiftedMantissaOverflow + 1;
 			e = new(MpuT.Zero, null, mantissaLength);
 			return;
 			case double.PositiveInfinity:
-			m = (MantissaOverflow << 1) + 2;
+			m = ShiftedMantissaOverflow + 2;
 			e = new(MpuT.Zero, null, mantissaLength);
 			return;
 			case double.NegativeInfinity:
-			m = (MantissaOverflow << 1) + 3;
+			m = ShiftedMantissaOverflow + 3;
 			e = new(MpuT.Zero, null, mantissaLength);
 			return;
 			case double.NaN:
-			m = (MantissaOverflow << 1) + 4;
+			m = ShiftedMantissaOverflow + 4;
 			e = new(MpuT.Zero, null, mantissaLength);
 			return;
 		}
@@ -90,7 +88,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		MantissaLength = mantissaLength;
 		if (op == 0)
 		{
-			m = (MantissaOverflow << 1) + 1;
+			m = ShiftedMantissaOverflow + 1;
 			e = new(MpuT.Zero, null, mantissaLength);
 		}
 		else
@@ -120,7 +118,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (op.e is null)
 		{
 			if (Mpir.MpuCmpSi(op.m, 0) == 0)
-				m = (MantissaOverflow << 1) + 1;
+				m = ShiftedMantissaOverflow + 1;
 			else
 				m = (ShiftUniversal(Unsafe.As<MpzT>(op.m), MantissaLength - op.m.BitLength + 1) & MantissaMask) << 1;
 			e = op.m.BitLength - 1;
@@ -160,7 +158,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		MantissaLength = mantissaLength;
 		if (bytes.Length == 0)
 		{
-			m = (MantissaOverflow << 1) + 1;
+			m = ShiftedMantissaOverflow + 1;
 			e = new(MpuT.Zero, null, mantissaLength);
 		}
 		var mantissaByteLength = MantissaByteLength;
@@ -1293,7 +1291,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (decimalPosition >= mantissaDigits.Length)
 		{
 			// Очень большое число — добавляем trailing нули
-			ReadOnlySpan<char> chars = [.. mantissaDigits, .. Enumerable.Repeat('0', decimalPosition - mantissaDigits.Length)];
+			ReadOnlySpan<char> chars = [.. mantissaDigits, .. RedStarLinq.Fill('0', decimalPosition - mantissaDigits.Length)];
 			result.Append(FormatInsertGroupSeparators(chars, nfi));
 			if (precision != 0)
 			{
@@ -1332,7 +1330,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (decimalPosition >= mantissaDigits.Length)
 		{
 			// Очень большое число — добавляем trailing нули
-			ReadOnlySpan<char> chars = [.. mantissaDigits, .. Enumerable.Repeat('0', decimalPosition - mantissaDigits.Length)];
+			ReadOnlySpan<char> chars = [.. mantissaDigits, .. RedStarLinq.Fill('0', decimalPosition - mantissaDigits.Length)];
 			result.Append(FormatInsertGroupSeparators(chars, nfi));
 		}
 		else
@@ -1363,7 +1361,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else
 			fixedLength = mantissaDigits.Length + nfi.NumberDecimalSeparator.Length;
 		var sum = 0;
-		_ = nfi.NumberGroupSizes.FirstOrDefault(x =>
+		_ = nfi.NumberGroupSizes.Find(x =>
 		{
 			sum += x;
 			var value = sum >= decimalPosition;
@@ -1798,7 +1796,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// <summary>Возвращает максимальное из трех значений.</summary>
 	public static LongReal Max(LongReal x, LongReal y, LongReal z) => Max(Max(x, y), z);
 	/// <summary>Возвращает максимальное из произвольного количества значений.</summary>
-	public static LongReal Max(params LongReal[] values) => values.Length == 0 ? Zero : values.Aggregate(Max);
+	public static LongReal Max(params LongReal[] values) => values.Length == 0 ? Zero : values.Progression(Max);
 	public static LongReal MaxMagnitude(LongReal x, LongReal y) => x.CompareTo(y) >= 0 ? x : y;
 	public static LongReal MaxMagnitudeNumber(LongReal x, LongReal y) => x.CompareTo(y) >= 0 ? x : y;
 	/// <summary>Возвращает число x. Метод-заглушка, чтобы не удалять имя метода, если не осталось второго параметра.</summary>
@@ -1809,14 +1807,14 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public static LongReal Mean(LongReal x, LongReal y, LongReal z) => (x + y + z) / 3;
 	/// <summary>Возвращает арифметическое среднее произвольного количества значений - (x + y + z) / 3.</summary>
 	public static LongReal Mean(params LongReal[] values) =>
-		values.Length == 0 ? Zero : values.Aggregate((x, y) => x + y) / values.Length;
+		values.Length == 0 ? Zero : values.Progression((x, y) => x + y) / values.Length;
 	/// <summary>Возвращает число x. Метод-заглушка, чтобы не удалять имя метода, если не осталось второго параметра.</summary>
 	public static LongReal Min(LongReal x) => x;
 	public static LongReal Min(LongReal x, LongReal y) => x.CompareTo(y) < 0 ? x : y;
 	/// <summary>Возвращает минимальное из трех значений.</summary>
 	public static LongReal Min(LongReal x, LongReal y, LongReal z) => Min(Min(x, y), z);
 	/// <summary>Возвращает минимальное из произвольного количества значений.</summary>
-	public static LongReal Min(params LongReal[] values) => values.Length == 0 ? Zero : values.Aggregate(Min);
+	public static LongReal Min(params LongReal[] values) => values.Length == 0 ? Zero : values.Progression(Min);
 	public static LongReal MinMagnitude(LongReal x, LongReal y) => x.CompareTo(y) < 0 ? x : y;
 	public static LongReal MinMagnitudeNumber(LongReal x, LongReal y) => x.CompareTo(y) < 0 ? x : y;
 

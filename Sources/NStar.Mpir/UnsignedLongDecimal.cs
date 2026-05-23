@@ -22,7 +22,7 @@ public sealed class UnsignedLongDecimal : IUnsignedLongReal<UnsignedLongDecimal>
 	internal readonly MpuT m;
 	internal readonly UnsignedLongDecimal? e;
 	internal readonly int MantissaLength = 0;
-	public const int AutoMantissaLength = -1, DefaultMantissaLength = 3000, MinMantissaLength = 36;
+	public const int AutoMantissaLength = -1, DefaultMantissaLength = 3000, MinMantissaLength = 30;
 
 	internal UnsignedLongDecimal(MpuT m, UnsignedLongDecimal? e, int mantissaLength = DefaultMantissaLength)
 	{
