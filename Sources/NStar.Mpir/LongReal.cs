@@ -130,7 +130,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		}
 	}
 
-	public LongReal(LongReal op) : this(op.m, op.e.Copy(), op.MantissaLength) { }
+	public LongReal(LongReal op) : this(op.m, op.e, op.MantissaLength) { }
 
 	public LongReal(LongReal op, int mantissaLength)
 		: this(op.GetWithOtherML(mantissaLength, true) is var x ? x.m : MpzT.Zero, x.e, mantissaLength) { }
@@ -301,17 +301,17 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
 			return Pi.GetWithOtherML(MantissaLength, false) >> 1;
 		else if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if ((m & 1) == 0)
 		{
 			if (e != 0)
-				return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 			else if (Mpir.MpzCmpSi(m, 0) == 0)
-				return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+				return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 			else if (Mpir.MpzCmpSi(m, -2) == 0)
 				return Pi.GetWithOtherML(MantissaLength, false);
 			else
-				return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		}
 		var sign = Mpir.MpzCmpSi(m, 0) < 0 ? -1 : 1;
 		var localValue = Abs().GetWithOtherML(MantissaLength + 100, false);
@@ -628,19 +628,19 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Asin()
 	{
 		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if ((m & 1) == 0)
 		{
 			if (e != 0)
-				return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 			else if (Mpir.MpzCmpSi(m, 0) == 0)
 				return Pi.GetWithOtherML(MantissaLength, false) >> 1;
 			else if (Mpir.MpzCmpSi(m, -2) == 0)
 				return -Pi.GetWithOtherML(MantissaLength, false) >> 1;
 			else
-				return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		}
 		var sign = Mpir.MpzCmpSi(m, 0) < 0 ? -1 : 1;
 		var localValue = Abs().GetWithOtherML(MantissaLength + 100, false);
@@ -835,7 +835,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// <remarks>Данный метод является альтернативным названием для <see cref="Cosh(LongReal)">Cosh()</see>.</remarks>
 	public static LongReal Ch(LongReal value) => value.Cosh();
 
-	public object Clone() => Copy();
+	public object Clone() => new LongReal(m, e, MantissaLength);
 
 	/// <summary>
 	/// Сравнивает данное число с <see langword="int"/>.
@@ -968,9 +968,6 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		_ => 0,
 	};
 
-	/// <inheritdoc cref="Clone"/>
-	public LongReal Copy() => new(m, e.Copy(), MantissaLength);
-
 	/// <summary>
 	/// Вычисляет косинус данного числа.
 	/// </summary>
@@ -986,11 +983,11 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return new((int)(m - ShiftedMantissaOverflow) switch
 			{
 				1 => 0,
-				_ => (MpzT.One << MantissaLength + 1) + 4,
+				_ => ShiftedMantissaOverflow + 4,
 			}, UnsignedLongReal.Zero, MantissaLength);
 		var abs = Abs();
 		if (abs >= Tau << MantissaLength)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		var divisor = Tau.GetWithOtherML(MantissaLength + 100, false);
 		var localValue = abs.GetWithOtherML(MantissaLength + 100, false) % divisor;
 		var oldDivisor = divisor;
@@ -1001,7 +998,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			localValue = oldDivisor - localValue;
 		oldDivisor = divisor;
 		if (localValue == (divisor >>= 1))
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		(var sign, localValue) = localValue >= divisor ? (-1, oldDivisor - localValue) : (1, localValue);
 		if (Mpir.MpzCmp(localValue.m, localValue.ZeroMantissa) == 0)
 			return new(sign - 1, 0, MantissaLength);
@@ -1012,7 +1009,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (!reverse)
 			return (cos * sign).GetWithOtherML(MantissaLength, false);
 		else if (cos.e == 0 && Mpir.MpzCmpSi(cos.m, 0) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		else
 			return (AddInternal(One, -cos.ReciprocInternal().SquareInternal().ReciprocInternal(), MantissaLength + 100)
 				.ReciprocInternal().SqrtInternal().ReciprocInternal() * sign).GetWithOtherML(MantissaLength, false);
@@ -1558,7 +1555,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	internal LongReal GetWithOtherML(int mantissaLength, bool copy)
 	{
 		if (mantissaLength == MantissaLength)
-			return copy ? Copy() : this;
+			return this;
 		if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
 			return new((MpzT.One << mantissaLength + 1) + (m - ShiftedMantissaOverflow), e, mantissaLength);
 		var mantissa = m >> 1;
@@ -1646,15 +1643,15 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Log()
 	{
 		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 3, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 3, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, PositiveInfinityMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 2, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 2, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, NegativeInfinityMantissa) == 0 || Mpir.MpzCmp(m, NaNMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) < 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		else if (this == E)
 			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength);
 		else if (e > int.MaxValue)
@@ -1716,15 +1713,15 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Log2()
 	{
 		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 3, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 3, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, PositiveInfinityMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 2, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 2, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, NegativeInfinityMantissa) == 0 || Mpir.MpzCmp(m, NaNMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) < 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) == 0)
 			return new(e, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 1) == 0)
@@ -1932,9 +1929,9 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return new((int)(m - ShiftedMantissaOverflow) switch
 			{
 				1 => 0,
-				2 => (MpzT.One << MantissaLength + 1) + 2,
-				3 => (MpzT.One << MantissaLength + 1) + 1,
-				4 => (MpzT.One << MantissaLength + 1) + 4,
+				2 => ShiftedMantissaOverflow + 2,
+				3 => ShiftedMantissaOverflow + 1,
+				4 => ShiftedMantissaOverflow + 4,
 				_ => throw new InvalidOperationException("Невозможно возвести в степень. Возможные причины:\r\n"
 					+ InternalError + $"Текущее состояние: число - {this},"
 					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}"),
@@ -2012,7 +2009,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Reciproc()
 	{
 		if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
-			return new((MpzT.One << MantissaLength + 1) + (int)(m - ShiftedMantissaOverflow) switch
+			return new(ShiftedMantissaOverflow + (int)(m - ShiftedMantissaOverflow) switch
 			{
 				1 => 2,
 				2 or 3 => 1,
@@ -2202,23 +2199,23 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Sin()
 	{
 		if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
-			return new((MpzT.One << MantissaLength + 1) + (int)(m - ShiftedMantissaOverflow) switch
+			return new(ShiftedMantissaOverflow + (int)(m - ShiftedMantissaOverflow) switch
 			{
 				1 => 1,
 				_ => 4,
 			}, UnsignedLongReal.Zero, MantissaLength);
 		var abs = Abs();
 		if (abs >= Tau << MantissaLength)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		var divisor = Tau.GetWithOtherML(MantissaLength * 2, false);
 		var localValue = this - Floor(GetWithOtherML(MantissaLength * 2, false) / divisor) * divisor;
 		if (Mpir.MpzCmp(localValue.m, localValue.ZeroMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		var oldDivisor = divisor;
 		divisor >>= 1;
 		(var sign, localValue) = localValue >= divisor ? (-1, oldDivisor - localValue) : (1, localValue);
 		if (localValue == divisor)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		oldDivisor = divisor;
 		if (localValue >= (divisor >>= 1))
 			localValue = oldDivisor - localValue;
@@ -2285,13 +2282,13 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Sqrt()
 	{
 		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, PositiveInfinityMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 2, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 2, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, NegativeInfinityMantissa) == 0 || Mpir.MpzCmp(m, NaNMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) < 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
 			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength);
 		else if ((m & 1) != 0)
@@ -2327,16 +2324,16 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Square()
 	{
 		if (Mpir.MpzCmp(m, NaNMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + 4, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1)
+			return new(ShiftedMantissaOverflow
 				+ ((Mpir.MpzCmp(m, PositiveInfinityMantissa) == 0 || Mpir.MpzCmp(m, NegativeInfinityMantissa) == 0)
 				? 4 : 1), UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, NegativeInfinityMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + (Mpir.MpzCmpSi(m, 0) < 0 ? 2 : 3),
+			return new(ShiftedMantissaOverflow + (Mpir.MpzCmpSi(m, 0) < 0 ? 2 : 3),
 				UnsignedLongReal.Zero, MantissaLength);
 		else if (Mpir.MpzCmp(m, PositiveInfinityMantissa) == 0)
-			return new((MpzT.One << MantissaLength + 1) + (Mpir.MpzCmpSi(m, 0) < 0 ? 3 : 2),
+			return new(ShiftedMantissaOverflow + (Mpir.MpzCmpSi(m, 0) < 0 ? 3 : 2),
 				UnsignedLongReal.Zero, MantissaLength);
 		if (Mpir.MpzCmpSi(m, 0) == 0 && e == 0)
 			return this;
@@ -2567,7 +2564,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		ArgumentNullException.ThrowIfNull(conversionType);
 		if (conversionType == typeof(LongReal))
-			return Copy();
+			return this;
 		IConvertible value = this;
 		if (conversionType == typeof(sbyte))
 			return value.ToSByte(provider);
@@ -2598,7 +2595,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (conversionType == typeof(string))
 			return value.ToString(provider);
 		else if (conversionType == typeof(object))
-			return Copy();
+			return this;
 		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(LongReal)
 			+ ", " + nameof(MpzT) + ", " + nameof(MpuT)
 			+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
@@ -2624,11 +2621,11 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Truncate()
 	{
 		if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
-			return Copy();
+			return this;
 		if ((m & 1) != 0)
-			return new((MpzT.One << MantissaLength + 1) + 1, UnsignedLongReal.Zero, MantissaLength);
+			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		if (e >= MantissaLength)
-			return Copy();
+			return this;
 		var newM = m >> 1;
 		if (Mpir.MpzCmpSi(m, 0) < 0)
 			newM = ~newM;
@@ -2891,7 +2888,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		if (value.e is null)
 			return new(value.m);
 		else if (value.e > int.MaxValue)
-			return 0;
+			return MpuT.Zero;
 		var eAfterCast = (int)value.e;
 		if (eAfterCast <= value.MantissaLength)
 			return (MpuT)(value.MantissaOverflow + (value.m >> 1)).ShiftRightRound(value.MantissaLength - eAfterCast);
@@ -3000,7 +2997,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 				+ (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) <= 0 || Mpir.MpzCmp(x.m, x.ZeroMantissa) == 0
 				? 1 : 4), UnsignedLongReal.Zero, mantissaLength);
 		else if (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) > 0 || y == 1)
-			return x.Copy();
+			return x;
 		else if ((y & y - 1) == 0)
 			return x << (int)uint.TrailingZeroCount(y);
 		else if (Mpir.MpzCmpSi(x.m, 0) < 0)
@@ -3070,7 +3067,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 				return new((MpzT.One << mantissaLength + 1) + (x < 0 ? 3 : 2), UnsignedLongReal.Zero, mantissaLength);
 		}
 		else if (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) > 0 || y == 1)
-			return x.Copy();
+			return x;
 		else if ((y & y - 1) == 0)
 			return x >> (int)uint.TrailingZeroCount(y);
 		else if (Mpir.MpzCmpSi(x.m, 0) < 0)
@@ -3102,7 +3099,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (Mpir.MpzCmp(x.m, x.PositiveInfinityMantissa) == 0)
 			return new((MpzT.One << maxMantissaLength + 1) + (y < 0 ? 3 : 2), UnsignedLongReal.Zero, maxMantissaLength);
 		else if (Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
-			return x.Copy();
+			return x;
 		else if (Mpir.MpzCmpSi(y.m, -2) == 0 && y.e == 0)
 			return -x;
 		x = x.GetWithOtherML(maxMantissaLength, false);
@@ -3131,7 +3128,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(shiftAmount);
 		if (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) > 0 || shiftAmount == 0)
-			return x.Copy();
+			return x;
 		else if ((x.m & 1) == 0)
 			return new(x.m, x.e + shiftAmount, x.MantissaLength);
 		else if (x.e >= shiftAmount)
@@ -3145,7 +3142,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(shiftAmount);
 		if (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) > 0 || shiftAmount == 0)
-			return x.Copy();
+			return x;
 		else if ((x.m & 1) == 0)
 			return new(x.m, x.e + shiftAmount, x.MantissaLength);
 		else if (x.e >= shiftAmount)
@@ -3159,7 +3156,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(shiftAmount);
 		if (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) > 0 || shiftAmount == 0)
-			return x.Copy();
+			return x;
 		else if ((x.m & 1) != 0)
 			return new(x.m, x.e + shiftAmount, x.MantissaLength);
 		else if (x.e >= shiftAmount)
@@ -3173,7 +3170,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(shiftAmount);
 		if (Mpir.MpzCmp(x.m, x.ShiftedMantissaOverflow) > 0 || shiftAmount == 0)
-			return x.Copy();
+			return x;
 		else if ((x.m & 1) != 0)
 			return new(x.m, x.e + shiftAmount, x.MantissaLength);
 		else if (x.e >= shiftAmount)

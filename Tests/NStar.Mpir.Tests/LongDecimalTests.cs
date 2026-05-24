@@ -7,38 +7,39 @@ public class LongDecimalTests
 	private static readonly int MantissaByteLength = GetArrayLength(MantissaLength, 8);
 
 	[TestMethod]
-	public void ComplexTestMixed()
+	public void ComplexTestDecimal()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 		List<byte> bytes = new(1024);
 	l1:
-		bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
-		if (random.Next(2) == 0)
-			bytes.Resize(8);
-		else
-			bytes.ResizeLeft(8);
-		var r = BitConverter.ToDouble(bytes.AsSpan());
-		LongDecimal ld = new(r, MantissaLength);
+		var d = ConstructDecimal();
+		LongDecimal ld = new(d, MantissaLength);
 		Validate();
 		var actions = new[]
 		{
 			() =>
 			{
 				var op = (byte)random.Next(256);
-				r += op;
+				if ((double)d + op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d += op;
 				ld += op;
 				Validate();
 			}, () =>
 			{
 				var op = (byte)random.Next(256);
-				r -= op;
+				if ((double)d - op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d -= op;
 				ld -= op;
 				Validate();
 			}, () =>
 			{
 				var op = (byte)random.Next(256);
-				r *= op;
+				if ((double)d * op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d *= op;
 				ld *= op;
 				Validate();
 			}, () =>
@@ -46,179 +47,233 @@ public class LongDecimalTests
 				var op = (byte)random.Next(256);
 				if (op == 0)
 					return;
-				r /= op;
+				if ((double)d / op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d /= op;
 				ld /= op;
 				Validate();
 			}, () =>
 			{
 				var op = (byte)random.Next(256);
 				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
-				r %= op;
-				ld %= op;
-				ValidateRemainder(order - 52);
-			}, () =>
-			{
-				var op = random.Next();
-				r += op;
-				ld += op;
-				Validate();
-			}, () =>
-			{
-				var op = random.Next();
-				r -= op;
-				ld -= op;
-				Validate();
-			}, () =>
-			{
-				var op = random.Next();
-				r *= op;
-				ld *= op;
-				Validate();
-			}, () =>
-			{
-				var op = random.Next();
-				if (op == 0)
-					return;
-				r /= op;
-				ld /= op;
-				Validate();
-			}, () =>
-			{
-				var op = random.Next();
-				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
-				r %= op;
-				ld %= op;
-				ValidateRemainder(order - 52);
-			}, () =>
-			{
-				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
-				r += op;
-				ld += op;
-				Validate();
-			}, () =>
-			{
-				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
-				r -= op;
-				ld -= op;
-				Validate();
-			}, () =>
-			{
-				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
-				r *= op;
-				ld *= op;
-				Validate();
-			}, () =>
-			{
-				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
-				if (op == 0)
-					return;
-				r /= op;
-				ld /= op;
-				Validate();
-			}, () =>
-			{
-				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
-				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
-				r %= op;
-				ld %= op;
-				ValidateRemainder(order - 52);
-			}, () =>
-			{
-				var op = random.NextInt64();
-				r += op;
-				ld += (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = random.NextInt64();
-				r -= op;
-				ld -= (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = random.NextInt64();
-				r *= op;
-				ld *= (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = random.NextInt64();
-				if (op == 0)
-					return;
-				r /= op;
-				ld /= (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = random.NextInt64();
-				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
-				r %= op;
-				ld %= (double)op;
-				ValidateRemainder(order - 52);
-			}, () =>
-			{
-				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				r += op;
-				ld += (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				r -= op;
-				ld -= (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				r *= op;
-				ld *= (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				if (op == 0)
-					return;
-				r /= op;
-				ld /= (double)op;
-				Validate();
-			}, () =>
-			{
-				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
-				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
-				r %= op;
-				ld %= (double)op;
-				ValidateRemainder(order - 52);
-			}, () =>
-			{
-				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
-				r += op;
-				ld += op;
-				Validate();
-			}, () =>
-			{
-				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
-				r -= op;
-				ld -= op;
-				Validate();
-			}, () =>
-			{
-				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
-				r *= op;
-				ld *= op;
-				Validate();
-			}, () =>
-			{
-				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
 				if (op.Equals(0))
 					return;
-				r /= op;
+				d %= op;
+				ld %= op;
+				ValidateRemainder(order - 52);
+			}, () =>
+			{
+				var op = random.Next();
+				if ((double)d + op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d += op;
+				ld += op;
+				Validate();
+			}, () =>
+			{
+				var op = random.Next();
+				if ((double)d - op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d -= op;
+				ld -= op;
+				Validate();
+			}, () =>
+			{
+				var op = random.Next();
+				if ((double)d * op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d *= op;
+				ld *= op;
+				Validate();
+			}, () =>
+			{
+				var op = random.Next();
+				if (op == 0)
+					return;
+				if ((double)d / op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d /= op;
 				ld /= op;
 				Validate();
 			}, () =>
 			{
-				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
+				var op = random.Next();
 				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
-				r %= op;
+				if (op.Equals(0))
+					return;
+				d %= op;
+				ld %= op;
+				ValidateRemainder(order - 52);
+			}, () =>
+			{
+				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
+				if ((double)d + op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d += op;
+				ld += op;
+				Validate();
+			}, () =>
+			{
+				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
+				if ((double)d - op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d -= op;
+				ld -= op;
+				Validate();
+			}, () =>
+			{
+				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
+				if ((double)d * op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d *= op;
+				ld *= op;
+				Validate();
+			}, () =>
+			{
+				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
+				if (op == 0)
+					return;
+				if ((double)d / op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d /= op;
+				ld /= op;
+				Validate();
+			}, () =>
+			{
+				var op = (uint)random.Next() + (random.Next(2) == 0 ? 0 : 1u << 31);
+				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
+				if (op.Equals(0))
+					return;
+				d %= op;
+				ld %= op;
+				ValidateRemainder(order - 52);
+			}, () =>
+			{
+				var op = random.NextInt64();
+				if ((double)d + op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d += op;
+				ld += (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = random.NextInt64();
+				if ((double)d - op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d -= op;
+				ld -= (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = random.NextInt64();
+				if ((double)d * op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d *= op;
+				ld *= (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = random.NextInt64();
+				if (op == 0)
+					return;
+				if ((double)d / op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d /= op;
+				ld /= (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = random.NextInt64();
+				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
+				if (op.Equals(0))
+					return;
+				d %= op;
+				ld %= (decimal)op;
+				ValidateRemainder(order - 52);
+			}, () =>
+			{
+				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
+				if ((double)d + op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d += op;
+				ld += (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
+				if ((double)d - op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d -= op;
+				ld -= (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
+				if ((double)d * op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d *= op;
+				ld *= (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
+				if (op == 0)
+					return;
+				if ((double)d / op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d /= op;
+				ld /= (decimal)op;
+				Validate();
+			}, () =>
+			{
+				var op = (ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63);
+				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
+				if (op.Equals(0))
+					return;
+				d %= op;
+				ld %= (decimal)op;
+				ValidateRemainder(order - 52);
+			}, () =>
+			{
+				var op = ConstructDecimal();
+				if ((double)d + (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d += op;
+				ld += op;
+				Validate();
+			}, () =>
+			{
+				var op = ConstructDecimal();
+				if ((double)d - (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d -= op;
+				ld -= op;
+				Validate();
+			}, () =>
+			{
+				var op = ConstructDecimal();
+				if ((double)d * (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d *= op;
+				ld *= op;
+				Validate();
+			}, () =>
+			{
+				var op = ConstructDecimal();
+				if (op.Equals(0))
+					return;
+				if ((double)d / (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
+					return;
+				d /= op;
+				ld /= op;
+				Validate();
+			}, () =>
+			{
+				var op = ConstructDecimal();
+				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
+				if (op.Equals(0))
+					return;
+				d %= op;
 				ld %= op;
 				ValidateRemainder(order - 52);
 			},
@@ -226,14 +281,28 @@ public class LongDecimalTests
 		for (var i = 0; i < 1000; i++)
 		{
 			if (random.Next(100) == 0)
-				r = BitConverter.ToDouble(bytes.AsSpan());
-			ld = new(r, MantissaLength);
+				d = ConstructDecimal();
+			ld = new(d, MantissaLength);
 			actions.Random(random)();
 		}
 		if (counter++ < 10000)
 			goto l1;
-		void Validate() => Assert.IsTrue(r.Equals((double)ld) || r is double.NaN && (double)ld is double.NaN);
-		void ValidateRemainder(int validOrder) => Assert.IsTrue(Abs(r - (double)ld) < ((LongDecimal)1).Shift(validOrder));
+		decimal ConstructDecimal()
+		{
+			bytes.FillInPlace(random.Next(17), _ => (byte)random.Next(256));
+			if (random.Next(2) == 0)
+				bytes.Resize(16);
+			else
+				bytes.ResizeLeft(16);
+			var i1 = BitConverter.ToInt32(bytes.AsSpan());
+			var i2 = BitConverter.ToInt32(bytes.AsSpan(4));
+			var i3 = BitConverter.ToInt32(bytes.AsSpan(8));
+			var i4 = BitConverter.ToInt32(bytes.AsSpan(12));
+			i4 = (i4 & int.MaxValue) % 29 << 16 | i4 & int.MinValue;
+			return new([i1, i2, i3, i4]);
+		}
+		void Validate() => Assert.AreEqual(d, (decimal)ld);
+		void ValidateRemainder(int validOrder) => Assert.IsTrue(Abs(d - (decimal)ld) < ((LongDecimal)1).Shift(validOrder));
 	}
 
 	[TestMethod]
@@ -666,11 +735,11 @@ public class LongDecimalTests
 			bytes.PadRightInPlace(4);
 			shiftAmount = BitConverter.ToInt32(bytes.AsSpan());
 			Assert.IsLessThanOrEqualTo(uz << shiftAmount >> MantissaLength, (uz << shiftAmount) - (ld << shiftAmount));
-			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, 1),
+			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, MpuT.One),
 				uz.ShiftRightRound(shiftAmount) - (ld >> shiftAmount));
 			Assert.IsLessThanOrEqualTo(uz << shiftAmount >> MantissaLength,
 				(uz << shiftAmount) - (ld << (UnsignedLongDecimal)shiftAmount));
-			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, 1),
+			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, MpuT.One),
 				uz.ShiftRightRound(shiftAmount) - (ld >> (UnsignedLongDecimal)shiftAmount));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;

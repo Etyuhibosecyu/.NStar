@@ -32,7 +32,8 @@ internal enum InsertionBehavior : byte
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, Core.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
+public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, Core.IDictionary,
+	IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
 {
 	[NonSerialized]
 	private protected object? _syncRoot;
@@ -71,15 +72,11 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public abstract G.ICollection<TKey> Keys { get; }
 
-	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => Keys;
-
 	System.Collections.ICollection System.Collections.IDictionary.Keys => GetKeyListHelper();
 
 	G.IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
 	public abstract G.ICollection<TValue> Values { get; }
-
-	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => Values;
 
 	System.Collections.ICollection System.Collections.IDictionary.Values => GetValueListHelper();
 
@@ -132,7 +129,8 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		}
 	}
 
-	void G.ICollection<G.KeyValuePair<TKey, TValue>>.Add(G.KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
+	void G.ICollection<G.KeyValuePair<TKey, TValue>>.Add(G.KeyValuePair<TKey, TValue> keyValuePair) =>
+		Add(keyValuePair.Key, keyValuePair.Value);
 
 	public abstract void Clear();
 
@@ -143,7 +141,8 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return false;
 	}
 
-	public virtual bool Contains(G.KeyValuePair<TKey, TValue> keyValuePair) => Contains((keyValuePair.Key, keyValuePair.Value));
+	public virtual bool Contains(G.KeyValuePair<TKey, TValue> keyValuePair) =>
+		Contains((keyValuePair.Key, keyValuePair.Value));
 
 	bool System.Collections.IDictionary.Contains(object key)
 	{
@@ -154,7 +153,8 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public abstract bool ContainsKey(TKey key);
 
-	void G.ICollection<G.KeyValuePair<TKey, TValue>>.CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) => CopyToHelper(array, arrayIndex);
+	void G.ICollection<G.KeyValuePair<TKey, TValue>>.CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
+		CopyToHelper(array, arrayIndex);
 
 	void System.Collections.ICollection.CopyTo(Array array, int index) => CopyToHelper(array, index);
 
@@ -162,11 +162,31 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	protected abstract void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex);
 
-	public abstract void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other);
-
+	/// <summary>
+	/// Удаляет из данного словаря все пары ключ-значение, <b>при</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
+	/// <remarks>
+	/// Если в данном словаре и в указанной последовательности окажутся разные значения по одинаковому ключу,
+	/// данный метод этот ключ не удаляет - используйте <see cref="ExceptWith(G.IEnumerable{TKey})"/>.
+	/// </remarks>
 	public abstract void ExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other);
 
+	/// <summary>
+	/// Удаляет из данного словаря все ключи, <b>при</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
 	public abstract void ExceptWith(G.IEnumerable<TKey> other);
+
+	/// <summary>
+	/// Удаляет из данного словаря все кортежи из ключа и значения, <b>при</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
+	/// <remarks>
+	/// Если в данном словаре и в указанной последовательности окажутся разные значения по одинаковому ключу,
+	/// данный метод этот ключ не удаляет - используйте <see cref="ExceptWith(G.IEnumerable{TKey})"/>.
+	/// </remarks>
+	public abstract void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other);
 
 	public abstract G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator();
 
@@ -182,11 +202,23 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	internal virtual System.Collections.ICollection GetValueListHelper() => (System.Collections.ICollection)Values;
 
-	public abstract void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other);
-
+	/// <summary>
+	/// Удаляет из данного словаря все пары ключ-значение, <b>от</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
 	public abstract void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other);
 
+	/// <summary>
+	/// Удаляет из данного словаря все ключи, <b>от</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
 	public abstract void IntersectWith(G.IEnumerable<TKey> other);
+
+	/// <summary>
+	/// Удаляет из данного словаря все кортежи из ключа и значения, <b>от</b>сутствующие в указанной последовательности.
+	/// </summary>
+	/// <param name="other">Последовательность для удаления элементов.</param>
+	public abstract void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other);
 
 	private protected static bool IsCompatibleKey(object key)
 	{
@@ -196,6 +228,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public abstract bool Remove(TKey key);
 
+	/// <inheritdoc cref="G.Dictionary{TKey, TValue}.Remove(TKey, out TValue)"/>
 	public abstract bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value);
 
 	void System.Collections.IDictionary.Remove(object key)
@@ -208,7 +241,8 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
 
-	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new G.KeyValuePair<TKey, TValue>(item.Key, item.Value));
+	public virtual bool RemoveValue((TKey Key, TValue Value) item) =>
+		RemoveValue(new G.KeyValuePair<TKey, TValue>(item.Key, item.Value));
 
 	public virtual TCertain SymmetricExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
@@ -264,8 +298,10 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return (TCertain)this;
 	}
 
+	/// <inheritdoc cref="G.Dictionary{TKey, TValue}.TrimExcess()"/>
 	public abstract void TrimExcess();
 
+	/// <inheritdoc cref="G.Dictionary{TKey, TValue}.TryAdd(TKey, TValue)"/>
 	public virtual bool TryAdd(TKey key, TValue value)
 	{
 		if (!ContainsKey(key))
@@ -296,15 +332,18 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 	}
 }
 
+/// <summary>
+/// Представляет коллекцию пар ключ-значение с доступом по ключу за Õ(1) ("O(1) в большинстве случаев").
+/// Добавление и удаление ключа также занимают Õ(1) времени, а вот индексация отсутствует.
+/// В отличие от словаря от Microsoft, этот также предоставляет дополнительные методы, такие как
+/// <see cref="ExceptWith(G.IEnumerable{TKey})"/>, <see cref="IntersectWith(G.IEnumerable{TKey})"/> и некоторые другие.
+/// </summary>
+/// <typeparam name="TKey">Тип всех ключей в словаре.</typeparam>
+/// <typeparam name="TValue">Тип всех значений в словаре.</typeparam>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-// Оптимизированный словарь, который для маленького числа элементов использует поэлементное сравнение
-// и добавление в конец (импортируя этот функционал из SortedDictionary, чтобы не создавать
-// лишнее дублирование), а при увеличении числа элементов действует как классический словарь от Microsoft.
 public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<TKey, TValue>> where TKey : notnull
 {
-	private protected SortedDictionary<TKey, TValue>? low;
-	private protected G.Dictionary<TKey, TValue>? high;
-	private protected bool isHigh;
+	private protected G.Dictionary<TKey, TValue> _underlying;
 	private protected readonly G.IEqualityComparer<TKey> comparer;
 	private protected const int _hashThreshold = 64;
 
@@ -316,25 +355,22 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public Dictionary(Func<TKey, TKey, bool> equalFunction) : this(new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
 	public Dictionary(int capacity, G.IEqualityComparer<TKey>? comparer)
 	{
 		comparer ??= G.EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-		if (capacity <= _hashThreshold)
-			low = new(capacity, new Comparer<TKey>((x, y) => comparer.Equals(x, y) ? 0 : -1));
-		else
-		{
-			high = new(capacity);
-			isHigh = true;
-		}
+		_underlying = new(capacity);
 	}
 
-	public Dictionary(int capacity, Func<TKey, TKey, bool> equalFunction) : this(capacity, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(int capacity, Func<TKey, TKey, bool> equalFunction)
+	: this(capacity, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
 	public Dictionary(G.IDictionary<TKey, TValue> dictionary) : this(dictionary, (G.IEqualityComparer<TKey>?)null) { }
 
@@ -343,448 +379,231 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		comparer ??= G.EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		ArgumentNullException.ThrowIfNull(dictionary);
-		if (dictionary.Count < _hashThreshold)
-			low = new(dictionary, new Comparer<TKey>((x, y) => comparer.Equals(x, y) ? 0 : -1));
-		else
-		{
-			high = new(dictionary, comparer);
-			isHigh = true;
-		}
+		_underlying = new(dictionary, comparer);
 	}
 
-	public Dictionary(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction) : this(dictionary, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction)
+		: this(dictionary, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(G.IDictionary<TKey, TValue> dictionary,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection) : this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection)
+		: this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection), comparer) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		G.IEqualityComparer<TKey>? comparer)
+		: this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection), comparer) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		Func<TKey, TKey, bool> equalFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+		: this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection)
+	: this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer)
+	: this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction)
+	: this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection)
+	: this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer)
+	: this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction)
+	: this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(List<(TKey Key, TValue Value)> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
+	public Dictionary(List<(TKey Key, TValue Value)> collection)
+	: this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(List<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+	public Dictionary(List<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer)
+	: this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
 
-	public Dictionary(List<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(List<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction)
+	: this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(List<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(List<(TKey Key, TValue Value)> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection) : this(collection, (G.IEqualityComparer<TKey>?)null) { }
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection)
+	: this(collection, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer)
+	: this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
 
-	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction)
+	: this(collection, new EComparer<TKey>(equalFunction)) { }
 
-	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(List<G.KeyValuePair<TKey, TValue>> collection,
+		Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction)
+	: this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public override TValue this[TKey key]
-	{
-		get
-		{
-			if (!isHigh && low is not null)
-				return low[key];
-			else if (high is not null)
-				return high[key];
-			else
-				throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-					+ InternalError
-					+ $"Текущее состояние: длина - {Length},"
-					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		}
-		set
-		{
-			if (!isHigh && low is not null)
-				low[key] = value;
-			else if (high is not null)
-				high[key] = value;
-			else
-				throw new InvalidOperationException("Невозможно установить элемент. Возможные причины:\r\n"
-					+ InternalError
-					+ $"Текущее состояние: длина - {Length},"
-					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-			if (!isHigh && low is not null && Length >= _hashThreshold)
-			{
-				high = new(low, comparer);
-				low = null;
-				isHigh = true;
-			}
-		}
-	}
+	public override TValue this[TKey key] { get => _underlying[key]; set => _underlying[key] = value; }
 
 	public virtual G.IEqualityComparer<TKey> Comparer => comparer;
 
-	public override int Length
-	{
-		get
-		{
-			if (!isHigh && low is not null)
-				return low.Length;
-			else if (high is not null)
-				return high.Count;
-			else
-				return 0;
-		}
-	}
+	public override int Length => _underlying.Count;
 
-	public override G.ICollection<TKey> Keys
-	{
-		get
-		{
-			if (!isHigh && low is not null)
-				return low.Keys;
-			else if (high is not null)
-				return high.Keys;
-			else
-				throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
-					+ InternalError
-					+ $"Текущее состояние: длина - {Length},"
-					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		}
-	}
+	public override G.ICollection<TKey> Keys => _underlying.Keys;
 
-	public override G.ICollection<TValue> Values
-	{
-		get
-		{
-			if (!isHigh && low is not null)
-				return low.Values;
-			else if (high is not null)
-				return high.Values;
-			else
-				throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
-					+ InternalError
-					+ $"Текущее состояние: длина - {Length},"
-					+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		}
-	}
+	public override G.ICollection<TValue> Values => _underlying.Values;
 
-	public override void Add(TKey key, TValue value)
-	{
-		if (!isHigh && low is not null)
-			low.Add(key, value);
-		else if (high is not null)
-			high.Add(key, value);
-		else
-			throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-		if (!isHigh && low is not null && Length >= _hashThreshold)
-		{
-			high = new(low, comparer);
-			low = null;
-			isHigh = true;
-		}
-	}
+	public override void Add(TKey key, TValue value) => _underlying.Add(key, value);
 
-	public override void Clear()
-	{
-		if (!isHigh && low is not null)
-			low.Clear();
-		else if (high is not null)
-			high.Clear();
-		else
-			throw new InvalidOperationException("Невозможно очистить словарь. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	public override void Clear() => _underlying.Clear();
 
-	public override bool ContainsKey(TKey key)
-	{
-		if (!isHigh && low is not null)
-			return low.ContainsKey(key);
-		else if (high is not null)
-			return high.ContainsKey(key);
-		else
-			throw new InvalidOperationException("Невозможно найти элемент. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	public override bool ContainsKey(TKey key) => _underlying.ContainsKey(key);
 
-	protected override void CopyToHelper(Array array, int arrayIndex)
-	{
-		if (!isHigh && low is not null)
-			((Core.ICollection)low).CopyTo(array, arrayIndex);
-		else if (high is not null)
-			((System.Collections.ICollection)high).CopyTo(array, arrayIndex);
-		else
-			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	protected override void CopyToHelper(Array array, int arrayIndex) =>
+		((System.Collections.ICollection)_underlying).CopyTo(array, arrayIndex);
 
-	protected override void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-	{
-		if (!isHigh && low is not null)
-			((G.ICollection<G.KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
-		else if (high is not null)
-			((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
-		else
-			throw new InvalidOperationException("Невозможно скопировать элементы. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	protected override void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) =>
+		((G.ICollection<G.KeyValuePair<TKey, TValue>>)_underlying).CopyTo(array, arrayIndex);
 
+	/// <inheritdoc/>
 	public override void ExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
-		if (!isHigh && low is not null)
-			low.ExceptWith(other);
-		else if (high is not null)
-			foreach (var x in other)
-				RemoveValue(x);
-		else
-			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+		foreach (var x in other)
+			RemoveValue(x);
 	}
 
+	/// <inheritdoc/>
 	public override void ExceptWith(G.IEnumerable<TKey> other)
 	{
-		if (!isHigh && low is not null)
-			low.ExceptWith(other);
-		else if (high is not null)
-			foreach (var x in other)
-				Remove(x);
-		else
-			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+		foreach (var x in other)
+			Remove(x);
 	}
 
+	/// <inheritdoc/>
 	public override void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
-		if (!isHigh && low is not null)
-			low.ExceptWith(other);
-		else if (high is not null)
-			foreach (var x in other)
-				RemoveValue(x);
-		else
-			throw new InvalidOperationException("Невозможно найти разницу. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
+		foreach (var x in other)
+			RemoveValue(x);
 	}
 
-	public override G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator()
-	{
-		if (!isHigh && low is not null)
-			return low.GetEnumerator();
-		else if (high is not null)
-			return high.GetEnumerator();
-		else
-			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	public override G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator() => _underlying.GetEnumerator();
 
-	protected override IDictionaryEnumerator GetEnumeratorHelper()
-	{
-		if (!isHigh && low is not null)
-			return ((System.Collections.IDictionary)low).GetEnumerator();
-		else if (high is not null)
-			return high.GetEnumerator();
-		else
-			throw new InvalidOperationException("Невозможно получить структуру IEnumerator. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	protected override IDictionaryEnumerator GetEnumeratorHelper() => _underlying.GetEnumerator();
 
-	internal override System.Collections.ICollection GetKeyListHelper()
-	{
-		if (!isHigh && low is not null)
-			return low.GetKeyListHelper();
-		else if (high is not null)
-			return high.Keys;
-		else
-			throw new InvalidOperationException("Невозможно получить коллекцию ключей. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	internal override System.Collections.ICollection GetKeyListHelper() => _underlying.Keys;
 
-	internal override System.Collections.ICollection GetValueListHelper()
-	{
-		if (!isHigh && low is not null)
-			return low.GetValueListHelper();
-		else if (high is not null)
-			return high.Values;
-		else
-			throw new InvalidOperationException("Невозможно получить коллекцию значений. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	internal override System.Collections.ICollection GetValueListHelper() => _underlying.Values;
 
-	public override void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
-	{
-		if (!isHigh && low is not null)
-			low.IntersectWith(other);
-		else if (high is not null)
-            ExceptWith(this.ToHashSet().ExceptWith(other));
-        else
-            throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	/// <inheritdoc/>
+	public override void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other) =>
+		ExceptWith(this.ToHashSet().ExceptWith(other));
 
-	public override void IntersectWith(G.IEnumerable<TKey> other)
-	{
-		if (!isHigh && low is not null)
-			low.IntersectWith(other);
-		else if (high is not null)
-            ExceptWith(Keys.ToHashSet().ExceptWith(other));
-        else
-            throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	/// <inheritdoc/>
+	public override void IntersectWith(G.IEnumerable<TKey> other) => ExceptWith(Keys.ToHashSet().ExceptWith(other));
 
-	public override void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other)
-	{
-		if (!isHigh && low is not null)
-			low.IntersectWith(other);
-		else if (high is not null)
-            ExceptWith(this.Convert(x => (x.Key, x.Value)).ToHashSet().ExceptWith(other));
-        else
-            throw new InvalidOperationException("Невозможно найти пересечение. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	/// <inheritdoc/>
+	public override void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other) =>
+		ExceptWith(this.Convert(x => (x.Key, x.Value)).ToHashSet().ExceptWith(other));
 
-	public override bool Remove(TKey key)
-	{
-		if (!isHigh && low is not null)
-			return low.Remove(key);
-		else if (high is not null)
-			return high.Remove(key);
-		else
-			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	public override bool Remove(TKey key) => _underlying.Remove(key);
 
-	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
-	{
-		if (!isHigh && low is not null)
-			return low.Remove(key, out value);
-		else if (high is not null)
-			return high.Remove(key, out value);
-		else
-			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	/// <inheritdoc/>
+	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value) => _underlying.Remove(key, out value);
 
-	public override bool RemoveValue(G.KeyValuePair<TKey, TValue> keyValuePair)
-	{
-		if (!isHigh && low is not null)
-			return low.RemoveValue(keyValuePair);
-		else if (high is not null)
-			return ((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
-		else
-			throw new InvalidOperationException("Невозможно удалить элемент. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	public override bool RemoveValue(G.KeyValuePair<TKey, TValue> keyValuePair) =>
+		((G.ICollection<G.KeyValuePair<TKey, TValue>>)_underlying).Remove(keyValuePair);
 
-	public override void TrimExcess()
-	{
-		if (!isHigh && low is not null)
-			low.TrimExcess();
-		else if (high is not null)
-			high.TrimExcess();
-		else
-			throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	/// <inheritdoc/>
+	public override void TrimExcess() => _underlying.TrimExcess();
 
-	public override bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
-	{
-		if (!isHigh && low is not null)
-			return low.TryGetValue(key, out value);
-		else if (high is not null)
-			return high.TryGetValue(key, out value);
-		else
-			throw new InvalidOperationException("Невозможно получить элемент. Возможные причины:\r\n"
-				+ InternalError
-				+ $"Текущее состояние: длина - {Length},"
-				+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");
-	}
+	public override bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) =>
+		_underlying.TryGetValue(key, out value);
 
-	public static implicit operator Dictionary<TKey, TValue>((TKey, TValue) x) => new() { x };
+	public static implicit operator Dictionary<TKey, TValue>((TKey, TValue) x) => new([x]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue)) x) => new([x.Item1, x.Item2]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue)) x) => new([x.Item1, x.Item2, x.Item3, x.Item4]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue)) x) => new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue)) x) => new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10,
+			x.Item11, x.Item12, x.Item13]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10,
+			x.Item11, x.Item12, x.Item13, x.Item14]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10,
+			x.Item11, x.Item12, x.Item13, x.Item14, x.Item15]);
 
-	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) => new() { x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16 };
+	public static implicit operator Dictionary<TKey, TValue>(((TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue),
+		(TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue), (TKey, TValue)) x) =>
+		new([x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10,
+			x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16]);
 
 	public static implicit operator G.Dictionary<TKey, TValue>?(Dictionary<TKey, TValue>? x)
 	{
 		if (x is null)
 			return null;
-		else if (!x.isHigh && x.low is not null)
-			return new(x.low);
-		return x.high ?? throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
+		return x._underlying
+			?? throw new InvalidOperationException("Невозможно выполнить преобразование. Возможные причины:\r\n"
 			+ InternalError
 			+ $"Текущее состояние: длина - {x.Length},"
 			+ $" ThreadId={Environment.CurrentManagedThreadId}, Timestamp={DateTime.UtcNow}");

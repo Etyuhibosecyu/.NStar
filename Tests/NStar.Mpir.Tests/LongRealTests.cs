@@ -7,7 +7,7 @@ public class LongRealTests
 	private static readonly int MantissaByteLength = GetArrayLength(MantissaLength, 8);
 
 	[TestMethod]
-	public void ComplexTestMixed()
+	public void ComplexTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
@@ -648,11 +648,11 @@ public class LongRealTests
 			bytes.PadRightInPlace(4);
 			shiftAmount = BitConverter.ToInt32(bytes.AsSpan());
 			Assert.IsLessThanOrEqualTo(uz << shiftAmount >> MantissaLength, (uz << shiftAmount) - (lr << shiftAmount));
-			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, 1),
+			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, MpuT.One),
 				uz.ShiftRightRound(shiftAmount) - (lr >> shiftAmount));
 			Assert.IsLessThanOrEqualTo(uz << shiftAmount >> MantissaLength,
 				(uz << shiftAmount) - (lr << (UnsignedLongReal)shiftAmount));
-			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, 1),
+			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, MpuT.One),
 				uz.ShiftRightRound(shiftAmount) - (lr >> (UnsignedLongReal)shiftAmount));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;

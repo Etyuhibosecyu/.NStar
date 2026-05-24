@@ -20,7 +20,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	/// <summary>Initializes a new MpuT to 0.</summary>
 	public MpuT() => val = Mpir.MpuInit();
 	/// <summary>Initializes a new MpuT to the same value as op.</summary>
-	public MpuT(MpuT op) => val = Mpir.MpuInitSet(op.val == 0 ? 0 : op);
+	public MpuT(MpuT op) => val = Mpir.MpuInitSet(op.val == 0 ? Zero : op);
 	/// <summary>Initializes a new MpuT to the unsigned int op.</summary>
 	public MpuT(uint op) => val = Mpir.MpuInitSetUi(op);
 	/// <summary>Initializes a new MpuT to the int op.</summary>
@@ -116,6 +116,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		}
 	}
 
+	internal static MpuT Two { get; } = new(2);
 	public static MpuT Zero { get; } = new(0);
 
 	/// <summary>Returns a new MpuT which is the absolute value of this value.</summary>
@@ -478,7 +479,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static MpuT Gcd(MpuT x, int y)
 	{
-		if (Mpir.MpuCmpSi(y, 0) < 0)
+		if (y < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuGcdUi(z, x, (uint)y);
@@ -607,7 +608,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	private bool IsInPowersOfFiveDictionary()
 	{
-		if (BitLength > 69658 || PowersOfTen.Length == 0)
+		if (BitLength > 69658 || PowersOfFive.Length == 0)
 			return false;
 		MpuT? powerOfFive;
 		lock (lockObj)
@@ -662,14 +663,14 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static int JacobiSymbol(int x, MpuT y)
 	{
-		if (IsEvenInteger(y) || Mpir.MpuCmpSi(y, 0) < 0)
+		if (IsEvenInteger(y) || y < 0)
 			throw new ArgumentException(nameof(y) + " must be odd and positive");
 		return Mpir.MpuSiKronecker(x, y);
 	}
 
 	public static int JacobiSymbol(MpuT x, int y)
 	{
-		if ((y & 1) == 0 || Mpir.MpuCmpSi(y, 0) < 0)
+		if ((y & 1) == 0 || y < 0)
 			throw new ArgumentException(null, nameof(y));
 		return Mpir.MpuKroneckerSi(x, y);
 	}
@@ -712,7 +713,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public static MpuT Lcm(MpuT x, int y)
 	{
-		if (Mpir.MpuCmpSi(y, 0) < 0)
+		if (y < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuLcmUi(z, x, (uint)y);
@@ -1463,7 +1464,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
 	public static MpuT operator +(int x, MpuT y)
 	{
-		if (Mpir.MpuCmpSi(y, -x) > 0)
+		if (Mpir.MpuCmpSi(y, -x) < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		if (x >= 0)
@@ -1578,7 +1579,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
 	public static MpuT operator *(MpuT x, int y)
 	{
-		if (Mpir.MpuCmpSi(y, 0) < 0)
+		if (y < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuMulSi(z, x, y);
@@ -1611,7 +1612,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
 	public static MpuT operator /(MpuT x, int y)
 	{
-		if (Mpir.MpuCmpSi(y, 0) < 0)
+		if (y < 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var quotient = new MpuT();
 		Mpir.MpuTdivQUi(quotient, x, (uint)y);

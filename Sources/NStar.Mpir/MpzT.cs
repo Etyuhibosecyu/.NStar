@@ -651,7 +651,7 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 
 	public static int JacobiSymbol(MpzT x, int y)
 	{
-		if ((y & 1) == 0 || Mpir.MpzCmpSi(y, 0) < 0)
+		if ((y & 1) == 0 || y < 0)
 			throw new ArgumentException(null, nameof(y));
 		return Mpir.MpzKroneckerSi(x, y);
 	}

@@ -9,13 +9,11 @@ internal interface IUnsignedLongReal<TSelf> : ICloneable, IConvertible, IDisposa
 	internal int MantissaLength { get; }
 	private protected MpuT MantissaOverflow { get; }
 
-	TSelf Copy();
-
 	object IConvertible.ToType(Type conversionType, IFormatProvider? provider)
 	{
 		ArgumentNullException.ThrowIfNull(conversionType);
 		if (conversionType == typeof(UnsignedLongReal))
-			return Copy();
+			return this;
 		IConvertible value = this;
 		if (conversionType == typeof(sbyte))
 			return value.ToSByte(provider);
@@ -46,7 +44,7 @@ internal interface IUnsignedLongReal<TSelf> : ICloneable, IConvertible, IDisposa
 		else if (conversionType == typeof(string))
 			return value.ToString(provider);
 		else if (conversionType == typeof(object))
-			return Copy();
+			return this;
 		throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(UnsignedLongReal)
 			+ ", " + nameof(MpzT) + ", " + nameof(MpuT)
 			+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, decimal, string, object.");
