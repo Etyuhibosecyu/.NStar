@@ -133,7 +133,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal(LongReal op) : this(op.m, op.e, op.MantissaLength) { }
 
 	public LongReal(LongReal op, int mantissaLength)
-		: this(op.GetWithOtherML(mantissaLength, true) is var x ? x.m : MpzT.Zero, x.e, mantissaLength) { }
+		: this(op.GetWithOtherML(mantissaLength) is var x ? x.m : MpzT.Zero, x.e, mantissaLength) { }
 
 	public LongReal(BigInteger op, int mantissaLength = DefaultMantissaLength)
 		: this(new MpzT(op), mantissaLength) { }
@@ -299,7 +299,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Acos()
 	{
 		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return Pi.GetWithOtherML(MantissaLength, false) >> 1;
+			return Pi.GetWithOtherML(MantissaLength) >> 1;
 		else if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
 			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		else if ((m & 1) == 0)
@@ -309,15 +309,15 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			else if (Mpir.MpzCmpSi(m, 0) == 0)
 				return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 			else if (Mpir.MpzCmpSi(m, -2) == 0)
-				return Pi.GetWithOtherML(MantissaLength, false);
+				return Pi.GetWithOtherML(MantissaLength);
 			else
 				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		}
 		var sign = Mpir.MpzCmpSi(m, 0) < 0 ? -1 : 1;
-		var localValue = Abs().GetWithOtherML(MantissaLength + 100, false);
+		var localValue = Abs().GetWithOtherML(MantissaLength + 100);
 		var threshold = new LongReal(MpzT.Zero, UnsignedLongReal.One, MantissaLength + 100).SqrtInternal().ReciprocInternal();
 		if (localValue == threshold)
-			return (2 - sign) * Pi.GetWithOtherML(MantissaLength, false) >> 2;
+			return (2 - sign) * Pi.GetWithOtherML(MantissaLength) >> 2;
 		var reverse = localValue < threshold;
 		if (reverse)
 			localValue = AddInternal(One, -localValue.ReciprocInternal().SquareInternal().ReciprocInternal(),
@@ -328,10 +328,10 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
 		localValue = localValue.AsinInternal() << 1;
 		if (reverse)
-			localValue = (Pi.GetWithOtherML(MantissaLength + 100, false) >> 1) - localValue;
+			localValue = (Pi.GetWithOtherML(MantissaLength + 100) >> 1) - localValue;
 		if (sign < 0)
-			localValue = Pi.GetWithOtherML(MantissaLength + 100, false) - localValue;
-		return localValue.GetWithOtherML(MantissaLength, false);
+			localValue = Pi.GetWithOtherML(MantissaLength + 100) - localValue;
+		return localValue.GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -388,7 +388,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 					return new((xm + ym).ShiftRightRound(1) << 1 | (switchE ? 0 : 1), newE, mantissaLength);
 				}
 				if (eDiff > mantissaLength)
-					return x.GetWithOtherML(mantissaLength, true);
+					return x.GetWithOtherML(mantissaLength);
 				var mSum = xm + (mantissaOverflow + ym).ShiftRightRound((int)eDiff);
 				if (Mpir.MpzCmp(mSum, mantissaOverflow) >= 0)
 				{
@@ -404,7 +404,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			{
 				var eDiff = y.e - x.e;
 				if (eDiff > mantissaLength)
-					return x.GetWithOtherML(mantissaLength, true);
+					return x.GetWithOtherML(mantissaLength);
 				var mDiff = mantissaOverflow + xm - (mantissaOverflow + ym).ShiftRightRound((int)eDiff);
 				if (Mpir.MpzCmp(mDiff, mantissaOverflow) >= 0)
 					return new((mDiff & mantissaMask) << 1 | 1, x.e.GetWithOtherML(mantissaLength, true), mantissaLength);
@@ -439,7 +439,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			{
 				var eDiff = x.e + y.e + 1;
 				if (eDiff > mantissaLength)
-					return x.GetWithOtherML(mantissaLength, true);
+					return x.GetWithOtherML(mantissaLength);
 				var mSum = xm + (mantissaOverflow + ym).ShiftRightRound((int)eDiff);
 				if (Mpir.MpzCmp(mSum, mantissaOverflow) >= 0)
 				{
@@ -454,7 +454,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			{
 				var eDiff = x.e + y.e + 1;
 				if (eDiff > mantissaLength)
-					return x.GetWithOtherML(mantissaLength, true);
+					return x.GetWithOtherML(mantissaLength);
 				var mDiff = mantissaOverflow + xm - (mantissaOverflow + ym).ShiftRightRound((int)eDiff);
 				if (Mpir.MpzCmp(mDiff, mantissaOverflow) >= 0)
 					return new((mDiff & mantissaMask) << 1, x.e.GetWithOtherML(mantissaLength, true), mantissaLength);
@@ -486,7 +486,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 					return new((xm + ym).ShiftRightRound(1) << 1, newE, mantissaLength);
 				}
 				if (eDiff > mantissaLength)
-					return x.GetWithOtherML(mantissaLength, true);
+					return x.GetWithOtherML(mantissaLength);
 				var mSum = xm + (mantissaOverflow + ym).ShiftRightRound((int)eDiff);
 				if (Mpir.MpzCmp(mSum, mantissaOverflow) >= 0)
 				{
@@ -501,7 +501,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			{
 				var eDiff = x.e - y.e;
 				if (eDiff > mantissaLength)
-					return x.GetWithOtherML(mantissaLength, true);
+					return x.GetWithOtherML(mantissaLength);
 				var mDiff = mantissaOverflow + xm - (mantissaOverflow + ym).ShiftRightRound((int)eDiff);
 				if (Mpir.MpzCmp(mDiff, mantissaOverflow) >= 0)
 					return new((mDiff & mantissaMask) << 1, x.e.GetWithOtherML(mantissaLength, true), mantissaLength);
@@ -590,8 +590,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return new((MpzT.One << maxMantissaLength + 1) + 4, UnsignedLongReal.Zero, maxMantissaLength);
 		else if (Mpir.MpzCmpSi(x.m, 0) == 0 && x.e == 0 && Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
 			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength);
-		x = x.GetWithOtherML(maxMantissaLength, false);
-		y = y.GetWithOtherML(maxMantissaLength, false);
+		x = x.GetWithOtherML(maxMantissaLength);
+		y = y.GetWithOtherML(maxMantissaLength);
 		if (Mpir.MpzCmp(x.m, y.m) == 0 && x.e == y.e)
 			return new(x.m, x.e, maxMantissaLength);
 		if (y > x)
@@ -612,7 +612,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		LongReal a = x, b = y;
 		do
 			(a, b) = (AddInternal(a, b, maxMantissaLength) >> 1, GeometricMeanInternal(a, b, maxMantissaLength));
-		while (a.e != b.e || ((a.m >> 1) - (b.m >> 1)).Abs() > 1);
+		while (a.e != b.e || Mpir.MpzCmpabsUi((a.m >> 1) - (b.m >> 1), 1) > 0);
 		return a;
 	}
 
@@ -636,17 +636,17 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			if (e != 0)
 				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 			else if (Mpir.MpzCmpSi(m, 0) == 0)
-				return Pi.GetWithOtherML(MantissaLength, false) >> 1;
+				return Pi.GetWithOtherML(MantissaLength) >> 1;
 			else if (Mpir.MpzCmpSi(m, -2) == 0)
-				return -Pi.GetWithOtherML(MantissaLength, false) >> 1;
+				return -Pi.GetWithOtherML(MantissaLength) >> 1;
 			else
 				return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
 		}
 		var sign = Mpir.MpzCmpSi(m, 0) < 0 ? -1 : 1;
-		var localValue = Abs().GetWithOtherML(MantissaLength + 100, false);
+		var localValue = Abs().GetWithOtherML(MantissaLength + 100);
 		var threshold = new LongReal(MpzT.Zero, UnsignedLongReal.One, MantissaLength + 100).SqrtInternal().ReciprocInternal();
 		if (localValue == threshold)
-			return (2 - sign) * Pi.GetWithOtherML(MantissaLength, false) >> 2;
+			return (2 - sign) * Pi.GetWithOtherML(MantissaLength) >> 2;
 		var reverse = localValue > threshold;
 		if (!reverse)
 			localValue = AddInternal(One, -localValue.ReciprocInternal().SquareInternal().ReciprocInternal(),
@@ -657,8 +657,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			MantissaLength + 100).ReciprocInternal().SqrtInternal().ReciprocInternal();
 		localValue = localValue.AsinInternal() << 1;
 		if (reverse)
-			localValue = (Pi.GetWithOtherML(MantissaLength + 100, false) >> 1) - localValue;
-		return (localValue * sign).GetWithOtherML(MantissaLength, false);
+			localValue = (Pi.GetWithOtherML(MantissaLength + 100) >> 1) - localValue;
+		return (localValue * sign).GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -988,8 +988,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var abs = Abs();
 		if (abs >= Tau << MantissaLength)
 			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
-		var divisor = Tau.GetWithOtherML(MantissaLength + 100, false);
-		var localValue = abs.GetWithOtherML(MantissaLength + 100, false) % divisor;
+		var divisor = Tau.GetWithOtherML(MantissaLength + 100);
+		var localValue = abs.GetWithOtherML(MantissaLength + 100) % divisor;
 		var oldDivisor = divisor;
 		divisor >>= 1;
 		if (localValue == divisor)
@@ -1007,12 +1007,12 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		(var reverse, localValue) = (localValue >= divisor) ? (true, oldDivisor - localValue) : (false, localValue);
 		var cos = localValue.CosInternal();
 		if (!reverse)
-			return (cos * sign).GetWithOtherML(MantissaLength, false);
+			return (cos * sign).GetWithOtherML(MantissaLength);
 		else if (cos.e == 0 && Mpir.MpzCmpSi(cos.m, 0) == 0)
 			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		else
 			return (AddInternal(One, -cos.ReciprocInternal().SquareInternal().ReciprocInternal(), MantissaLength + 100)
-				.ReciprocInternal().SqrtInternal().ReciprocInternal() * sign).GetWithOtherML(MantissaLength, false);
+				.ReciprocInternal().SqrtInternal().ReciprocInternal() * sign).GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -1060,8 +1060,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 
 	private LongReal CosInternal()
 	{
-		var frac = Reciproc();
-		frac = MultiplyInternal(frac, frac, MantissaLength);
+		var frac = Reciproc().SquareInternal();
 		var rowSum = AddInternal(new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength), -frac.Reciproc() >> 1, MantissaLength);
 		LongReal factorial = new(MpzT.Zero, UnsignedLongReal.One, MantissaLength), prev;
 		var fracExponent = frac;
@@ -1186,7 +1185,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для неопределенности - неопределенность;<br />
 	/// в остальных случаях - e в степени данного числа (экспонента).
 	/// </returns>
-	public LongReal Exp() => (this / Ln2.GetWithOtherML(MantissaLength, false)).PowerOf2();
+	public LongReal Exp() => (this / Ln2.GetWithOtherML(MantissaLength)).PowerOf2();
 
 	/// <summary>
 	/// Вычисляет e в степени указанного числа (экспоненту).
@@ -1199,7 +1198,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для неопределенности - неопределенность;<br />
 	/// в остальных случаях - e в степени <paramref name="value"/> (экспонента).
 	/// </returns>
-	public static LongReal Exp(LongReal value) => (value / Ln2.GetWithOtherML(value.MantissaLength, false)).PowerOf2();
+	public static LongReal Exp(LongReal value) => (value / Ln2.GetWithOtherML(value.MantissaLength)).PowerOf2();
 
 	/// <summary>
 	/// Возвращает наибольшее целое число, которое не больше данного числа:
@@ -1236,202 +1235,6 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// в остальных случаях - см. общее описание.
 	/// </returns>
 	public static LongReal Floor(LongReal value) => value.Floor();
-
-	private static string Format(string mantissaDigits, MpzT exponent, bool isNegative, string format, NumberFormatInfo nfi)
-	{
-		mantissaDigits = mantissaDigits.TrimStart('0');
-		if (string.IsNullOrEmpty(mantissaDigits))
-			return "0";
-		StringBuilder result = new();
-		if (isNegative)
-			result.Append(nfi.NegativeSign);
-		if (!string.IsNullOrEmpty(format))
-			return FormatWithCustomFormat(mantissaDigits, exponent, format, nfi, result);
-		else
-			return FormatStandardScientific(mantissaDigits, exponent, nfi, result);
-	}
-
-	private static string FormatExponential(string mantissaDigits, MpzT exponent, int precision,
-		NumberFormatInfo nfi, StringBuilder result)
-	{
-		// Нормализуем мантиссу к диапазону [1, 10)
-		if (mantissaDigits.Length > 1)
-		{
-			mantissaDigits = MpuT.TryParse(mantissaDigits, out var uz)
-				&& uz.ShiftRightRoundDec(Math.Max(mantissaDigits.Length - precision - 1, 0)).ToString() is var s
-				? s![0] + nfi.NumberDecimalSeparator + s[1..] : "1";
-		}
-		result.Append(mantissaDigits);
-		result.Append('E');
-		if (exponent >= 0)
-			result.Append(nfi.PositiveSign);
-		result.Append(exponent);
-		return result.ToString();
-	}
-
-	private static string FormatFixedPoint(string mantissaDigits, MpzT exponent, int precision,
-		NumberFormatInfo nfi, StringBuilder result)
-	{
-		exponent++;
-		if (exponent.BitLength > 31)
-			throw new FormatException("Слишком большое или слишком маленькое число"
-				+ " для форматирования с фиксированной точккой!");
-		var decimalPosition = (int)exponent; // Позиция десятичной точки
-		if (decimalPosition <= 0)
-		{
-			// Очень маленькое число — добавляем ведущие нули
-			result.Append('0').Append(nfi.NumberDecimalSeparator);
-			result.Append('0', -decimalPosition);
-			result.Append(MpuT.TryParse(mantissaDigits, out var uz)
-				&& uz.ShiftRightRoundDec(Math.Max(mantissaDigits.Length - precision, 0)).ToString() is var s ? s! : "1");
-		}
-		else if (decimalPosition >= mantissaDigits.Length)
-		{
-			// Очень большое число — добавляем trailing нули
-			ReadOnlySpan<char> chars = [.. mantissaDigits, .. RedStarLinq.Fill('0', decimalPosition - mantissaDigits.Length)];
-			result.Append(FormatInsertGroupSeparators(chars, nfi));
-			if (precision != 0)
-			{
-				result.Append(nfi.NumberDecimalSeparator);
-				result.Append('0', precision);
-			}
-		}
-		else
-		{
-			// Число в нормальном диапазоне
-			result.Append(FormatInsertGroupSeparators(mantissaDigits.AsSpan(0, decimalPosition), nfi));
-			result.Append(nfi.NumberDecimalSeparator);
-			result.Append(mantissaDigits.AsSpan(decimalPosition,
-				Math.Min(precision, mantissaDigits.Length - decimalPosition)));
-			result.Append('0', Math.Max(precision - mantissaDigits.Length + decimalPosition, 0));
-		}
-		return result.ToString();
-	}
-
-	private static string FormatFixedPointAutoPrecision(string mantissaDigits, MpzT exponent, int maxPrecision,
-		NumberFormatInfo nfi, StringBuilder result)
-	{
-		exponent++;
-		if (exponent.BitLength > 31)
-			throw new FormatException("Слишком большое или слишком маленькое число"
-				+ " для форматирования с фиксированной точккой!");
-		var decimalPosition = (int)exponent; // Позиция десятичной точки
-		if (decimalPosition <= 0)
-		{
-			// Очень маленькое число — добавляем ведущие нули
-			result.Append('0').Append(nfi.NumberDecimalSeparator);
-			result.Append('0', -decimalPosition);
-			result.Append(MpuT.TryParse(mantissaDigits, out var uz)
-				&& uz.ShiftRightRoundDec(Math.Max(mantissaDigits.Length - maxPrecision, 0)).ToString() is var s ? s : "1");
-		}
-		else if (decimalPosition >= mantissaDigits.Length)
-		{
-			// Очень большое число — добавляем trailing нули
-			ReadOnlySpan<char> chars = [.. mantissaDigits, .. RedStarLinq.Fill('0', decimalPosition - mantissaDigits.Length)];
-			result.Append(FormatInsertGroupSeparators(chars, nfi));
-		}
-		else
-		{
-			// Число в нормальном диапазоне
-			result.Append(FormatInsertGroupSeparators(mantissaDigits.AsSpan(0, decimalPosition), nfi));
-			result.Append(nfi.NumberDecimalSeparator);
-			result.Append(mantissaDigits[decimalPosition..]);
-		}
-		return result.ToString();
-	}
-
-	private static string FormatFlexible(string mantissaDigits, MpzT exponent, int precision,
-		NumberFormatInfo nfi, StringBuilder result)
-	{
-		var exponent2 = exponent + 1;
-		if (exponent2.BitLength > 31)
-			return FormatExponential(mantissaDigits, exponent2, precision, nfi, result);
-		var decimalPosition = (int)exponent2; // Позиция десятичной точки
-		var exponentialLength = Math.Min(mantissaDigits.Length, precision + 1) + nfi.NumberDecimalSeparator.Length
-			+ Mpir.MpzSizeinbase(exponent2, 10) + (exponent2 >= 0 ? nfi.PositiveSign.Length : nfi.NegativeSign.Length) + 1;
-		int fixedLength;
-		if (decimalPosition <= 0)
-			fixedLength = -decimalPosition + nfi.NumberDecimalSeparator.Length
-				+ Math.Min(precision, mantissaDigits.Length) + 1;
-		else if (decimalPosition >= mantissaDigits.Length)
-			fixedLength = decimalPosition;
-		else
-			fixedLength = mantissaDigits.Length + nfi.NumberDecimalSeparator.Length;
-		var sum = 0;
-		_ = nfi.NumberGroupSizes.Find(x =>
-		{
-			sum += x;
-			var value = sum >= decimalPosition;
-			if (!value)
-				fixedLength++;
-			return value;
-		});
-		fixedLength += nfi.NumberGroupSizes.Length == 0 || nfi.NumberGroupSizes[^1] == 0
-			? 0 : (decimalPosition - sum) / nfi.NumberGroupSizes[^1];
-		if (exponentialLength < fixedLength)
-			return FormatExponential(mantissaDigits, exponent, precision, nfi, result);
-		else
-			return FormatFixedPointAutoPrecision(mantissaDigits, exponent, precision, nfi, result);
-	}
-
-	private static ReadOnlySpan<char> FormatInsertGroupSeparators(ReadOnlySpan<char> input, NumberFormatInfo nfi)
-	{
-		if (input.Length < 3)
-			return input;
-		StringBuilder result = new();
-		var numberGroupIndex = 0;
-		var offset = 0;
-		for (var i = input.Length - 1; i >= 0; i--)
-		{
-			result.Append(input[i]);
-			if (i == 0 || input.Length - i - offset != nfi.NumberGroupSizes[numberGroupIndex])
-				continue;
-			result.Append([.. nfi.NumberGroupSeparator.Reverse()]);
-			offset += nfi.NumberGroupSizes[numberGroupIndex];
-			if (numberGroupIndex < nfi.NumberGroupSizes.Length - 1)
-				numberGroupIndex++;
-		}
-		return result.ToString().Reverse().ToArray();
-	}
-
-	private static string FormatStandardScientific(string mantissaDigits, MpzT exponent,
-		NumberFormatInfo nfi, StringBuilder result)
-	{
-		if (mantissaDigits.Length == 1)
-		{
-			result.Append(mantissaDigits[0]);
-			result.Append('E');
-			if (exponent >= 0)
-				result.Append('+');
-			result.Append(exponent);
-		}
-		else
-		{
-			result.Append(mantissaDigits[0]);
-			result.Append(nfi.NumberDecimalSeparator);
-			result.Append(mantissaDigits.AsSpan(1));
-			result.Append('E');
-			if (exponent >= 0)
-				result.Append('+');
-			result.Append(exponent);
-		}
-		return result.ToString();
-	}
-
-	private static string FormatWithCustomFormat(string mantissaDigits, MpzT exponent, string format,
-		NumberFormatInfo nfi, StringBuilder result)
-	{
-		var formatSpecifier = format[0];
-		var precision = format.Length > 1 ? int.Parse(format[1..]) : 6;
-		return char.ToUpper(formatSpecifier) switch
-		{
-			'F' or 'N' => FormatFixedPoint(mantissaDigits, exponent, precision, nfi, result),
-			'E' => FormatExponential(mantissaDigits, exponent, precision, nfi, result),
-			'G' => FormatFlexible(mantissaDigits, exponent, precision, nfi, result),
-			'P' => FormatFixedPoint(mantissaDigits, exponent - 2, precision, nfi, result) + '%',
-			_ => FormatStandardScientific(mantissaDigits, exponent, nfi, result),
-		};
-	}
 
 	/// <summary>
 	/// Возвращает дробную часть данного числа, положительную для положительных чисел
@@ -1505,8 +1308,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return new((MpzT.One << maxMantissaLength + 1) + 4, UnsignedLongReal.Zero, maxMantissaLength);
 		else if (Mpir.MpzCmpSi(x.m, 0) == 0 && x.e == 0 && Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
 			return new(MpzT.Zero, UnsignedLongReal.Zero, maxMantissaLength);
-		x = x.GetWithOtherML(maxMantissaLength, false);
-		y = y.GetWithOtherML(maxMantissaLength, false);
+		x = x.GetWithOtherML(maxMantissaLength);
+		y = y.GetWithOtherML(maxMantissaLength);
 		if (Mpir.MpzCmp(x.m, y.m) == 0 && x.e == y.e)
 			return new(x.m, x.e, maxMantissaLength);
 		var xShiftAmount = (x.m & 1) != 0 ? x.e + 1 : 0;
@@ -1552,7 +1355,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public int GetSignificandByteCount() => m.GetByteCount();
 	TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
 
-	internal LongReal GetWithOtherML(int mantissaLength, bool copy)
+	internal LongReal GetWithOtherML(int mantissaLength)
 	{
 		if (mantissaLength == MantissaLength)
 			return this;
@@ -1571,7 +1374,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public static bool IsComplexNumber(LongReal value) => true;
 	/// <summary>Проверяет, является ли данное число четным (возвращает true или false).</summary>
 	public bool IsEven() => Mpir.MpzCmp(m, ZeroMantissa) == 0 || (m & 1) == 0 && e >= 1
-		&& (e > MantissaLength || TrailingZeroCount(m >> 1) >= MantissaLength - (int)e + 1);
+		&& (e > MantissaLength || Mpir.MpzCmpSi(m, 0) == 0 || TrailingZeroCount(m >> 1) >= MantissaLength - (int)e + 1);
 	public static bool IsEvenInteger(LongReal value) => value.IsEven();
 	public static bool IsFinite(LongReal value) => true;
 	public static bool IsImaginaryNumber(LongReal value) => false;
@@ -1579,7 +1382,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		Mpir.MpzCmp(value.m, value.PositiveInfinityMantissa) == 0 || Mpir.MpzCmp(value.m, value.NegativeInfinityMantissa) == 0;
 	/// <summary>Проверяет, является ли данное число целым (возвращает true или false).</summary>
 	public bool IsInteger() => Mpir.MpzCmp(m, ZeroMantissa) == 0 || (m & 1) == 0
-		&& (e > MantissaLength || TrailingZeroCount(m >> 1) >= MantissaLength - (int)e);
+		&& (e > MantissaLength || Mpir.MpzCmpSi(m, 0) == 0 || TrailingZeroCount(m >> 1) >= MantissaLength - (int)e);
 	public static bool IsInteger(LongReal value) => value.IsInteger();
 	public static bool IsNaN(LongReal value) => Mpir.MpzCmp(value.m, value.NaNMantissa) == 0;
 	public static bool IsNegative(LongReal value) => Mpir.MpzCmpSi(value.m, 0) < 0;
@@ -1588,7 +1391,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public static bool IsOddInteger(LongReal value) =>
 		Mpir.MpzCmp(value.m, value.ShiftedMantissaOverflow) <= 0 && (value.m & 1) == 0 && value.e <= value.MantissaLength
 		&& TrailingZeroCount(value.m >> 1) == value.MantissaLength - (int)value.e;
-	public static bool IsPositive(LongReal value) => value.m > 0;
+	public static bool IsPositive(LongReal value) =>
+		Mpir.MpzCmpSi(value.m, 0) >= 0 && Mpir.MpzCmp(value.m, value.ShiftedMantissaOverflow) <= 0;
 	public static bool IsPositiveInfinity(LongReal value) => Mpir.MpzCmp(value.m, value.PositiveInfinityMantissa) == 0;
 	public static bool IsRealNumber(LongReal value) => true;
 	public static bool IsSubnormal(LongReal value) => false;
@@ -1656,14 +1460,14 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return new(MpzT.Zero, UnsignedLongReal.Zero, MantissaLength);
 		else if (e > int.MaxValue)
 		{
-			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength) >> MantissaLength);
+			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength + 100) >> MantissaLength);
 			var eLog = (m & 1) != 0 ? ~e : e;
-			return eLog * Ln2.GetWithOtherML(MantissaLength, false) + mLog;
+			return (eLog * Ln2.GetWithOtherML(MantissaLength + 100) + mLog).GetWithOtherML(MantissaLength);
 		}
 		else if ((m & 1) != 0)
-			return -LogInternal(One / this);
+			return -LogInternal(One / GetWithOtherML(MantissaLength + 100)).GetWithOtherML(MantissaLength);
 		else
-			return LogInternal(this);
+			return LogInternal(GetWithOtherML(MantissaLength + 100)).GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -1681,7 +1485,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Log(LongReal @base)
 	{
 		var maxMantissaLength = Math.Max(MantissaLength, @base.MantissaLength);
-		return GetWithOtherML(maxMantissaLength, false).Log() / @base.GetWithOtherML(maxMantissaLength, false).Log();
+		return GetWithOtherML(maxMantissaLength).Log() / @base.GetWithOtherML(maxMantissaLength).Log();
 	}
 
 	/// <summary>
@@ -1728,14 +1532,16 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return -new LongReal(e + UnsignedLongReal.One, MantissaLength);
 		else if (e > int.MaxValue)
 		{
-			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength) >> MantissaLength);
+			var mLog = LogInternal(new LongReal(MantissaOverflow + (m >> 1), MantissaLength + 100) >> MantissaLength);
 			var eLog = (m & 1) != 0 ? ~e : e;
-			return eLog + mLog / Ln2.GetWithOtherML(MantissaLength, false);
+			return (eLog + mLog / Ln2.GetWithOtherML(MantissaLength + 100)).GetWithOtherML(MantissaLength);
 		}
 		else if ((m & 1) != 0)
-			return -LogInternal(One / this) / Ln2.GetWithOtherML(MantissaLength, false);
+			return -(LogInternal(One / GetWithOtherML(MantissaLength + 100)) / Ln2.GetWithOtherML(MantissaLength + 100))
+			.GetWithOtherML(MantissaLength);
 		else
-			return LogInternal(this) / Ln2.GetWithOtherML(MantissaLength, false);
+			return (LogInternal(GetWithOtherML(MantissaLength + 100)) / Ln2.GetWithOtherML(MantissaLength + 100))
+			.GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -1763,7 +1569,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для единицы - ноль;<br />
 	/// в остальных случаях - логарифм данного числа по основанию 10.
 	/// </returns>
-	public LongReal Log10() => Log() / Ln10.GetWithOtherML(MantissaLength, false);
+	public LongReal Log10() => Log() / Ln10.GetWithOtherML(MantissaLength);
 
 	/// <summary>
 	/// Вычисляет логарифм указанного числа по основанию 10.
@@ -1777,14 +1583,14 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для единицы - ноль;<br />
 	/// в остальных случаях - логарифм <paramref name="value"/> по основанию 10.
 	/// </returns>
-	public static LongReal Log10(LongReal value) => value.Log() / Ln10.GetWithOtherML(value.MantissaLength, false);
+	public static LongReal Log10(LongReal value) => value.Log() / Ln10.GetWithOtherML(value.MantissaLength);
 
 	private static LongReal LogInternal(LongReal value)
 	{
 		var m = GetArrayLength(value.MantissaLength, 2);
 		var s = value * new LongReal(0, m, value.MantissaLength);
-		return (Pi.GetWithOtherML(value.MantissaLength, false) / AGM(1, 4 / s) >> 1)
-			- m * Ln2.GetWithOtherML(value.MantissaLength, false);
+		return (Pi.GetWithOtherML(value.MantissaLength) / AGM(One, 4 / s) >> 1)
+			- m * Ln2.GetWithOtherML(value.MantissaLength);
 	}
 
 	/// <summary>Возвращает число x. Метод-заглушка, чтобы не удалять имя метода, если не осталось второго параметра.</summary>
@@ -1896,7 +1702,9 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Power(LongReal exponent)
 	{
 		var maxMantissaLength = Math.Max(MantissaLength, exponent.MantissaLength);
-		return (exponent.GetWithOtherML(maxMantissaLength, false) * GetWithOtherML(maxMantissaLength, false).Log2()).PowerOf2();
+		if (exponent.IsInteger() && exponent < uint.MaxValue)
+			return GetWithOtherML(maxMantissaLength).Power((uint)exponent);
+		return (exponent.GetWithOtherML(maxMantissaLength) * GetWithOtherML(maxMantissaLength).Log2()).PowerOf2();
 	}
 
 	/// <summary>
@@ -1939,7 +1747,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var floor = Floor();
 		LongReal floorExponent = floor < 0 ? new(MpzT.One, (UnsignedLongReal)~floor, MantissaLength)
 			: new(MpzT.Zero, (UnsignedLongReal)floor, MantissaLength);
-		var fracOriginal = (GetWithOtherML(MantissaLength * 2, false) - floor) * Ln2.GetWithOtherML(MantissaLength * 2, false);
+		var fracOriginal = (GetWithOtherML(MantissaLength * 2) - floor) * Ln2.GetWithOtherML(MantissaLength * 2);
 		if (Mpir.MpzCmp(fracOriginal.m, fracOriginal.ZeroMantissa) == 0)
 			return floorExponent;
 		LongReal frac = fracOriginal.ReciprocInternal(), fracPow = frac;
@@ -1956,7 +1764,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 #pragma warning restore S1121
 #pragma warning restore IDE0079 // Удалить ненужное подавление
 		} while (rowSum.e != prev.e || Mpir.MpzCmpabsUi((rowSum.m >> 1) - (prev.m >> 1), 1) > 0);
-		return floorExponent * rowSum.GetWithOtherML(MantissaLength, false);
+		return floorExponent * rowSum.GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -1982,7 +1790,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для неопределенности - неопределенность;<br />
 	/// в остальных случаях - 10 в степени данного числа.
 	/// </returns>
-	public LongReal PowerOf10() => (this / Log10of2.GetWithOtherML(MantissaLength, false)).PowerOf2();
+	public LongReal PowerOf10() => (this / Log10of2.GetWithOtherML(MantissaLength)).PowerOf2();
 
 	/// <summary>
 	/// Вычисляет 10 в степени указанного числа.
@@ -2207,8 +2015,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var abs = Abs();
 		if (abs >= Tau << MantissaLength)
 			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
-		var divisor = Tau.GetWithOtherML(MantissaLength * 2, false);
-		var localValue = this - Floor(GetWithOtherML(MantissaLength * 2, false) / divisor) * divisor;
+		var divisor = Tau.GetWithOtherML(MantissaLength * 2);
+		var localValue = this - Floor(GetWithOtherML(MantissaLength * 2) / divisor) * divisor;
 		if (Mpir.MpzCmp(localValue.m, localValue.ZeroMantissa) == 0)
 			return new(ShiftedMantissaOverflow + 1, UnsignedLongReal.Zero, MantissaLength);
 		var oldDivisor = divisor;
@@ -2227,7 +2035,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var cos = localValue.CosInternal();
 		return ((reverse ? cos : AddInternal(One, -cos.ReciprocInternal().SquareInternal().ReciprocInternal(),
 			MantissaLength * 2).ReciprocInternal().SqrtInternal().ReciprocInternal()) * sign)
-			.GetWithOtherML(MantissaLength, false);
+			.GetWithOtherML(MantissaLength);
 	}
 
 	/// <summary>
@@ -2317,7 +2125,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		{
 			prev = current;
 			current = AddInternal(current, DivideInternal(this, current, MantissaLength), MantissaLength) >> 1;
-		} while (current.e != prev.e || ((current.m >> 1) - (prev.m >> 1)).Abs() > 1);
+		} while (current.e != prev.e || Mpir.MpzCmpabsUi((current.m >> 1) - (prev.m >> 1), 1) > 0);
 		return current;
 	}
 
@@ -2366,7 +2174,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	public LongReal Tan()
 	{
 		var cos = Cos();
-		var tau = Tau.GetWithOtherML(MantissaLength, false);
+		var tau = Tau.GetWithOtherML(MantissaLength);
 		var result = Sqrt(1 - cos.Square()) / cos;
 		if (this - Floor(this / tau) * tau >= tau >> 1)
 			result = -result;
@@ -2523,41 +2331,9 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 
 	public string ToString(string? format, IFormatProvider? formatProvider)
 	{
-		var nfi = NumberFormatInfo.GetInstance(formatProvider);
 		if (string.IsNullOrEmpty(format))
 			format = "G16";
-		var formatSpecifier = char.ToUpper(format[0]);
-		if (formatSpecifier is not ('F' or 'N' or 'E' or 'G' or 'P') || !uint.TryParse(format[1..], out var precision))
-			throw new FormatException("Поддержка формата " + format + " в разработке."
-				+ " В настоящее время поддерживаются только форматы, состоящие из буквы F, N, G, E или P,"
-				+ " за которой следует целое неотрицательное число (состоящее только из цифр 0-9,"
-				+ " без точки и других знаков), а также пустая строка или null.");
-		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
-			return "0";
-		else if (Mpir.MpzCmp(m, PositiveInfinityMantissa) == 0)
-			return nfi.PositiveInfinitySymbol;
-		else if (Mpir.MpzCmp(m, NegativeInfinityMantissa) == 0)
-			return nfi.NegativeInfinitySymbol;
-		else if (Mpir.MpzCmp(m, NaNMantissa) == 0)
-			return nfi.NaNSymbol;
-		else if (m is null || m.val == 0)
-			return "0";
-		if (e > (MpuT)double.MaxValue)
-			return "Too large or too small number";
-		var mantissa = m >> 1;
-		var negative = Mpir.MpzCmpSi(m, 0) < 0;
-		if (negative)
-			mantissa = ~mantissa;
-		var exponent = (MpzT)e;
-		if ((m & 1) != 0)
-			exponent = ~exponent;
-		mantissa += MantissaOverflow;
-		exponent = (MpzT)Floor((exponent + (Log2(mantissa) - MantissaLength)) * Log10of2);
-		var mantissaDigits = (double)Abs(this / PowerOf10(exponent));
-		return Format(mantissaDigits
-			.ToString("F" + (formatSpecifier is 'F' or 'N' && Mpir.MpzCmpSi(exponent, int.MaxValue) <= 0
-			&& Mpir.MpzCmpSi(exponent, 0) > 0 ? exponent + precision : precision),
-			CultureInfo.InvariantCulture).Replace(".", "")?.TrimEnd('0') ?? "1", exponent, negative, format, nfi);
+		return ((LongDecimal)this).ToString(format, formatProvider);
 	}
 
 	object IConvertible.ToType(Type conversionType, IFormatProvider? provider)
@@ -2949,9 +2725,9 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (Mpir.MpzCmp(y.m, y.PositiveInfinityMantissa) == 0)
 			return new((MpzT.One << mantissaLength + 1) + 2, UnsignedLongReal.Zero, mantissaLength);
 		else if (Mpir.MpzCmp(x.m, x.ZeroMantissa) == 0)
-			return y.GetWithOtherML(mantissaLength, true);
+			return y.GetWithOtherML(mantissaLength);
 		else if (Mpir.MpzCmp(y.m, y.ZeroMantissa) == 0)
-			return x.GetWithOtherML(mantissaLength, true);
+			return x.GetWithOtherML(mantissaLength);
 		else if (Mpir.MpzCmp(x.m, y.m) == 0 && x.e == y.e)
 			return x << 1;
 		else if (Mpir.MpzCmp(x.m >> 1, ~y.m >> 1) == 0 && (x.m & 1) == (y.m & 1) && x.e == y.e)
@@ -3026,8 +2802,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		else if (Mpir.MpzCmp(y.m, y.PositiveInfinityMantissa) == 0)
 			return new((MpzT.One << maxMantissaLength + 1) + (Mpir.MpzCmpSi(x.m, 0) < 0 ? 3 : 2),
 				UnsignedLongReal.Zero, maxMantissaLength);
-		x = x.GetWithOtherML(maxMantissaLength, false);
-		y = y.GetWithOtherML(maxMantissaLength, false);
+		x = x.GetWithOtherML(maxMantissaLength);
+		y = y.GetWithOtherML(maxMantissaLength);
 		if (Mpir.MpzCmpSi(x.m, 0) == 0 && x.e == 0)
 			return y;
 		else if (Mpir.MpzCmpSi(y.m, 0) == 0 && y.e == 0)
@@ -3102,8 +2878,8 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 			return x;
 		else if (Mpir.MpzCmpSi(y.m, -2) == 0 && y.e == 0)
 			return -x;
-		x = x.GetWithOtherML(maxMantissaLength, false);
-		y = y.GetWithOtherML(maxMantissaLength, false);
+		x = x.GetWithOtherML(maxMantissaLength);
+		y = y.GetWithOtherML(maxMantissaLength);
 		UnsignedLongReal shiftAmount = new(MpuT.Zero, null, maxMantissaLength);
 		if ((x.m & 1) != 0)
 			shiftAmount = x.e + 1;

@@ -464,8 +464,8 @@ public class LongRealTests
 				else
 					bytes.ResizeLeft(8);
 			}
-			var uz2 = BitConverter.ToDouble(bytes.AsSpan());
-			LongReal lr2 = new(uz2, MantissaLength);
+			var r2 = BitConverter.ToDouble(bytes.AsSpan());
+			LongReal lr2 = new(r2, MantissaLength);
 			if (LongReal.IsNaN(lr) || LongReal.IsNaN(lr2))
 				Assert.IsTrue(LongReal.IsNaN(LongReal.GeometricMean(lr, lr2)));
 			else if (lr == 0 || lr2 == 0)
@@ -473,11 +473,11 @@ public class LongRealTests
 			else if (lr < 0 ^ lr2 < 0)
 				Assert.IsTrue(LongReal.IsNaN(LongReal.GeometricMean(lr, lr2)));
 			else if (lr < 0)
-				Assert.IsLessThanOrEqualTo(Max(Sqrt(-r) * Sqrt(-uz2) / (1L << 51), double.Epsilon),
-					Abs(Sqrt(-r) * Sqrt(-uz2) + (double)LongReal.GeometricMean(lr, lr2)));
+				Assert.IsLessThanOrEqualTo(Max(Sqrt(-r) * Sqrt(-r2) / (1L << 51), double.Epsilon),
+					Abs(Sqrt(-r) * Sqrt(-r2) + (double)LongReal.GeometricMean(lr, lr2)));
 			else
-				Assert.IsLessThanOrEqualTo(Max(Sqrt(r) * Sqrt(uz2) / (1L << 51), double.Epsilon),
-					Abs(Sqrt(r) * Sqrt(uz2) - (double)LongReal.GeometricMean(lr, lr2)));
+				Assert.IsLessThanOrEqualTo(Max(Sqrt(r) * Sqrt(r2) / (1L << 51), double.Epsilon),
+					Abs(Sqrt(r) * Sqrt(r2) - (double)LongReal.GeometricMean(lr, lr2)));
 		}
 	}
 
@@ -540,16 +540,16 @@ public class LongRealTests
 			var logQuot = (a / b).Log();
 			var logAAbs = logA.Abs();
 			var logBAbs = logB.Abs();
-			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 3, (logA + logB - logProd).Abs());
-			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 3, (logA - logB - logQuot).Abs());
+			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 1, (logA + logB - logProd).Abs());
+			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 1, (logA - logB - logQuot).Abs());
 			var log2A = a.Log2();
 			var log2B = b.Log2();
 			var log2Prod = (a * b).Log2();
 			var log2Quot = (a / b).Log2();
 			var log2AAbs = log2A.Abs();
 			var log2BAbs = log2B.Abs();
-			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 3, (log2A + log2B - log2Prod).Abs());
-			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 3, (log2A - log2B - log2Quot).Abs());
+			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 1, (log2A + log2B - log2Prod).Abs());
+			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 1, (log2A - log2B - log2Quot).Abs());
 			Assert.AreEqual(a.CompareTo(b), a.Log().CompareTo(b.Log()));
 			Assert.AreEqual(a.CompareTo(b), logA.CompareTo(logB));
 		}
@@ -565,6 +565,7 @@ public class LongRealTests
 		Assert.AreEqual(LongReal.PositiveInfinity, longRealThree.Power(LongReal.PositiveInfinity));
 		Assert.AreEqual(LongReal.Zero, longRealThree.Power(LongReal.NegativeInfinity));
 		Assert.IsTrue(LongReal.IsNaN(longRealThree.Power(LongReal.NaN)));
+		Assert.AreEqual(longRealThree, longRealThree.Power(LongReal.One));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 5000; i++)
 		{
@@ -791,10 +792,10 @@ public class LongRealTests
 			var deResult = longReal.ToString(format, CultureInfo.GetCultureInfo("de-DE"));
 			Assert.AreEqual(de, deResult);
 		}
-		//mpz = new MpzT(77).Power(77);
-		//longReal = new LongReal(1).Shift(mpz);
-		//result = longReal.ToString("E6");
-		//Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
+		mpz = new MpzT(77).Power(77);
+		longReal = new LongReal((MpzT)1).Shift(mpz);
+		result = longReal.ToString("E6");
+		Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
 	}
 
 	[TestMethod]

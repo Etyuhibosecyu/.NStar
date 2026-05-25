@@ -76,7 +76,7 @@ public static partial class Mpir
 	internal static mpz_intptr MpzInitSetStr(string str, uint Base)
 	{
 		int __retval;
-		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
+		var __ba_str = Encoding.UTF8.GetBytes(str + "\0");
 		__retval = xmpir_malloc(out var __str, str.Length + 1);
 		if (__retval != 0) HandleError(__retval);
 		Marshal.Copy(__ba_str, 0, __str, str.Length + 1);
@@ -203,7 +203,7 @@ public static partial class Mpir
 	public static int MpzSetStr(MpzT rop, string str, uint Base)
 	{
 		int __retval;
-		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
+		var __ba_str = Encoding.UTF8.GetBytes(str + "\0");
 		__retval = xmpir_malloc(out var __str, str.Length + 1);
 		if (__retval != 0) HandleError(__retval);
 		Marshal.Copy(__ba_str, 0, __str, str.Length + 1);
@@ -893,7 +893,7 @@ public static partial class Mpir
 	public static int MpqSetStr(MpqT rop, string str, uint Base)
 	{
 		int __retval;
-		var __ba_str = System.Text.Encoding.UTF8.GetBytes(str + "\0");
+		var __ba_str = Encoding.UTF8.GetBytes(str + "\0");
 		__retval = xmpir_malloc(out var __str, str.Length + 1);
 		if (__retval != 0) HandleError(__retval);
 		Marshal.Copy(__ba_str, 0, __str, str.Length + 1);

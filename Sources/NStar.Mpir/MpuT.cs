@@ -99,7 +99,18 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public int this[int bitIndex] => Mpir.MpuTstbit(this, (uint)bitIndex);
 	public static MpuT AdditiveIdentity => Zero;
 	public int BitLength => val == 0 ? 0 : (int)Mpir.MpuSizeinbase(this, 2);
-	public int DecLength => ToString()?.Length ?? 1;
+
+	public int DecLength
+	{
+		get
+		{
+			var result = (int)Mpir.MpuSizeinbase(this, 10);
+			if (result > 1 && Mpir.MpuCmp(PowerOf10(result - 1), this) > 0)
+				result--;
+			return result;
+		}
+	}
+
 	public static MpuT One { get; } = new(1);
 	public static MpuT MultiplicativeIdentity => One;
 	public static int Radix => 2;
@@ -896,7 +907,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		{
 			if (PowersOfFive.TryGetValue(exponent, out power))
 				return power;
-			return PowersOfFive[exponent] = ten.Power(exponent);
+			return PowersOfFive[exponent] = five.Power(exponent);
 		}
 	}
 

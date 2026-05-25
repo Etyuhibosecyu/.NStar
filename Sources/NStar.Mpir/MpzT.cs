@@ -85,10 +85,10 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	{
 		get
 		{
-			if (ToString() is var s && s is not null)
-				return s.Length - (s.StartsWith('-') ? 1 : 0);
-			else
-				return 1;
+			var result = (int)Mpir.MpzSizeinbase(this, 10);
+			if (result > 1 && Mpir.MpzCmpabs(PowerOf10(result - 1), this) > 0)
+				result--;
+			return result;
 		}
 	}
 

@@ -480,6 +480,10 @@ public class MpuTTests
 			bytes.FillInPlace(random.Next(1000), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
 			Assert.IsTrue((int)Mpir.MpuSizeinbase(uz, 10) - (uz.ToString()?.Length ?? 1) is 0 or 1);
+			Assert.AreEqual(uz.ToString()?.Length ?? 1, uz.DecLength);
+			MpzT z = new(bytes.AsSpan(), RandomOrder());
+			Assert.IsTrue((int)Mpir.MpzSizeinbase(z, 10) - ((z.ToString()?.Length ?? 1) - (z < 0 ? 1 : 0)) is 0 or 1);
+			Assert.AreEqual((z.ToString()?.Length ?? 1) - (z < 0 ? 1 : 0), z.DecLength);
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}

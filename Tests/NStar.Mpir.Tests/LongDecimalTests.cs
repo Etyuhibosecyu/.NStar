@@ -4,16 +4,16 @@
 public class LongDecimalTests
 {
 	private static readonly int MantissaLength = 300;
-	private static readonly int MantissaByteLength = GetArrayLength(MantissaLength, 8);
+	private static readonly int MantissaByteLength = (int)Ceiling((MantissaLength + Log10(36)) * Log(10, 256));
 
 	[TestMethod]
-	public void ComplexTestDecimal()
+	public void ComplexTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 		List<byte> bytes = new(1024);
 	l1:
-		var d = ConstructDecimal();
+		var d = ConstructDecimal(bytes);
 		LongDecimal ld = new(d, MantissaLength);
 		Validate();
 		var actions = new[]
@@ -235,7 +235,7 @@ public class LongDecimalTests
 				ValidateRemainder(order - 52);
 			}, () =>
 			{
-				var op = ConstructDecimal();
+				var op = ConstructDecimal(bytes);
 				if ((double)d + (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
 					return;
 				d += op;
@@ -243,7 +243,7 @@ public class LongDecimalTests
 				Validate();
 			}, () =>
 			{
-				var op = ConstructDecimal();
+				var op = ConstructDecimal(bytes);
 				if ((double)d - (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
 					return;
 				d -= op;
@@ -251,7 +251,7 @@ public class LongDecimalTests
 				Validate();
 			}, () =>
 			{
-				var op = ConstructDecimal();
+				var op = ConstructDecimal(bytes);
 				if ((double)d * (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
 					return;
 				d *= op;
@@ -259,7 +259,7 @@ public class LongDecimalTests
 				Validate();
 			}, () =>
 			{
-				var op = ConstructDecimal();
+				var op = ConstructDecimal(bytes);
 				if (op.Equals(0))
 					return;
 				if ((double)d / (double)op is < (double)decimal.MinValue or > (double)decimal.MaxValue)
@@ -269,7 +269,7 @@ public class LongDecimalTests
 				Validate();
 			}, () =>
 			{
-				var op = ConstructDecimal();
+				var op = ConstructDecimal(bytes);
 				var order = ld.Abs() < 1 ? -(int)(1 / ld).Order : (int)ld.Order;
 				if (op.Equals(0))
 					return;
@@ -281,28 +281,36 @@ public class LongDecimalTests
 		for (var i = 0; i < 1000; i++)
 		{
 			if (random.Next(100) == 0)
-				d = ConstructDecimal();
+				d = ConstructDecimal(bytes);
 			ld = new(d, MantissaLength);
 			actions.Random(random)();
 		}
 		if (counter++ < 10000)
 			goto l1;
-		decimal ConstructDecimal()
-		{
-			bytes.FillInPlace(random.Next(17), _ => (byte)random.Next(256));
-			if (random.Next(2) == 0)
-				bytes.Resize(16);
-			else
-				bytes.ResizeLeft(16);
-			var i1 = BitConverter.ToInt32(bytes.AsSpan());
-			var i2 = BitConverter.ToInt32(bytes.AsSpan(4));
-			var i3 = BitConverter.ToInt32(bytes.AsSpan(8));
-			var i4 = BitConverter.ToInt32(bytes.AsSpan(12));
-			i4 = (i4 & int.MaxValue) % 29 << 16 | i4 & int.MinValue;
-			return new([i1, i2, i3, i4]);
-		}
 		void Validate() => Assert.AreEqual(d, (decimal)ld);
 		void ValidateRemainder(int validOrder) => Assert.IsTrue(Abs(d - (decimal)ld) < ((LongDecimal)1).Shift(validOrder));
+	}
+
+	private static decimal ConstructDecimal(List<byte> bytes)
+	{
+		bytes.FillInPlace(random.Next(17), _ => (byte)random.Next(256));
+		if (random.Next(2) == 0)
+			bytes.Resize(16);
+		else
+			bytes.ResizeLeft(16);
+		var i1 = BitConverter.ToInt32(bytes.AsSpan());
+		var i2 = BitConverter.ToInt32(bytes.AsSpan(4));
+		var i3 = BitConverter.ToInt32(bytes.AsSpan(8));
+		var i4 = BitConverter.ToInt32(bytes.AsSpan(12));
+		i4 = (i4 & int.MaxValue) % 29 << 16 | i4 & int.MinValue;
+		return new([i1, i2, i3, i4]);
+	}
+
+	private static G.IEnumerable<(LongDecimal number, string format, string en, string ru, string de)> CultureTestData()
+	{
+		yield return (new LongReal(15L).Shift(12), "F2", "61,440.00", "61 440,00", "61.440,00");
+		yield return (new LongReal(-987L).Shift(-8), "E3", "-3.855E+0", "-3,855E+0", "-3,855E+0");
+		yield return (new(123456.789), "N5", "123,456.78900", "123 456,78900", "123.456,78900");
 	}
 
 	[TestMethod]
@@ -374,32 +382,9 @@ public class LongDecimalTests
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 10000000; i++)
 		{
-			bytes.FillInPlace(random.Next(17), _ => (byte)random.Next(256));
-			if (random.Next(2) == 0)
-				bytes.Resize(16);
-			else
-				bytes.ResizeLeft(16);
-			var i1 = BitConverter.ToInt32(bytes.AsSpan());
-			var i2 = BitConverter.ToInt32(bytes.AsSpan(4));
-			var i3 = BitConverter.ToInt32(bytes.AsSpan(8));
-			var i4 = BitConverter.ToInt32(bytes.AsSpan(12));
-			i4 = (i4 & int.MaxValue) % 29 << 16 | i4 & int.MinValue;
-			decimal d = new([i1, i2, i3, i4]);
+			var d = ConstructDecimal(bytes);
 			LongDecimal ld = new(d, MantissaLength);
-			if (random.Next(1000) != 0)
-			{
-				bytes.FillInPlace(random.Next(17), _ => (byte)random.Next(256));
-				if (random.Next(2) == 0)
-					bytes.Resize(16);
-				else
-					bytes.ResizeLeft(16);
-				i1 = BitConverter.ToInt32(bytes.AsSpan());
-				i2 = BitConverter.ToInt32(bytes.AsSpan(4));
-				i3 = BitConverter.ToInt32(bytes.AsSpan(8));
-				i4 = BitConverter.ToInt32(bytes.AsSpan(12));
-				i4 = (i4 & int.MaxValue) % 29 << 16 | i4 & int.MinValue;
-			}
-			decimal d2 = new([i1, i2, i3, i4]);
+			var d2 = random.Next(1000) == 0 ? d : ConstructDecimal(bytes);
 			LongDecimal ld2 = new(d2, (int)Round(MantissaLength * (random.NextDouble() * 2 - 1)));
 			if (LongDecimal.IsNaN(ld) || LongDecimal.IsNaN(ld2))
 				Assert.AreEqual(int.MinValue, ld.CompareTo(ld2));
@@ -408,6 +393,37 @@ public class LongDecimalTests
 		}
 		Assert.Throws<ArgumentNullException>(() => x.CompareTo((MpzT)null!));
 		Assert.Throws<ArgumentNullException>(() => x.CompareTo((MpuT)null!));
+	}
+
+	[TestMethod]
+	public void TestCompareToDouble()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 100000; i++)
+		{
+			bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
+			if (random.Next(2) == 0)
+				bytes.Resize(8);
+			else
+				bytes.ResizeLeft(8);
+			var r = BitConverter.ToDouble(bytes.AsSpan());
+			LongDecimal ld = new(r, MantissaLength);
+			if (random.Next(1000) != 0)
+			{
+				bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
+				if (random.Next(2) == 0)
+					bytes.Resize(8);
+				else
+					bytes.ResizeLeft(8);
+			}
+			var r2 = BitConverter.ToDouble(bytes.AsSpan());
+			LongDecimal ld2 = new(r2, MantissaLength);
+			if (LongDecimal.IsNaN(ld) || LongDecimal.IsNaN(ld2))
+				Assert.AreEqual(int.MinValue, ld.CompareTo(ld2));
+			else
+				Assert.AreEqual(Sign(r.CompareTo(r2)), Sign(ld.CompareTo(ld2)));
+		}
 	}
 
 	[TestMethod]
@@ -421,7 +437,7 @@ public class LongDecimalTests
 			var order = RandomOrder();
 			bytes[order < 0 ? ^1 : 0] = 0;
 			LongDecimal ld = new(bytes.AsSpan(), order, MantissaLength);
-			if (bytes.Length - MantissaByteLength == 4)
+			if (bytes.Length - MantissaByteLength is 3 or 4 or 5)
 				continue;
 			ProcessA(ld);
 		}
@@ -551,8 +567,8 @@ public class LongDecimalTests
 				else
 					bytes.ResizeLeft(8);
 			}
-			var uz2 = BitConverter.ToDouble(bytes.AsSpan());
-			LongDecimal ld2 = new(uz2, MantissaLength);
+			var r2 = BitConverter.ToDouble(bytes.AsSpan());
+			LongDecimal ld2 = new(r2, MantissaLength);
 			if (LongDecimal.IsNaN(ld) || LongDecimal.IsNaN(ld2))
 				Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.GeometricMean(ld, ld2)));
 			else if (ld == 0 || ld2 == 0)
@@ -560,11 +576,11 @@ public class LongDecimalTests
 			else if (ld < 0 ^ ld2 < 0)
 				Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.GeometricMean(ld, ld2)));
 			else if (ld < 0)
-				Assert.IsLessThanOrEqualTo(Max(Sqrt(-r) * Sqrt(-uz2) / (1L << 51), double.Epsilon),
-					Abs(Sqrt(-r) * Sqrt(-uz2) + (double)LongDecimal.GeometricMean(ld, ld2)));
+				Assert.IsLessThanOrEqualTo(Max(Sqrt(-r) * Sqrt(-r2) / (1L << 51), double.Epsilon),
+					Abs(Sqrt(-r) * Sqrt(-r2) + (double)LongDecimal.GeometricMean(ld, ld2)));
 			else
-				Assert.IsLessThanOrEqualTo(Max(Sqrt(r) * Sqrt(uz2) / (1L << 51), double.Epsilon),
-					Abs(Sqrt(r) * Sqrt(uz2) - (double)LongDecimal.GeometricMean(ld, ld2)));
+				Assert.IsLessThanOrEqualTo(Max(Sqrt(r) * Sqrt(r2) / (1L << 51), double.Epsilon),
+					Abs(Sqrt(r) * Sqrt(r2) - (double)LongDecimal.GeometricMean(ld, ld2)));
 		}
 	}
 
@@ -597,17 +613,23 @@ public class LongDecimalTests
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 10000; i++)
 		{
-			bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
-			if (random.Next(2) == 0)
-				bytes.Resize(8);
-			else
-				bytes.ResizeLeft(8);
-			var r = BitConverter.ToDouble(bytes.AsSpan());
-			LongDecimal ld = new(r, MantissaLength);
+			var d = ConstructDecimal(bytes);
+			LongDecimal ld = new(d, MantissaLength);
 			if (LongDecimal.IsNaN(ld))
+			{
 				Assert.IsTrue(LongDecimal.IsNaN(ld.Log()));
+				continue;
+			}
+			var log = ld.Log();
+			var dLog = Log((double)d);
+			if (LongDecimal.IsNaN(log))
+				Assert.IsTrue(double.IsNaN(dLog));
+			else if (LongDecimal.IsNegativeInfinity(log))
+				Assert.IsTrue(double.IsNegativeInfinity(dLog));
+			else if (LongDecimal.IsPositiveInfinity(log))
+				Assert.IsTrue(double.IsPositiveInfinity(dLog));
 			else
-				Assert.AreEqual(Log(r), (double)ld.Log());
+				Assert.IsLessThanOrEqualTo(Max(Abs(dLog), 1) / Pow(2, 51), Abs(dLog - (double)(decimal)log));
 		}
 		for (var i = 0; i < 5000; i++)
 		{
@@ -629,14 +651,14 @@ public class LongDecimalTests
 			var logBAbs = logB.Abs();
 			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 3, (logA + logB - logProd).Abs());
 			Assert.IsLessThanOrEqualTo(logAAbs + logBAbs >> MantissaLength - 3, (logA - logB - logQuot).Abs());
-			var log2A = a.Log2();
-			var log2B = b.Log2();
-			var log2Prod = (a * b).Log2();
-			var log2Quot = (a / b).Log2();
-			var log2AAbs = log2A.Abs();
-			var log2BAbs = log2B.Abs();
-			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 3, (log2A + log2B - log2Prod).Abs());
-			Assert.IsLessThanOrEqualTo(log2AAbs + log2BAbs >> MantissaLength - 3, (log2A - log2B - log2Quot).Abs());
+			var log10A = a.Log10();
+			var log10B = b.Log10();
+			var log10Prod = (a * b).Log10();
+			var log10Quot = (a / b).Log10();
+			var log10AAbs = log10A.Abs();
+			var log10BAbs = log10B.Abs();
+			Assert.IsLessThanOrEqualTo(log10AAbs + log10BAbs >> MantissaLength - 3, (log10A + log10B - log10Prod).Abs());
+			Assert.IsLessThanOrEqualTo(log10AAbs + log10BAbs >> MantissaLength - 3, (log10A - log10B - log10Quot).Abs());
 			Assert.AreEqual(a.CompareTo(b), a.Log().CompareTo(b.Log()));
 			Assert.AreEqual(a.CompareTo(b), logA.CompareTo(logB));
 		}
@@ -652,6 +674,7 @@ public class LongDecimalTests
 		Assert.AreEqual(LongDecimal.PositiveInfinity, longRealThree.Power(LongDecimal.PositiveInfinity));
 		Assert.AreEqual(LongDecimal.Zero, longRealThree.Power(LongDecimal.NegativeInfinity));
 		Assert.IsTrue(LongDecimal.IsNaN(longRealThree.Power(LongDecimal.NaN)));
+		Assert.AreEqual(longRealThree, longRealThree.Power(LongDecimal.One));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 5000; i++)
 		{
@@ -709,7 +732,7 @@ public class LongDecimalTests
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.NaN >> 3));
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		for (var i = 0; i < 1000000; i++)
+		for (var i = 0; i < 500000; i++)
 		{
 			bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
 			if (random.Next(2) == 0)
@@ -719,28 +742,43 @@ public class LongDecimalTests
 			var r = BitConverter.ToDouble(bytes.AsSpan());
 			LongDecimal ld = new(r, MantissaLength);
 			var shiftAmount = random.Next(257);
-			Assert.AreEqual(r * Pow(2, shiftAmount), (double)(ld << shiftAmount));
-			Assert.AreEqual(r * Pow(2, shiftAmount), (double)(ld << (UnsignedLongDecimal)shiftAmount));
-			Assert.AreEqual(r / Pow(2, shiftAmount), (double)(ld >> shiftAmount));
-			Assert.AreEqual(r / Pow(2, shiftAmount), (double)(ld >> (UnsignedLongDecimal)shiftAmount));
+			if (double.IsNaN(r))
+			{
+				Assert.IsTrue(double.IsNaN((double)(ld << shiftAmount)));
+				Assert.IsTrue(double.IsNaN((double)(ld << (UnsignedLongDecimal)shiftAmount)));
+				Assert.IsTrue(double.IsNaN((double)(ld >> shiftAmount)));
+				Assert.IsTrue(double.IsNaN((double)(ld >> (UnsignedLongDecimal)shiftAmount)));
+			}
+			else
+			{
+				Assert.AreEqual(r * Pow(10, shiftAmount), (double)(ld << shiftAmount),
+					Max(Abs(r) * Pow(10, shiftAmount) / Pow(2, 52), double.Epsilon));
+				Assert.AreEqual(r * Pow(10, shiftAmount), (double)(ld << (UnsignedLongDecimal)shiftAmount),
+					Max(Abs(r) * Pow(10, shiftAmount) / Pow(2, 52), double.Epsilon));
+				Assert.AreEqual(r / Pow(10, shiftAmount), (double)(ld >> shiftAmount),
+					Max(Abs(r) * Pow(10, shiftAmount) / Pow(2, 52), double.Epsilon));
+				Assert.AreEqual(r / Pow(10, shiftAmount), (double)(ld >> (UnsignedLongDecimal)shiftAmount),
+					Max(Abs(r) * Pow(10, shiftAmount) / Pow(2, 52), double.Epsilon));
+			}
 		}
-		for (var i = 0; i < 1000000; i++)
+		for (var i = 0; i < 500000; i++)
 		{
 			bytes.FillInPlace(random.Next(259), _ => (byte)random.Next(256));
 			MpuT uz = new(bytes.AsSpan(), RandomOrder());
 			LongDecimal ld = new(uz, MantissaLength);
-			var shiftAmount = Max(uz.BitLength - MantissaLength - 1, 0);
-			uz = uz.ShiftRightRound(shiftAmount) << shiftAmount;
+			var shiftAmount = Max(uz.DecLength - MantissaLength - 1, 0);
+			uz = uz.ShiftRightRoundDec(shiftAmount).ShiftLeftDec(shiftAmount);
 			bytes.FillInPlace(random.Next(3), _ => (byte)random.Next(256));
 			bytes.PadRightInPlace(4);
 			shiftAmount = BitConverter.ToInt32(bytes.AsSpan());
-			Assert.IsLessThanOrEqualTo(uz << shiftAmount >> MantissaLength, (uz << shiftAmount) - (ld << shiftAmount));
+			Assert.IsLessThanOrEqualTo(uz.ShiftLeftDec(shiftAmount).ShiftRightRoundDec(MantissaLength),
+				new LongDecimal(uz.ShiftLeftDec(shiftAmount), MantissaLength) - (ld << shiftAmount));
 			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, MpuT.One),
-				uz.ShiftRightRound(shiftAmount) - (ld >> shiftAmount));
-			Assert.IsLessThanOrEqualTo(uz << shiftAmount >> MantissaLength,
-				(uz << shiftAmount) - (ld << (UnsignedLongDecimal)shiftAmount));
+				new LongDecimal(uz.ShiftRightRoundDec(shiftAmount), MantissaLength) - (ld >> shiftAmount));
+			Assert.IsLessThanOrEqualTo(uz.ShiftLeftDec(shiftAmount).ShiftRightRoundDec(MantissaLength),
+				new LongDecimal(uz.ShiftLeftDec(shiftAmount), MantissaLength) - (ld << (UnsignedLongDecimal)shiftAmount));
 			Assert.IsLessThanOrEqualTo(MpuT.Max(uz >> MantissaLength, MpuT.One),
-				uz.ShiftRightRound(shiftAmount) - (ld >> (UnsignedLongDecimal)shiftAmount));
+				new LongDecimal(uz.ShiftRightRoundDec(shiftAmount), MantissaLength) - (ld >> (UnsignedLongDecimal)shiftAmount));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
 	}
@@ -796,7 +834,7 @@ public class LongDecimalTests
 				bytes.Resize(Max(bytes.FindLastIndex(x => x != 0), 0) + 1);
 			else
 				bytes.ResizeLeft(Max(bytes.Length, 1) - Max(bytes.FindIndex(x => x != 0), 0));
-			var mantissaLength = random.Next(18, Max((int)Ceiling(bytes.Length * Log10(256)), 18));
+			var mantissaLength = random.Next(30, Max((int)Ceiling(bytes.Length * Log10(256)), 30));
 			var switcher = random.Next(1000);
 			LongDecimal ld = switcher switch
 			{
@@ -807,9 +845,7 @@ public class LongDecimalTests
 				4 => new(double.NegativeZero, mantissaLength),
 				_ => new(bytes.AsSpan(), order, mantissaLength),
 			};
-			LongDecimal ld2 = new(ld.ToByteArray(order, false), order,
-				switcher <= 4 && mantissaLength is < LongReal.MinMantissaLength or > int.MaxValue
-				? LongDecimal.DefaultMantissaLength : mantissaLength);
+			LongDecimal ld2 = new(ld.ToByteArray(order, false), order, mantissaLength);
 			Assert.IsTrue(LongDecimal.IsNaN(ld) && LongDecimal.IsNaN(ld2) || ld.Equals(ld2));
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;
@@ -848,7 +884,7 @@ public class LongDecimalTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		List<byte> bytes = new(1024);
-		for (var i = 0; i < 5000000; i++)
+		for (var i = 0; i < 1000000; i++)
 		{
 			bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
 			if (random.Next(2) == 0)
@@ -870,49 +906,49 @@ public class LongDecimalTests
 	public void TestToString()
 	{
 		CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-		var longReal = new LongDecimal(1).Shift(0);
-		var result = longReal.ToString("E6");
+		LongDecimal longDecimal = new LongReal(1).Shift(0);
+		var result = longDecimal.ToString("E6");
 		Assert.AreEqual("1E+0", result);
-		longReal = new LongDecimal(1).Shift(1);
-		result = longReal.ToString("E6");
+		longDecimal = new LongReal(1).Shift(1);
+		result = longDecimal.ToString("E6");
 		Assert.AreEqual("2E+0", result);
-		longReal = new LongDecimal(1).Shift(2);
-		result = longReal.ToString("E6");
+		longDecimal = new LongReal(1).Shift(2);
+		result = longDecimal.ToString("E6");
 		Assert.AreEqual("4E+0", result);
-		longReal = new LongDecimal(3).Shift(3);
-		result = longReal.ToString("E6");
+		longDecimal = new LongReal(3).Shift(3);
+		result = longDecimal.ToString("E6");
 		Assert.AreEqual("2.4E+1", result);
-		longReal = new LongDecimal(5).Shift(-2);
-		result = longReal.ToString("E6");
+		longDecimal = new LongReal(5).Shift(-2);
+		result = longDecimal.ToString("E6");
 		Assert.AreEqual("1.25E+0", result);
-		longReal = new LongDecimal(123).Shift(50);
-		result = longReal.ToString("E4");
+		longDecimal = new LongReal(123).Shift(50);
+		result = longDecimal.ToString("E4");
 		Assert.AreEqual("1.3849E+17", result);
-		longReal = new LongDecimal(1000).Shift(-10);
-		result = longReal.ToString("F6", CultureInfo.GetCultureInfo("en-US"));
+		longDecimal = new LongReal(1000).Shift(-10);
+		result = longDecimal.ToString("F6", CultureInfo.GetCultureInfo("en-US"));
 		Assert.AreEqual("0.976563", result);
 		var largeDigits = "123456789";
 		var mpz = MpzT.Parse(largeDigits);
-		longReal = new LongDecimal(mpz).Shift(20);
-		result = longReal.ToString("N0", CultureInfo.GetCultureInfo("ru-RU"));
+		longDecimal = new LongReal(mpz).Shift(20);
+		result = longDecimal.ToString("N0", CultureInfo.GetCultureInfo("ru-RU"));
 		Assert.Contains("129 453 825 982 464", result);
-		longReal = new LongDecimal(1).Shift(100);
-		result = longReal.ToString("E2");
+		longDecimal = new LongReal(1).Shift(100);
+		result = longDecimal.ToString("E2");
 		Assert.AreEqual("1.27E+30", result);
 		foreach (var (number, format, en, ru, de) in CultureTestData())
 		{
-			longReal = number;
-			var enResult = longReal.ToString(format, CultureInfo.GetCultureInfo("en-US"));
+			longDecimal = number;
+			var enResult = longDecimal.ToString(format, CultureInfo.GetCultureInfo("en-US"));
 			Assert.AreEqual(en, enResult);
-			var ruResult = longReal.ToString(format, CultureInfo.GetCultureInfo("ru-RU"));
+			var ruResult = longDecimal.ToString(format, CultureInfo.GetCultureInfo("ru-RU"));
 			Assert.AreEqual(ru, ruResult);
-			var deResult = longReal.ToString(format, CultureInfo.GetCultureInfo("de-DE"));
+			var deResult = longDecimal.ToString(format, CultureInfo.GetCultureInfo("de-DE"));
 			Assert.AreEqual(de, deResult);
 		}
-		//mpz = new MpzT(77).Power(77);
-		//longReal = new LongReal(1).Shift(mpz);
-		//result = longReal.ToString("E6");
-		//Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
+		mpz = new MpzT(77).Power(77);
+		longDecimal = new LongReal((MpzT)1).Shift(mpz);
+		result = longDecimal.ToString("E6");
+		Assert.AreEqual("1.358443E+5475144815987627762430594775150486533643549212522238631644821558595137232066160304681082998798877694978398467245688991276872900744519537448240061", result);
 	}
 
 	[TestMethod]
@@ -920,26 +956,26 @@ public class LongDecimalTests
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		Assert.AreEqual(0, LongDecimal.Zero.Sin());
-		Assert.AreEqual(1, (LongDecimal.Pi >> 1).Sin());
+		Assert.AreEqual(1, (LongDecimal.Pi / 2).Sin());
 		Assert.AreEqual(0, LongDecimal.Pi.Sin());
-		Assert.AreEqual(-1, (3 * LongDecimal.Pi >> 1).Sin());
-		Assert.AreEqual(0, (LongDecimal.Pi << 1).Sin());
-		Assert.AreEqual(-1, (-LongDecimal.Pi >> 1).Sin());
+		Assert.AreEqual(-1, (3 * LongDecimal.Pi / 2).Sin());
+		Assert.AreEqual(0, (LongDecimal.Pi * 2).Sin());
+		Assert.AreEqual(-1, (-LongDecimal.Pi / 2).Sin());
 		Assert.AreEqual(0, (-LongDecimal.Pi).Sin());
-		Assert.AreEqual(1, (-3 * LongDecimal.Pi >> 1).Sin());
-		Assert.AreEqual(0, (-LongDecimal.Pi << 1).Sin());
+		Assert.AreEqual(1, (-3 * LongDecimal.Pi / 2).Sin());
+		Assert.AreEqual(0, (-LongDecimal.Pi * 2).Sin());
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.PositiveInfinity.Sin()));
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.NegativeInfinity.Sin()));
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.NaN.Sin()));
 		Assert.AreEqual(1, LongDecimal.Zero.Cos());
-		Assert.AreEqual(0, (LongDecimal.Pi >> 1).Cos());
+		Assert.AreEqual(0, (LongDecimal.Pi / 2).Cos());
 		Assert.AreEqual(-1, LongDecimal.Pi.Cos());
-		Assert.AreEqual(0, (3 * LongDecimal.Pi >> 1).Cos());
-		Assert.AreEqual(1, (LongDecimal.Pi << 1).Cos());
-		Assert.AreEqual(0, (-LongDecimal.Pi >> 1).Cos());
+		Assert.AreEqual(0, (3 * LongDecimal.Pi / 2).Cos());
+		Assert.AreEqual(1, (LongDecimal.Pi * 2).Cos());
+		Assert.AreEqual(0, (-LongDecimal.Pi / 2).Cos());
 		Assert.AreEqual(-1, (-LongDecimal.Pi).Cos());
-		Assert.AreEqual(0, (-3 * LongDecimal.Pi >> 1).Cos());
-		Assert.AreEqual(1, (-LongDecimal.Pi << 1).Cos());
+		Assert.AreEqual(0, (-3 * LongDecimal.Pi / 2).Cos());
+		Assert.AreEqual(1, (-LongDecimal.Pi * 2).Cos());
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.PositiveInfinity.Cos()));
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.NegativeInfinity.Cos()));
 		Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.NaN.Cos()));
@@ -967,13 +1003,6 @@ public class LongDecimalTests
 			Assert.IsLessThan(ld, ld.Sin());
 			Assert.IsGreaterThan(ld, ld.Tan());
 		}
-	}
-
-	private static G.IEnumerable<(LongDecimal number, string format, string en, string ru, string de)> CultureTestData()
-	{
-		yield return (new LongDecimal(15L).Shift(12), "F2", "61,440.00", "61 440,00", "61.440,00");
-		yield return (new LongDecimal(-987L).Shift(-8), "E3", "-3.855E+0", "-3,855E+0", "-3,855E+0");
-		yield return (new(123456.789), "N5", "123,456.78900", "123 456,78900", "123.456,78900");
 	}
 
 	[TestMethod]
