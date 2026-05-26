@@ -314,6 +314,37 @@ public class LongDecimalTests
 	}
 
 	[TestMethod]
+	public void TestAtan2()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		List<byte> bytes = new(1024);
+		for (var i = 0; i < 50000; i++)
+		{
+			bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
+			if (random.Next(2) == 0)
+				bytes.Resize(8);
+			else
+				bytes.ResizeLeft(8);
+			var r = BitConverter.ToDouble(bytes.AsSpan());
+			LongDecimal lr = new(r, MantissaLength);
+			if (random.Next(1000) != 0)
+			{
+				bytes.FillInPlace(random.Next(9), _ => (byte)random.Next(256));
+				if (random.Next(2) == 0)
+					bytes.Resize(8);
+				else
+					bytes.ResizeLeft(8);
+			}
+			var r2 = BitConverter.ToDouble(bytes.AsSpan());
+			LongDecimal lr2 = new(r2, MantissaLength);
+			if (LongDecimal.IsNaN(lr) || LongDecimal.IsNaN(lr2) || lr == 0 && lr2 == 0)
+				Assert.IsTrue(LongDecimal.IsNaN(LongDecimal.Atan2(lr, lr2)));
+			else
+				Assert.IsLessThanOrEqualTo(Pow(2, -52), Abs(Atan2(r, r2) - (double)LongDecimal.Atan2(lr, lr2)));
+		}
+	}
+
+	[TestMethod]
 	public void TestCompareTo()
 	{
 		var x = new LongDecimal(123).Shift(456); // мантисса = 123, экспонента = 456

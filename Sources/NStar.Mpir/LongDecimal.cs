@@ -13,7 +13,7 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 {
 	private static readonly LongDecimal[] DoublePowers = GC.AllocateUninitializedArray<LongDecimal>(2100);
 	private static readonly ConcurrentDictionary<int, MpzT> MantissaOverflows = [], ShiftedMantissaOverflows = [];
-	private static readonly LongDecimal Two = new(Unsafe.As<MpzT>(MpuT.Two), MinMantissaLength);
+	internal static readonly LongDecimal Two = new(Unsafe.As<MpzT>(MpuT.Two), MinMantissaLength);
 	private static readonly Lock lockObj = new();
 	private static bool DoublePowersInitialized = false;
 	private readonly MpzT m;
@@ -559,7 +559,7 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 	/// </returns>
 	public LongDecimal Acos()
 	{
-		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
+		if (Abs() < One >> MantissaLength / 2)
 			return Pi.GetWithOtherML(MantissaLength) / 2;
 		else if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
 			return new(ShiftedMantissaOverflow + 4, UnsignedLongDecimal.Zero, MantissaLength);
@@ -1008,34 +1008,6 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 	}
 
 	/// <summary>
-	/// Вычисляет гиперболический арктангенс данного числа.
-	/// </summary>
-	/// <returns>
-	/// Для нуля - ноль;<br />
-	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
-	/// для чисел, модуль которых больше 1 - неопределенность;<br />
-	/// в остальных случаях - гиперболический арктангенс данного числа.
-	/// </returns>
-	public LongDecimal Atan()
-	{
-		var cos = Sqrt(1 / (1 + Square()));
-		return Acos(cos) * Sign;
-	}
-
-	/// <summary>
-	/// Вычисляет гиперболический арктангенс указанного числа.
-	/// </summary>
-	/// <param name="value">Число, являющееся аргументом данной функции
-	/// (эта функция статическая и зависит только от аргумента).</param>
-	/// <returns>
-	/// Для нуля - ноль;<br />
-	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
-	/// для чисел, модуль которых больше 1 - неопределенность;<br />
-	/// в остальных случаях - гиперболический арктангенс данного числа.
-	/// </returns>
-	public static LongDecimal Atan(LongDecimal value) => value.Atan();
-
-	/// <summary>
 	/// Вычисляет арктангенс данного числа.
 	/// </summary>
 	/// <returns>
@@ -1044,7 +1016,11 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 	/// для чисел, модуль которых больше 1 - неопределенность;<br />
 	/// в остальных случаях - арктангенс данного числа.
 	/// </returns>
-	public LongDecimal Atanh() => Ln((One + this) / (One - this)) / 2;
+	public LongDecimal Atan()
+	{
+		var cos = Sqrt(1 / (1 + Square()));
+		return Acos(cos) * Sign;
+	}
 
 	/// <summary>
 	/// Вычисляет арктангенс указанного числа.
@@ -1056,6 +1032,57 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
 	/// для чисел, модуль которых больше 1 - неопределенность;<br />
 	/// в остальных случаях - арктангенс данного числа.
+	/// </returns>
+	public static LongDecimal Atan(LongDecimal value) => value.Atan();
+
+	public static LongDecimal Atan2(LongDecimal y, LongDecimal x)
+	{
+		if (Mpir.MpzCmp(x.m, x.NaNMantissa) == 0 || Mpir.MpzCmp(y.m, y.NaNMantissa) == 0
+			|| Mpir.MpzCmp(x.m, x.ZeroMantissa) == 0 && Mpir.MpzCmp(y.m, y.ZeroMantissa) == 0)
+			return NaN;
+		var pi = Pi.GetWithOtherML(Math.Max(x.MantissaLength, y.MantissaLength));
+		if (Abs(x) < Abs(y))
+		{
+			if (x / y == Zero)
+				return y <= Zero ? -pi / 2 : pi / 2;
+			var atan = Atan(y / x);
+			if (x >= Zero)
+				return atan;
+			else if (y > Zero)
+				return pi + atan;
+			else
+				return atan - pi;
+		}
+		else if (y / x == Zero)
+			return x > Zero ? Zero : pi;
+		else
+		{
+			var atan = Atan(x / y);
+			return y > Zero ? pi / 2 - atan : -atan - pi / 2;
+		}
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический арктангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арктангенс данного числа.
+	/// </returns>
+	public LongDecimal Atanh() => Ln((One + this) / (One - this)) / 2;
+
+	/// <summary>
+	/// Вычисляет гиперболический арктангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арктангенс данного числа.
 	/// </returns>
 	public static LongDecimal Atanh(LongDecimal value) => value.Atanh();
 
@@ -2638,6 +2665,16 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 		return new(newM - MantissaOverflow << 1, e / 2, MantissaLength);
 	}
 
+	/// <summary>
+	/// Вычисляет квадрат данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - квадрат данного числа.
+	/// </returns>
 	public LongDecimal Square()
 	{
 		if (Mpir.MpzCmp(m, NaNMantissa) == 0)
@@ -2658,6 +2695,19 @@ public readonly struct LongDecimal : IFloatingPoint<LongDecimal>, ICloneable, IC
 		var x = Abs() << shiftAmount;
 		return x.SquareInternal() >> shiftAmount * 2;
 	}
+
+	/// <summary>
+	/// Вычисляет квадрат указанного числа.
+	/// </summary>
+	/// <param name="value">Число для извлечения квадратного корня.</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - квадрат <paramref name="value"/>.
+	/// </returns>
+	public static LongDecimal Square(LongDecimal value) => value.Square();
 
 	private LongDecimal SquareInternal()
 	{

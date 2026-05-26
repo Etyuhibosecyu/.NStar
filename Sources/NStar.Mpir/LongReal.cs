@@ -298,7 +298,7 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// </returns>
 	public LongReal Acos()
 	{
-		if (Mpir.MpzCmp(m, ZeroMantissa) == 0)
+		if (Abs() < One >> MantissaLength / 2)
 			return Pi.GetWithOtherML(MantissaLength) >> 1;
 		else if (Mpir.MpzCmp(m, ShiftedMantissaOverflow) > 0)
 			return new(ShiftedMantissaOverflow + 4, UnsignedLongReal.Zero, MantissaLength);
@@ -722,34 +722,6 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	}
 
 	/// <summary>
-	/// Вычисляет гиперболический арктангенс данного числа.
-	/// </summary>
-	/// <returns>
-	/// Для нуля - ноль;<br />
-	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
-	/// для чисел, модуль которых больше 1 - неопределенность;<br />
-	/// в остальных случаях - гиперболический арктангенс данного числа.
-	/// </returns>
-	public LongReal Atan()
-	{
-		var cos = Sqrt(1 / (1 + Square()));
-		return Acos(cos) * Sign;
-	}
-
-	/// <summary>
-	/// Вычисляет гиперболический арктангенс указанного числа.
-	/// </summary>
-	/// <param name="value">Число, являющееся аргументом данной функции
-	/// (эта функция статическая и зависит только от аргумента).</param>
-	/// <returns>
-	/// Для нуля - ноль;<br />
-	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
-	/// для чисел, модуль которых больше 1 - неопределенность;<br />
-	/// в остальных случаях - гиперболический арктангенс данного числа.
-	/// </returns>
-	public static LongReal Atan(LongReal value) => value.Atan();
-
-	/// <summary>
 	/// Вычисляет арктангенс данного числа.
 	/// </summary>
 	/// <returns>
@@ -758,7 +730,11 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для чисел, модуль которых больше 1 - неопределенность;<br />
 	/// в остальных случаях - арктангенс данного числа.
 	/// </returns>
-	public LongReal Atanh() => Ln((One + this) / (One - this)) >> 1;
+	public LongReal Atan()
+	{
+		var cos = Sqrt(1 / (1 + Square()));
+		return Acos(cos) * Sign;
+	}
 
 	/// <summary>
 	/// Вычисляет арктангенс указанного числа.
@@ -770,6 +746,57 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
 	/// для чисел, модуль которых больше 1 - неопределенность;<br />
 	/// в остальных случаях - арктангенс данного числа.
+	/// </returns>
+	public static LongReal Atan(LongReal value) => value.Atan();
+
+	public static LongReal Atan2(LongReal y, LongReal x)
+	{
+		if (Mpir.MpzCmp(x.m, x.NaNMantissa) == 0 || Mpir.MpzCmp(y.m, y.NaNMantissa) == 0
+			|| Mpir.MpzCmp(x.m, x.ZeroMantissa) == 0 && Mpir.MpzCmp(y.m, y.ZeroMantissa) == 0)
+			return NaN;
+		var pi = Pi.GetWithOtherML(Math.Max(x.MantissaLength, y.MantissaLength));
+		if (Abs(x) < Abs(y))
+		{
+			if (x / y == Zero)
+				return y <= Zero ? -pi / 2 : pi / 2;
+			var atan = Atan(y / x);
+			if (x >= Zero)
+				return atan;
+			else if (y > Zero)
+				return pi + atan;
+			else
+				return atan - pi;
+		}
+		else if (y / x == Zero)
+			return x > Zero ? Zero : pi;
+		else
+		{
+			var atan = Atan(x / y);
+			return y > Zero ? pi / 2 - atan : -atan - pi / 2;
+		}
+	}
+
+	/// <summary>
+	/// Вычисляет гиперболический арктангенс данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арктангенс данного числа.
+	/// </returns>
+	public LongReal Atanh() => Ln((One + this) / (One - this)) >> 1;
+
+	/// <summary>
+	/// Вычисляет гиперболический арктангенс указанного числа.
+	/// </summary>
+	/// <param name="value">Число, являющееся аргументом данной функции
+	/// (эта функция статическая и зависит только от аргумента).</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности, минус бесконечности и неопределенности - неопределенность;<br />
+	/// для чисел, модуль которых больше 1 - неопределенность;<br />
+	/// в остальных случаях - гиперболический арктангенс данного числа.
 	/// </returns>
 	public static LongReal Atanh(LongReal value) => value.Atanh();
 
@@ -2129,6 +2156,16 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		return current;
 	}
 
+	/// <summary>
+	/// Вычисляет квадрат данного числа.
+	/// </summary>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - квадрат данного числа.
+	/// </returns>
 	public LongReal Square()
 	{
 		if (Mpir.MpzCmp(m, NaNMantissa) == 0)
@@ -2149,6 +2186,19 @@ public readonly struct LongReal : IFloatingPoint<LongReal>, ICloneable, IConvert
 		var x = Abs() << shiftAmount;
 		return x.SquareInternal() >> (shiftAmount << 1);
 	}
+
+	/// <summary>
+	/// Вычисляет квадрат указанного числа.
+	/// </summary>
+	/// <param name="value">Число для извлечения квадратного корня.</param>
+	/// <returns>
+	/// Для нуля - ноль;<br />
+	/// для плюс бесконечности - плюс бесконечность;<br />
+	/// для минус бесконечности - плюс бесконечность;<br />
+	/// для неопределенности - неопределенность;<br />
+	/// в остальных случаях - квадрат <paramref name="value"/>.
+	/// </returns>
+	public static LongReal Square(LongReal value) => value.Square();
 
 	private LongReal SquareInternal()
 	{
