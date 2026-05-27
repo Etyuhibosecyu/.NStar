@@ -202,13 +202,13 @@ public class LongRealTests
 				Validate();
 			}, () =>
 			{
-				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64()+ (random.Next(2) == 0 ? 0 : 1uL << 63));
+				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
 				r *= op;
 				lr *= op;
 				Validate();
 			}, () =>
 			{
-				var op = BitConverter.UInt64BitsToDouble((ulong) random.NextInt64()+ (random.Next(2) == 0 ? 0 : 1uL << 63));
+				var op = BitConverter.UInt64BitsToDouble((ulong)random.NextInt64() + (random.Next(2) == 0 ? 0 : 1uL << 63));
 				if (op.Equals(0))
 					return;
 				r /= op;
@@ -375,11 +375,8 @@ public class LongRealTests
 			ProcessB(lr, num);
 			num = lr + 1;
 			ProcessB(lr, num);
-			if (lr.CompareTo(0) != 0)
-			{
-				num = lr - 1;
-				ProcessB(lr, num);
-			}
+			num = lr - 1;
+			ProcessB(lr, num);
 			num = lr * 2;
 			ProcessB(lr, num);
 			num = lr / 2;

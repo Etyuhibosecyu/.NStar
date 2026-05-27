@@ -478,11 +478,8 @@ public class LongDecimalTests
 			ProcessB(ld, num);
 			num = ld + 1;
 			ProcessB(ld, num);
-			if (ld.CompareTo(0) != 0)
-			{
-				num = ld - 1;
-				ProcessB(ld, num);
-			}
+			num = ld - 1;
+			ProcessB(ld, num);
 			num = ld * 2;
 			ProcessB(ld, num);
 			num = ld / 2;
@@ -700,19 +697,19 @@ public class LongDecimalTests
 	public void TestPower()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var longRealThree = new LongDecimal(3);
-		Assert.AreEqual(LongDecimal.One, longRealThree.Power(LongDecimal.Zero));
-		Assert.AreEqual(LongDecimal.PositiveInfinity, longRealThree.Power(LongDecimal.PositiveInfinity));
-		Assert.AreEqual(LongDecimal.Zero, longRealThree.Power(LongDecimal.NegativeInfinity));
-		Assert.IsTrue(LongDecimal.IsNaN(longRealThree.Power(LongDecimal.NaN)));
-		Assert.AreEqual(longRealThree, longRealThree.Power(LongDecimal.One));
+		var longDecimalThree = new LongDecimal(3);
+		Assert.AreEqual(LongDecimal.One, longDecimalThree.Power(LongDecimal.Zero));
+		Assert.AreEqual(LongDecimal.PositiveInfinity, longDecimalThree.Power(LongDecimal.PositiveInfinity));
+		Assert.AreEqual(LongDecimal.Zero, longDecimalThree.Power(LongDecimal.NegativeInfinity));
+		Assert.IsTrue(LongDecimal.IsNaN(longDecimalThree.Power(LongDecimal.NaN)));
+		Assert.AreEqual(longDecimalThree, longDecimalThree.Power(LongDecimal.One));
 		List<byte> bytes = new(1024);
 		for (var i = 0; i < 5000; i++)
 		{
 			bytes.FillInPlace(random.Next(251), _ => (byte)random.Next(256));
 			var uz = new MpuT(bytes.AsSpan(), RandomOrder());
 			var ld = new LongDecimal(uz, MantissaLength);
-			var ld2 = longRealThree.Power(ld).Log(longRealThree);
+			var ld2 = longDecimalThree.Power(ld).Log(longDecimalThree);
 			Assert.IsLessThanOrEqualTo(ld >> MantissaLength - 8, (ld - ld2).Abs());
 		}
 		for (var i = 0; i < 5000; i++)
@@ -721,7 +718,7 @@ public class LongDecimalTests
 			var @base = new MpuT(bytes.AsSpan(), RandomOrder());
 			var shift = random.Next();
 			var ld = new LongDecimal(@base, MantissaLength).Shift(shift);
-			var ld2 = longRealThree.Power(ld.Log(longRealThree));
+			var ld2 = longDecimalThree.Power(ld.Log(longDecimalThree));
 			Assert.IsLessThanOrEqualTo(ld >> MantissaLength - 50, (ld - ld2).Abs());
 		}
 		int RandomOrder() => random.Next(2) * 2 - 1;

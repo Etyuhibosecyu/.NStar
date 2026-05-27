@@ -5,7 +5,7 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 {
 	protected static abstract Func<T, T, TSelf> Creator { get; }
 	public T Imaginary { get; }
-	public static TSelf ImaginaryOne { get; } = TSelf.Creator!(T.Zero, T.One);
+	public static TSelf ImaginaryOne { get; } = TSelf.Creator(T.Zero, T.One);
 	public T Magnitude => AbsInterface((TSelf)this);
 	public static TSelf OneInterface { get; } = TSelf.Creator(T.One, T.Zero);
 	public T Phase => Atan2(Imaginary, Real);
@@ -207,7 +207,7 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 	public bool EqualsInterface(object? obj) => obj switch
 	{
 		null => false,
-		TSelf ts => (TSelf)this == ts,
+		TSelf ts => Real.Equals(ts.Real) && Imaginary.Equals(ts.Imaginary),
 		T t => Real == t && Imaginary == T.Zero,
 		int i => (TSelf)this == TSelf.CreateTruncating(i),
 		uint ui => (TSelf)this == TSelf.CreateTruncating(ui),
@@ -219,6 +219,7 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 		ushort usi => (TSelf)this == TSelf.CreateTruncating(usi),
 		byte y => (TSelf)this == TSelf.CreateTruncating(y),
 		sbyte sy => (TSelf)this == TSelf.CreateTruncating(sy),
+		System.Numerics.Complex c => Real.Equals(c.Real) && Imaginary.Equals(c.Imaginary),
 		IConvertible ic => ic.Equals(this),
 		_ => false
 	};
@@ -384,7 +385,7 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 		return Exp(exponent * Log(value));
 	}
 
-	private static decimal Pow(decimal value, int exponent) => exponent switch
+	protected static decimal Pow(decimal value, int exponent) => exponent switch
 	{
 		2 => value * value,
 		3 => value * value * value,
@@ -410,6 +411,8 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 			return OneInterface;
 		if (value == ZeroInterface)
 			return ZeroInterface;
+		if (value.Imaginary == T.Zero && power.Imaginary == T.Zero)
+			return TSelf.Creator(Pow(value.Real, power.Real), T.Zero);
 		var a = value.Real;
 		var b = value.Imaginary;
 		var c = power.Real;
@@ -463,12 +466,8 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 		}
 	}
 
-	public static TSelf ReciprocInterface(TSelf value)
-	{
-		if (value.Real == T.Zero && value.Imaginary == T.Zero)
-			return ZeroInterface;
-		return OneInterface / value;
-	}
+	public static TSelf ReciprocInterface(TSelf value) =>
+		value.Imaginary == T.Zero ? TSelf.Creator(T.One / value.Real, T.Zero) : OneInterface / value;
 
 	private static decimal Sin(decimal angle) => SinCos(angle).Item1;
 
@@ -602,7 +601,8 @@ internal interface IComplexNumber<T, TSelf> : INumber<TSelf>
 	};
 
 	public static TSelf SqrtInterface(TSelf value) =>
-		FromPolarCoordinatesInterface(Sqrt(value.Magnitude), value.Phase / (T.One + T.One));
+		value.Imaginary == T.Zero ? TSelf.Creator(Sqrt(value.Real), T.Zero)
+		: FromPolarCoordinatesInterface(Sqrt(value.Magnitude), value.Phase / (T.One + T.One));
 	public static TSelf SquareInterface(TSelf value) =>
 		FromPolarCoordinatesInterface(Sqrt(value.Magnitude), value.Phase * (T.One + T.One));
 	public static TSelf TanInterface(TSelf value) => SinInterface(value) / CosInterface(value);

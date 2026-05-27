@@ -8,13 +8,32 @@ public readonly struct LongComplex(LongReal real, LongReal imaginary) : IComplex
 	public static LongComplex AdditiveIdentity => Zero;
 	static Func<LongReal, LongReal, LongComplex> IComplexNumber<LongReal, LongComplex>.Creator =>
 		(real, imaginary) => new(real, imaginary);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.E"/>
+	public static LongComplex E => new(LongReal.E, LongReal.Zero);
 	public LongReal Imaginary { get; } = imaginary;
-	public static LongComplex One => new(LongReal.One, LongReal.Zero);
 	public static LongComplex MultiplicativeIdentity => One;
+	/// <inheritdoc cref="LongReal.NaN"/>
+	public static LongComplex NaN { get; } = new(LongReal.NaN, LongReal.Zero);
+	/// <inheritdoc cref="LongReal.NegativeInfinity"/>
+	public static LongComplex NegativeInfinity { get; } = new(LongReal.NegativeInfinity, LongReal.Zero);
+	/// <inheritdoc cref="ISignedNumber{double}.NegativeOne"/>
+	public static LongComplex NegativeOne => new(LongReal.NegativeOne, LongReal.Zero);
+	public static LongComplex One => new(LongReal.One, LongReal.Zero);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Pi"/>
+	public static LongComplex Pi => new(LongReal.Pi, LongReal.Zero);
+	/// <inheritdoc cref="LongReal.PositiveInfinity"/>
+	public static LongComplex PositiveInfinity { get; } = new(LongReal.PositiveInfinity, LongReal.Zero);
 	public static int Radix => 2;
 	public LongReal Real { get; } = real;
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Tau"/>
+	public static LongComplex Tau => new(LongReal.Tau, LongReal.Zero);
 	public static LongComplex Zero => new(LongReal.Zero, LongReal.Zero);
 
+	/// <summary>
+	/// Computes the absolute of this number.
+	/// </summary>
+	/// <returns>The absolute of this number.</returns>
+	public LongReal Abs() => IComplexNumber<LongReal, LongComplex>.AbsInterface(this);
 	/// <inheritdoc cref="INumberBase{Complex}.Abs"/>
 	public static LongReal Abs(LongComplex value) => IComplexNumber<LongReal, LongComplex>.AbsInterface(value);
 	static LongComplex INumberBase<LongComplex>.Abs(LongComplex value) =>
@@ -721,16 +740,28 @@ public readonly struct LongComplex(LongReal real, LongReal imaginary) : IComplex
 		(IComplexNumber<LongReal, LongComplex>)left / right;
 	static LongComplex IModulusOperators<LongComplex, LongComplex, LongComplex>.operator %(LongComplex left,
 		LongComplex right) => throw new NotSupportedException("Ошибка, остаток от деления не определен для комплексных чисел.");
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
+	public static LongComplex operator <<(LongComplex x, int shiftAmount) =>
+		new(x.Real << shiftAmount, x.Imaginary << shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
+	public static LongComplex operator <<(LongComplex x, UnsignedLongReal shiftAmount) =>
+		new(x.Real << shiftAmount, x.Imaginary << shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator }}"/>
+	public static LongComplex operator >>(LongComplex x, int shiftAmount) =>
+		new(x.Real >> shiftAmount, x.Imaginary >> shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator }}"/>
+	public static LongComplex operator >>(LongComplex x, UnsignedLongReal shiftAmount) =>
+		new(x.Real >> shiftAmount, x.Imaginary >> shiftAmount);
 	public static LongComplex operator ++(LongComplex value) => new(value.Real + 1d, value.Imaginary);
 	public static LongComplex operator --(LongComplex value) => new(value.Real - 1d, value.Imaginary);
 	public static bool operator ==(LongReal left, LongComplex right) => right == left;
 	public static bool operator ==(LongComplex left, LongReal right) =>
-		left.Real == right && left.Imaginary == 0d;
+		left.Real == right && left.Imaginary == LongReal.Zero;
 	public static bool operator ==(LongComplex left, LongComplex right) =>
 		left.Real == right.Real && left.Imaginary == right.Imaginary;
 	public static bool operator !=(LongReal left, LongComplex right) => right != left;
 	public static bool operator !=(LongComplex left, LongReal right) =>
-		left.Real != right || left.Imaginary != 0d;
+		left.Real != right || left.Imaginary != LongReal.Zero;
 	public static bool operator !=(LongComplex left, LongComplex right) =>
 		left.Real != right.Real || left.Imaginary != right.Imaginary;
 #pragma warning disable S3877

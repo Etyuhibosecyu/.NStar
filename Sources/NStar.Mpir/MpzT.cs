@@ -28,7 +28,8 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	/// <summary>Initializes a new MpzT to the int op.</summary>
 	public MpzT(int op) => val = Mpir.MpzInitSetSi(op);
 	/// <summary>Initializes a new MpzT to the double op.</summary>
-	public MpzT(double op) => val = Mpir.MpzInitSetD(op);
+	public MpzT(double op) => val = op is double.PositiveInfinity or double.NegativeInfinity or double.NaN
+		? Mpir.MpzInitSetSi(0) : Mpir.MpzInitSetD(op);
 	/// <summary>Initializes a new MpzT to string s, parsed as an integer in the specified base.</summary>
 	public MpzT(string? s, uint @base) => val = Mpir.MpzInitSetStr(s ?? "0", @base);
 	/// <summary>Initializes a new MpzT to string s, parsed as an integer in base 10.</summary>

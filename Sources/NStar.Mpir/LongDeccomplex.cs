@@ -8,13 +8,32 @@ public readonly struct LongDeccomplex(LongDecimal real, LongDecimal imaginary) :
 	public static LongDeccomplex AdditiveIdentity => Zero;
 	static Func<LongDecimal, LongDecimal, LongDeccomplex> IComplexNumber<LongDecimal, LongDeccomplex>.Creator =>
 		(real, imaginary) => new(real, imaginary);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.E"/>
+	public static LongDeccomplex E => new(LongDecimal.E, LongDecimal.Zero);
 	public LongDecimal Imaginary { get; } = imaginary;
-	public static LongDeccomplex One => new(LongDecimal.One, LongDecimal.Zero);
 	public static LongDeccomplex MultiplicativeIdentity => One;
-	public static int Radix => 2;
+	/// <inheritdoc cref="LongDecimal.NaN"/>
+	public static LongDeccomplex NaN { get; } = new(LongDecimal.NaN, LongDecimal.Zero);
+	/// <inheritdoc cref="LongDecimal.NegativeInfinity"/>
+	public static LongDeccomplex NegativeInfinity { get; } = new(LongDecimal.NegativeInfinity, LongDecimal.Zero);
+	/// <inheritdoc cref="ISignedNumber{double}.NegativeOne"/>
+	public static LongDeccomplex NegativeOne => new(LongDecimal.NegativeOne, LongDecimal.Zero);
+	public static LongDeccomplex One => new(LongDecimal.One, LongDecimal.Zero);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Pi"/>
+	public static LongDeccomplex Pi => new(LongDecimal.Pi, LongDecimal.Zero);
+	/// <inheritdoc cref="LongDecimal.PositiveInfinity"/>
+	public static LongDeccomplex PositiveInfinity { get; } = new(LongDecimal.PositiveInfinity, LongDecimal.Zero);
+	public static int Radix => 10;
 	public LongDecimal Real { get; } = real;
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Tau"/>
+	public static LongDeccomplex Tau => new(LongDecimal.Tau, LongDecimal.Zero);
 	public static LongDeccomplex Zero => new(LongDecimal.Zero, LongDecimal.Zero);
 
+	/// <summary>
+	/// Computes the absolute of this number.
+	/// </summary>
+	/// <returns>The absolute of this number.</returns>
+	public LongDecimal Abs() => IComplexNumber<LongDecimal, LongDeccomplex>.AbsInterface(this);
 	/// <inheritdoc cref="INumberBase{Complex}.Abs"/>
 	public static LongDecimal Abs(LongDeccomplex value) => IComplexNumber<LongDecimal, LongDeccomplex>.AbsInterface(value);
 	static LongDeccomplex INumberBase<LongDeccomplex>.Abs(LongDeccomplex value) =>
@@ -737,16 +756,28 @@ public readonly struct LongDeccomplex(LongDecimal real, LongDecimal imaginary) :
 	static LongDeccomplex IModulusOperators<LongDeccomplex, LongDeccomplex, LongDeccomplex>.operator %(LongDeccomplex left,
 		LongDeccomplex right) =>
 		throw new NotSupportedException("Ошибка, остаток от деления не определен для комплексных чисел.");
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
+	public static LongDeccomplex operator <<(LongDeccomplex x, int shiftAmount) =>
+		new(x.Real << shiftAmount, x.Imaginary << shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
+	public static LongDeccomplex operator <<(LongDeccomplex x, UnsignedLongDecimal shiftAmount) =>
+		new(x.Real << shiftAmount, x.Imaginary << shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator }}"/>
+	public static LongDeccomplex operator >>(LongDeccomplex x, int shiftAmount) =>
+		new(x.Real >> shiftAmount, x.Imaginary >> shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator }}"/>
+	public static LongDeccomplex operator >>(LongDeccomplex x, UnsignedLongDecimal shiftAmount) =>
+		new(x.Real >> shiftAmount, x.Imaginary >> shiftAmount);
 	public static LongDeccomplex operator ++(LongDeccomplex value) => new(value.Real + 1d, value.Imaginary);
 	public static LongDeccomplex operator --(LongDeccomplex value) => new(value.Real - 1d, value.Imaginary);
 	public static bool operator ==(LongDecimal left, LongDeccomplex right) => right == left;
 	public static bool operator ==(LongDeccomplex left, LongDecimal right) =>
-		left.Real == right && left.Imaginary == 0d;
+		left.Real == right && left.Imaginary == LongDecimal.Zero;
 	public static bool operator ==(LongDeccomplex left, LongDeccomplex right) =>
 		left.Real == right.Real && left.Imaginary == right.Imaginary;
 	public static bool operator !=(LongDecimal left, LongDeccomplex right) => right != left;
 	public static bool operator !=(LongDeccomplex left, LongDecimal right) =>
-		left.Real != right || left.Imaginary != 0d;
+		left.Real != right || left.Imaginary != LongDecimal.Zero;
 	public static bool operator !=(LongDeccomplex left, LongDeccomplex right) =>
 		left.Real != right.Real || left.Imaginary != right.Imaginary;
 #pragma warning disable S3877

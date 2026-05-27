@@ -1,19 +1,48 @@
 ﻿namespace NStar.Mpir;
+/// <summary>
+/// Представляет базовое комплексное число в .NStar, как <see cref="System.Numerics.Complex"/>,
+/// только с бо́льшим количеством методов, с действительной и мнимой частями типа <see langword="double"/>.
+/// </summary>
+/// <param name="real">Действительная часть комплексного числа.</param>
+/// <param name="imaginary">Мнимая часть комплексного числа.</param>
 #pragma warning disable CA2260 // Используйте правильный параметр типа
 public readonly struct Complex(double real, double imaginary) : IComplexNumber<double, Complex>
 #pragma warning restore CA2260 // Используйте правильный параметр типа
 {
 	private const string NoComparisons = "Ошибка, операции \"больше\" и \"меньше\" не определены для комплексных чисел.";
 
+	public Complex(ReadOnlySpan<byte> bytes, int order) : this(bytes is var arr && arr.Length < sizeof(double) << 1
+		? throw new ArgumentException("Ошибка, слишком короткая последовательность байт для преобразования в этот тип.")
+		: BitConverter.ToDouble(arr), BitConverter.ToDouble(arr[sizeof(double)..])) => _ = order;
+
 	public static Complex AdditiveIdentity => Zero;
 	static Func<double, double, Complex> IComplexNumber<double, Complex>.Creator => (real, imaginary) => new(real, imaginary);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.E"/>
+	public static Complex E => new(double.E, 0d);
 	public double Imaginary { get; } = imaginary;
-	public static Complex One => new(1d, 0d);
 	public static Complex MultiplicativeIdentity => One;
+	/// <inheritdoc cref="double.NaN"/>
+	public static Complex NaN { get; } = new(double.NaN, 0d);
+	/// <inheritdoc cref="double.NegativeInfinity"/>
+	public static Complex NegativeInfinity { get; } = new(double.NegativeInfinity, 0d);
+	/// <inheritdoc cref="ISignedNumber{double}.NegativeOne"/>
+	public static Complex NegativeOne => new(-1d, 0d);
+	public static Complex One => new(1d, 0d);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Pi"/>
+	public static Complex Pi => new(double.Pi, 0d);
+	/// <inheritdoc cref="double.PositiveInfinity"/>
+	public static Complex PositiveInfinity { get; } = new(double.PositiveInfinity, 0d);
 	public static int Radix => 2;
 	public double Real { get; } = real;
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Tau"/>
+	public static Complex Tau => new(double.Tau, 0d);
 	public static Complex Zero => new(0d, 0d);
 
+	/// <summary>
+	/// Computes the absolute of this number.
+	/// </summary>
+	/// <returns>The absolute of this number.</returns>
+	public double Abs() => IComplexNumber<double, Complex>.AbsInterface(this);
 	/// <inheritdoc cref="INumberBase{Complex}.Abs"/>
 	public static double Abs(Complex value) => IComplexNumber<double, Complex>.AbsInterface(value);
 	static Complex INumberBase<Complex>.Abs(Complex value) => IComplexNumber<double, Complex>.AbsInterface(value);
@@ -643,6 +672,26 @@ public readonly struct Complex(double real, double imaginary) : IComplexNumber<d
 	/// </returns>
 	public static Complex Tanh(Complex value) => IComplexNumber<double, Complex>.TanhInterface(value);
 
+	/// <summary>
+	/// Преобразует данное число в массив байт.
+	/// </summary>
+	/// <param name="order">Порядок записи: &lt; 0 - Little Endian, &gt; 0 - Big Endian.</param>
+	/// <returns>Массив байт, из которого можно восстановить данное число,
+	/// с явным указанием длины мантиссы или без такового.</returns>
+	/// <remarks>
+	/// В данном типе порядок записи ни на что не влияет, оставлен только для унификации.
+	/// </remarks>
+	public byte[] ToByteArray(int order)
+	{
+		var bytes = GC.AllocateUninitializedArray<byte>(sizeof(double) << 1);
+		if (order < 0 && TryWriteLittleEndian(bytes, out var bytesWritten) && bytesWritten == bytes.Length)
+			return bytes;
+		else if (order > 0 && TryWriteBigEndian(bytes, out bytesWritten) && bytesWritten == bytes.Length)
+			return bytes;
+		else
+			throw new InvalidOperationException("Ошибка, не удалось преобразовать в массив байт.");
+	}
+
 	public override string ToString() => ((IComplexNumber<double, Complex>)this).ToStringInterface();
 	public string ToString(IFormatProvider? formatProvider) =>
 		((IComplexNumber<double, Complex>)this).ToStringInterface(formatProvider);
@@ -651,11 +700,26 @@ public readonly struct Complex(double real, double imaginary) : IComplexNumber<d
 		((IComplexNumber<double, Complex>)this).ToStringInterface(format, formatProvider);
 
 	public static bool TryConvertFromChecked<TOther>(TOther value, [MaybeNullWhen(false)] out Complex result)
-		where TOther : INumberBase<TOther> => throw new NotImplementedException();
+		where TOther : INumberBase<TOther>
+	{
+		result = System.Numerics.Complex.CreateChecked(value);
+		return true;
+	}
+
 	public static bool TryConvertFromSaturating<TOther>(TOther value, [MaybeNullWhen(false)] out Complex result)
-		where TOther : INumberBase<TOther> => throw new NotImplementedException();
+		where TOther : INumberBase<TOther>
+	{
+		result = System.Numerics.Complex.CreateSaturating(value);
+		return true;
+	}
+
 	public static bool TryConvertFromTruncating<TOther>(TOther value, [MaybeNullWhen(false)] out Complex result)
-		where TOther : INumberBase<TOther> => throw new NotImplementedException();
+		where TOther : INumberBase<TOther>
+	{
+		result = System.Numerics.Complex.CreateTruncating(value);
+		return true;
+	}
+
 	public static bool TryConvertToChecked<TOther>(Complex value, [MaybeNullWhen(false)] out TOther result)
 		where TOther : INumberBase<TOther> => throw new NotImplementedException();
 	public static bool TryConvertToSaturating<TOther>(Complex value, [MaybeNullWhen(false)] out TOther result)
@@ -685,6 +749,29 @@ public readonly struct Complex(double real, double imaginary) : IComplexNumber<d
 	public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider) =>
 		((System.Numerics.Complex)this).TryFormat(destination, out charsWritten, format, provider);
 
+	/// <inheritdoc cref="IBinaryInteger{TSelf}.TryWriteBigEndian"/>
+	/// <remarks>
+	/// В данном типе этот метод и <see cref="TryWriteLittleEndian"/> эквивалентны, оба оставлены только для унификации.
+	/// </remarks>
+	public bool TryWriteBigEndian(Span<byte> destination, out int bytesWritten) =>
+		TryWriteLittleEndian(destination, out bytesWritten);
+
+	/// <inheritdoc cref="IBinaryInteger{TSelf}.TryWriteLittleEndian"/>
+	/// <remarks>
+	/// В данном типе этот метод и <see cref="TryWriteBigEndian"/> эквивалентны, оба оставлены только для унификации.
+	/// </remarks>
+	public bool TryWriteLittleEndian(Span<byte> destination, out int bytesWritten)
+	{
+		if (destination.Length >= sizeof(double) << 1 && BitConverter.TryWriteBytes(destination[..sizeof(double)], Real)
+			&& BitConverter.TryWriteBytes(destination[sizeof(double)..], Imaginary))
+		{
+			bytesWritten = sizeof(double) << 1;
+			return true;
+		}
+		bytesWritten = 0;
+		return false;
+	}
+
 	public static implicit operator Complex(double value) => new(value, 0d);
 	public static implicit operator Complex(System.Numerics.Complex value) => new(value.Real, value.Imaginary);
 	public static explicit operator System.Numerics.Complex(Complex value) => new(value.Real, value.Imaginary);
@@ -701,13 +788,19 @@ public readonly struct Complex(double real, double imaginary) : IComplexNumber<d
 	public static Complex operator -(Complex left, Complex right) => (IComplexNumber<double, Complex>)left - right;
 	public static Complex operator *(double left, Complex right) => right * left;
 	public static Complex operator *(Complex left, double right) =>
-		new(left.Real * right, left.Imaginary * right);
+		new(double.IsNaN(left.Imaginary) ? double.NaN : left.Real * right,
+		double.IsNaN(left.Real) ? double.NaN : left.Imaginary * right);
 	public static Complex operator *(Complex left, Complex right) => (IComplexNumber<double, Complex>)left * right;
 	public static Complex operator /(Complex left, double right) =>
-		new(left.Real / right, left.Imaginary / right);
+		new(double.IsNaN(left.Imaginary) ? double.NaN : left.Real / right,
+		double.IsNaN(left.Real) ? double.NaN : left.Imaginary / right);
 	public static Complex operator /(Complex left, Complex right) => (IComplexNumber<double, Complex>)left / right;
 	static Complex IModulusOperators<Complex, Complex, Complex>.operator %(Complex left, Complex right) =>
 		throw new NotSupportedException("Ошибка, остаток от деления не определен для комплексных чисел.");
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
+	public static Complex operator <<(Complex x, int shiftAmount) => x * Math.Pow(2, shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator }}"/>
+	public static Complex operator >>(Complex x, int shiftAmount) => x / Math.Pow(2, shiftAmount);
 	public static Complex operator ++(Complex value) => new(value.Real + 1d, value.Imaginary);
 	public static Complex operator --(Complex value) => new(value.Real - 1d, value.Imaginary);
 	public static bool operator ==(double left, Complex right) => right == left;

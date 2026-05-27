@@ -8,13 +8,26 @@ public readonly struct Deccomplex(decimal real, decimal imaginary) : IComplexNum
 	public static Deccomplex AdditiveIdentity => Zero;
 	static Func<decimal, decimal, Deccomplex> IComplexNumber<decimal, Deccomplex>.Creator =>
 		(real, imaginary) => new(real, imaginary);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.E"/>
+	public static Deccomplex E => new(2.7182818284590452353602874714m, 0m);
 	public decimal Imaginary { get; } = imaginary;
-	public static Deccomplex One => new(1m, 0m);
 	public static Deccomplex MultiplicativeIdentity => One;
-	public static int Radix => 2;
+	/// <inheritdoc cref="ISignedNumber{double}.NegativeOne"/>
+	public static Deccomplex NegativeOne => new(-1m, 0m);
+	public static Deccomplex One => new(1m, 0m);
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Pi"/>
+	public static Deccomplex Pi => new(3.1415926535897932384626433833m, 0m);
+	public static int Radix => 10;
 	public decimal Real { get; } = real;
+	/// <inheritdoc cref="IFloatingPointConstants{double}.Tau"/>
+	public static Deccomplex Tau => new(6.2831853071795864769252867666m, 0m);
 	public static Deccomplex Zero => new(0m, 0m);
 
+	/// <summary>
+	/// Computes the absolute of this number.
+	/// </summary>
+	/// <returns>The absolute of this number.</returns>
+	public decimal Abs() => IComplexNumber<decimal, Deccomplex>.AbsInterface(this);
 	/// <inheritdoc cref="INumberBase{Complex}.Abs"/>
 	public static decimal Abs(Deccomplex value) => IComplexNumber<decimal, Deccomplex>.AbsInterface(value);
 	static Deccomplex INumberBase<Deccomplex>.Abs(Deccomplex value) => IComplexNumber<decimal, Deccomplex>.AbsInterface(value);
@@ -714,6 +727,12 @@ public readonly struct Deccomplex(decimal real, decimal imaginary) : IComplexNum
 		(IComplexNumber<decimal, Deccomplex>)left / right;
 	static Deccomplex IModulusOperators<Deccomplex, Deccomplex, Deccomplex>.operator %(Deccomplex left, Deccomplex right) =>
 		throw new NotSupportedException("Ошибка, остаток от деления не определен для комплексных чисел.");
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator {{"/>
+	public static Deccomplex operator <<(Deccomplex x, int shiftAmount) =>
+		x * IComplexNumber<decimal, Deccomplex>.Pow(2, shiftAmount);
+	/// <inheritdoc cref="IShiftOperators{TSelf, int, TSelf}.operator }}"/>
+	public static Deccomplex operator >>(Deccomplex x, int shiftAmount) =>
+		x / IComplexNumber<decimal, Deccomplex>.Pow(2, shiftAmount);
 	public static Deccomplex operator ++(Deccomplex value) => new(value.Real + 1m, value.Imaginary);
 	public static Deccomplex operator --(Deccomplex value) => new(value.Real - 1m, value.Imaginary);
 	public static bool operator ==(decimal left, Deccomplex right) => right == left;
