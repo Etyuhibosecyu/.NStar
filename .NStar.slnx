@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/Элементы решения/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="Service/Benchmark/Benchmark.csproj" />
+  <Project Path="Service/Generation/Generation.csproj" />
+  <Project Path="Service/Inspection/Inspection.csproj" />
+  <Project Path="Sources/NStar.BigCollections/NStar.BigCollections.csproj" />
+  <Project Path="Sources/NStar.BufferLib/NStar.BufferLib.csproj" />
+  <Project Path="Sources/NStar.Core/NStar.Core.csproj" />
+  <Project Path="Sources/NStar.Dictionaries/NStar.Dictionaries.csproj" />
+  <Project Path="Sources/NStar.EasyEval/NStar.EasyEval.csproj" />
+  <Project Path="Sources/NStar.ExtraReplacing/NStar.ExtraReplacing.csproj" />
+  <Project Path="Sources/NStar.Linq/NStar.Linq.csproj" />
+  <Project Path="Sources/NStar.MathLib.Extras/NStar.MathLib.Extras.csproj" />
+  <Project Path="Sources/NStar.MathLib/NStar.MathLib.csproj" />
+  <Project Path="Sources/NStar.Mpir/NStar.Mpir.csproj" />
+  <Project Path="Sources/NStar.ParallelHS/NStar.ParallelHS.csproj" />
+  <Project Path="Sources/NStar.RemoveDoubles/NStar.RemoveDoubles.csproj" />
+  <Project Path="Sources/NStar.SortedSets/NStar.SortedSets.csproj" />
+  <Project Path="Sources/NStar.SumCollections/NStar.SumCollections.csproj" />
+  <Project Path="Sources/NStar.TreeSets/NStar.TreeSets.csproj" />
+  <Project Path="Tests/NStar.BigCollections.Tests/NStar.BigCollections.Tests.csproj" />
+  <Project Path="Tests/NStar.Core.Tests/NStar.Core.Tests.csproj" />
+  <Project Path="Tests/NStar.ExtraLibs.Tests/NStar.ExtraLibs.Tests.csproj" />
+  <Project Path="Tests/NStar.Linq.Tests/NStar.Linq.Tests.csproj" />
+  <Project Path="Tests/NStar.Mpir.Tests/NStar.Mpir.Tests.fsproj" />
+</Solution>

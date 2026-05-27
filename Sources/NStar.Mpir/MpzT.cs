@@ -1,16 +1,26 @@
-﻿using System.Collections.Immutable;
+﻿global using NStar.Core;
+global using NStar.Dictionaries;
+global using System;
+global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Globalization;
+global using System.IO;
+global using System.Numerics;
+global using System.Runtime.CompilerServices;
+global using System.Runtime.InteropServices;
+global using System.Text;
+global using System.Threading;
+global using static NStar.Core.Extents;
+global using static NStar.Mpir.MpzT;
+using System.Collections.Immutable;
 
 namespace NStar.Mpir;
 
 /// <summary>Represents an arbitrarily large signed integer.</summary>
 public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisposable
 {
-	internal const string NoDivisionByZero = "Этот тип не поддерживает деление на ноль.";
+	public const uint DefaultStringBase = 10u;
 	internal const string NoNegativeNumbers = "Этот тип не поддерживает отрицательные числа.";
-	internal const string SpecialValuesConversionError = "Это преобразование не поддерживает бесконечность и неопределенность.";
-	internal const string ULRConversionError = "Это преобразование не поддерживает бесконечность,"
-		+ " неопределенность и отрицательные числа.";
-	internal const uint DefaultStringBase = 10u;
 	internal static readonly ImmutableArray<uint> smallPowersOfTen = [1, 10, 100, 1000, 10_000, 100_000,
 		1000_000, 10_000_000, 100_000_000, 1000_000_000];
 	private static readonly byte[] convertToLongBytes = GC.AllocateUninitializedArray<byte>(8);
@@ -861,7 +871,6 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	}
 
 	internal static MpzT PowerOf5(int exponent) => Unsafe.As<MpzT>(MpuT.PowerOf5(exponent));
-
 	internal static MpzT PowerOf10(int exponent) => Unsafe.As<MpzT>(MpuT.PowerOf10(exponent));
 
 	private static void ProcessLongConversion(MpzT value)

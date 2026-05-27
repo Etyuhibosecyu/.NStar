@@ -26,7 +26,6 @@ public static partial class Mpir
 	{
 		var bufSize = (int)Math.Min(MpuSizeinbase(op, 256), 2147483647);
 		var destBuf = new byte[bufSize];
-		var op2 = op;
 		fixed (byte* destPtr = destBuf)
 		{
 			if (MpuCmpSi(op, 0) == 0)
@@ -38,7 +37,6 @@ public static partial class Mpir
 	}
 	public static unsafe void MpirMpuExport(Span<byte> destBuf, int order, uint size, int endian, uint nails, MpuT op)
 	{
-		var bufSize = (int)Math.Min(MpuSizeinbase(op, 256), 2147483647);
 		if (MpuCmpSi(op, 0) == 0)
 			destBuf[0] = 0;
 		fixed (byte* destPtr = destBuf)

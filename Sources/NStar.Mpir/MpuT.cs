@@ -127,7 +127,6 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		}
 	}
 
-	internal static MpuT Two { get; } = new(2);
 	public static MpuT Zero { get; } = new(0);
 
 	/// <summary>Returns a new MpuT which is the absolute value of this value.</summary>

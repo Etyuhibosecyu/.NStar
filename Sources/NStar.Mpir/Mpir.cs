@@ -76,7 +76,7 @@ public static partial class Mpir
 				libpath = path;
 		}
 		if (libpath == "")
-			throw new Exception("MPIR: can't determine path to the " + name);
+			throw new FileNotFoundException("MPIR: can't determine path to the " + name);
 		return libpath + Path.DirectorySeparatorChar + name;
 	}
 	public static string GetXMPIRLibraryPath()
@@ -88,33 +88,32 @@ public static partial class Mpir
 		if (os == "windows")
 			libname = "xmpir" + (nint.Size * 8).ToString() + ".dll";
 		if (libname == "")
-			throw new Exception("MPIR: unknown OS - '" + os + "'");
+			throw new PlatformNotSupportedException("MPIR: unknown OS - '" + os + "'");
 		return LocateLibrary(libname);
 	}
 	private static void HandleError(int ErrorCode)
 	{
-		//Environment.Exit(-1);
 		if (ErrorCode == 1)
 			throw new OutOfMemoryException("MPIR: out of memory!");
 		if (ErrorCode == 2)
-			throw new Exception("MPIR: division by zero!");
+			throw new DivideByZeroException("MPIR: division by zero!");
 		if (ErrorCode == 3)
-			throw new Exception("MPIR: 64-bit index in 32-bit mode!");
-		throw new Exception("MPIR: unknown error!");
+			throw new InvalidOperationException("MPIR: 64-bit index in 32-bit mode!");
+		throw new InvalidOperationException("MPIR: unknown error!");
 	}
 
 	private static nint LoadLibrarySafe(string name)
 	{
 		var hResult = MpirDynamicLoader.LoadLibrarySafe(name);
 		if (hResult.Equals(nint.Zero))
-			throw new Exception("MPIR: unable to dlopen('" + name + "')");
+			throw new DllNotFoundException("MPIR: unable to dlopen('" + name + "')");
 		return hResult;
 	}
 	private static nint GetProcAddressSafe(nint hLib, string name)
 	{
 		var hResult = MpirDynamicLoader.GetProcAddressSafe(hLib, name);
 		if (hResult.Equals(nint.Zero))
-			throw new Exception("MPIR: unable to dlsym('" + name + "')");
+			throw new DllNotFoundException("MPIR: unable to dlsym('" + name + "')");
 		return hResult;
 	}
 
@@ -169,7 +168,10 @@ public static partial class Mpir
 			// null countp argument, because we already know how large the result will be.
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
-		return destBuf[order == 1 ? 0 : ^1] < 128 || negative ? destBuf : order == 1 ? [0, .. destBuf] : [.. destBuf, 0];
+		if (order == 1)
+			return destBuf[(Index)0] < 128 || negative ? destBuf : [0, .. destBuf];
+		else
+			return destBuf[^1] < 128 || negative ? destBuf : [.. destBuf, 0];
 	}
 	#endregion
 }
