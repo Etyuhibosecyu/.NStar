@@ -37,11 +37,12 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
-			Initialize(capacity, out buckets, out entries);
+			Initialize(capacity);
 		else
 		{
 			buckets = default!;
-			entries = default!;
+			hashes = default!;
+			items = default!;
 		}
 		Comparer = comparer ?? G.EqualityComparer<T>.Default;
 	}
@@ -113,7 +114,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].hashCode < 0 && (entries[index2].item?.Equals(value) ?? value is null))
+			if (hashes[index2].hashCode < 0 && (items[index2]?.Equals(value) ?? value is null))
 				return;
 			if (Contains(value))
 				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
@@ -160,7 +161,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _size - list.Count);
 		for (var i = 0; i < list.Count; i++)
 		{
-			while (index < _size && entries[index].hashCode >= 0)
+			while (index < _size && hashes[index].hashCode >= 0)
 				index++;
 			if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
 				return false;
@@ -174,7 +175,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			throw new ArgumentOutOfRangeException(nameof(index));
 		foreach (var item in collection)
 		{
-			while (index < _size && entries[index].hashCode >= 0)
+			while (index < _size && hashes[index].hashCode >= 0)
 				index++;
 			if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item is null))
 				return false;
@@ -206,24 +207,28 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		var newSize = _size - freeCount;
 		var newSizeExt = HashHelpers.GetPrime(newSize);
 		var newBuckets = new int[newSizeExt];
-		var newEntries = new Entry[newSizeExt];
+		var newHashes = new Hash[newSizeExt];
+		var newItems = new T[newSizeExt];
 		var skipped = 0;
 		for (var i = 0; i < _size; i++)
-			if (entries[i].hashCode < 0)
-				newEntries[i - skipped] = entries[i];
+			if (hashes[i].hashCode < 0)
+			{
+				newHashes[i - skipped] = hashes[i];
+				newItems[i - skipped] = items[i];
+			}
 			else
 				skipped++;
 		for (var i = 0; i < newSize; i++)
-			if (newEntries[i].hashCode < 0)
+			if (newHashes[i].hashCode < 0)
 			{
-				var bucket = ~newEntries[i].hashCode % newSize;
-				ref var t = ref newEntries[i];
-				t.next = newBuckets[bucket];
+				var bucket = ~newHashes[i].hashCode % newSize;
+				newHashes[i].next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
 		_size = newSize;
 		buckets = newBuckets;
-		entries = newEntries;
+		hashes = newHashes;
+		items = newItems;
 		freeCount = 0;
 		freeList = 0;
 		Changed();
@@ -241,7 +246,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets is null)
-			Initialize(0, out buckets, out entries);
+			Initialize(0);
 		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
@@ -250,12 +255,12 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		if (freeCount > 0)
 		{
 			index = ~freeList;
-			freeList = entries[index].next;
+			freeList = hashes[index].next;
 			freeCount--;
 		}
 		else
 		{
-			if (_size == entries.Length)
+			if (_size == items.Length)
 			{
 				Resize();
 				targetBucket = hashCode % buckets.Length;
@@ -263,26 +268,23 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			index = _size;
 			_size++;
 		}
-		ref var t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = item;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
+		items[index] = item;
 		buckets[targetBucket] = ~index;
 		Changed();
 		return (TCertain)this;
 	}
 
-	public virtual bool IsValidIndex(int index) => entries[index].hashCode < 0;
+	public virtual bool IsValidIndex(int index) => hashes[index].hashCode < 0;
 
 	public override TCertain RemoveAt(int index)
 	{
-		if (buckets is null || entries is null)
+		if (buckets is null || hashes is null)
 			return (TCertain)this;
-		if (entries[index].hashCode >= 0)
+		if (hashes[index].hashCode >= 0)
 			return (TCertain)this;
-		ref var t = ref entries[index];
-		RemoveAtCommon(index, ref t);
-		t.next = freeList;
+		RemoveAtCommon(index);
+		hashes[index].next = freeList;
 		freeList = ~index;
 		freeCount++;
 		return (TCertain)this;
@@ -301,9 +303,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		if (buckets is null)
 			return false;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		return RemoveValueCommon(item, hashCode, (ref Entry t, int i) =>
+		return RemoveValueCommon(item, hashCode, i =>
 		{
-			t.next = freeList;
+			hashes[i].next = freeList;
 			freeList = ~i;
 			freeCount++;
 		});
@@ -311,7 +313,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	protected override void SetInternal(int index, T value)
 	{
-		if (entries[index].hashCode < 0)
+		if (hashes[index].hashCode < 0)
 			RemoveAt(index);
 		if (value is null)
 			return;
@@ -319,40 +321,38 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		var targetBucket = hashCode % buckets.Length;
 		uint collisionCount = 0;
 		var last = -1;
-		for (var i = ~freeList; i >= 0; last = i, i = ~entries[i].next)
+		for (var i = ~freeList; i >= 0; last = i, i = ~hashes[i].next)
 		{
-			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+			if (~hashes[i].next == i || ~hashes[i].next == last && last != -1)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (i == index)
 			{
 				if (last < 0)
-					freeList = entries[i].next;
+					freeList = hashes[i].next;
 				else
-					entries[last].next = entries[i].next;
+					hashes[last].next = hashes[i].next;
 				freeCount--;
 				goto l1;
 			}
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
-		if (_size == entries.Length)
+		if (_size == items.Length)
 		{
 			Resize();
 			targetBucket = hashCode % buckets.Length;
 		}
 		_size++;
 	l1:
-		ref var t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = value;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
+		items[index] = value;
 		buckets[targetBucket] = ~index;
-		Debug.Assert(IsValidIndex(index) && (entries[index].item?.Equals(value) ?? value is null));
+		Debug.Assert(IsValidIndex(index) && (items[index]?.Equals(value) ?? value is null));
 	}
 
 	public new struct Enumerator : G.IEnumerator<T>
@@ -371,9 +371,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		{
 			while ((uint)index < (uint)hashSet.Size)
 			{
-				if (hashSet.entries[index].hashCode < 0)
+				if (hashSet.hashes[index].hashCode < 0)
 				{
-					Current = hashSet.entries[index].item;
+					Current = hashSet.items[index];
 					index++;
 					return true;
 				}
@@ -512,7 +512,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			Parallel.For(0, buckets.Length, i =>
 			{
 				buckets[i] = 0;
-				entries[i] = new();
+				hashes[i] = default!;
+				items[i] = default!;
 			});
 			freeList = 0;
 			_size = 0;
@@ -574,17 +575,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			return UnsafeIndexOf(item, index, length, hashCode);
 	}
 
-	protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
+	protected override void Initialize(int capacity)
 	{
 		lock (lockObj)
 		{
 			if (this.buckets is null)
-				base.Initialize(capacity, out buckets, out entries);
-			else
-			{
-				buckets = this.buckets;
-				entries = this.entries;
-			}
+				base.Initialize(capacity);
 		}
 	}
 
@@ -593,7 +589,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets is null)
-			Initialize(0, out buckets, out entries);
+			Initialize(0);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (Contains(item))
@@ -624,24 +620,24 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets is null)
-			Initialize(0, out buckets, out entries);
+			Initialize(0);
 		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		uint collisionCount = 0;
 		var targetBucket = hashCode % buckets.Length;
-		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		for (var i = ~buckets[targetBucket]; i >= 0; i = ~hashes[i].next)
 		{
-			if (~entries[i].next == i)
+			if (~hashes[i].next == i)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			if (hashes[i].hashCode == ~hashCode && Comparer.Equals(items[i], item))
 			{
 				index = i;
 				return this;
 			}
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
@@ -706,12 +702,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> RemoveAt(int index)
 	{
-		if (entries[index].hashCode >= 0)
+		if (hashes[index].hashCode >= 0)
 			return this;
 		lock (lockObj)
 		{
 			UnsafeRemoveAt(index);
-			Debug.Assert(entries[index].hashCode >= 0);
+			Debug.Assert(hashes[index].hashCode >= 0);
 			Changed();
 		}
 		return this;
@@ -731,9 +727,9 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			return false;
 		lock (lockObj)
 		{
-			RemoveValueCommon(item, hashCode, (ref Entry t, int i) =>
+			RemoveValueCommon(item, hashCode, (int i) =>
 			{
-				t.next = freeList;
+				hashes[index].next = freeList;
 				freeList = ~i;
 				freeCount++;
 			});
@@ -878,15 +874,15 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (buckets is null)
 			return -1;
 		uint collisionCount = 0;
-		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~hashes[i].next)
 		{
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
+			if (hashes[i].hashCode == ~hashCode && Comparer.Equals(items[i], item) && i >= index && i < index + length)
 				return i;
-			if (~entries[i].next == i)
+			if (~hashes[i].next == i)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 					" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
 		}
@@ -898,7 +894,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets is null)
-			Initialize(0, out buckets, out entries);
+			Initialize(0);
 		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя программная или аппаратная ошибка." +
 				" Повторите попытку позже. Если проблема остается, обратитесь к разработчикам .NStar.");
@@ -906,12 +902,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (freeCount > 0)
 		{
 			index = ~freeList;
-			freeList = entries[index].next;
+			freeList = hashes[index].next;
 			freeCount--;
 		}
 		else
 		{
-			if (_size == entries.Length)
+			if (_size == items.Length)
 			{
 				UnsafeResize();
 				targetBucket = hashCode % buckets.Length;
@@ -919,23 +915,20 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			index = _size;
 			_size++;
 		}
-		ref var t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = item;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
+		items[index] = item;
 		buckets[targetBucket] = ~index;
 		return this;
 	}
 
 	protected virtual ParallelHashSet<T> UnsafeRemoveAt(int index)
 	{
-		if (buckets is null || entries is null)
+		if (buckets is null || hashes is null)
 			return this;
-		if (entries[index].hashCode >= 0)
+		if (hashes[index].hashCode >= 0)
 			return this;
-		ref var t = ref entries[index];
-		RemoveAtCommon(index, ref t);
-		t.next = freeList;
+		RemoveAtCommon(index);
+		hashes[index].next = freeList;
 		freeList = ~index;
 		freeCount++;
 		return this;

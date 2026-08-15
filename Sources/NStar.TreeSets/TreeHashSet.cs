@@ -16,11 +16,12 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
-			Initialize(capacity, out buckets, out entries);
+			Initialize(capacity);
 		else
 		{
 			buckets = default!;
-			entries = default!;
+			hashes = default!;
+			items = default!;
 		}
 		Comparer = comparer ?? G.EqualityComparer<T>.Default;
 	}
@@ -68,7 +69,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			if (entries[IndexGetDirect(index2)].item?.Equals(value) ?? value is null)
+			if (items[IndexGetDirect(index2)]?.Equals(value) ?? value is null)
 				return;
 			if (Contains(value))
 				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
@@ -129,24 +130,28 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		fixes++;
 		var newSize = HashHelpers.GetPrime(_size - deleted.Length);
 		var newBuckets = new int[newSize];
-		var newEntries = new Entry[newSize];
+		var newHashes = new Hash[newSize];
+		var newItems = new T[newSize];
 		var skipped = 0;
-		for (var i = 0; i < entries.Length; i++)
-			if (entries[i].hashCode < 0)
-				newEntries[i - skipped] = entries[i];
+		for (var i = 0; i < items.Length; i++)
+			if (hashes[i].hashCode < 0)
+			{
+				newHashes[i - skipped] = hashes[i];
+				newItems[i - skipped] = items[i];
+			}
 			else
 				skipped++;
 		for (var i = 0; i < newSize; i++)
-			if (newEntries[i].hashCode < 0)
+			if (newHashes[i].hashCode < 0)
 			{
-				var bucket = ~newEntries[i].hashCode % newSize;
-				ref var t = ref newEntries[i];
-				t.next = newBuckets[bucket];
+				var bucket = ~newHashes[i].hashCode % newSize;
+				hashes[i].next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
 		_size -= deleted.Length;
 		buckets = newBuckets;
-		entries = newEntries;
+		hashes = newHashes;
+		items = newItems;
 		deleted.Clear();
 		Changed();
 		return (TCertain)this;
@@ -173,7 +178,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets is null)
-			Initialize(0, out buckets, out entries);
+			Initialize(0);
 		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
@@ -183,7 +188,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			index = deleted.GetAndRemove(^1);
 		else
 		{
-			if (_size == entries.Length)
+			if (_size == items.Length)
 			{
 				Resize();
 				targetBucket = hashCode % buckets.Length;
@@ -191,10 +196,8 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			index = _size;
 			_size++;
 		}
-		ref var t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = item;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
+		items[index] = item;
 		buckets[targetBucket] = ~index;
 		Changed();
 		return (TCertain)this;
@@ -209,13 +212,12 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	protected virtual void RemoveAtDirect(int index)
 	{
-		if (buckets is null || entries is null)
+		if (buckets is null || hashes is null)
 			return;
-		if (entries[index].hashCode >= 0)
+		if (hashes[index].hashCode >= 0)
 			return;
-		ref var t = ref entries[index];
-		RemoveAtCommon(index, ref t);
-		t.next = 0;
+		RemoveAtCommon(index);
+		hashes[index].next = 0;
 		deleted.TryAdd(index);
 		if (deleted.Length >= Length && deleted.Length >= DefaultCapacity)
 			FixUpDeleted();
@@ -228,9 +230,9 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		if (buckets is null)
 			return false;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		return RemoveValueCommon(item, hashCode, (ref Entry t, int i) =>
+		return RemoveValueCommon(item, hashCode, i =>
 		{
-			t.next = 0;
+			hashes[i].next = 0;
 			deleted.TryAdd(i);
 			if (deleted.Length >= Length && deleted.Length >= DefaultCapacity)
 				FixUpDeleted();
@@ -242,7 +244,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	internal virtual void SetDirect(int index, T item, int actualIndex)
 	{
 		var deletedLength = deleted.Length;
-		if (entries[index].hashCode < 0)
+		if (hashes[index].hashCode < 0)
 		{
 			RemoveAtDirect(index);
 			deletedLength++;
@@ -261,17 +263,15 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 		else
 		{
-			if (_size == entries.Length)
+			if (_size == items.Length)
 			{
 				Resize();
 				bucket = hashCode % buckets.Length;
 			}
 			_size++;
 		}
-		ref var t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[bucket];
-		t.item = item;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[bucket] << BitsPerInt);
+		items[index] = item;
 		buckets[bucket] = ~index;
 	}
 
@@ -295,9 +295,9 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 				throw new InvalidOperationException("Коллекцию нельзя изменять во время перечисления по ней.");
 			while ((uint)index < (uint)hashSet._size)
 			{
-				if (hashSet.entries[index].hashCode < 0)
+				if (hashSet.hashes[index].hashCode < 0)
 				{
-					Current = hashSet.entries[index].item;
+					Current = hashSet.items[index];
 					index++;
 					return true;
 				}

@@ -103,9 +103,10 @@ public static void Main()
 	}
 
 	public static ListHashSet<String> GetAllAssemblies(G.IEnumerable<String> extraAssemblies) =>
-		new ListHashSet<String>("NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
-		"NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib",
-		"Microsoft.CSharp", "mscorlib", "NStar.Mpir", "netstandard", "NStar.ParallelHS", "NStar.RemoveDoubles",
+		new ListHashSet<String>("mscorlib", "netstandard", "Microsoft.CSharp",
+		"NStar.BufferLib", "NStar.Core", "NStar.Dictionaries",
+		"NStar.ExtraReplacing", "NStar.Linq", "NStar.MathLib", "NStar.MathLib.Extras",
+		"NStar.Mpir", "NStar.ParallelHS", "NStar.RemoveDoubles",
 		"NStar.SumCollections", "System", "System.Console", "System.Core", "System.Linq.Expressions",
 		"System.Private.CoreLib", "System.Runtime")
 		.UnionWith(extraAssemblies);

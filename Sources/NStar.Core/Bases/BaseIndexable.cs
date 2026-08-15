@@ -429,7 +429,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		EqualsInternal(collection, index, toEnd);
 
 	/// <inheritdoc/>
-	public override bool Equals(object? obj) => obj switch
+	public override bool Equals(object? obj) => ReferenceEquals(this, obj) || obj switch
 	{
 		null => false,
 		IEnumerable<T> enumerable => Equals(enumerable),
@@ -1547,7 +1547,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual bool EndsWith(TCertain collection) => EndsWith((IEnumerable<T>)collection);
 
 	/// <inheritdoc cref="BaseIndexable{T}.Equals(IEnumerable{T})"/>
-	public virtual bool Equals(TCertain? other) => EqualsInternal(other, 0, true);
+	public virtual bool Equals(TCertain? other) => ReferenceEquals(this, other) || EqualsInternal(other, 0, true);
 
 	/// <inheritdoc cref="BaseIndexable{T}.Equals(IEnumerable{T}, int, bool)"/>
 	public virtual bool Equals(TCertain? collection, int index, bool toEnd = false) =>
@@ -1925,14 +1925,12 @@ public abstract class BaseMutableIndexable<T, TCertain> : BaseIndexable<T, TCert
 		}
 	}
 
-	public delegate void ListChangedHandler(TCertain newList);
-
 	/// <summary>
 	/// Событие, вызываемое при изменении данной коллекции.
 	/// Если вам нужно уведомление, когда коллекция изменена, нет смысла проверять в цикле постоянно -
 	/// добавьте уведомление в это событие.
 	/// </summary>
-	public event ListChangedHandler? ListChanged;
+	public event Action<TCertain>? ListChanged;
 
 	protected virtual void Changed() => ListChanged?.Invoke((TCertain)this);
 

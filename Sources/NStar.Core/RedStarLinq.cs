@@ -770,6 +770,7 @@ public static class RedStarLinq
 	public static String ToNString(this IEnumerable<char> source) => new(source);
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, char> function) => new(ToArray(source, function));
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, int, char> function) => new(ToArray(source, function));
+	public static String? ToNString(this object? source) => source?.ToString()?.ToNString();
 	public static string ToString(this IEnumerable<char> source) => new(source.ToArray());
 
 	public static bool TryGetLengthEasily<T>(this IEnumerable<T> source, out int length)

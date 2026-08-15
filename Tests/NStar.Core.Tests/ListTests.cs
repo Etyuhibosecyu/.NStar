@@ -1103,7 +1103,7 @@ public class ListTests
 				b.RemoveRange(n, b.Count - n);
 			Assert.IsTrue(a.Equals(b, 0));
 			Assert.IsTrue(E.SequenceEqual(b, E.Take(a, b.Count)));
-			Assert.AreEqual(c, a);
+			Assert.IsTrue(ReferenceEquals(c, a));
 		}
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Resize(-1));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.Resize(-1000));
@@ -1127,7 +1127,7 @@ public class ListTests
 				b.RemoveRange(0, b.Count - n);
 			Assert.IsTrue(a.Equals(b, n - b.Count));
 			Assert.IsTrue(E.SequenceEqual(b, E.TakeLast(a, b.Count)));
-			Assert.AreEqual(c, a);
+			Assert.IsTrue(E.ReferenceEquals(c, a));
 		}
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.ResizeLeft(-1));
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => a.ResizeLeft(-1000));

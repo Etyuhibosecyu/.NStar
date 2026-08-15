@@ -1,17 +1,19 @@
-﻿namespace NStar.Core;
+﻿using System.Runtime.CompilerServices;
+
+namespace NStar.Core;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseHashSet<T, TCertain>, new()
 {
-	protected struct Entry
+	protected struct Hash
 	{
 		public int hashCode;
 		public int next;
-		public T item;
 	}
 
 	protected int[] buckets = default!;
-	protected Entry[] entries = default!;
+	protected Hash[] hashes = default!;
+	protected T[] items = default!;
 
 	/// <inheritdoc/>
 	public override int Capacity
@@ -35,7 +37,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			for (var i = 0; i < buckets.Length; i++)
 			{
 				buckets[i] = 0;
-				entries[i] = new();
+				hashes[i] = default;
+				items[i] = default!;
 			}
 			_size = 0;
 		}
@@ -68,14 +71,14 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
 	{
-		var hashCode = entries[sourceIndex].hashCode;
+		var hashCode = hashes[sourceIndex].hashCode;
 		if (hashCode < 0)
 		{
-			destination.SetInternal(destinationIndex, entries[sourceIndex].item);
+			destination.SetInternal(destinationIndex, items[sourceIndex]);
 			if (destination is ListHashSet<T> && destinationIndex == destination._size)
 				destination._size++;
 		}
-		else if (destination.entries[destinationIndex].hashCode < 0)
+		else if (destination.hashes[destinationIndex].hashCode < 0)
 			destination.SetNull(destinationIndex);
 		else if (destinationIndex == destination._size)
 		{
@@ -88,11 +91,11 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		var skipped = 0;
 		for (var i = 0; i < index; i++)
-			if (entries[i].hashCode >= 0)
+			if (hashes[i].hashCode >= 0)
 				skipped++;
 		for (var i = 0; i < length; i++)
-			if (entries[i].hashCode < 0)
-				array[arrayIndex++] = entries[index + i + skipped].item;
+			if (hashes[i].hashCode < 0)
+				array[arrayIndex++] = items[index + i + skipped];
 			else
 				length++;
 	}
@@ -100,12 +103,13 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	protected override void DisposeInternal()
 	{
 		buckets = default!;
-		entries = default!;
+		hashes = default!;
+		items = default!;
 		_size = 0;
 		Changed();
 	}
 
-	protected override T GetInternal(int index) => entries[index].item;
+	protected override T GetInternal(int index) => items[index];
 
 	protected override int IndexOfInternal(T item, int index, int length) =>
 		item is not null ? IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF)
@@ -119,16 +123,16 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			return -1;
 		uint collisionCount = 0;
 		Debug.Assert(hashCode >= 0);
-		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+		for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~hashes[i].next)
 		{
-			if (~entries[i].next == i)
+			if (~hashes[i].next == i)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
+			if (hashes[i].hashCode == ~hashCode && Comparer.Equals(items[i], item) && i >= index && i < index + length)
 				return i;
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
@@ -136,11 +140,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return -1;
 	}
 
-	protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
+	protected virtual void Initialize(int capacity)
 	{
 		var size = HashHelpers.GetPrime(capacity);
 		buckets = new int[size];
-		entries = new Entry[size];
+		hashes = new Hash[size];
+		items = new T[size];
 	}
 
 	protected abstract TCertain Insert(T? item, out int index, int hashCode);
@@ -183,33 +188,33 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		}
 	}
 
-	protected virtual void RemoveAtCommon(int index, ref Entry t)
+	protected virtual void RemoveAtCommon(int index)
 	{
 		uint collisionCount = 0;
-		var bucket = ~t.hashCode % buckets.Length;
+		var bucket = ~hashes[index].hashCode % buckets.Length;
 		var last = -1;
-		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~hashes[i].next)
 		{
-			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+			if (~hashes[i].next == i || ~hashes[i].next == last && last != -1)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (i == index)
 			{
 				if (last < 0)
-					buckets[bucket] = entries[i].next;
+					buckets[bucket] = hashes[i].next;
 				else
-					entries[last].next = entries[i].next;
+					hashes[last].next = hashes[i].next;
 				break;
 			}
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
-		t.hashCode = 0;
-		t.item = default!;
+		hashes[index].hashCode = 0;
+		items[index] = default!;
 	}
 
 	protected virtual bool RemoveValueCommon(T? item, int hashCode, RemoveValueAction action)
@@ -217,26 +222,25 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		uint collisionCount = 0;
 		var bucket = hashCode % buckets.Length;
 		var last = -1;
-		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~hashes[i].next)
 		{
-			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+			if (~hashes[i].next == i || ~hashes[i].next == last && last != -1)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			if (hashes[i].hashCode == ~hashCode && Comparer.Equals(items[i], item))
 			{
 				if (last < 0)
-					buckets[bucket] = entries[i].next;
+					buckets[bucket] = hashes[i].next;
 				else
-					entries[last].next = entries[i].next;
-				ref var t = ref entries[i];
-				t.hashCode = 0;
-				t.item = default!;
-				action(ref t, i);
+					hashes[last].next = hashes[i].next;
+				hashes[i].hashCode = 0;
+				items[i] = default!;
+				action(i);
 				return true;
 			}
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
@@ -244,37 +248,39 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return false;
 	}
 
-	protected delegate void RemoveValueAction(ref Entry t, int i);
+	protected delegate void RemoveValueAction(int i);
 
 	protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
 
 	protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
 		var newBuckets = new int[newSize];
-		var newEntries = new Entry[newSize];
-		if (entries is not null)
-			Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
+		var newHashes = new Hash[newSize];
+		if (hashes is not null)
+			Array.Copy(hashes, 0, newHashes, 0, Min(items.Length, newSize));
+		var newItems = new T[newSize];
+		if (items is not null)
+			Array.Copy(items, 0, newItems, 0, Min(items.Length, newSize));
 		if (forceNewHashCodes)
 			for (var i = 0; i < _size; i++)
 			{
-				ref var t = ref newEntries[i];
-				if (t.hashCode == 0)
+				if (newHashes[i].hashCode == 0)
 					continue;
-				t.hashCode = ~Comparer.GetHashCode(t.item
+				newHashes[i].hashCode = ~Comparer.GetHashCode(newItems[i]
 					?? throw new InvalidOperationException("Произошла внутренняя ошибка." +
 					" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 					" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.")) & 0x7FFFFFFF;
 			}
 		for (var i = 0; i < _size; i++)
-			if (newEntries[i].hashCode < 0)
+			if (newHashes[i].hashCode < 0)
 			{
-				var bucket = ~newEntries[i].hashCode % newSize;
-				ref var t = ref newEntries[i];
-				t.next = newBuckets[bucket];
+				var bucket = ~newHashes[i].hashCode % newSize;
+				newHashes[i].next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
 		buckets = newBuckets;
-		entries = newEntries;
+		hashes = newHashes;
+		items = newItems;
 	}
 
 	protected virtual void SetNull(int index)
@@ -284,12 +290,11 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			RemoveAt(index);
 			return;
 		}
-		ref var t = ref entries[index];
-		if (t.hashCode >= 0)
+		if (hashes[index].hashCode >= 0)
 			return;
-		RemoveAtCommon(index, ref t);
-		t.next = 0;
-		Debug.Assert(entries[index].hashCode >= 0);
+		RemoveAtCommon(index);
+		hashes[index].next = 0;
+		Debug.Assert(hashes[index].hashCode >= 0);
 	}
 
 	/// <inheritdoc/>
@@ -304,6 +309,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		Changed();
 		return true;
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	protected virtual unsafe Hash UlongToHash(ulong value) => *(Hash*)&value;
 }
 
 /// <summary>
@@ -327,11 +335,12 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
-			Initialize(capacity, out buckets, out entries);
+			Initialize(capacity);
 		else
 		{
 			buckets = default!;
-			entries = default!;
+			hashes = default!;
+			items = default!;
 		}
 		Comparer = comparer ?? EqualityComparer<T>.Default;
 	}
@@ -370,7 +379,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			var index2 = index.GetOffset(_size);
 			if ((uint)index2 >= (uint)_size)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? value is null)
+			if (items[index2]?.Equals(value) ?? value is null)
 				return;
 			if (Contains(value))
 				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
@@ -381,34 +390,32 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		if (length >= 256)
-			Parallel.For(0, length, i => array[arrayIndex + i] = entries[index + i].item);
+			Parallel.For(0, length, i => array[arrayIndex + i] = items[index + i]);
 		else
 			for (var i = 0; i < length; i++)
-				array[arrayIndex + i] = entries[index + i].item;
+				array[arrayIndex + i] = items[index + i];
 	}
 
-	protected override TCertain Insert(T? item, out int index, int hashCode)
+	protected override unsafe TCertain Insert(T? item, out int index, int hashCode)
 	{
 		if (item is null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets is null)
-			Initialize(0, out buckets, out entries);
+			Initialize(0);
 		if (buckets is null)
 			throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var targetBucket = hashCode % buckets.Length;
-		if (_size == entries.Length)
+		if (_size == items.Length)
 		{
 			Resize();
 			targetBucket = hashCode % buckets.Length;
 		}
 		index = _size;
 		_size++;
-		ref var t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = item;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
+		items[index] = item;
 		buckets[targetBucket] = ~index;
 		Changed();
 		return (TCertain)this;
@@ -432,33 +439,31 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		var hashCode = value is null ? 0 : Comparer.GetHashCode(value) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
-		ref var t = ref entries[index];
 		uint collisionCount = 0;
-		var oldBucket = ~t.hashCode % buckets.Length;
+		var oldBucket = ~hashes[index].hashCode % buckets.Length;
 		var last = -1;
-		for (var i = oldBucket >= 0 ? ~buckets[oldBucket] : -1; i >= 0; last = i, i = ~entries[i].next)
+		for (var i = oldBucket >= 0 ? ~buckets[oldBucket] : -1; i >= 0; last = i, i = ~hashes[i].next)
 		{
-			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+			if (~hashes[i].next == i || ~hashes[i].next == last && last != -1)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (i == index)
 			{
 				if (last < 0)
-					buckets[oldBucket] = entries[i].next;
+					buckets[oldBucket] = hashes[i].next;
 				else
-					entries[last].next = entries[i].next;
+					hashes[last].next = hashes[i].next;
 				break;
 			}
 			collisionCount++;
-			if (collisionCount > entries.Length)
+			if (collisionCount > items.Length)
 				throw new InvalidOperationException("Произошла внутренняя ошибка." +
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
-		t.hashCode = ~hashCode;
-		t.next = buckets[bucket];
-		t.item = value;
+		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[bucket] << BitsPerInt);
+		items[index] = value;
 		buckets[bucket] = ~index;
 	}
 }

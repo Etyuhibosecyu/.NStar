@@ -3,7 +3,7 @@ namespace NStar.Mpir;
 internal partial class MpirDynamicLoader
 {
 	// Windows imports
-	[LibraryImport("kernel32", EntryPoint = "LoadLibraryA", StringMarshalling = StringMarshalling.Utf8)]
+	[LibraryImport("kernel32", EntryPoint = "LoadLibraryA", StringMarshalling = StringMarshalling.Utf8, SetLastError = true)]
 	private static partial nint LoadLibrary(string libraryName);
 	[LibraryImport("kernel32", EntryPoint = "GetProcAddress", StringMarshalling = StringMarshalling.Utf8)]
 	private static partial nint GetProcAddress(nint hwnd, string procedureName);

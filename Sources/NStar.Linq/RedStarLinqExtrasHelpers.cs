@@ -19,25 +19,6 @@ public class ArrayEComparer<T> : Core.ListEComparer<T>, G.IEqualityComparer<T[]>
 	public int GetHashCode(T[] x) => base.GetHashCode(x);
 }
 
-public class ListEComparer<T> : Core.ListEComparer<T>, G.IEqualityComparer<List<T>>
-{
-	public ListEComparer() : base()
-	{
-	}
-
-	public ListEComparer(Func<T, T, bool> equals) : base(equals)
-	{
-	}
-
-	public ListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode) : base(equals, hashCode)
-	{
-	}
-
-	public bool Equals(List<T>? x, List<T>? y) => base.Equals(x, y);
-
-	public int GetHashCode(List<T> x) => base.GetHashCode(x);
-}
-
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Group<T, TKey> : List<T>
 {

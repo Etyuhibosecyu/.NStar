@@ -197,7 +197,8 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) => (BreakFilter(match, out var result2), result2);
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) =>
+		(BreakFilter(match, out var result2), result2);
 
 	/// <summary>
 	/// Описание этого метода в разработке.
@@ -222,7 +223,8 @@ public abstract class BaseList<T, TCertain> : BaseMutableIndexable<T, TCertain>,
 	/// <summary>
 	/// Описание этого метода в разработке.
 	/// </summary>
-	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) =>
+		(BreakFilterInPlace(match, out var result2), result2);
 
 	/// <summary>
 	/// Описание этого метода в разработке.

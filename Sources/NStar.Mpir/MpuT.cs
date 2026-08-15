@@ -1752,13 +1752,13 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static bool operator >=(uint x, MpuT y) => y.CompareTo(x) <= 0;
 	public static bool operator >=(MpuT x, uint y) => x.CompareTo(y) >= 0;
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(long x, MpuT y) => x.CompareTo(y) >= 0;
+	public static bool operator >=(long x, MpuT y) => y.CompareTo(x) <= 0;
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(MpuT x, long y) => y.CompareTo(x) <= 0;
+	public static bool operator >=(MpuT x, long y) => x.CompareTo(y) >= 0;
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(ulong x, MpuT y) => x.CompareTo(y) >= 0;
+	public static bool operator >=(ulong x, MpuT y) => y.CompareTo(x) <= 0;
 	// TODO: Implement by accessing the data directly
-	public static bool operator >=(MpuT x, ulong y) => y.CompareTo(x) <= 0;
+	public static bool operator >=(MpuT x, ulong y) => x.CompareTo(y) >= 0;
 	public static bool operator >=(float x, MpuT y) => y.CompareTo(x) <= 0;
 	public static bool operator >=(MpuT x, float y) => x.CompareTo(y) >= 0;
 	public static bool operator >=(double x, MpuT y) => y.CompareTo(x) <= 0;
@@ -1771,10 +1771,10 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static bool operator <=(uint x, MpuT y) => y.CompareTo(x) >= 0;
 	public static bool operator <=(MpuT x, uint y) => x.CompareTo(y) <= 0;
 	// TODO: Implement by accessing the data directly
-	public static bool operator <=(long x, MpuT y) => x.CompareTo(y) <= 0;
-	public static bool operator <=(MpuT x, long y) => y.CompareTo(x) >= 0;
-	public static bool operator <=(ulong x, MpuT y) => x.CompareTo(y) <= 0;
-	public static bool operator <=(MpuT x, ulong y) => y.CompareTo(x) >= 0;
+	public static bool operator <=(long x, MpuT y) => y.CompareTo(x) >= 0;
+	public static bool operator <=(MpuT x, long y) => x.CompareTo(y) <= 0;
+	public static bool operator <=(ulong x, MpuT y) => y.CompareTo(x) >= 0;
+	public static bool operator <=(MpuT x, ulong y) => x.CompareTo(y) <= 0;
 	public static bool operator <=(float x, MpuT y) => y.CompareTo(x) >= 0;
 	public static bool operator <=(MpuT x, float y) => x.CompareTo(y) <= 0;
 	public static bool operator <=(double x, MpuT y) => y.CompareTo(x) >= 0;
@@ -1805,10 +1805,10 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static bool operator <(MpuT x, int y) => x.CompareTo(y) < 0;
 	public static bool operator <(uint x, MpuT y) => y.CompareTo(x) > 0;
 	public static bool operator <(MpuT x, uint y) => x.CompareTo(y) < 0;
-	public static bool operator <(long x, MpuT y) => x.CompareTo(y) < 0;
-	public static bool operator <(MpuT x, long y) => y.CompareTo(x) > 0;
-	public static bool operator <(ulong x, MpuT y) => x.CompareTo(y) < 0;
-	public static bool operator <(MpuT x, ulong y) => y.CompareTo(x) > 0;
+	public static bool operator <(long x, MpuT y) => y.CompareTo(x) > 0;
+	public static bool operator <(MpuT x, long y) => x.CompareTo(y) < 0;
+	public static bool operator <(ulong x, MpuT y) => y.CompareTo(x) > 0;
+	public static bool operator <(MpuT x, ulong y) => x.CompareTo(y) < 0;
 	public static bool operator <(float x, MpuT y) => y.CompareTo(x) > 0;
 	public static bool operator <(MpuT x, float y) => x.CompareTo(y) < 0;
 	public static bool operator <(double x, MpuT y) => y.CompareTo(x) > 0;

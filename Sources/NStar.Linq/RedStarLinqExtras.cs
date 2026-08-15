@@ -440,7 +440,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class AppendList<T> : BaseIndexable<T, AppendList<T>>
+	private sealed class AppendList<T> : BaseIndexable<T, AppendList<T>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly T element;
@@ -1032,7 +1032,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class CombineList<T, T2, TResult> : BaseIndexable<TResult, CombineList<T, T2, TResult>>
+	private sealed class CombineList<T, T2, TResult> : BaseIndexable<TResult, CombineList<T, T2, TResult>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly G.IReadOnlyList<T2> source2;
@@ -1092,7 +1092,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class CombineListInt<T, T2, TResult> : BaseIndexable<TResult, CombineListInt<T, T2, TResult>>
+	private sealed class CombineListInt<T, T2, TResult> : BaseIndexable<TResult, CombineListInt<T, T2, TResult>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly G.IReadOnlyList<T2> source2;
@@ -1152,7 +1152,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class CombineListPure<T, T2> : BaseIndexable<(T, T2), CombineListPure<T, T2>>
+	private sealed class CombineListPure<T, T2> : BaseIndexable<(T, T2), CombineListPure<T, T2>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly G.IReadOnlyList<T2> source2;
@@ -1208,7 +1208,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class CombineList<T, T2, T3, TResult> : BaseIndexable<TResult, CombineList<T, T2, T3, TResult>>
+	private sealed class CombineList<T, T2, T3, TResult> : BaseIndexable<TResult, CombineList<T, T2, T3, TResult>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly G.IReadOnlyList<T2> source2;
@@ -1272,7 +1272,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class CombineListInt<T, T2, T3, TResult> : BaseIndexable<TResult, CombineListInt<T, T2, T3, TResult>>
+	private sealed class CombineListInt<T, T2, T3, TResult> : BaseIndexable<TResult, CombineListInt<T, T2, T3, TResult>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly G.IReadOnlyList<T2> source2;
@@ -1336,7 +1336,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class CombineListPure<T, T2, T3> : BaseIndexable<(T, T2, T3), CombineListPure<T, T2, T3>>
+	private sealed class CombineListPure<T, T2, T3> : BaseIndexable<(T, T2, T3), CombineListPure<T, T2, T3>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly G.IReadOnlyList<T2> source2;
@@ -3623,7 +3623,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class PrependList<T> : BaseIndexable<T, PrependList<T>>
+	private sealed class PrependList<T> : BaseIndexable<T, PrependList<T>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 		private readonly T element;
@@ -3919,7 +3919,7 @@ public static class RedStarLinqExtras
 		}
 	}
 
-	private class ReverseList<T> : BaseIndexable<T, ReverseList<T>>
+	private sealed class ReverseList<T> : BaseIndexable<T, ReverseList<T>>
 	{
 		private readonly G.IReadOnlyList<T> source;
 
@@ -6155,113 +6155,12 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<TResult> JoinIntoSingle<TSource, TResult>(this ReadOnlySpan<TSource> source) where TSource : G.IEnumerable<TResult>
-	{
-		var length = source.Length;
-		List<TResult> result = new(1024);
-		for (var i = 0; i < length; i++)
-			result.AddRange(source[i]);
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<T[]> source)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<G.IList<T>> source)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
 	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<G.IEnumerable<T>> source)
 	{
 		var length = source.Length;
 		List<T> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source, T separator)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.Add(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<TResult> JoinIntoSingle<TSource, TResult>(this ReadOnlySpan<TSource> source, TResult separator) where TSource : G.IEnumerable<TResult>
-	{
-		var length = source.Length;
-		List<TResult> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.Add(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<T[]> source, T separator)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.Add(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<G.IList<T>> source, T separator)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.Add(separator);
 			var item = source[i];
 			result.AddRange(item);
 		}
@@ -6276,62 +6175,6 @@ public static class RedStarLinqExtras
 		{
 			if (i != 0)
 				result.Add(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source, G.IEnumerable<T> separator)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.AddRange(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<TResult> JoinIntoSingle<TSource, TResult>(this ReadOnlySpan<TSource> source, G.IEnumerable<TResult> separator) where TSource : G.IEnumerable<TResult>
-	{
-		var length = source.Length;
-		List<TResult> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.AddRange(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<T[]> source, G.IEnumerable<T> separator)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.AddRange(separator);
-			var item = source[i];
-			result.AddRange(item);
-		}
-		return result;
-	}
-
-	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<G.IList<T>> source, G.IEnumerable<T> separator)
-	{
-		var length = source.Length;
-		List<T> result = new(1024);
-		for (var i = 0; i < length; i++)
-		{
-			if (i != 0)
-				result.AddRange(separator);
 			var item = source[i];
 			result.AddRange(item);
 		}

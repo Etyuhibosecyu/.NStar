@@ -266,6 +266,9 @@ public static unsafe class Extents
 	/// <returns></returns>
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
+	/// <inheritdoc cref="GetArrayLength(int, int)"/>
+	public static long GetArrayLength(long n, long div) => n > 0 ? ((n - 1) / div + 1) : 0;
+
 	public static void Lock(object lockObj, Action function)
 	{
 		lock (lockObj)

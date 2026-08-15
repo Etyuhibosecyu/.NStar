@@ -7,7 +7,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<Platforms>AnyCPU</Platforms>
-		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 		<TargetFrameworkProfile />
 	</PropertyGroup>
 	<ItemGroup Condition="'$(Platform)' == 'x86'">
@@ -21,7 +20,7 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\NStar.Dictionaries\NStar.Dictionaries.csproj" />
-	  <ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
+		<ProjectReference Include="..\NStar.Dictionaries\NStar.Dictionaries.csproj" />
+		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
 	</ItemGroup>
 </Project>

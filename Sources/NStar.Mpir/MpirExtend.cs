@@ -1,9 +1,5 @@
 ﻿// WARNING!!! This file is NOT a part of the original Mpir.NET library, it has been created by Red-Star-Soft!
 
-using System.Runtime.InteropServices;
-using gmp_randstate_intptr = nint;
-using mpz_intptr = nint;
-
 namespace NStar.Mpir;
 
 public static partial class Mpir

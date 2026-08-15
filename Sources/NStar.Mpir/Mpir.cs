@@ -1,28 +1,26 @@
 ﻿/*
-Copyright 2010 Sergey Bochkanov.
+	Copyright 2010 Sergey Bochkanov.
 
-The X-MPIR is free software; you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+	The X-MPIR is free software; you can redistribute it and/or modify
+	it under the terms of the GNU Lesser General Public License as published by
+	the Free Software Foundation; either version 3 of the License, or (at your
+	option) any later version.
 
-The X-MPIR is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-License for more details.
+	The X-MPIR is distributed in the hope that it will be useful, but
+	WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+	or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
+	License for more details.
 
-You should have received a copy of the GNU Lesser General Public License
-along with the X-MPIR; see the file COPYING.LIB.  If not, write to
-the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-MA 02110-1301, USA.
+	You should have received a copy of the GNU Lesser General Public License
+	along with the X-MPIR; see the file COPYING.LIB.  If not, write to
+	the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+	MA 02110-1301, USA.
 */
 
 /*
 Modifications by John Reynolds, to provide disposal of unmanaged resources,
 binary import/export functions etc.
 */
-
-using System.Runtime.InteropServices;
 
 // Disable warning about missing XML comments.
 
@@ -69,15 +67,15 @@ public static partial class Mpir
 			var codeBase = AppContext.BaseDirectory;
 			var uri = new UriBuilder(codeBase);
 			var path = Uri.UnescapeDataString(uri.Path);
-			libpath = Path.GetDirectoryName(path);
-			if (!File.Exists(libpath + Path.DirectorySeparatorChar + name))
+			libpath = Path.GetDirectoryName(path) ?? "";
+			if (!File.Exists(Path.Combine(libpath, name)))
 				libpath = "";
-			if (File.Exists(path + Path.DirectorySeparatorChar + name))
+			if (File.Exists(Path.Combine(path, name)))
 				libpath = path;
 		}
 		if (libpath == "")
 			throw new FileNotFoundException("MPIR: can't determine path to the " + name);
-		return libpath + Path.DirectorySeparatorChar + name;
+		return Path.Combine(libpath, name);
 	}
 	public static string GetXMPIRLibraryPath()
 	{

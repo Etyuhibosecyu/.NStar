@@ -12,6 +12,9 @@ global using System.Text;
 global using System.Threading;
 global using static NStar.Core.Extents;
 global using static NStar.Mpir.MpzT;
+global using gmp_randstate_intptr = nint;
+global using mpq_intptr = nint;
+global using mpz_intptr = nint;
 using System.Collections.Immutable;
 
 namespace NStar.Mpir;
@@ -284,6 +287,8 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	};
 
 	public MpzT Complement() => ~this;
+
+	public static unsafe (int, int, int, int) DecimalToInts(decimal x) => *(ValueTuple<int, int, int, int>*)&x;
 
 	public void Dispose()
 	{

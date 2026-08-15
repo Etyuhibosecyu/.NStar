@@ -2,13 +2,13 @@
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Runtime.InteropServices;
+global using System.Threading;
 global using static NStar.Core.Extents;
 global using static System.Math;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 
 namespace NStar.Dictionaries;
 
@@ -200,6 +200,16 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	internal virtual System.Collections.ICollection GetKeyListHelper() => (System.Collections.ICollection)Keys;
 
+	public virtual TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
+	{
+		if (!TryGetValue(key, out var value))
+		{
+			value = valueFactory(key);
+			TryAdd(key, value);
+		}
+		return value;
+	}
+
 	internal virtual System.Collections.ICollection GetValueListHelper() => (System.Collections.ICollection)Values;
 
 	/// <summary>
@@ -363,7 +373,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		comparer ??= G.EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-		_underlying = new(capacity);
+		_underlying = new(capacity, comparer);
 	}
 
 	public Dictionary(int capacity, Func<TKey, TKey, bool> equalFunction)

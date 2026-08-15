@@ -31,13 +31,13 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 
 	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
 
-	public String(int capacity, string s) : base(capacity, [.. s]) { }
+	public String(int capacity, string s) : base(capacity, s.AsSpan()) { }
 
 	public String(int capacity, params char[] array) : base(capacity, array) { }
 
 	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span) { }
 
-	public String(string s) : base([.. s]) { }
+	public String(string s) : base(s.AsSpan()) { }
 
 	public String(params char[] array) : base(array) { }
 
@@ -215,7 +215,7 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 	public override bool Equals(object? obj) => base.Equals(obj);
 
 	/// <inheritdoc/>
-	public override int GetHashCode() => base.GetHashCode();
+	public override int GetHashCode() => ToString().GetHashCode();
 
 	public virtual int IndexOf(char value, bool ignoreCase) =>
 		IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
@@ -236,6 +236,7 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 
 	public virtual String Insert(int index, string s)
 	{
+		ArgumentNullException.ThrowIfNull(s);
 		var length = s.Length;
 		if (length == 0)
 			return this;
@@ -411,15 +412,17 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 
 	public virtual String Replace(string s) => Replace(s.AsSpan());
 
-	public static String ReturnOrConstruct(char s)
+	public static String ReturnOrConstruct(char c)
 	{
-		if (charInterns.TryGetValue(s, out var value))
+		if (charInterns.TryGetValue(c, out var value))
 			return value;
 		lock (globalLockObj)
 		{
-			if (charInterns.TryGetValue(s, out value))
+			if (charInterns.TryGetValue(c, out value))
 				return value;
-			return charInterns[s] = new(s);
+			var interned = charInterns[c] = new(c);
+			interned.ListChanged += _ => ReturnOrConstruct_ListChanged(c);
+			return interned;
 		}
 	}
 
@@ -431,8 +434,26 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 		{
 			if (stringInterns.TryGetValue(s, out value))
 				return value;
-			return stringInterns[s] = new(s);
+			var interned = stringInterns[s] = new(s);
+			interned.ListChanged += _ => ReturnOrConstruct_ListChanged(s);
+			return interned;
 		}
+	}
+
+	private static void ReturnOrConstruct_ListChanged(char c)
+	{
+		if (!charInterns.TryGetValue(c, out _))
+			return;
+		lock (globalLockObj)
+			charInterns.Remove(c);
+	}
+
+	private static void ReturnOrConstruct_ListChanged(string s)
+	{
+		if (!stringInterns.TryGetValue(s, out _))
+			return;
+		lock (globalLockObj)
+			stringInterns.Remove(s);
 	}
 
 	// TODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.

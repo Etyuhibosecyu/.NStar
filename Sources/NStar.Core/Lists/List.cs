@@ -632,12 +632,40 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			return SortOld(index, length, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
 	}
 
+	/// <summary>
+	/// Сортирует пару списков - данный список содержит ключи для сортировки, а <paramref name="values"/> - значения.
+	/// (ОБА списка становятся отсортированными.)
+	/// </summary>
+	/// <typeparam name="TValue">Тип элементов во втором списке.</typeparam>
+	/// <typeparam name="TValueCertain"><see cref="TCertain"/> второго списка.</typeparam>
+	/// <param name="values">Список, из которого берутся сортируемые значения.</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values)
 		where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, G.Comparer<T>.Default);
 
+	/// <summary>
+	/// Сортирует пару списков - данный список содержит ключи для сортировки, а <paramref name="values"/> - значения.
+	/// (ОБА списка становятся отсортированными.) Этот метод использует компаратор для сравнения ключей.
+	/// </summary>
+	/// <typeparam name="TValue">Тип элементов во втором списке.</typeparam>
+	/// <typeparam name="TValueCertain"><see cref="TCertain"/> второго списка.</typeparam>
+	/// <param name="values">Список, из которого берутся сортируемые значения.</param>
+	/// <param name="comparer">Компаратор для сравнения ключей (см. <see cref="IComparer{T}"/>).</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, IComparer<T>? comparer)
 		where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, comparer);
 
+	/// <summary>
+	/// Сортирует пару диапазонов списков - данный диапазон содержит ключи для сортировки, а <paramref name="values"/> - значения.
+	/// (ОБА списка становятся отсортированными.) Этот метод использует компаратор для сравнения ключей.
+	/// </summary>
+	/// <typeparam name="TValue">Тип элементов во втором списке.</typeparam>
+	/// <typeparam name="TValueCertain"><see cref="TCertain"/> второго списка.</typeparam>
+	/// <param name="values">Список, из которого берутся сортируемые значения.</param>
+	/// <param name="index">Индекс начала диапазона значений (диапазон ключей начинается с нулевого индекса).</param>
+	/// <param name="length">Длина диапазонов ключей и значений.</param>
+	/// <param name="comparer">Компаратор для сравнения ключей (см. <see cref="IComparer{T}"/>).</param>
+	/// <returns>Данная коллекция (подробнее см. в описании TCertain в <see cref="BaseIndexable{T, TCertain}"/>).</returns>
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int length, IComparer<T>? comparer)
 		where TValueCertain : List<TValue, TValueCertain>, new()
 	{
@@ -732,20 +760,59 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class List<T> : List<T, List<T>>
 {
+	/// <summary>
+	/// Создает новый пустой список с нулевой емкостью.
+	/// </summary>
 	public List() { }
 
+	/// <summary>
+	/// Создает новый пустой список с указанной емкостью.
+	/// </summary>
+	/// <param name="capacity">Емкость создаваемого списка (см. <see cref="List{T, TCertain}.Capacity">Capacity</see>).</param>
 	public List(int capacity) : base(capacity) { }
 
+	/// <summary>
+	/// Создает новый список, содержащий все элементы указанной последовательности.
+	/// </summary>
+	/// <param name="collection">Последовательность для добавления в новый список.</param>
 	public List(IEnumerable<T> collection) : base(collection) { }
 
+	/// <summary>
+	/// Создает новый список, содержащий все элементы указанной последовательности и указанную минимальную емкость.
+	/// </summary>
+	/// <param name="capacity">Минимальная емкость нового списка
+	/// (фактическая емкость может как быть равной ей, так и отличаться в сторону увеличения).</param>
+	/// <param name="collection">Последовательность для добавления в новый список.</param>
 	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
+	/// <summary>
+	/// Создает новый список, содержащий все элементы указанной последовательности и указанную минимальную емкость.
+	/// </summary>
+	/// <param name="capacity">Минимальная емкость нового списка
+	/// (фактическая емкость может как быть равной ей, так и отличаться в сторону увеличения).</param>
+	/// <param name="array">Последовательность для добавления в новый список в виде массива.</param>
 	public List(int capacity, params T[] array) : base(capacity, array) { }
 
+	/// <summary>
+	/// Создает новый список, содержащий все элементы указанной последовательности и указанную минимальную емкость.
+	/// </summary>
+	/// <param name="capacity">Минимальная емкость нового списка
+	/// (фактическая емкость может как быть равной ей, так и отличаться в сторону увеличения).</param>
+	/// <param name="span">Последовательность для добавления в новый список в виде структуры <see cref="Span{T}"/>
+	/// или <see cref="ReadOnlySpan{T}"/>.</param>
 	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
+	/// <summary>
+	/// Создает новый список, содержащий все элементы указанной последовательности.
+	/// </summary>
+	/// <param name="array">Последовательность для добавления в новый список в виде массива.</param>
 	public List(params T[] array) : base(array) { }
 
+	/// <summary>
+	/// Создает новый список, содержащий все элементы указанной последовательности.
+	/// </summary>
+	/// <param name="span">Последовательность для добавления в новый список в виде структуры <see cref="Span{T}"/>
+	/// или <see cref="ReadOnlySpan{T}"/>.</param>
 	public List(ReadOnlySpan<T> span) : base(span) { }
 
 	protected override Func<int, List<T>> CapacityCreator { get; } = x => new(x);
@@ -875,4 +942,6 @@ public class List<T> : List<T, List<T>>
 		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10),
 		x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15))
 		: throw new InvalidOperationException("Список должен иметь 16 элементов.");
+
+	public static explicit operator T[](List<T> x) => x.ToArray();
 }
