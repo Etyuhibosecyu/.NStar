@@ -138,7 +138,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	public static MpuT Abs(MpuT value) => value.Abs();
-	public MpuT Add(int x) => this + x;
+	public MpzT Add(int x) => this + x;
 	public MpuT Add(MpuT x) => this + x;
 	public MpuT Add(uint x) => this + x;
 	public MpuT And(MpuT x) => this & x;
@@ -238,8 +238,8 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		double d => CompareAbsTo(d),
 		float f => CompareAbsTo(f),
 		short si => CompareAbsTo(si),
-		ushort usi => CompareAbsTo(usi),
-		byte y => CompareAbsTo(y),
+		ushort usi => CompareAbsTo((uint)usi),
+		byte y => CompareAbsTo((uint)y),
 		sbyte sy => CompareAbsTo(sy),
 		decimal m => CompareAbsTo(m),
 		string s => CompareAbsTo(new MpuT(s)),
@@ -282,8 +282,8 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		double d => CompareTo(d),
 		float f => CompareTo(f),
 		short si => CompareTo(si),
-		ushort usi => CompareTo(usi),
-		byte y => CompareTo(y),
+		ushort usi => CompareTo((uint)usi),
+		byte y => CompareTo((uint)y),
 		sbyte sy => CompareTo(sy),
 		string s => CompareTo(new MpuT(s)),
 		IComparable ic => -ic.CompareTo(this),
@@ -313,7 +313,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		}
 		val = 0;
 	}
-	public MpuT Divide(int x) => this / x;
+	public MpzT Divide(int x) => this / x;
 
 	public MpuT Divide(int x, out int remainder)
 	{
@@ -762,7 +762,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	{
 		var bitLength = value.BitLength;
 		var sqrt = (One << bitLength << bitLength - 1).Sqrt();
-		return Mpir.MpuCmp(value, sqrt) >= 0 ? bitLength : bitLength - 1;
+		return (MpuT)(Mpir.MpuCmp(value, sqrt) >= 0 ? bitLength : bitLength - 1);
 	}
 
 	public static MpuT Lucas(int n)
@@ -804,8 +804,8 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public static MpuT MinMagnitude(MpuT x, MpuT y) => Min(x, y);
 	public static MpuT MinMagnitudeNumber(MpuT x, MpuT y) => Min(x, y);
 	public MpuT Mod(MpuT mod) => this % mod;
-	public MpuT Mod(int mod) => this % mod;
-	public MpuT Mod(uint mod) => this % mod;
+	public int Mod(int mod) => this % mod;
+	public uint Mod(uint mod) => this % mod;
 
 	public int ModAsInt32(int mod)
 	{
@@ -815,7 +815,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 
 	public uint ModAsUInt32(uint mod) => Mpir.MpuFdivUi(this, mod);
 
-	public MpuT Multiply(int x) => this * x;
+	public MpzT Multiply(int x) => this * x;
 	public MpuT Multiply(MpuT x) => this * x;
 	public MpuT Multiply(uint x) => this * x;
 	public MpzT Negate() => -this;
@@ -829,14 +829,17 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	public MpuT Or(MpuT x) => this | x;
+	/// <inheritdoc cref="Parse(ReadOnlySpan{char}, IFormatProvider?)"/>
+	public static MpuT Parse(ReadOnlySpan<char> s) => Parse(s.ToString());
 	public static MpuT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
 	public static MpuT Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider) =>
 		Parse(s.ToString(), style, provider);
+	/// <inheritdoc cref="Parse(string, IFormatProvider?)"/>
 	public static MpuT Parse(string s) => new(s);
 	public static MpuT Parse(string s, IFormatProvider? provider) => new(s);
 	public static MpuT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
 	public int PopCount() => (int)Mpir.MpuPopcount(this);
-	public static MpuT PopCount(MpuT value) => value.PopCount();
+	public static MpuT PopCount(MpuT value) => (MpuT)value.PopCount();
 
 	public MpuT Power(int exponent)
 	{
@@ -878,7 +881,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public MpuT PowerMod(int exponent, MpuT mod)
 	{
 		var z = new MpuT();
-		Mpir.MpuPowm(z, this, exponent, mod);
+		Mpir.MpuPowm(z, this, (MpuT)exponent, mod);
 		return z;
 	}
 
@@ -1063,7 +1066,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		else
 		{
 			using var left = this % PowerOf10(shiftAmount);
-			using var right = 5 * PowerOf10(shiftAmount - 1);
+			using var right = 5u * PowerOf10(shiftAmount - 1);
 			if (Mpir.MpuCmp(left, right) >= 0)
 				result++;
 		}
@@ -1093,7 +1096,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		return z;
 	}
 
-	public MpuT Subtract(int x) => this - x;
+	public MpzT Subtract(int x) => this - x;
 	public MpuT Subtract(MpuT x) => this - x;
 	public MpuT Subtract(uint x) => this - x;
 	public MpuT Square() => this * this;
@@ -1118,7 +1121,7 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 			if (Mpir.MpuCmpSi(maskedValue, 0) == 0)
 				result += ulongBits;
 			else
-				return result + (int)ulong.TrailingZeroCount((ulong)(maskedValue >> result));
+				return (uint)result + (uint)ulong.TrailingZeroCount((ulong)(maskedValue >> result));
 		}
 		throw new InvalidOperationException("Невозможно добавить элемент. Возможные причины:\r\n" + InternalError
 			+ $"Текущее состояние: длина - {value.BitLength}, значение - {value}"
@@ -1215,12 +1218,12 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 				MpuT uz => uz,
 				MpzT z => (MpuT)z,
 				byte y => y,
-				sbyte sy => sy,
-				short si => si,
+				sbyte sy => (MpuT)sy,
+				short si => (MpuT)si,
 				ushort usi => usi,
-				int i => i,
+				int i => (MpuT)i,
 				uint ui => ui,
-				long li => li,
+				long li => (MpuT)li,
 				ulong uli => uli,
 				float f => (MpuT)f,
 				double d => (MpuT)d,
@@ -1250,15 +1253,15 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 				MpuT uz => uz,
 				MpzT z => (MpuT)z,
 				byte y => y,
-				sbyte sy => sy,
-				short si => si,
+				sbyte sy => (MpuT)sy,
+				short si => (MpuT)si,
 				ushort usi => usi,
-				int i => i,
+				int i => (MpuT)i,
 				uint ui => ui,
-				long li => li,
+				long li => (MpuT)li,
 				ulong uli => uli,
-				float f => (MpuT)MathF.Ceiling(MathF.Abs(f)) * MathF.Sign(f),
-				double d => (MpuT)Math.Ceiling(Math.Abs(d)) * Math.Sign(d),
+				float f => (MpuT)(MathF.Ceiling(MathF.Abs(f)) * MathF.Sign(f)),
+				double d => (MpuT)(Math.Ceiling(Math.Abs(d)) * Math.Sign(d)),
 				string s => new(s),
 				_ => throw new InvalidCastException("Поддерживаются следующие типы: " + nameof(MpuT)
 				+ ", byte, sbyte, short, ushort, int, uint, long, ulong, float, double, string."),
@@ -1311,8 +1314,15 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		}
 	}
 
-	public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, [MaybeNullWhen(false)] out MpuT result) => TryParse(s.ToString(), out result);
-	public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpuT result) => TryParse(s.ToString(), out result);
+	/// <inheritdoc cref="TryParse(ReadOnlySpan{char}, IFormatProvider?, out MpuT)"/>
+	public static bool TryParse(ReadOnlySpan<char> s, [MaybeNullWhen(false)] out MpuT result) =>
+		TryParse(s.ToString(), out result);
+	public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider,
+		[MaybeNullWhen(false)] out MpuT result) => TryParse(s.ToString(), out result);
+	public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpuT result) =>
+		TryParse(s.ToString(), out result);
+
+	/// <inheritdoc cref="TryParse(string, IFormatProvider?, out MpuT)"/>
 	public static bool TryParse([NotNullWhen(true)] string? s, [MaybeNullWhen(false)] out MpuT result)
 	{
 		try
@@ -1326,8 +1336,11 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 			return false;
 		}
 	}
-	public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, [MaybeNullWhen(false)] out MpuT result) => TryParse(s, out result);
-	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpuT result) => TryParse(s, out result);
+
+	public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider,
+		[MaybeNullWhen(false)] out MpuT result) => TryParse(s, out result);
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider,
+		[MaybeNullWhen(false)] out MpuT result) => TryParse(s, out result);
 
 	public static bool TryReadBigEndian(ReadOnlySpan<byte> source, bool isUnsigned, out MpuT value)
 	{
@@ -1371,11 +1384,11 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	public MpuT Xor(MpuT x) => this ^ x;
 
 	public static implicit operator MpuT(byte value) => new((uint)value);
-	public static implicit operator MpuT(short value) => new(value);
-	public static implicit operator MpuT(ushort value) => new(value);
-	public static implicit operator MpuT(int value) => new(value);
+	public static explicit operator MpuT(short value) => new(value);
+	public static implicit operator MpuT(ushort value) => new((uint)value);
+	public static explicit operator MpuT(int value) => new(value);
 	public static implicit operator MpuT(uint value) => new(value);
-	public static implicit operator MpuT(long value) => new(value);
+	public static explicit operator MpuT(long value) => new(value);
 	public static implicit operator MpuT(ulong value) => new(value);
 	public static explicit operator MpuT(float value) => new((double)value);
 	public static explicit operator MpuT(double value) => new(value);
@@ -1459,28 +1472,56 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
-	public static MpuT operator +(MpuT x, int y)
+	public static MpuT operator +(MpuT x, byte y)
 	{
-		if (Mpir.MpuCmpSi(x, -y) < 0)
-			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
-		if (y >= 0)
-			Mpir.MpuAddUi(z, x, (uint)y);
-		else
-			Mpir.MpuSubUi(z, x, (uint)-y);
+		Mpir.MpuAddUi(z, x, y);
 		return z;
 	}
 
 	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
-	public static MpuT operator +(int x, MpuT y)
+	public static MpuT operator +(byte x, MpuT y)
 	{
-		if (Mpir.MpuCmpSi(y, -x) < 0)
-			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
-		if (x >= 0)
-			Mpir.MpuAddUi(z, y, (uint)x);
+		Mpir.MpuAddUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
+	public static MpuT operator +(MpuT x, ushort y)
+	{
+		var z = new MpuT();
+		Mpir.MpuAddUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
+	public static MpuT operator +(ushort x, MpuT y)
+	{
+		var z = new MpuT();
+		Mpir.MpuAddUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
+	public static MpzT operator +(MpuT x, int y)
+	{
+		var z = new MpzT();
+		if (y >= 0)
+			Mpir.MpzAddUi(z, Unsafe.As<MpzT>(x), (uint)y);
 		else
-			Mpir.MpuSubUi(z, y, (uint)-x);
+			Mpir.MpzSubUi(z, Unsafe.As<MpzT>(x), (uint)-y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
+	public static MpzT operator +(int x, MpuT y)
+	{
+		var z = new MpzT();
+		if (x >= 0)
+			Mpir.MpzAddUi(z, Unsafe.As<MpzT>(y), (uint)x);
+		else
+			Mpir.MpzSubUi(z, Unsafe.As<MpzT>(y), (uint)-x);
 		return z;
 	}
 
@@ -1500,6 +1541,22 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
+	public static MpzT operator +(long x, MpuT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAdd(z, x, Unsafe.As<MpzT>(y));
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpuT, MpuT)"/>
+	public static MpzT operator +(MpuT x, long y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAdd(z, Unsafe.As<MpzT>(x), y);
+		return z;
+	}
+
 	public static MpuT operator -(MpuT x, MpuT y)
 	{
 		if (Mpir.MpuCmp(x, y) < 0)
@@ -1510,25 +1567,63 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
-	public static MpuT operator -(int x, MpuT y)
+	public static MpuT operator -(byte x, MpuT y)
 	{
-		if (Mpir.MpuCmpSi(y, x) > 0)
+		if (Mpir.MpuCmpUi(y, x) > 0)
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
-		Mpir.MpuUiSub(z, (uint)x, y);
+		Mpir.MpuUiSub(z, x, y);
 		return z;
 	}
 
 	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
-	public static MpuT operator -(MpuT x, int y)
+	public static MpuT operator -(MpuT x, byte y)
+	{
+		if (Mpir.MpuCmpUi(x, y) < 0)
+			throw new OverflowException(NoNegativeNumbers);
+		var z = new MpuT();
+		Mpir.MpuSubUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
+	public static MpuT operator -(ushort x, MpuT y)
+	{
+		if (Mpir.MpuCmpUi(y, x) > 0)
+			throw new OverflowException(NoNegativeNumbers);
+		var z = new MpuT();
+		Mpir.MpuUiSub(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
+	public static MpuT operator -(MpuT x, ushort y)
+	{
+		if (Mpir.MpuCmpUi(x, y) < 0)
+			throw new OverflowException(NoNegativeNumbers);
+		var z = new MpuT();
+		Mpir.MpuSubUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
+	public static MpzT operator -(int x, MpuT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzUiSub(z, (uint)x, Unsafe.As<MpzT>(y));
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
+	public static MpzT operator -(MpuT x, int y)
 	{
 		if (Mpir.MpuCmpSi(x, y) < 0)
 			throw new OverflowException(NoNegativeNumbers);
-		var z = new MpuT();
+		var z = new MpzT();
 		if (y >= 0)
-			Mpir.MpuSubUi(z, x, (uint)y);
+			Mpir.MpzSubUi(z, Unsafe.As<MpzT>(x), (uint)y);
 		else
-			Mpir.MpuAddUi(z, x, (uint)-y);
+			Mpir.MpzAddUi(z, Unsafe.As<MpzT>(x), (uint)-y);
 
 		return z;
 	}
@@ -1550,6 +1645,22 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
 		Mpir.MpuSubUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
+	public static MpzT operator -(long x, MpuT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzSub(z, x, Unsafe.As<MpzT>(y));
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpuT, MpuT)"/>
+	public static MpzT operator -(MpuT x, long y)
+	{
+		var z = new MpzT();
+		Mpir.MpzSub(z, Unsafe.As<MpzT>(x), y);
 		return z;
 	}
 
@@ -1577,22 +1688,50 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
-	public static MpuT operator *(int x, MpuT y)
+	public static MpuT operator *(byte x, MpuT y)
 	{
-		if (x < 0)
-			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
-		Mpir.MpuMulSi(z, y, x);
+		Mpir.MpuMulUi(z, y, x);
 		return z;
 	}
 
 	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
-	public static MpuT operator *(MpuT x, int y)
+	public static MpuT operator *(MpuT x, byte y)
 	{
-		if (y < 0)
-			throw new OverflowException(NoNegativeNumbers);
 		var z = new MpuT();
-		Mpir.MpuMulSi(z, x, y);
+		Mpir.MpuMulUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
+	public static MpuT operator *(ushort x, MpuT y)
+	{
+		var z = new MpuT();
+		Mpir.MpuMulUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
+	public static MpuT operator *(MpuT x, ushort y)
+	{
+		var z = new MpuT();
+		Mpir.MpuMulUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
+	public static MpzT operator *(int x, MpuT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulSi(z, Unsafe.As<MpzT>(y), x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
+	public static MpzT operator *(MpuT x, int y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulSi(z, Unsafe.As<MpzT>(x), y);
 		return z;
 	}
 
@@ -1612,29 +1751,105 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 		return z;
 	}
 
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
+	public static MpzT operator *(long x, MpuT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMul(z, x, Unsafe.As<MpzT>(y));
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpuT, MpuT)"/>
+	public static MpzT operator *(MpuT x, long y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMul(z, Unsafe.As<MpzT>(x), y);
+		return z;
+	}
+
 	public static MpuT operator /(MpuT x, MpuT y)
 	{
-		var quotient = new MpuT();
-		Mpir.MpuTdivQ(quotient, x, y);
-		return quotient;
+		var z = new MpuT();
+		Mpir.MpuTdivQ(z, x, y);
+		return z;
 	}
 
 	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
-	public static MpuT operator /(MpuT x, int y)
+	public static MpuT operator /(MpuT x, byte y)
 	{
-		if (y < 0)
-			throw new OverflowException(NoNegativeNumbers);
-		var quotient = new MpuT();
-		Mpir.MpuTdivQUi(quotient, x, (uint)y);
-		return quotient;
+		var z = new MpuT();
+		Mpir.MpuTdivQUi(z, x, y);
+		return z;
 	}
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static byte operator /(byte x, MpuT y) => (byte)(x / Mpir.MpzGetUi(y));
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static short operator /(short x, MpuT y) => (short)(x / Mpir.MpzGetSi(y));
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static MpzT operator /(MpuT x, short y)
+	{
+		var z = new MpzT();
+		if (y >= 0)
+			Mpir.MpzTdivQUi(z, Unsafe.As<MpzT>(x), (uint)y);
+		else
+		{
+			Mpir.MpzTdivQUi(z, Unsafe.As<MpzT>(x), (uint)-y);
+			Mpir.MpzNeg(z, z);
+		}
+		return z;
+	}
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static ushort operator /(ushort x, MpuT y) => (ushort)(x / Mpir.MpzGetUi(y));
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static MpuT operator /(MpuT x, ushort y)
+	{
+		var z = new MpuT();
+		Mpir.MpuTdivQUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static int operator /(int x, MpuT y) => x / Mpir.MpzGetSi(y);
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static MpzT operator /(MpuT x, int y)
+	{
+		var z = new MpzT();
+		if (y >= 0)
+			Mpir.MpzTdivQUi(z, Unsafe.As<MpzT>(x), (uint)y);
+		else
+		{
+			Mpir.MpzTdivQUi(z, Unsafe.As<MpzT>(x), (uint)-y);
+			Mpir.MpzNeg(z, z);
+		}
+		return z;
+	}
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static uint operator /(uint x, MpuT y) => x / Mpir.MpzGetUi(y);
 
 	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
 	public static MpuT operator /(MpuT x, uint y)
 	{
-		var quotient = new MpuT();
-		Mpir.MpuTdivQUi(quotient, x, y);
-		return quotient;
+		var z = new MpuT();
+		Mpir.MpuTdivQUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static long operator /(long x, MpuT y) => x / (long)y;
+
+	/// <inheritdoc cref="operator /(MpuT, MpuT)"/>
+	public static MpzT operator /(MpuT x, long y)
+	{
+		var z = new MpzT();
+		Mpir.MpzTdivQ(z, Unsafe.As<MpzT>(x), y);
+		return z;
 	}
 
 	public static MpuT operator %(MpuT x, MpuT mod)
@@ -1645,20 +1860,62 @@ public sealed class MpuT : IBinaryInteger<MpuT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
-	public static MpuT operator %(MpuT x, int mod)
+	public static byte operator %(byte x, MpuT y) => (byte)(Mpir.MpuCmpSi(y, x) > 0 ? 0 : x % Mpir.MpzGetUi(y));
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static byte operator %(MpuT x, byte mod)
+	{
+		var z = new MpuT();
+		Mpir.MpuFdivRUi(z, x, mod);
+		return (byte)Mpir.MpzGetUi(z);
+	}
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static short operator %(short x, MpuT y) => (short)(Mpir.MpuCmpSi(y, Math.Abs(x)) > 0 ? 0 : x % Mpir.MpzGetSi(y));
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static ushort operator %(ushort x, MpuT y) => (ushort)(Mpir.MpuCmpSi(y, x) > 0 ? 0 : x % Mpir.MpzGetUi(y));
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static ushort operator %(MpuT x, ushort mod)
+	{
+		var z = new MpuT();
+		Mpir.MpuFdivRUi(z, x, mod);
+		return (ushort)Mpir.MpzGetUi(z);
+	}
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static int operator %(int x, MpuT y) => Mpir.MpuCmpSi(y, Math.Abs(x)) > 0 ? 0 : x % Mpir.MpzGetSi(y);
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static int operator %(MpuT x, int mod)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		var z = new MpuT();
 		Mpir.MpuFdivRUi(z, x, (uint)mod);
-		return z;
+		return Mpir.MpzGetSi(z);
 	}
 
 	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
-	public static MpuT operator %(MpuT x, uint mod)
+	public static uint operator %(uint x, MpuT y) => Mpir.MpuCmpUi(y, x) > 0 ? 0u : x % Mpir.MpzGetUi(y);
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static uint operator %(MpuT x, uint mod)
 	{
 		var z = new MpuT();
 		Mpir.MpuFdivRUi(z, x, mod);
-		return z;
+		return Mpir.MpzGetUi(z);
+	}
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static long operator %(long x, MpuT y) => x % (long)y;
+
+	/// <inheritdoc cref="operator %(MpuT, MpuT)"/>
+	public static long operator %(MpuT x, long mod)
+	{
+		var z = new MpzT();
+		Mpir.MpzFdivR(z, x, mod);
+		return (long)z;
 	}
 
 	/// <inheritdoc cref="operator &(MpuT, MpuT)"/>

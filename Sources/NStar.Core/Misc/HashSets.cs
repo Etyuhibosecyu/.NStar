@@ -414,7 +414,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 		index = _size;
 		_size++;
-		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
+		hashes[index] = UlongToHash((uint)~hashCode | (ulong)buckets[targetBucket] << BitsPerInt);
 		items[index] = item;
 		buckets[targetBucket] = ~index;
 		Changed();
@@ -462,7 +462,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 				" Возможно, вы пытаетесь писать в одно множество в несколько потоков?" +
 				" Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
-		hashes[index] = UlongToHash((ulong)(uint)~hashCode | (ulong)buckets[bucket] << BitsPerInt);
+		hashes[index] = UlongToHash((uint)~hashCode | (ulong)buckets[bucket] << BitsPerInt);
 		items[index] = value;
 		buckets[bucket] = ~index;
 	}

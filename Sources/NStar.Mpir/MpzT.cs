@@ -278,8 +278,8 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 		double d => CompareTo(d),
 		float f => CompareTo(f),
 		short si => CompareTo(si),
-		ushort usi => CompareTo(usi),
-		byte y => CompareTo(y),
+		ushort usi => CompareTo((uint)usi),
+		byte y => CompareTo((uint)y),
 		sbyte sy => CompareTo(sy),
 		string s => CompareTo(new MpzT(s)),
 		IComparable ic => -ic.CompareTo(this),
@@ -808,9 +808,12 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 		return z;
 	}
 
+	/// <inheritdoc cref="Parse(ReadOnlySpan{char}, IFormatProvider?)"/>
+	public static MpzT Parse(ReadOnlySpan<char> s) => Parse(s.ToString());
 	public static MpzT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
 	public static MpzT Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider) =>
 		Parse(s.ToString(), style, provider);
+	/// <inheritdoc cref="Parse(string, IFormatProvider?)"/>
 	public static MpzT Parse(string s) => new(s);
 	public static MpzT Parse(string s, IFormatProvider? provider) => new(s);
 	public static MpzT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
@@ -1277,10 +1280,14 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 		}
 	}
 
-	public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider,
-		[MaybeNullWhen(false)] out MpzT result) => TryParse(s.ToString(), out result);
-	public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpzT result) =>
+	public static bool TryParse(ReadOnlySpan<char> s, [MaybeNullWhen(false)] out MpzT result) =>
 		TryParse(s.ToString(), out result);
+	public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpzT result) =>
+		TryParse(s, out result);
+	public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider,
+		[MaybeNullWhen(false)] out MpzT result) => TryParse(s, out result);
+
+	/// <inheritdoc cref="TryParse(string?, IFormatProvider?, out MpzT)"/>
 	public static bool TryParse([NotNullWhen(true)] string? s, [MaybeNullWhen(false)] out MpzT result)
 	{
 		try
@@ -1294,10 +1301,11 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 			return false;
 		}
 	}
-	public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider,
-		[MaybeNullWhen(false)] out MpzT result) => TryParse(s, out result);
+
 	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider,
-		[MaybeNullWhen(false)] out MpzT result) => TryParse(s, out result);
+		[MaybeNullWhen(false)] out MpzT result) => TryParse(s.AsSpan(), out result);
+	public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider,
+		[MaybeNullWhen(false)] out MpzT result) => TryParse(s.AsSpan(), out result);
 
 	public static bool TryReadBigEndian(ReadOnlySpan<byte> source, bool isUnsigned, out MpzT value)
 	{
@@ -1345,10 +1353,10 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	public static implicit operator MpzT(int value) => new(value);
 	public static implicit operator MpzT(uint value) => new(value);
 	public static implicit operator MpzT(short value) => new(value);
-	public static implicit operator MpzT(ushort value) => new(value);
+	public static implicit operator MpzT(ushort value) => new((uint)value);
 	public static implicit operator MpzT(long value) => new(value);
 	public static implicit operator MpzT(ulong value) => new(value);
-	public static explicit operator MpzT(MpuT value) => new(value);
+	public static implicit operator MpzT(MpuT value) => new(value);
 	public static explicit operator MpzT(float value) => new((double)value);
 	public static explicit operator MpzT(double value) => new(value);
 	public static explicit operator MpzT(decimal value) => new(value);
@@ -1416,6 +1424,38 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
+	public static MpzT operator +(MpzT x, byte y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAddUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
+	public static MpzT operator +(byte x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAddUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
+	public static MpzT operator +(MpzT x, ushort y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAddUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
+	public static MpzT operator +(ushort x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzAddUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator +(MpzT, MpzT)"/>
 	public static MpzT operator +(MpzT x, int y)
 	{
 		var z = new MpzT();
@@ -1423,7 +1463,6 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 			Mpir.MpzAddUi(z, x, (uint)y);
 		else
 			Mpir.MpzSubUi(z, x, (uint)-y);
-
 		return z;
 	}
 
@@ -1475,6 +1514,38 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	{
 		var z = new MpzT();
 		Mpir.MpzSub(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
+	public static MpzT operator -(byte x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzUiSub(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
+	public static MpzT operator -(MpzT x, byte y)
+	{
+		var z = new MpzT();
+		Mpir.MpzSubUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
+	public static MpzT operator -(ushort x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzUiSub(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator -(MpzT, MpzT)"/>
+	public static MpzT operator -(MpzT x, ushort y)
+	{
+		var z = new MpzT();
+		Mpir.MpzSubUi(z, x, y);
 		return z;
 	}
 
@@ -1547,6 +1618,38 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(byte x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(MpzT x, byte y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(ushort x, MpzT y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulUi(z, y, x);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
+	public static MpzT operator *(MpzT x, ushort y)
+	{
+		var z = new MpzT();
+		Mpir.MpzMulUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator *(MpzT, MpzT)"/>
 	public static MpzT operator *(int x, MpzT y)
 	{
 		var z = new MpzT();
@@ -1596,9 +1699,25 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 
 	public static MpzT operator /(MpzT x, MpzT y)
 	{
-		var quotient = new MpzT();
-		Mpir.MpzTdivQ(quotient, x, y);
-		return quotient;
+		var z = new MpzT();
+		Mpir.MpzTdivQ(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
+	public static MpzT operator /(MpzT x, byte y)
+	{
+		var z = new MpzT();
+		Mpir.MpzTdivQUi(z, x, y);
+		return z;
+	}
+
+	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
+	public static MpzT operator /(MpzT x, ushort y)
+	{
+		var z = new MpzT();
+		Mpir.MpzTdivQUi(z, x, y);
+		return z;
 	}
 
 	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
@@ -1606,15 +1725,15 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	{
 		if (y >= 0)
 		{
-			var quotient = new MpzT();
-			Mpir.MpzTdivQUi(quotient, x, (uint)y);
-			return quotient;
+			var z = new MpzT();
+			Mpir.MpzTdivQUi(z, x, (uint)y);
+			return z;
 		}
 		else
 		{
-			var quotient = new MpzT();
-			Mpir.MpzTdivQUi(quotient, x, (uint)-y);
-			var negQ = -quotient;
+			var z = new MpzT();
+			Mpir.MpzTdivQUi(z, x, (uint)-y);
+			var negQ = -z;
 			return negQ;
 		}
 	}
@@ -1622,17 +1741,17 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
 	public static MpzT operator /(MpzT x, uint y)
 	{
-		var quotient = new MpzT();
-		Mpir.MpzTdivQUi(quotient, x, y);
-		return quotient;
+		var z = new MpzT();
+		Mpir.MpzTdivQUi(z, x, y);
+		return z;
 	}
 
 	/// <inheritdoc cref="operator /(MpzT, MpzT)"/>
 	public static MpzT operator /(MpzT x, MpuT y)
 	{
-		var quotient = new MpzT();
-		Mpir.MpzTdivQ(quotient, x, Unsafe.As<MpzT>(y));
-		return quotient;
+		var z = new MpzT();
+		Mpir.MpzTdivQ(z, x, Unsafe.As<MpzT>(y));
+		return z;
 	}
 
 	public static MpzT operator %(MpzT x, MpzT mod)
@@ -1640,6 +1759,22 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 		var z = new MpzT();
 		Mpir.MpzMod(z, x, mod);
 		return z;
+	}
+
+	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
+	public static byte operator %(MpzT x, byte mod)
+	{
+		var z = new MpzT();
+		Mpir.MpzFdivRUi(z, x, mod);
+		return (byte)Mpir.MpzGetUi(z);
+	}
+
+	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
+	public static ushort operator %(MpzT x, ushort mod)
+	{
+		var z = new MpzT();
+		Mpir.MpzFdivRUi(z, x, mod);
+		return (ushort)Mpir.MpzGetUi(z);
 	}
 
 	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
@@ -1660,11 +1795,19 @@ public sealed class MpzT : IBinaryInteger<MpzT>, ICloneable, IConvertible, IDisp
 	}
 
 	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
-	public static uint operator %(MpzT x, MpuT mod)
+	public static ulong operator %(MpzT x, ulong mod)
+	{
+		var z = new MpzT();
+		Mpir.MpzFdivR(z, x, mod);
+		return (ulong)z;
+	}
+
+	/// <inheritdoc cref="operator %(MpzT, MpzT)"/>
+	public static MpzT operator %(MpzT x, MpuT mod)
 	{
 		var z = new MpzT();
 		Mpir.MpzFdivR(z, x, Unsafe.As<MpzT>(mod));
-		return Mpir.MpzGetUi(z);
+		return z;
 	}
 
 	/// <inheritdoc cref="operator &(MpzT, MpzT)"/>

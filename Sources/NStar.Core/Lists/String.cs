@@ -637,25 +637,11 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 
 	public virtual String TrimStart(params char[] chars) => TrimStart((IEnumerable<char>)chars);
 
-	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y is null;
-
-	public static bool operator ==(String? x, string? y) =>
-		x is null && y is null || x is not null && y is not null
-		&& x.Length == y.Length && x.AsSpan().CommonPrefixLength(y.AsSpan()) == x.Length;
-
-	public static bool operator ==(string? x, String? y) =>
-		x is null && y is null || x is not null && y is not null
-		&& x.Length == y.Length && x.AsSpan().CommonPrefixLength(y.AsSpan()) == x.Length;
-
-	public static bool operator !=(String? x, String? y) => !(x == y);
-
-	public static bool operator !=(String? x, string? y) => !(x == y);
-
-	public static bool operator !=(string? x, String? y) => !(x == y);
-
 	public static implicit operator String(char x) => new(32, x);
 
 	public static implicit operator String(char[]? x) => x is null ? [] : new(32, x);
+
+	public static implicit operator String(ReadOnlySpan<char> x) => new(32, x);
 
 	public static implicit operator String(string? x) => x is null ? [] : new(32, x);
 
@@ -783,4 +769,24 @@ public unsafe class String : List<char, String>, IComparable<char[]>, IComparabl
 		x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10),
 		x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15))
 		: throw new InvalidOperationException("Список должен иметь 16 элементов.");
+
+	public static String operator *(int x, String y) => y * x;
+
+	public static String operator *(String x, int y) => x.Repeat(y);
+
+	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y is null;
+
+	public static bool operator ==(String? x, string? y) =>
+		x is null && y is null || x is not null && y is not null
+		&& x.Length == y.Length && x.AsSpan().CommonPrefixLength(y.AsSpan()) == x.Length;
+
+	public static bool operator ==(string? x, String? y) =>
+		x is null && y is null || x is not null && y is not null
+		&& x.Length == y.Length && x.AsSpan().CommonPrefixLength(y.AsSpan()) == x.Length;
+
+	public static bool operator !=(String? x, String? y) => !(x == y);
+
+	public static bool operator !=(String? x, string? y) => !(x == y);
+
+	public static bool operator !=(string? x, String? y) => !(x == y);
 }

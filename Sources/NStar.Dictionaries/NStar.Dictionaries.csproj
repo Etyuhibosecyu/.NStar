@@ -15,6 +15,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<Compile Include="..\NStar.Core\Misc\HashHelpers.cs" Link="HashHelpers.cs" />
+		<ProjectReference Include="..\NStar.Linq\NStar.Linq.csproj" />
 		<ProjectReference Include="..\NStar.RemoveDoubles\NStar.RemoveDoubles.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

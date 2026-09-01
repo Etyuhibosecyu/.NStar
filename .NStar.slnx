@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/Элементы решения/">
-    <File Path=".editorconfig" />
+	<File Path=".editorconfig" />
   </Folder>
   <Project Path="Service/Benchmark/Benchmark.csproj" />
   <Project Path="Service/Generation/Generation.csproj" />
@@ -16,6 +16,8 @@
   <Project Path="Sources/NStar.MathLib/NStar.MathLib.csproj" />
   <Project Path="Sources/NStar.Mpir/NStar.Mpir.csproj" />
   <Project Path="Sources/NStar.ParallelHS/NStar.ParallelHS.csproj" />
+  <Project Path="Sources/RedStarMath/RedStarMath.csproj" />
+  <Project Path="Sources/RedStarMath.Complex/RedStarMath.Complex.csproj" />
   <Project Path="Sources/NStar.RemoveDoubles/NStar.RemoveDoubles.csproj" />
   <Project Path="Sources/NStar.SortedSets/NStar.SortedSets.csproj" />
   <Project Path="Sources/NStar.SumCollections/NStar.SumCollections.csproj" />

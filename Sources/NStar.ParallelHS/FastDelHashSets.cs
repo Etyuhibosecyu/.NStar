@@ -579,7 +579,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	{
 		lock (lockObj)
 		{
-			if (this.buckets is null)
+			if (buckets is null)
 				base.Initialize(capacity);
 		}
 	}

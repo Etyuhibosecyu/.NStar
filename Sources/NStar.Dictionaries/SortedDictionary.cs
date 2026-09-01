@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace NStar.Dictionaries;
+﻿namespace NStar.Dictionaries;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
